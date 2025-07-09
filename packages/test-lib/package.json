@@ -17,6 +17,8 @@
   },
   "packageManager": "pnpm@10.12.3",
   "dependencies": {
-    "@illog/esbuild-config": "workspace:*"
+    "@illog/esbuild-config": "workspace:*",
+    "@types/lodash": "^4.17.20",
+    "lodash": "^4.17.21"
   }
 }
