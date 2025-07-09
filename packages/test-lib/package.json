@@ -1,0 +1,22 @@
+{
+  "name": "@illog/test-lib",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build:tsc": "tsc -p tsconfig.build.json",
+    "build:esbuild": "node -e \"import('@illog/esbuild-config').then(m => m.buildBasic())\"",
+    "build": "pnpm run build:tsc && pnpm run build:esbuild"
+  },
+  "packageManager": "pnpm@10.12.3",
+  "dependencies": {
+    "@illog/esbuild-config": "workspace:*"
+  }
+}
