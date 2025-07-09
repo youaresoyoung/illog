@@ -2,11 +2,6 @@
   "name": "@illog/esbuild-config",
   "version": "0.0.0",
   "type": "module",
-  "exports": {
-    ".": {
-      "import": "./src/index.ts",
-      "require": "./src/index.ts"
-    }
-  },
+  "main": "index.ts",
   "packageManager": "pnpm@10.12.3"
 }

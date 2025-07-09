@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build:tsc": "tsc -p tsconfig.build.json",
-    "build:esbuild": "node -e \"import('@illog/esbuild-config').then(m => m.buildBasic())\"",
+    "build:esbuild": "node build.ts",
     "build": "pnpm run build:tsc && pnpm run build:esbuild"
   },
   "packageManager": "pnpm@10.12.3",

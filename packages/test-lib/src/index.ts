@@ -1,9 +1,2 @@
-export function greet(name: string): string {
-  return `Hello, ${name}!`;
-}
-
-export function calculate(a: number, b: number): number {
-  return a + b;
-}
-
-console.log("My lib is loaded!");
+export * as utils from "./utils";
+export * as basic from "./basic";
