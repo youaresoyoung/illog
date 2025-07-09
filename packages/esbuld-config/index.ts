@@ -27,6 +27,8 @@ function getExternalDependencies(cwd: string = process.cwd()): string[] {
 export async function buildWithConfig(config: BuildConfig) {
   const { entryPoints, outdir, formats = ["cjs", "esm"], external } = config;
 
+  const isProd = process.env.NODE_ENV === "production";
+
   let externalDeps: string[] = [];
   if (external === "auto") {
     externalDeps = getExternalDependencies();
@@ -52,6 +54,7 @@ export async function buildWithConfig(config: BuildConfig) {
       sourcemap: true,
       external: externalDeps,
       target: "ESNext",
+      minify: isProd,
       outExtension: { ".js": format === "cjs" ? ".cjs" : ".js" },
     };
 

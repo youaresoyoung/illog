@@ -1,6 +1,10 @@
 import _ from "lodash";
 
 export function greet(name: string): string {
+  if (process.env.NODE_ENV === "development") {
+    return `Greeting ${name} in development mode`;
+  }
+
   return `Hello, ${name}!`;
 }
 
