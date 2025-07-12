@@ -1,0 +1,7 @@
+{
+  "name": "@illog/esbuild-config",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "index.ts",
+  "packageManager": "pnpm@10.12.3"
+}
