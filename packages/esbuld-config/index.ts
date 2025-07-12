@@ -95,8 +95,7 @@ export async function buildWithConfig(config: BuildConfig) {
       process.exit(1);
     });
 
+    console.log("✅ Build completed successfully!");
     return results;
   }
-
-  console.log("✅ Build completed successfully!");
 }
