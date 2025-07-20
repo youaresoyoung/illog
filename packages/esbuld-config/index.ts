@@ -58,7 +58,7 @@ export async function buildWithConfig(config: BuildConfig) {
     format,
     sourcemap: true,
     external: externalDeps,
-    target: "ESNext",
+    target: "esnext",
     minify: isProd,
     outExtension: { ".js": format === "cjs" ? ".cjs" : ".js" },
   });
