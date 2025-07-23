@@ -1,0 +1,90 @@
+import { typography } from "../../tokens/typography/typography";
+
+export const text = {
+  title: {
+    fontFamily: typography.title.fontFamily,
+    fontSize: typography.title.base,
+    fontWeight: typography.title.fontWeight,
+    lineHeight: 1.2,
+    letterSpacing: 0,
+  },
+  subtitle: {
+    fontFamily: typography.subtitle.fontFamily,
+    fontSize: typography.subtitle.base,
+    fontWeight: typography.subtitle.fontWeight,
+    lineHeight: 1.2,
+    letterSpacing: 0,
+  },
+  heading: {
+    fontFamily: typography.heading.fontFamily,
+    fontSize: typography.heading.base,
+    fontWeight: typography.heading.fontWeight,
+    lineHeight: 1.2,
+    letterSpacing: 0,
+  },
+  subheading: {
+    fontFamily: typography.subheading.fontFamily,
+    fontSize: typography.subheading.medium,
+    fontWeight: typography.subheading.fontWeight,
+    lineHeight: 1.2,
+    letterSpacing: 0,
+  },
+  bodyBase: {
+    fontFamily: typography.body.fontFamily,
+    fontSize: typography.body.base,
+    fontWeight: typography.body.fontWeightRegular,
+    lineHeight: 1.4,
+    letterSpacing: 0,
+  },
+  bodyStrong: {
+    fontFamily: typography.body.fontFamily,
+    fontSize: typography.body.base,
+    fontWeight: typography.body.fontWeightStrong,
+    lineHeight: 1.4,
+    letterSpacing: 0,
+  },
+  bodySmall: {
+    fontFamily: typography.body.fontFamily,
+    fontSize: typography.body.small,
+    fontWeight: typography.body.fontWeightRegular,
+    lineHeight: 1.4,
+    letterSpacing: 0,
+  },
+  bodySmallStrong: {
+    fontFamily: typography.body.fontFamily,
+    fontSize: typography.body.small,
+    fontWeight: typography.body.fontWeightStrong,
+    lineHeight: 1.4,
+    letterSpacing: 0,
+  },
+  caption: {
+    fontFamily: typography.caption.fontFamily,
+    fontSize: typography.caption.small,
+    fontWeight: typography.caption.fontWeightRegular,
+    lineHeight: 1.4,
+    letterSpacing: 0,
+  },
+  captionStrong: {
+    fontFamily: typography.caption.fontFamily,
+    fontSize: typography.caption.small,
+    fontWeight: typography.caption.fontWeightStrong,
+    lineHeight: 1.4,
+    letterSpacing: 0,
+  },
+  singleLine: {
+    BodyBase: {
+      fontFamily: typography.body.fontFamily,
+      fontSize: typography.body.base,
+      fontWeight: typography.body.fontWeightRegular,
+      lineHeight: 1,
+      letterSpacing: 0,
+    },
+    caption: {
+      fontFamily: typography.caption.fontFamily,
+      fontSize: typography.caption.small,
+      fontWeight: typography.caption.fontWeightRegular,
+      lineHeight: 1,
+      letterSpacing: 0,
+    },
+  },
+};
