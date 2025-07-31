@@ -1,4 +1,4 @@
 export * as colors from "./colors";
 export * as size from "./size";
 export * as typography from "./typography";
-export * as responsive from "./responsive";
+export { responsive } from "./responsive";

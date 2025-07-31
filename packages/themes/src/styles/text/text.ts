@@ -72,7 +72,7 @@ export const text = {
     letterSpacing: 0,
   },
   singleLine: {
-    BodyBase: {
+    bodyBase: {
       fontFamily: typography.body.fontFamily,
       fontSize: typography.body.base,
       fontWeight: typography.body.fontWeightRegular,
