@@ -13,7 +13,7 @@ export const textVariants = styleVariants({
   caption: styles.text.caption,
   captionStrong: styles.text.captionStrong,
   singleLineBodyBase: styles.text.singleLine.bodyBase,
-  singleLineBodyStrong: styles.text.singleLine.caption,
+  singleLineCaption: styles.text.singleLine.caption,
 });
 
 export type textStyle = keyof typeof textVariants;
