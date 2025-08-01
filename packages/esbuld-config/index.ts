@@ -7,6 +7,7 @@ interface BuildConfig {
   outdir: string;
   formats?: ("cjs" | "esm")[];
   external?: string[] | "auto";
+  plugins?: any[];
 }
 
 function getExternalDependencies(cwd: string = process.cwd()): string[] {
@@ -25,7 +26,13 @@ function getExternalDependencies(cwd: string = process.cwd()): string[] {
 }
 
 export async function buildWithConfig(config: BuildConfig) {
-  const { entryPoints, outdir, formats = ["cjs", "esm"], external } = config;
+  const {
+    entryPoints,
+    outdir,
+    formats = ["cjs", "esm"],
+    external,
+    plugins,
+  } = config;
 
   const isProd = process.env.NODE_ENV === "production";
   const isWatch =
@@ -61,6 +68,7 @@ export async function buildWithConfig(config: BuildConfig) {
     target: "esnext",
     minify: isProd,
     outExtension: { ".js": format === "cjs" ? ".cjs" : ".js" },
+    plugins,
   });
 
   if (isWatch) {
