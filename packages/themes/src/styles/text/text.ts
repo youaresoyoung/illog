@@ -1,5 +1,10 @@
 import { typography } from "../../tokens/typography/typography";
 
+const reset = {
+  margin: 0,
+  padding: 0,
+};
+
 export const text = {
   title: {
     fontFamily: typography.title.fontFamily,
@@ -7,6 +12,7 @@ export const text = {
     fontWeight: typography.title.fontWeight,
     lineHeight: 1.2,
     letterSpacing: 0,
+    ...reset,
   },
   subtitle: {
     fontFamily: typography.subtitle.fontFamily,
@@ -14,6 +20,7 @@ export const text = {
     fontWeight: typography.subtitle.fontWeight,
     lineHeight: 1.2,
     letterSpacing: 0,
+    ...reset,
   },
   heading: {
     fontFamily: typography.heading.fontFamily,
@@ -21,6 +28,7 @@ export const text = {
     fontWeight: typography.heading.fontWeight,
     lineHeight: 1.2,
     letterSpacing: 0,
+    ...reset,
   },
   subheading: {
     fontFamily: typography.subheading.fontFamily,
@@ -28,6 +36,7 @@ export const text = {
     fontWeight: typography.subheading.fontWeight,
     lineHeight: 1.2,
     letterSpacing: 0,
+    ...reset,
   },
   bodyBase: {
     fontFamily: typography.body.fontFamily,
@@ -35,6 +44,7 @@ export const text = {
     fontWeight: typography.body.fontWeightRegular,
     lineHeight: 1.4,
     letterSpacing: 0,
+    ...reset,
   },
   bodyStrong: {
     fontFamily: typography.body.fontFamily,
@@ -42,6 +52,7 @@ export const text = {
     fontWeight: typography.body.fontWeightStrong,
     lineHeight: 1.4,
     letterSpacing: 0,
+    ...reset,
   },
   bodySmall: {
     fontFamily: typography.body.fontFamily,
@@ -49,6 +60,7 @@ export const text = {
     fontWeight: typography.body.fontWeightRegular,
     lineHeight: 1.4,
     letterSpacing: 0,
+    ...reset,
   },
   bodySmallStrong: {
     fontFamily: typography.body.fontFamily,
@@ -56,6 +68,7 @@ export const text = {
     fontWeight: typography.body.fontWeightStrong,
     lineHeight: 1.4,
     letterSpacing: 0,
+    ...reset,
   },
   caption: {
     fontFamily: typography.caption.fontFamily,
@@ -63,6 +76,7 @@ export const text = {
     fontWeight: typography.caption.fontWeightRegular,
     lineHeight: 1.4,
     letterSpacing: 0,
+    ...reset,
   },
   captionStrong: {
     fontFamily: typography.caption.fontFamily,
@@ -70,6 +84,7 @@ export const text = {
     fontWeight: typography.caption.fontWeightStrong,
     lineHeight: 1.4,
     letterSpacing: 0,
+    ...reset,
   },
   singleLine: {
     bodyBase: {
@@ -78,6 +93,7 @@ export const text = {
       fontWeight: typography.body.fontWeightRegular,
       lineHeight: 1,
       letterSpacing: 0,
+      ...reset,
     },
     caption: {
       fontFamily: typography.caption.fontFamily,
@@ -85,6 +101,7 @@ export const text = {
       fontWeight: typography.caption.fontWeightRegular,
       lineHeight: 1,
       letterSpacing: 0,
+      ...reset,
     },
   },
 };

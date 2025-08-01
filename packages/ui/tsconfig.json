@@ -2,10 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "moduleResolution": "bundler",
-    "outDir": "./dist",
-    "declaration": true,
-    "declarationDir": "./dist",
-    "emitDeclarationOnly": true
+    "outDir": "./dist"
   },
   "include": ["src/**/*"],
   "exclude": ["dist"]
