@@ -13,7 +13,8 @@ const colors = Object.entries(tokens.colors.light.text).reduce(
       });
     }
     return acc;
-  }
+  },
+  [] as string[]
 );
 
 const meta = {
