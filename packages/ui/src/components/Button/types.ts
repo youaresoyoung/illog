@@ -1,4 +1,3 @@
-import { CSSProperties } from "@vanilla-extract/css";
 import { ReactNode, Ref } from "react";
 
 export type ButtonProps = {
@@ -8,7 +7,6 @@ export type ButtonProps = {
   onClick?: () => void;
   children: ReactNode;
   className?: string;
-  style?: CSSProperties;
   isFullWidth?: boolean;
   ariaLabel?: string;
   ref?: Ref<HTMLButtonElement>;

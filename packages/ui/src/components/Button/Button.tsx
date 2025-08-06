@@ -10,7 +10,6 @@ export const Button = (props: ButtonProps) => {
     onClick,
     children,
     className,
-    style,
     isFullWidth,
     ariaLabel,
     ref,
