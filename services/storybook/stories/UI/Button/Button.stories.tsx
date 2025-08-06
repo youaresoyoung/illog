@@ -26,6 +26,11 @@ const meta = {
         type: "boolean",
       },
     },
+    ariaLabel: {
+      control: {
+        type: "text",
+      },
+    },
   },
 } satisfies Meta<typeof _Button>;
 
