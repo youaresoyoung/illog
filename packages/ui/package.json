@@ -17,7 +17,9 @@
     "build:esbuild": "node build.ts",
     "build:watch": "pnpm run build:tsc && NODE_ENV=development pnpm run build:esbuild --watch",
     "build:dev": "pnpm run build:tsc && NODE_ENV=development pnpm run build:esbuild",
-    "build:prod": "pnpm run build:tsc && NODE_ENV=production pnpm run build:esbuild"
+    "build:prod": "pnpm run build:tsc && NODE_ENV=production pnpm run build:esbuild",
+    "test": "vitest run",
+    "test:watch": "vitest --watch"
   },
   "keywords": [],
   "author": "",
@@ -34,10 +36,16 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vanilla-extract/esbuild-plugin": "^2.3.18",
+    "@vanilla-extract/vite-plugin": "^5.1.1",
+    "@vitejs/plugin-react": "^4.7.0",
+    "@vitest/browser": "^3.2.4",
     "clsx": "^2.1.1",
+    "playwright": "^1.54.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0"
+    "tsconfig-paths": "^4.2.0",
+    "vitest": "^3.2.4",
+    "vitest-browser-react": "^1.0.1"
   }
 }
