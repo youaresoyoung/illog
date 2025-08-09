@@ -9,6 +9,9 @@ const buttonBase = {
   cursor: "pointer",
   border: "none",
   textDecoration: "none",
+  backgroundColor: "transparent",
+  color: tokens.colors.light.text.default.default,
+  appearance: "none" as const,
   transition: "all 0.2s ease-in-out",
   ...styles.text.singleLine.bodyBase,
 };
