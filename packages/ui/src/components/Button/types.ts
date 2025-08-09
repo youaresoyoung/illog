@@ -1,4 +1,4 @@
-import { ReactNode, Ref } from "react";
+import { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 
 export type ButtonProps = {
   variant: "primary"; // TODO: Extend this as needed for more variants
@@ -10,4 +10,4 @@ export type ButtonProps = {
   isFullWidth?: boolean;
   ariaLabel?: string;
   ref?: Ref<HTMLButtonElement>;
-};
+} & ButtonHTMLAttributes<HTMLButtonElement>;
