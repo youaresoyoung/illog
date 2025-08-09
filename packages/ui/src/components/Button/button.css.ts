@@ -1,5 +1,5 @@
 import { recipe } from "@vanilla-extract/recipes";
-import { styles, tokens } from "packages/themes/dist";
+import { styles, tokens } from "@illog/themes";
 
 const buttonBase = {
   display: "inline-flex",
