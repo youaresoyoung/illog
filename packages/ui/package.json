@@ -14,12 +14,13 @@
   "scripts": {
     "build": "pnpm run build:tsc && pnpm run build:esbuild",
     "build:tsc": "tsc -p tsconfig.build.json",
-    "build:esbuild": "node build.ts",
+    "build:esbuild": "node build.ts && pnpm run icons",
     "build:watch": "pnpm run build:tsc && NODE_ENV=development pnpm run build:esbuild --watch",
     "build:dev": "pnpm run build:tsc && NODE_ENV=development pnpm run build:esbuild",
     "build:prod": "pnpm run build:tsc && NODE_ENV=production pnpm run build:esbuild",
     "test": "vitest run",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "icons": "ts-node ./src/utils/generate-icons.ts"
   },
   "keywords": [],
   "author": "",
