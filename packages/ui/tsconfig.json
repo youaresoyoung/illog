@@ -2,11 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "types": [
-      "@vitest/browser/providers/playwright",
-      "vite/client",
-      "vite-plugin-svgr/client"
-    ]
+    "types": ["@vitest/browser/providers/playwright"]
   },
   "include": ["src/**/*"],
   "exclude": ["dist"]

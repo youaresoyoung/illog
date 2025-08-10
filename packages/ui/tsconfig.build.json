@@ -4,8 +4,7 @@
     "outDir": "./dist",
     "declaration": true,
     "declarationDir": "./dist",
-    "emitDeclarationOnly": true,
-    "types": ["vite-plugin-svgr/client"]
+    "emitDeclarationOnly": true
   },
   "include": ["src/**/*"],
   "exclude": ["dist"]

@@ -11,7 +11,7 @@ const files = readdirSync(dir).filter((file) => file.endsWith(".svg"));
 const imports = files
   .map((file) => {
     const name = file.replace(".svg", "");
-    return `import ${name} from './${file}?react';`;
+    return `import ${name} from './${file}';`;
   })
   .join("\n");
 
@@ -24,8 +24,15 @@ const iconExports = files
     return `  ${name}`;
   })
   .join(",\n");
+const iconNameOptions = files
+  .map((file) => {
+    const name = file.replace(".svg", "");
+    return `  "${name}"`;
+  })
+  .join(",\n");
 
 const iconNameType = `export type IconName = ${iconNames};\n`;
+const iconNameOptionsExport = `export const IconNameOptions: IconName[] = [\n${iconNameOptions}\n];\n`;
 const iconDefaultExport = `export default {\n${iconExports}\n};\n`;
 
 writeFileSync(
@@ -34,5 +41,5 @@ writeFileSync(
 );
 writeFileSync(
   join(__dirname, "../../src/components/Icon/types.ts"),
-  `${iconNameType}`
+  `${iconNameType}\n${iconNameOptionsExport}`
 );
