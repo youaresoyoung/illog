@@ -1,5 +1,5 @@
 import { styleVariants } from '@vanilla-extract/css'
-import { styles } from 'packages/themes/dist'
+import { styles } from '@illog/themes'
 
 export const textVariants = styleVariants({
   title: styles.text.title,
