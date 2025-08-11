@@ -16,10 +16,9 @@ function getExternalDependencies(cwd: string = process.cwd()): string[] {
     const packageJsonPath = resolve(cwd, 'package.json')
     const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
 
-    const deps = Object.keys(packageJson.dependencies || {})
     const peerDeps = Object.keys(packageJson.peerDependencies || {})
 
-    return [...deps, ...peerDeps]
+    return [...peerDeps]
   } catch (error) {
     console.error('⚠️ Could not read package.json:', error)
     return []
@@ -37,6 +36,7 @@ export async function buildWithConfig(config: BuildConfig) {
     externalDeps = getExternalDependencies()
     console.log(`🔍 Automatically detected external dependencies: ${externalDeps.join(', ')}`)
   } else if (Array.isArray(external)) {
+    console.log(`🔍 Manually specified external dependencies: ${external.join(', ')}`)
     externalDeps = external
   }
 
