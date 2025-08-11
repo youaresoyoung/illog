@@ -1,4 +1,5 @@
-import { readdirSync, write, writeFileSync } from "fs";
+import { readdirSync, readFileSync, writeFileSync } from "fs";
+import { tokens } from "@illog/themes";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
@@ -7,6 +8,24 @@ const __dirname = dirname(__filename);
 
 const dir = join(__dirname, "../../src/assets/svg");
 const files = readdirSync(dir).filter((file) => file.endsWith(".svg"));
+
+const fillDefaultColorRegEx = new RegExp(
+  `fill="${tokens.colors.light.icon.default.default}"`,
+  "gi"
+);
+const strokeDefaultColorRegEx = new RegExp(
+  `stroke="${tokens.colors.light.icon.default.default}"`,
+  "gi"
+);
+
+files.forEach((file) => {
+  if (file.endsWith(".svg")) {
+    let content = readFileSync(join(dir, file), "utf8");
+    content = content.replace(fillDefaultColorRegEx, 'fill="currentColor"');
+    content = content.replace(strokeDefaultColorRegEx, 'stroke="currentColor"');
+    writeFileSync(join(dir, file), content);
+  }
+});
 
 const imports = files
   .map((file) => {

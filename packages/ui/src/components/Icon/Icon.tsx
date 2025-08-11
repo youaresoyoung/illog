@@ -8,7 +8,11 @@ type IconProps = {
   color?: string;
 };
 
-export const Icon = ({ name, size = "medium", color }: IconProps) => {
+export const Icon = ({
+  name,
+  size = "medium",
+  color = tokens.colors.light.icon.default.default,
+}: IconProps) => {
   const IconComponent = Icons[name];
 
   if (!IconComponent) {
@@ -19,7 +23,7 @@ export const Icon = ({ name, size = "medium", color }: IconProps) => {
     <IconComponent
       width={tokens.size.icon[size]}
       height={tokens.size.icon[size]}
-      fill={color}
+      style={{ color }}
     />
   );
 };
