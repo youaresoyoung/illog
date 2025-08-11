@@ -1,4 +1,5 @@
 import Icons from "../../assets/svg";
+import { getKeyFromPath } from "../../utils/util";
 import { IconName } from "./types";
 import { tokens } from "@illog/themes";
 
@@ -8,11 +9,7 @@ type IconProps = {
   color?: string;
 };
 
-export const Icon = ({
-  name,
-  size = "medium",
-  color = tokens.colors.light.icon.default.default,
-}: IconProps) => {
+export const Icon = ({ name, size = "medium", color }: IconProps) => {
   const IconComponent = Icons[name];
 
   if (!IconComponent) {
@@ -23,7 +20,11 @@ export const Icon = ({
     <IconComponent
       width={tokens.size.icon[size]}
       height={tokens.size.icon[size]}
-      style={{ color }}
+      style={{
+        color: color
+          ? getKeyFromPath(color, tokens.colors.light.icon)
+          : tokens.colors.light.icon.default.default,
+      }}
     />
   );
 };
