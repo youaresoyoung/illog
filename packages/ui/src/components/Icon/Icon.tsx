@@ -13,6 +13,7 @@ export const Icon = ({ name, size = "medium", color }: IconProps) => {
   const IconComponent = Icons[name];
 
   if (!IconComponent) {
+    console.warn(`Icon with name "${name}" does not exist.`);
     return null;
   }
 
@@ -25,6 +26,8 @@ export const Icon = ({ name, size = "medium", color }: IconProps) => {
           ? getKeyFromPath(color, tokens.colors.light.icon)
           : tokens.colors.light.icon.default.default,
       }}
+      aria-label={name}
+      role="img"
     />
   );
 };
