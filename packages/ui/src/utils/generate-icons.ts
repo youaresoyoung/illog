@@ -27,25 +27,29 @@ files.forEach((file) => {
   }
 });
 
+function replaceNameInFile(file: string) {
+  return file.replace(".svg", "").replace("ic_", "").replace("_24", "");
+}
+
 const imports = files
   .map((file) => {
-    const name = file.replace(".svg", "");
+    const name = replaceNameInFile(file);
     return `import ${name} from './${file}';`;
   })
   .join("\n");
 
 const iconNames = files
-  .map((file) => `'${file.replace(".svg", "")}'`)
+  .map((file) => `'${replaceNameInFile(file)}'`)
   .join(" | ");
 const iconExports = files
   .map((file) => {
-    const name = file.replace(".svg", "");
+    const name = replaceNameInFile(file);
     return `  ${name}`;
   })
   .join(",\n");
 const iconNameOptions = files
   .map((file) => {
-    const name = file.replace(".svg", "");
+    const name = replaceNameInFile(file);
     return `  "${name}"`;
   })
   .join(",\n");

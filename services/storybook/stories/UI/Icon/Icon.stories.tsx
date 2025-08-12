@@ -28,7 +28,7 @@ type Story = StoryObj<typeof _Icon>;
 
 export const Icon: Story = {};
 Icon.args = {
-  name: "ic_check_24",
+  name: "check",
   size: "medium",
   color: "default.default",
 };
