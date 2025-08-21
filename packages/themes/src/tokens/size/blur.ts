@@ -1,3 +1,3 @@
 export const blur = {
-  100: 4,
-};
+  100: 4
+}

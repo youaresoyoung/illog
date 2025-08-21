@@ -9,7 +9,6 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
-
   },
   "scripts": {
     "build": "pnpm run build:tsc && pnpm run build:esbuild",

@@ -1,45 +1,45 @@
-import { Button as _Button } from "@illog/ui";
-import { Meta, StoryObj } from "@storybook/react-vite";
+import { Button as _Button } from '@illog/ui'
+import { Meta, StoryObj } from '@storybook/react-vite'
 
 const meta = {
   component: _Button,
   argTypes: {
     variant: {
       control: {
-        type: "select",
+        type: 'select'
       },
-      options: ["primary", "secondary", "tertiary"],
+      options: ['primary', 'secondary', 'tertiary']
     },
     size: {
       control: {
-        type: "select",
+        type: 'select'
       },
-      options: ["sm", "md", "lg"],
+      options: ['sm', 'md', 'lg']
     },
     isDisabled: {
       control: {
-        type: "boolean",
-      },
+        type: 'boolean'
+      }
     },
     isFullWidth: {
       control: {
-        type: "boolean",
-      },
+        type: 'boolean'
+      }
     },
     ariaLabel: {
       control: {
-        type: "text",
-      },
-    },
-  },
-} satisfies Meta<typeof _Button>;
+        type: 'text'
+      }
+    }
+  }
+} satisfies Meta<typeof _Button>
 
-export default meta;
-type Story = StoryObj<typeof _Button>;
+export default meta
+type Story = StoryObj<typeof _Button>
 
-export const Button: Story = {};
+export const Button: Story = {}
 Button.args = {
-  variant: "primary",
-  size: "md",
-  children: "Button",
-};
+  variant: 'primary',
+  size: 'md',
+  children: 'Button'
+}
