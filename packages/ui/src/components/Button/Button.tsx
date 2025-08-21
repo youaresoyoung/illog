@@ -1,11 +1,11 @@
-import clsx from "clsx";
-import { ButtonProps } from "./types";
-import { buttonRecipe } from "./button.css";
+import clsx from 'clsx'
+import { ButtonProps } from './types'
+import { buttonRecipe } from './button.css'
 
 export const Button = (props: ButtonProps) => {
   const {
-    variant = "primary",
-    size = "md",
+    variant = 'primary',
+    size = 'md',
     isDisabled,
     onClick,
     children,
@@ -14,7 +14,7 @@ export const Button = (props: ButtonProps) => {
     ariaLabel,
     ref,
     ...rest
-  } = props;
+  } = props
 
   return (
     <button
@@ -23,9 +23,9 @@ export const Button = (props: ButtonProps) => {
         buttonRecipe({
           variant,
           size,
-          isFullWidth,
+          isFullWidth
         }),
-        className,
+        className
       ])}
       aria-label={ariaLabel}
       ref={ref}
@@ -34,5 +34,5 @@ export const Button = (props: ButtonProps) => {
     >
       {children}
     </button>
-  );
-};
+  )
+}

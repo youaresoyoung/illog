@@ -1,8 +1,8 @@
-import { buildWithConfig } from "@illog/esbuild-config";
+import { buildWithConfig } from '@illog/esbuild-config'
 
 buildWithConfig({
-  entryPoints: ["src/index.ts"],
-  outdir: "dist",
-  formats: ["cjs", "esm"],
-  external: "auto",
-});
+  entryPoints: ['src/index.ts'],
+  outdir: 'dist',
+  formats: ['cjs', 'esm'],
+  external: 'auto'
+})
