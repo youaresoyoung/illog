@@ -10,7 +10,7 @@ export default tseslint.config(
   eslintPluginReact.configs.flat.recommended,
   eslintPluginReact.configs.flat['jsx-runtime'],
   {
-    // TODO: 수동 명시가 아닌 모노레포 구조 안에서 패키지들의 react 버전을 자동으로 감지하도록 설정해야함
+    // TODO: Set up automatic detection of React versions for packages within the monorepo structure, instead of manual specification
     settings: {
       react: {
         version: '19.1.0'
