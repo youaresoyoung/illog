@@ -11,5 +11,5 @@ export const depth = {
   negative200: -8,
   negative400: -16,
   negative800: -32,
-  negative1200: -48,
-};
+  negative1200: -48
+}

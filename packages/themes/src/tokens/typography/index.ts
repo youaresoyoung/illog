@@ -1,2 +1,2 @@
-export { typography } from "./typography";
-export { primitive } from "./primitive";
+export { typography } from './typography'
+export { primitive } from './primitive'

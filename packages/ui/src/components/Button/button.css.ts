@@ -1,28 +1,28 @@
-import { recipe } from "@vanilla-extract/recipes";
-import { styles, tokens } from "@illog/themes";
+import { recipe } from '@vanilla-extract/recipes'
+import { styles, tokens } from '@illog/themes'
 
 const buttonBase = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   borderRadius: tokens.size.radius[200],
-  cursor: "pointer",
-  border: "none",
-  textDecoration: "none",
-  backgroundColor: "transparent",
+  cursor: 'pointer',
+  border: 'none',
+  textDecoration: 'none',
+  backgroundColor: 'transparent',
   color: tokens.colors.light.text.default.default,
-  appearance: "none" as const,
-  transition: "all 0.2s ease-in-out",
-  ...styles.text.singleLine.bodyBase,
-};
+  appearance: 'none' as const,
+  transition: 'all 0.2s ease-in-out',
+  ...styles.text.singleLine.bodyBase
+}
 
 export const buttonRecipe = recipe({
   base: buttonBase,
   variants: {
     size: {
       sm: {},
-      md: { padding: tokens.size.space[300], height: "2.5rem" },
-      lg: {},
+      md: { padding: tokens.size.space[300], height: '2.5rem' },
+      lg: {}
     },
     variant: {
       primary: {
@@ -30,25 +30,25 @@ export const buttonRecipe = recipe({
         border: `${tokens.size.stroke.border}px solid ${tokens.colors.light.border.brand.default}`,
         backgroundColor: tokens.colors.light.background.brand.default,
 
-        ":hover": {
+        ':hover': {
           color: tokens.colors.light.text.brand.onBrand,
-          backgroundColor: tokens.colors.light.background.brand.defaultHover,
+          backgroundColor: tokens.colors.light.background.brand.defaultHover
         },
-        ":disabled": {
-          cursor: "default",
+        ':disabled': {
+          cursor: 'default',
           color: tokens.colors.light.text.disabled.default,
           backgroundColor: tokens.colors.light.background.disabled.default,
-          borderColor: tokens.colors.light.border.disabled.default,
-        },
-      },
+          borderColor: tokens.colors.light.border.disabled.default
+        }
+      }
     },
     isFullWidth: {
       true: {
-        width: "100%",
+        width: '100%'
       },
       false: {
-        width: "auto",
-      },
-    },
-  },
-});
+        width: 'auto'
+      }
+    }
+  }
+})

@@ -1,7 +1,7 @@
 export const primitive = {
   family: {
-    sans: "Inter, sans-serif",
-    serif: "Noto Serif, serif",
+    sans: 'Inter, sans-serif',
+    serif: 'Noto Serif, serif'
   },
   scale: {
     1: 12,
@@ -13,7 +13,7 @@ export const primitive = {
     7: 40,
     8: 48,
     9: 64,
-    10: 72,
+    10: 72
   },
   weight: {
     thin: 100,
@@ -24,6 +24,6 @@ export const primitive = {
     semiBold: 600,
     bold: 700,
     extraBold: 800,
-    black: 900,
-  },
-};
+    black: 900
+  }
+}
