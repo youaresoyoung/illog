@@ -11,14 +11,17 @@ export const Text = <T extends React.ElementType>(props: TextProps<T>) => {
 
   const [sprinkleProps, restProps] = splitSprinkleProps(rest)
 
-  return createElement(as, {
-    ...restProps,
-    className: clsx([textVariants[textStyle], sprinkles(sprinkleProps), className]),
-    style: {
-      color: color
-        ? getKeyFromPath(color, tokens.colors.light.text)
-        : tokens.colors.light.text.default.default
+  return createElement(
+    as,
+    {
+      ...restProps,
+      className: clsx([textVariants[textStyle], sprinkles(sprinkleProps), className]),
+      style: {
+        color: color
+          ? getKeyFromPath(color, tokens.colors.light.text)
+          : tokens.colors.light.text.default.default
+      }
     },
     children
-  })
+  )
 }

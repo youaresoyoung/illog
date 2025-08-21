@@ -1,3 +1,4 @@
+import type { Plugin } from 'esbuild'
 import { build, context } from 'esbuild'
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
@@ -7,7 +8,7 @@ interface BuildConfig {
   outdir: string
   formats?: ('cjs' | 'esm')[]
   external?: string[] | 'auto'
-  plugins?: any[]
+  plugins?: Plugin[]
 }
 
 function getExternalDependencies(cwd: string = process.cwd()): string[] {

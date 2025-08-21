@@ -7,7 +7,7 @@ const colors = Object.entries(tokens.colors.light.text).reduce((acc, [key, value
   if (typeof value === 'string') {
     acc.push(value)
   } else {
-    Object.entries(value).forEach(([subKey, subValue]) => {
+    Object.entries(value).forEach(([subKey]) => {
       acc.push(`${key}.${subKey}`)
     })
   }
