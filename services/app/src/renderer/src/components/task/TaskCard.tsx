@@ -14,8 +14,8 @@ export const TaskCard = ({ task, handleDeleteTask }: Props) => {
   }
 
   // after test, it will be changed to save automatically when input loses focus
-  const handleSave = () => {
-    const updatedTask = window.api.task.update(form.id, form)
+  const handleSave = async () => {
+    const updatedTask = await window.api.task.update(form.id, form)
     setForm(updatedTask)
   }
 

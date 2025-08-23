@@ -1,6 +1,6 @@
-import { Task } from 'electron'
 import { useEffect, useState } from 'react'
 import { TaskCard } from '../components/task/TaskCard'
+import { Task } from 'services/app/src/types'
 
 export const Today = () => {
   const [tasks, setTasks] = useState<Task[]>([])

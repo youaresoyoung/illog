@@ -1,0 +1,17 @@
+import { Task } from './src/types'
+
+interface RendererAPI {
+  task: {
+    create: (task: Partial<Task>) => Promise<Task>
+    get: (id: string) => Promise<Task | null>
+    getAll: () => Promise<Task[]>
+    update: (id: string, contents: Partial<Task>) => Promise<Task>
+    softDelete: (id: string) => Promise<void>
+  }
+}
+
+declare global {
+  interface Window {
+    api: RendererAPI
+  }
+}
