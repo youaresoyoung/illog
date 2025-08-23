@@ -46,6 +46,10 @@ app.whenReady().then(() => {
     return tasks
   })
 
+  ipcMain.handle('task.softDelete', async (event, id) => {
+    taskRepo.softDelete(id)
+  })
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })

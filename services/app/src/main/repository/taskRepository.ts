@@ -41,4 +41,12 @@ export class TaskRepository {
     const tasks = stmt.all(date)
     return tasks as Task[]
   }
+
+  softDelete(id: string) {
+    const stmt = this.db.prepare(`update task set deleted_at = datetime('now') where id = ? `)
+    const row = stmt.run(id)
+    if (row.changes === 0) {
+      throw new Error('Task not found')
+    }
+  }
 }
