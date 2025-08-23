@@ -34,4 +34,11 @@ export class TaskRepository {
     const task = stmt.get(id) ?? null
     return task as Task | null
   }
+
+  getAll(): Task[] {
+    const date = new Date().toISOString().split('T')[0]
+    const stmt = this.db.prepare(`SELECT * FROM task WHERE deleted_at IS NULL`)
+    const tasks = stmt.all(date)
+    return tasks as Task[]
+  }
 }

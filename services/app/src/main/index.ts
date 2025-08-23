@@ -36,6 +36,16 @@ app.whenReady().then(() => {
     return createdTask
   })
 
+  ipcMain.handle('task.get', async (event, id) => {
+    const task = taskRepo.get(id)
+    return task
+  })
+
+  ipcMain.handle('task.getAll', async () => {
+    const tasks = taskRepo.getAll()
+    return tasks
+  })
+
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })

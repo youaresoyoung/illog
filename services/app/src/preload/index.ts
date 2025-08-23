@@ -3,7 +3,9 @@ import { Task } from '../types'
 
 const api = {
   task: {
-    create: (task: Partial<Task>) => ipcRenderer.invoke('task.create', task)
+    create: (task: Partial<Task>) => ipcRenderer.invoke('task.create', task),
+    get: (id: string) => ipcRenderer.invoke('task.get', id),
+    getAll: () => ipcRenderer.invoke('task.getAll')
   }
 }
 
