@@ -21,13 +21,7 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow()
 
-  // TODO: after test remove this line
-  const dbPath = join(app.getPath('userData'), 'illog.db')
-  if (existsSync(dbPath)) {
-    unlinkSync(dbPath)
-  }
-
-  const db = openDB(dbPath)
+  const db = openDB()
 
   const taskRepo = new TaskRepository(db)
 
@@ -43,7 +37,13 @@ app.whenReady().then(() => {
 
   ipcMain.handle('task.getAll', async () => {
     const tasks = taskRepo.getAll()
+
     return tasks
+  })
+
+  ipcMain.handle('task.update', async (event, id, contents) => {
+    const updatedTask = taskRepo.update(id, contents)
+    return updatedTask
   })
 
   ipcMain.handle('task.softDelete', async (event, id) => {

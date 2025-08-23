@@ -1,13 +1,22 @@
 import Database from 'better-sqlite3'
 import { app } from 'electron'
-import { readFileSync } from 'fs'
+import { existsSync, readFileSync, unlinkSync } from 'fs'
 import { join } from 'path'
 
-export function openDB(dbPath: string) {
+export function openDB() {
+  const dbPath = join(app.getPath('userData'), 'illog.db')
+
   const db = new Database(dbPath)
 
-  const schema = readFileSync(join(app.getAppPath(), 'src/main/database/schema.sql'), 'utf8')
+  // after test remove this line
+  // if (existsSync(dbPath)) {
+  //   unlinkSync(dbPath)
+  // }
 
-  db.exec(schema)
+  if (!existsSync(dbPath)) {
+    const schema = readFileSync(join(app.getAppPath(), 'src/main/database/schema.sql'), 'utf8')
+    db.exec(schema)
+  }
+
   return db
 }

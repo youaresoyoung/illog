@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS task (
   title TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'todo' CHECK (status IN ('todo', 'in_progress', 'done')),
   project_id TEXT REFERENCES project (id) ON DELETE CASCADE,
-  end_time INTEGER,
+  end_time TEXT,
   created_at TEXT,
   updated_at TEXT,
   done_at TEXT DEFAULT NULL,

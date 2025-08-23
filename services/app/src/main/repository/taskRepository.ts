@@ -37,13 +37,36 @@ export class TaskRepository {
 
   getAll(): Task[] {
     const date = new Date().toISOString().split('T')[0]
-    const stmt = this.db.prepare(`SELECT * FROM task WHERE deleted_at IS NULL`)
+
+    const stmt = this.db.prepare(
+      `SELECT * FROM task WHERE strftime('%Y-%m-%d', created_at) = ? AND deleted_at IS NULL`
+    )
     const tasks = stmt.all(date)
     return tasks as Task[]
   }
 
+  update(id: string, contents: Partial<Task>): Task {
+    const stmt = this.db.prepare(
+      `UPDATE task SET title = ?, status = ?, project_id = ?, end_time = ? WHERE id = ? AND deleted_at IS NULL`
+    )
+
+    const result = stmt.run(
+      contents.title,
+      contents.status,
+      contents.project_id,
+      contents.end_time,
+      id
+    )
+
+    if (result.changes === 0) {
+      throw new Error('Task not found or no changes made')
+    }
+
+    return this.get(id) as Task
+  }
+
   softDelete(id: string) {
-    const stmt = this.db.prepare(`update task set deleted_at = datetime('now') where id = ? `)
+    const stmt = this.db.prepare(`UPDATE task SET deleted_at = datetime('now') WHERE id = ? `)
     const row = stmt.run(id)
     if (row.changes === 0) {
       throw new Error('Task not found')
