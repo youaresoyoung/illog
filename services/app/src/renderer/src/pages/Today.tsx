@@ -1,5 +1,6 @@
 import { Task } from 'electron'
 import { useEffect, useState } from 'react'
+import { TaskCard } from '../components/task/TaskCard'
 
 export const Today = () => {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -34,10 +35,7 @@ export const Today = () => {
       {tasks && tasks.length > 0 ? (
         <ul>
           {tasks.map((task) => (
-            <li key={task.id}>
-              {task.title}
-              <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
-            </li>
+            <TaskCard key={task.id} task={task} handleDeleteTask={handleDeleteTask} />
           ))}
         </ul>
       ) : (
