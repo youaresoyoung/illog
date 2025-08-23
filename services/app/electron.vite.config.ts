@@ -1,17 +1,23 @@
 export default {
   main: {
     build: {
-      outDir: "./dist/main",
-    },
+      outDir: './dist/main',
+      rollupOptions: {
+        external: ['better-sqlite3']
+      }
+    }
   },
   preload: {
     build: {
-      outDir: "./dist/preload",
-    },
+      outDir: './dist/preload',
+      rollupOptions: {
+        external: ['better-sqlite3']
+      }
+    }
   },
   renderer: {
     build: {
-      outDir: "./dist/renderer",
-    },
-  },
-};
+      outDir: './dist/renderer'
+    }
+  }
+}

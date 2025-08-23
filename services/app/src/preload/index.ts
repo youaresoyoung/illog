@@ -1,5 +1,10 @@
-import { contextBridge } from "electron";
+import { contextBridge, ipcRenderer } from 'electron'
+import { Task } from '../types'
 
-contextBridge.exposeInMainWorld("api", {
-  ping: () => "pong",
-});
+const api = {
+  task: {
+    create: (task: Partial<Task>) => ipcRenderer.invoke('task.create', task)
+  }
+}
+
+contextBridge.exposeInMainWorld('api', api)

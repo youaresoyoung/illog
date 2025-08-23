@@ -1,5 +1,8 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
+import { openDB } from './db'
 import { join } from 'path'
+import { TaskRepository } from './repository/taskRepository'
+import { existsSync, unlinkSync } from 'fs'
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -17,6 +20,21 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow()
+
+  // TODO: after test remove this line
+  const dbPath = join(app.getPath('userData'), 'illog.db')
+  if (existsSync(dbPath)) {
+    unlinkSync(dbPath)
+  }
+
+  const db = openDB(dbPath)
+
+  const taskRepo = new TaskRepository(db)
+
+  ipcMain.handle('task.create', async (event, task) => {
+    const createdTask = taskRepo.create(task)
+    return createdTask
+  })
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
