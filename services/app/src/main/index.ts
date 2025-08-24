@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import { openDB } from './db'
 import { join } from 'path'
 import { TaskRepository } from './repository/taskRepository'
-import { existsSync, unlinkSync } from 'fs'
+import { isDev } from '../utils/utils'
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -14,8 +14,11 @@ function createWindow() {
     }
   })
 
-  mainWindow.loadURL('http://localhost:5173')
-  // mainWindow.loadURL(join(app.getAppPath(), '/dist/renderer/index.html'))
+  if (isDev()) {
+    mainWindow.loadURL('http://localhost:5173')
+  } else {
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+  }
 }
 
 app.whenReady().then(() => {
@@ -25,28 +28,28 @@ app.whenReady().then(() => {
 
   const taskRepo = new TaskRepository(db)
 
-  ipcMain.handle('task.create', async (event, task) => {
+  ipcMain.handle('task.create', (event, task) => {
     const createdTask = taskRepo.create(task)
     return createdTask
   })
 
-  ipcMain.handle('task.get', async (event, id) => {
+  ipcMain.handle('task.get', (event, id) => {
     const task = taskRepo.get(id)
     return task
   })
 
-  ipcMain.handle('task.getAll', async () => {
+  ipcMain.handle('task.getAll', () => {
     const tasks = taskRepo.getAll()
 
     return tasks
   })
 
-  ipcMain.handle('task.update', async (event, id, contents) => {
+  ipcMain.handle('task.update', (event, id, contents) => {
     const updatedTask = taskRepo.update(id, contents)
     return updatedTask
   })
 
-  ipcMain.handle('task.softDelete', async (event, id) => {
+  ipcMain.handle('task.softDelete', (event, id) => {
     taskRepo.softDelete(id)
   })
 

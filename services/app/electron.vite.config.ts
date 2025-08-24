@@ -1,23 +1,11 @@
-export default {
+import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+
+export default defineConfig({
   main: {
-    build: {
-      outDir: './dist/main',
-      rollupOptions: {
-        external: ['better-sqlite3']
-      }
-    }
+    plugins: [externalizeDepsPlugin()]
   },
   preload: {
-    build: {
-      outDir: './dist/preload',
-      rollupOptions: {
-        external: ['better-sqlite3']
-      }
-    }
+    plugins: [externalizeDepsPlugin()]
   },
-  renderer: {
-    build: {
-      outDir: './dist/renderer'
-    }
-  }
-}
+  renderer: {}
+})

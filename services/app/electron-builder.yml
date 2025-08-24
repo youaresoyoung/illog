@@ -1,0 +1,38 @@
+appId: com.illog.com
+productName: illog
+directories:
+  buildResources: build
+files:
+  - dist/**
+  - out/**
+  - package.json
+  - build/**
+  - resources/**
+asarUnpack:
+  - resources/**
+win:
+  executableName: illog
+nsis:
+  artifactName: ${name}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+mac:
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
+    - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
+    - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
+  notarize: false
+dmg:
+  artifactName: ${name}-${version}.${ext}
+linux:
+  target:
+    - AppImage
+    - snap
+    - deb
+  maintainer: electronjs.org
+  category: Utility
+appImage:
+  artifactName: ${name}-${version}.${ext}
+npmRebuild: false
