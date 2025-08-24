@@ -9,6 +9,10 @@ const api = {
     update: (id: string, contents: Partial<Task>) =>
       ipcRenderer.invoke('task.update', id, contents),
     softDelete: (id: string) => ipcRenderer.invoke('task.softDelete', id)
+  },
+  note: {
+    autoSave: (taskId: string, content: string, clientUpdatedAt: number) =>
+      ipcRenderer.invoke('note.autoSave', taskId, content, clientUpdatedAt)
   }
 }
 
