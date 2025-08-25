@@ -1,9 +1,9 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import { openDB } from './db'
 import { join } from 'path'
 import { TaskRepository } from './repository/taskRepository'
 import { isDev } from '../utils/utils'
-import { registerTaskHandlers } from './ipc/ipcHandlers'
+import { registerTaskHandlers, registerTaskNoteHandlers } from './ipc/ipcHandlers'
 import { NoteService } from './service/NoteService'
 import { NoteRepository } from './repository/noteRepository'
 
@@ -34,11 +34,7 @@ app.whenReady().then(() => {
 
   const noteRepo = new NoteRepository(db)
   const noteService = new NoteService(noteRepo)
-
-  ipcMain.handle('note.autoSave', (event, taskId, content, clientUpdatedAt) => {
-    const result = noteService.autoSave(taskId, content, clientUpdatedAt)
-    return result
-  })
+  registerTaskNoteHandlers(noteRepo, noteService)
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

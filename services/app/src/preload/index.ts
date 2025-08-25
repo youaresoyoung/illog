@@ -11,6 +11,7 @@ const api = {
     softDelete: (id: string) => ipcRenderer.invoke('task.softDelete', id)
   },
   note: {
+    findByTaskId: (taskId: string) => ipcRenderer.invoke('note.findByTaskId', taskId),
     autoSave: (taskId: string, content: string, clientUpdatedAt: number) =>
       ipcRenderer.invoke('note.autoSave', taskId, content, clientUpdatedAt)
   }

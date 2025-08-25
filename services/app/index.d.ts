@@ -9,6 +9,7 @@ interface RendererAPI {
     softDelete: (id: string) => Promise<void>
   }
   note: {
+    findByTaskId: (taskId: string) => Promise<TaskNote | null>
     autoSave: (
       taskId: string,
       content: string,

@@ -5,10 +5,9 @@ export class NoteRepository {
   constructor(private db: Database) {}
 
   findByTaskId(taskId: string): TaskNote | null {
-    const stmt = this.db.prepare(`SELECT * FROM task_note WHERE task_id = ?`)
-    return stmt.get(taskId) as TaskNote | null
+    const stmt = this.db.prepare(`SELECT * FROM task_note WHERE task_id = :taskId`)
+    return stmt.get({ taskId }) as TaskNote | null
   }
-
   update(taskId: string, content: string, savedAt: number): TaskNote {
     const stmt = this.db.prepare(
       `UPDATE task_note SET content = ?, updated_at = ? WHERE task_id = ?`
@@ -18,7 +17,6 @@ export class NoteRepository {
       updated_at: savedAt,
       task_id: taskId
     })
-
     if (result.changes === 0) {
       throw new Error('Task not found or no changes made')
     }
