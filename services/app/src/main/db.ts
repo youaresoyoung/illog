@@ -8,11 +8,6 @@ export function openDB() {
 
   const db = new Database(dbPath)
 
-  // after test remove this line
-  // if (existsSync(dbPath)) {
-  //   unlinkSync(dbPath)
-  // }
-
   if (!existsSync(dbPath)) {
     const schema = readFileSync(join(app.getAppPath(), 'src/main/database/schema.sql'), 'utf8')
     db.exec(schema)
