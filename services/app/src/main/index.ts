@@ -1,5 +1,9 @@
 import { app, BrowserWindow } from 'electron'
+import { openDB } from './db'
 import { join } from 'path'
+import { TaskRepository } from './repository/taskRepository'
+import { isDev } from '../utils/utils'
+import { registerTaskHandlers } from './ipc/ipcHandlers'
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -11,12 +15,20 @@ function createWindow() {
     }
   })
 
-  mainWindow.loadURL('http://localhost:5173')
-  // mainWindow.loadURL(join(app.getAppPath(), '/dist/renderer/index.html'))
+  if (isDev()) {
+    mainWindow.loadURL('http://localhost:5173')
+  } else {
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+  }
 }
 
 app.whenReady().then(() => {
   createWindow()
+
+  const db = openDB()
+
+  const taskRepo = new TaskRepository(db)
+  registerTaskHandlers(taskRepo)
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

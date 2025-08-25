@@ -1,10 +1,10 @@
-import { createBrowserRouter, RouterProvider } from 'react-router'
+import { createHashRouter, RouterProvider } from 'react-router'
 import { Layout } from './components/layout/Layout'
 import { Today } from './pages/Today'
 import { ThisWeek } from './pages/ThisWeek'
 import { Reflection } from './pages/Reflection'
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: '/',
     element: <Layout />,
