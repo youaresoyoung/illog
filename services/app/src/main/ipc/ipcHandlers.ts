@@ -14,4 +14,7 @@ export function registerTaskHandlers(taskRepo: TaskRepository) {
 
 export function registerTaskNoteHandlers(noteRepo: NoteRepository, noteService: NoteService) {
   ipcMain.handle('note.findByTaskId', (_, taskId) => noteRepo.findByTaskId(taskId))
+  ipcMain.handle('note.autoSave', (_, taskId, content, clientUpdatedAt) =>
+    noteService.autoSave(taskId, content, clientUpdatedAt)
+  )
 }

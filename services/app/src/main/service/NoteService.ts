@@ -14,7 +14,7 @@ export class NoteService {
       }
 
       const savedAt = Date.now()
-      const note = this.repo.update(taskId, content, savedAt)
+      const note = this.repo.upsert(taskId, content, savedAt)
       return { note, savedAt, conflict: false }
     })
 

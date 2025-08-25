@@ -8,15 +8,17 @@ export class NoteRepository {
     const stmt = this.db.prepare(`SELECT * FROM task_note WHERE task_id = :taskId`)
     return stmt.get({ taskId }) as TaskNote | null
   }
-  update(taskId: string, content: string, savedAt: number): TaskNote {
+
+  upsert(taskId: string, content: string, savedAt: number): TaskNote {
     const stmt = this.db.prepare(
-      `UPDATE task_note SET content = ?, updated_at = ? WHERE task_id = ?`
+      `INSERT INTO task_note (task_id, content, updated_at)
+      VALUES (:taskId, :content, :savedAt)
+      ON CONFLICT(task_id) DO UPDATE SET
+      content = excluded.content,
+      updated_at = excluded.updated_at`
     )
-    const result = stmt.run({
-      content,
-      updated_at: savedAt,
-      task_id: taskId
-    })
+    const result = stmt.run({ taskId, content, savedAt })
+
     if (result.changes === 0) {
       throw new Error('Task not found or no changes made')
     }

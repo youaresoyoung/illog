@@ -14,7 +14,7 @@ interface RendererAPI {
       taskId: string,
       content: string,
       clientUpdatedAt: number
-    ) => Promise<TaskNote & { savedAt: number; conflict: boolean }>
+    ) => Promise<{ note: TaskNote; savedAt: number; conflict: boolean }>
   }
 }
 
