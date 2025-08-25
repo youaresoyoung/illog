@@ -4,6 +4,6 @@
     "moduleResolution": "bundler",
     "outDir": "./dist"
   },
-  "include": ["src/**/*"],
-  "exclude": ["dist"]
+  "include": ["src/**/*", "index.d.ts"],
+  "exclude": ["dist", "out"]
 }

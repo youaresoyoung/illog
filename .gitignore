@@ -8,6 +8,9 @@
 
 **/dist/*
 dist
+**/out/*
+out
+
 
 node_modules
 pnpm-lock.yaml
