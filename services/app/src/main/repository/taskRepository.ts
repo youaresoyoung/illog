@@ -51,7 +51,7 @@ export class TaskRepository {
     const date = new Date().toISOString().split('T')[0]
 
     const stmt = this.db.prepare(
-      `SELECT * FROM task WHERE strftime('%Y-%m-%d', created_at) = :date AND deleted_at IS NULL`
+      `SELECT * FROM task WHERE substring(created_at, 1, 10) = :date AND deleted_at IS NULL`
     )
     const tasks = stmt.all({ date })
     return tasks as Task[]
