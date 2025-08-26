@@ -1,46 +1,39 @@
 import { Database } from 'better-sqlite3'
-import { Tag } from '../../types'
+import { OmittedTag, Tag } from '../../types'
 import { randomUUID } from 'crypto'
+import { normalizeName } from '../../utils/utils'
 
 export class TagReposity {
   constructor(private db: Database) {}
 
-  create(tag: Partial<Tag>) {
+  create(tag: Partial<OmittedTag>): Tag {
     const id = randomUUID()
     const now = new Date().toISOString()
-
-    const {
-      name = 'Untitled',
-      color = 'gray',
-      created_at = now,
-      updated_at = now,
-      deleted_at = null
-    } = tag
+    const name = normalizeName(tag.name ?? 'Untitled')
+    const color = tag.color ?? 'gray'
 
     const stmt = this.db.prepare(
       `INSERT INTO tag (id, name, color, created_at, updated_at, deleted_at) 
        VALUES (:id, :name, :color, :created_at, :updated_at, :deleted_at)`
     )
 
-    stmt.run({ id, name, color, created_at, updated_at, deleted_at })
-
-    return this.get(id)
+    stmt.run({ id, name, color, created_at: now, updated_at: now, deleted_at: null })
+    return this.get(id)!
   }
 
   get(id: string): Tag | null {
     const stmt = this.db.prepare(`SELECT * FROM tag WHERE id = :id AND deleted_at IS NULL`)
-    const tag = stmt.get({ id }) as Tag
-    return tag ?? null
+    return (stmt.get({ id }) as Tag) ?? null
   }
 
   getAll(): Tag[] {
     const stmt = this.db.prepare(`SELECT * FROM tag WHERE deleted_at IS NULL`)
-    const tags = stmt.all() as Tag[]
-    return tags ?? []
+    return (stmt.all() as Tag[]) ?? []
   }
 
-  update(id: string, contents: Partial<Tag>): Tag {
-    const { name, color } = contents
+  update(id: string, contents: Partial<OmittedTag>): Tag {
+    const name = contents.name ? normalizeName(contents.name) : null
+    const color = contents.color ?? null
 
     const stmt = this.db.prepare(
       `UPDATE tag
@@ -50,30 +43,19 @@ export class TagReposity {
        WHERE id = :id AND deleted_at IS NULL`
     )
 
-    const result = stmt.run({
-      name: name ?? null,
-      color: color ?? null,
-      updated_at: new Date().toISOString(),
-      id
+    stmt.run({
+      id,
+      name,
+      color,
+      updated_at: new Date().toISOString()
     })
-
-    if (result.changes === 0) {
-      throw new Error('Tag not found or no changes made')
-    }
-
     return this.get(id)!
   }
 
   softDelete(id: string) {
-    const now = new Date().toISOString()
-
     const stmt = this.db.prepare(
       `UPDATE tag SET deleted_at = :now WHERE id = :id AND deleted_at IS NULL`
     )
-    const row = stmt.run({ now, id })
-
-    if (row.changes === 0) {
-      throw new Error('Tag not found')
-    }
+    stmt.run({ id, now: new Date().toISOString() })
   }
 }

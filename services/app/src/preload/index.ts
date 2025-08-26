@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { Tag, Task } from '../types'
+import { OmittedTag, Task } from '../types'
 
 const api = {
   task: {
@@ -16,10 +16,11 @@ const api = {
       ipcRenderer.invoke('note.autoSave', taskId, content, clientUpdatedAt)
   },
   tag: {
-    create: (tag: Partial<Tag>) => ipcRenderer.invoke('tag.create', tag),
-    get: (id: string) => ipcRenderer.invoke('tag.getAll', id),
+    create: (tag: Partial<OmittedTag>) => ipcRenderer.invoke('tag.create', tag),
+    get: (id: string) => ipcRenderer.invoke('tag.get', id),
     getAll: () => ipcRenderer.invoke('tag.getAll'),
-    update: (id: string, contents: Partial<Tag>) => ipcRenderer.invoke('tag.update', id, contents),
+    update: (id: string, contents: Partial<OmittedTag>) =>
+      ipcRenderer.invoke('tag.update', id, contents),
     softDelete: (id: string) => ipcRenderer.invoke('tag.softDelete', id)
   }
 }

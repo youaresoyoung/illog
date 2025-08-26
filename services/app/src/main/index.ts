@@ -6,7 +6,7 @@ import { isDev } from '../utils/utils'
 import {
   registerTaskHandlers,
   registerTaskNoteHandlers,
-  resisterTagHandlers
+  registerTagHandlers
 } from './ipc/ipcHandlers'
 import { NoteService } from './service/NoteService'
 import { NoteRepository } from './repository/noteRepository'
@@ -42,7 +42,7 @@ app.whenReady().then(() => {
   registerTaskNoteHandlers(noteRepo, noteService)
 
   const tagRepo = new TagReposity(db)
-  resisterTagHandlers(tagRepo)
+  registerTagHandlers(tagRepo)
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

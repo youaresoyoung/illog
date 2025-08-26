@@ -2,8 +2,8 @@ import { NoteService } from './../service/NoteService'
 import { ipcMain } from 'electron'
 import { TaskRepository } from '../repository/taskRepository'
 import { NoteRepository } from '../repository/noteRepository'
-import { Tag } from '../../types'
 import { TagReposity } from '../repository/tagRepository'
+import { OmittedTag } from '../../types'
 
 // TODO: error handling
 export function registerTaskHandlers(taskRepo: TaskRepository) {
@@ -21,11 +21,11 @@ export function registerTaskNoteHandlers(noteRepo: NoteRepository, noteService: 
   )
 }
 
-export function resisterTagHandlers(tagRepo: TagReposity) {
-  ipcMain.handle('tag.create', (_, tag: Partial<Tag>) => tagRepo.create(tag))
+export function registerTagHandlers(tagRepo: TagReposity) {
+  ipcMain.handle('tag.create', (_, tag: OmittedTag) => tagRepo.create(tag))
   ipcMain.handle('tag.get', (_, id: string) => tagRepo.get(id))
   ipcMain.handle('tag.getAll', () => tagRepo.getAll())
-  ipcMain.handle('tag.update', (_, id: string, contents: Partial<Tag>) =>
+  ipcMain.handle('tag.update', (_, id: string, contents: Partial<OmittedTag>) =>
     tagRepo.update(id, contents)
   )
   ipcMain.handle('tag.softDelete', (_, id: string) => tagRepo.softDelete(id))
