@@ -1,4 +1,4 @@
-import { Task } from './src/types'
+import { Task, TaskNote } from './src/types'
 
 interface RendererAPI {
   task: {
@@ -7,6 +7,14 @@ interface RendererAPI {
     getAll: () => Promise<Task[]>
     update: (id: string, contents: Partial<Task>) => Promise<Task>
     softDelete: (id: string) => Promise<void>
+  }
+  note: {
+    findByTaskId: (taskId: string) => Promise<TaskNote | null>
+    autoSave: (
+      taskId: string,
+      content: string,
+      clientUpdatedAt: number
+    ) => Promise<{ note: TaskNote; savedAt: number; conflict: boolean }>
   }
 }
 

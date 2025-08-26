@@ -1,4 +1,10 @@
+import { useTaskStore } from '../../stores/taskStore'
+import { useAutoSaveNote } from '../../hooks/useAutoSaveNote'
+
 export const RightPanel = () => {
+  const currentTaskId = useTaskStore((state) => state.currentTaskId)
+  const [note, handleChange] = useAutoSaveNote(currentTaskId)
+
   return (
     <div
       style={{
@@ -7,7 +13,12 @@ export const RightPanel = () => {
         padding: '12px'
       }}
     >
-      RightPanel
+      <textarea
+        placeholder="Type your notes here..."
+        style={{ width: '100%', height: '100%' }}
+        value={note?.content || ''}
+        onChange={handleChange}
+      />
     </div>
   )
 }
