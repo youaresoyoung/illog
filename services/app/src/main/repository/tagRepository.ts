@@ -66,7 +66,7 @@ export class TagReposity {
     const row = stmt.run({ now, id })
 
     if (row.changes === 0) {
-      throw new Error('Task not found')
+      throw new Error('Tag not found')
     }
   }
 }

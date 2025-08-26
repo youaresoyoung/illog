@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from 'react'
 import { Task } from 'services/app/src/types'
 import { useTaskStore } from '../../stores/taskStore'
+import { TagSection } from '../tag/TagSection'
 
 type Props = {
   task: Task
@@ -30,6 +31,8 @@ export const TaskCard = ({ task, handleDeleteTask }: Props) => {
       <input type="text" name="title" value={form.title} onChange={handleChange} />
       <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
       <button onClick={handleSave}>Save</button>
+
+      <TagSection />
     </li>
   )
 }
