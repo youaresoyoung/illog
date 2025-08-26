@@ -1,5 +1,5 @@
-import { useTaskStore } from '../../stores/taskStore'
 import { useAutoSaveNote } from '../../hooks/useAutoSaveNote'
+import { useTaskStore } from '../../stores/useTaskStore'
 
 export const RightPanel = () => {
   const currentTaskId = useTaskStore((state) => state.currentTaskId)

@@ -2,7 +2,7 @@ import { Outlet } from 'react-router'
 import { LeftPanel } from './LeftPanel'
 import { MainContent } from './MainContent'
 import { RightPanel } from './RightPanel'
-import { useTaskStore } from '../../stores/taskStore'
+import { useTaskStore } from '../../stores/useTaskStore'
 import { useTagStore } from '../../stores/useTagStore'
 import { useEffect } from 'react'
 

@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react'
 import { Task } from 'services/app/src/types'
-import { useTaskStore } from '../../stores/taskStore'
+import { useTaskStore } from '../../stores/useTaskStore'
 import { TagSection } from '../tag/TagSection'
 
 type Props = {
