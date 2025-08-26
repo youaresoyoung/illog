@@ -39,22 +39,29 @@ export class TagReposity {
     return tags ?? []
   }
 
-  update(id: string, contents: Partial<Tag>) {
+  update(id: string, contents: Partial<Tag>): Tag {
+    const { name, color } = contents
+
     const stmt = this.db.prepare(
       `UPDATE tag
-       SET name = COALESCE(:name, name)
-           color = COALESCE(:color, color)
+       SET name = COALESCE(:name, name),
+           color = COALESCE(:color, color),
            updated_at = COALESCE(:updated_at, updated_at)
        WHERE id = :id AND deleted_at IS NULL`
     )
 
-    const result = stmt.run({ ...contents, updated_at: new Date().toISOString(), id })
+    const result = stmt.run({
+      name: name ?? null,
+      color: color ?? null,
+      updated_at: new Date().toISOString(),
+      id
+    })
 
     if (result.changes === 0) {
       throw new Error('Tag not found or no changes made')
     }
 
-    return this.get(id)
+    return this.get(id)!
   }
 
   softDelete(id: string) {

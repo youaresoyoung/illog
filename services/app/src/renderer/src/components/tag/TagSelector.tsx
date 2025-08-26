@@ -1,13 +1,11 @@
 import { useMemo, useRef } from 'react'
 import { TagItem } from './TagItem'
 import { useTagStore } from '../../stores/useTagStore'
-import { Color } from 'services/app/src/types'
 
 export const TagSelector = () => {
   const { tags, createTag } = useTagStore()
 
   const inputRef = useRef<HTMLInputElement>(null)
-  const colorSelect = useRef<HTMLSelectElement>(null)
 
   const filteredTags = useMemo(() => {
     return tags
@@ -15,9 +13,8 @@ export const TagSelector = () => {
 
   const handleAddTag = async () => {
     const name = inputRef.current?.value ?? ''
-    const color = colorSelect.current?.value as Color
 
-    createTag({ name, color })
+    createTag({ name })
   }
 
   return (
@@ -34,11 +31,6 @@ export const TagSelector = () => {
           <TagItem key={tag.id} {...tag} />
         ))}
       </ul>
-      <select name="color" id="color" ref={colorSelect}>
-        {['blue', 'green', 'yellow', 'purple', 'red', 'gray'].map((color) => (
-          <option key={color}>{color}</option>
-        ))}
-      </select>
       <button onClick={handleAddTag}>Add tag</button>
     </>
   )
