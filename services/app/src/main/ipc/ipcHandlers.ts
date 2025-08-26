@@ -2,6 +2,8 @@ import { NoteService } from './../service/NoteService'
 import { ipcMain } from 'electron'
 import { TaskRepository } from '../repository/taskRepository'
 import { NoteRepository } from '../repository/noteRepository'
+import { Tag } from '../../types'
+import { TagReposity } from '../repository/tagRepository'
 
 // TODO: error handling
 export function registerTaskHandlers(taskRepo: TaskRepository) {
@@ -17,4 +19,14 @@ export function registerTaskNoteHandlers(noteRepo: NoteRepository, noteService: 
   ipcMain.handle('note.autoSave', (_, taskId, content, clientUpdatedAt) =>
     noteService.autoSave(taskId, content, clientUpdatedAt)
   )
+}
+
+export function resisterTagHandlers(tagRepo: TagReposity) {
+  ipcMain.handle('tag.create', (_, tag: Partial<Tag>) => tagRepo.create(tag))
+  ipcMain.handle('tag.get', (_, id: string) => tagRepo.get(id))
+  ipcMain.handle('tag.getAll', () => tagRepo.getAll())
+  ipcMain.handle('tag.update', (_, id: string, contents: Partial<Tag>) =>
+    tagRepo.update(id, contents)
+  )
+  ipcMain.handle('tag.softDelete', (_, id: string) => tagRepo.softDelete(id))
 }
