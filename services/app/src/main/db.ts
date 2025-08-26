@@ -11,10 +11,10 @@ export function openDB() {
 
   if (!existsSync(dbPath)) {
     const schemaPath = isDev()
-      ? join(process.resourcesPath, 'schema.sql')
-      : join(app.getAppPath(), 'src/main/database/schema.sql')
+      ? join(app.getAppPath(), 'src/main/database/schema.sql')
+      : join(process.resourcesPath, 'schema.sql')
 
-    const schema = readFileSync(join(app.getAppPath(), schemaPath), 'utf8')
+    const schema = readFileSync(schemaPath, 'utf8')
     db.exec(schema)
   }
 
