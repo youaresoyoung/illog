@@ -12,7 +12,7 @@ export const useAutoSaveNote = (
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const { value } = e.target
-    setNote((prev) => ({ ...prev, content: value }) as TaskNote)
+    setNote((prev) => ({ ...(prev ?? { task_id: currentTaskId }), content: value }) as TaskNote)
 
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
 

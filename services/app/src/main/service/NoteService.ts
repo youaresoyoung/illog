@@ -1,7 +1,12 @@
+import { TaskNote } from '../../types'
 import { NoteRepository } from '../repository/noteRepository'
 
+type AutoSaveResult =
+  | { savedAt: number; conflict: true }
+  | { note: TaskNote; savedAt: number; conflict: false }
+
 export class NoteService {
-  private queue: Promise<any> = Promise.resolve()
+  private queue: Promise<AutoSaveResult> = Promise.resolve({ savedAt: Date.now(), conflict: true })
 
   constructor(private repo: NoteRepository) {}
 
