@@ -18,6 +18,9 @@ export function registerTaskHandlers(taskRepo: TaskRepository) {
     taskRepo.addTag(taskId, tagId)
   )
   ipcMain.handle('task.softDelete', (_, id: string) => taskRepo.softDelete(id))
+  ipcMain.handle('task.removeTag', (_, taskId: string, tagId: string) =>
+    taskRepo.removeTag(taskId, tagId)
+  )
 }
 
 export function registerTaskNoteHandlers(noteRepo: NoteRepository, noteService: NoteService) {

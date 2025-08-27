@@ -9,6 +9,7 @@ interface RendererAPI {
     update: (id: string, contents: Partial<Task>) => Promise<TaskWithTags>
     addTag: (taskId: string, tagId: string) => Promise<TaskWithTags>
     softDelete: (id: string) => Promise<void>
+    removeTag: (taskId: string, tagId: string) => Promise<TaskWithTags>
   }
   note: {
     findByTaskId: (taskId: string) => Promise<TaskNote | null>

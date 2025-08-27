@@ -11,6 +11,7 @@ interface TaskState {
   updateTask: (id: string, contents: Partial<OmittedTask>) => Promise<void>
   addTag: (taskId: string, tagId: string) => Promise<void>
   deleteTask: (id: string) => Promise<void>
+  removeTag: (taskId: string, tagId: string) => Promise<void>
   openTaskNote: (id: string) => void
   closeTaskNote: () => void
 }
@@ -43,6 +44,12 @@ export const useTaskStore = create<TaskState>()(
       },
       deleteTask: async (id: string) => {
         await window.api.task.softDelete(id)
+      },
+      removeTag: async (taskId: string, tagId: string) => {
+        const updatedTask = await window.api.task.removeTag(taskId, tagId)
+        set({
+          tasks: get().tasks.map((task) => (task?.id === taskId ? updatedTask : task))
+        })
       },
       openTaskNote: (id: string) =>
         set({

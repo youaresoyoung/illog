@@ -10,7 +10,9 @@ const api = {
     update: (id: string, contents: Partial<OmittedTask>) =>
       ipcRenderer.invoke('task.update', id, contents),
     addTag: (taskId: string, tagId: string) => ipcRenderer.invoke('task.addTag', taskId, tagId),
-    softDelete: (id: string) => ipcRenderer.invoke('task.softDelete', id)
+    softDelete: (id: string) => ipcRenderer.invoke('task.softDelete', id),
+    removeTag: (taskId: string, tagId: string) =>
+      ipcRenderer.invoke('task.removeTag', taskId, tagId)
   },
   note: {
     findByTaskId: (taskId: string) => ipcRenderer.invoke('note.findByTaskId', taskId),

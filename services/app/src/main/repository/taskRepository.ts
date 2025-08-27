@@ -139,4 +139,15 @@ export class TaskRepository {
       throw new Error('Task not found')
     }
   }
+
+  removeTag(taskId: string, tagId: string) {
+    const stmt = this.db.prepare(`DELETE FROM task_tag WHERE task_id = :taskId AND tag_id = :tagId`)
+    const result = stmt.run({ taskId, tagId })
+
+    if (result.changes === 0) {
+      throw new Error('Tag association not found for the task')
+    }
+
+    return this.getWithTags(taskId)!
+  }
 }
