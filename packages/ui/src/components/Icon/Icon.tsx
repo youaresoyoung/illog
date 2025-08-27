@@ -1,20 +1,27 @@
-import Icons from "../../assets/svg";
-import { getKeyFromPath } from "../../utils/util";
-import { IconName } from "./types";
-import { tokens } from "@illog/themes";
+import Icons from '../../assets/svg'
+import { NestedKeys } from '../../core/types'
+import { getKeyFromPath } from '../../utils/util'
+import { tokens } from '@illog/themes'
+import { IconName } from './types'
 
-type IconProps = {
-  name: IconName;
-  size?: keyof typeof tokens.size.icon;
-  color?: string;
-};
+type IconColorToken = NestedKeys<typeof tokens.colors.light.icon>
 
-export const Icon = ({ name, size = "medium", color }: IconProps) => {
-  const IconComponent = Icons[name];
+export type IconProps = {
+  name: IconName
+  size?: keyof typeof tokens.size.icon
+  color?: IconColorToken
+}
+
+export const Icon = (props: IconProps) => {
+  const { name, size = 'medium', color } = props
+  if (color) {
+    console.log(getKeyFromPath(color, tokens.colors.light.icon))
+  }
+  const IconComponent = Icons[name]
 
   if (!IconComponent) {
-    console.warn(`Icon with name "${name}" does not exist.`);
-    return null;
+    console.warn(`Icon with name "${name}" does not exist.`)
+    return null
   }
 
   return (
@@ -24,10 +31,10 @@ export const Icon = ({ name, size = "medium", color }: IconProps) => {
       style={{
         color: color
           ? getKeyFromPath(color, tokens.colors.light.icon)
-          : tokens.colors.light.icon.default.default,
+          : tokens.colors.light.icon.default.default
       }}
       aria-label={name}
       role="img"
     />
-  );
-};
+  )
+}
