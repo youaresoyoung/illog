@@ -7,12 +7,13 @@ import { useTagStore } from '../../stores/useTagStore'
 import { useEffect } from 'react'
 
 export const Layout = () => {
-  const { isTaskNoteOpen } = useTaskStore()
+  const { isTaskNoteOpen, loadTasks } = useTaskStore()
   const { loadTags } = useTagStore()
 
   useEffect(() => {
+    loadTasks()
     loadTags()
-  }, [loadTags])
+  }, [loadTags, loadTasks])
 
   return (
     <div style={{ display: 'flex', height: '100vh' }}>

@@ -9,7 +9,8 @@ type Props = {
 }
 
 export const TaskCard = ({ task, handleDeleteTask }: Props) => {
-  const openTaskNote = useTaskStore((state) => state.openTaskNote)
+  const openTaskNote = useTaskStore((s) => s.openTaskNote)
+  const updateTask = useTaskStore((s) => s.updateTask)
   const [form, setForm] = useState({ ...task })
 
   const handleClickCard = () => {
@@ -22,8 +23,7 @@ export const TaskCard = ({ task, handleDeleteTask }: Props) => {
 
   // after test, it will be changed to save automatically when input loses focus
   const handleSave = async () => {
-    const updatedTask = await window.api.task.update(form.id, form)
-    setForm(updatedTask)
+    updateTask(form.id, form)
   }
 
   return (

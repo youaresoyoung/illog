@@ -22,3 +22,8 @@ export interface Task {
   done_at?: Timestamp
   deleted_at?: Timestamp
 }
+
+export type OmittedTask = Omit<
+  Task,
+  'id' | 'end_time' | 'created_at' | 'updated_at' | 'done_at' | 'deleted_at'
+>
