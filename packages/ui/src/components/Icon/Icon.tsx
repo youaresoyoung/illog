@@ -14,9 +14,7 @@ export type IconProps = {
 
 export const Icon = (props: IconProps) => {
   const { name, size = 'medium', color } = props
-  if (color) {
-    console.log(getKeyFromPath(color, tokens.colors.light.icon))
-  }
+
   const IconComponent = Icons[name]
 
   if (!IconComponent) {
