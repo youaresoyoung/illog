@@ -43,11 +43,8 @@ export class TaskRepository {
       `SELECT task.*,
           COALESCE(
             json_group_array(
-              CASE WHEN tag.id IS NOT NULL THEN
-                json_object('id', tag.id, 'name', tag.name, 'color', tag.color)
-              END
-            ),
-            json('[]')
+              json_object('id', tag.id, 'name', tag.name, 'color', tag.color)
+            ) FILTER (WHERE tag.id IS NOT NULL), json('[]')
           ) AS tags
        FROM task
        LEFT JOIN task_tag ON task_tag.task_id = task.id
@@ -62,14 +59,30 @@ export class TaskRepository {
     return task ?? null
   }
 
-  getAll(): Task[] {
+  getAll(): TaskWithTags[] {
     const date = new Date().toISOString().split('T')[0]
 
     const stmt = this.db.prepare(
-      `SELECT * FROM task WHERE substring(created_at, 1, 10) = :date AND deleted_at IS NULL`
+      `SELECT task.*,
+          COALESCE(
+            json_group_array(
+              json_object('id', tag.id, 'name', tag.name, 'color', tag.color)
+            ) FILTER (WHERE tag.id IS NOT NULL), json('[]')
+          ) AS tags
+       FROM task
+       LEFT JOIN task_tag ON task_tag.task_id = task.id
+       LEFT JOIN tag ON tag.id = task_tag.tag_id AND tag.deleted_at IS NULL
+       WHERE substr(task.created_at, 1, 10) = :date AND task.deleted_at IS NULL
+       GROUP BY task.id
+       ORDER BY task.created_at ASC`
     )
-    const tasks = stmt.all({ date })
-    return tasks as Task[]
+    const tasks = stmt.all({ date }) as TaskWithTags[] | undefined
+    if (tasks) {
+      tasks.forEach((task) => {
+        task.tags = JSON.parse(task?.tags as unknown as string) || []
+      })
+    }
+    return tasks as TaskWithTags[]
   }
 
   update(id: string, contents: Partial<Task>): Task {
