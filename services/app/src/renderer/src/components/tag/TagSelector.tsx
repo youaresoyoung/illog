@@ -1,8 +1,9 @@
 import { useMemo, useRef } from 'react'
 import { TagItem } from './TagItem'
 import { useTagStore } from '../../stores/useTagStore'
+import { TaskWithTags } from 'services/app/src/types'
 
-export const TagSelector = () => {
+export const TagSelector = ({ task }: { task: TaskWithTags }) => {
   const { tags, createTag } = useTagStore()
 
   const inputRef = useRef<HTMLInputElement>(null)
@@ -28,7 +29,7 @@ export const TagSelector = () => {
       />
       <ul>
         {filteredTags.map((tag) => (
-          <TagItem key={tag.id} {...tag} />
+          <TagItem key={tag.id} {...tag} taskId={task.id} />
         ))}
       </ul>
       <button onClick={handleAddTag}>Add tag</button>

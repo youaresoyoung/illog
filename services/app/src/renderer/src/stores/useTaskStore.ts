@@ -1,14 +1,15 @@
-import { OmittedTask, Task } from 'services/app/src/types'
+import { OmittedTask, TaskWithTags } from 'services/app/src/types'
 import { create } from 'zustand'
 import { combine } from 'zustand/middleware'
 
 interface TaskState {
-  tasks: Task[]
+  tasks: TaskWithTags[]
   currentTaskId: string | undefined
   isTaskNoteOpen: boolean
   loadTasks: () => Promise<void>
   createTask: (task: Partial<OmittedTask>) => Promise<void>
   updateTask: (id: string, contents: Partial<OmittedTask>) => Promise<void>
+  addTag: (taskId: string, tagId: string) => Promise<void>
   deleteTask: (id: string) => Promise<void>
   openTaskNote: (id: string) => void
   closeTaskNote: () => void
@@ -17,7 +18,7 @@ interface TaskState {
 export const useTaskStore = create<TaskState>()(
   combine(
     {
-      tasks: [] as Task[],
+      tasks: [] as TaskWithTags[],
       currentTaskId: undefined as string | undefined,
       isTaskNoteOpen: false
     },
@@ -33,6 +34,12 @@ export const useTaskStore = create<TaskState>()(
       updateTask: async (id: string, contents: Partial<OmittedTask>) => {
         const updatedTask = await window.api.task.update(id, contents)
         set({ tasks: get().tasks.map((task) => (task.id === id ? updatedTask : task)) })
+      },
+      addTag: async (taskId: string, tagId: string) => {
+        const updatedTask = await window.api.task.addTag(taskId, tagId)
+        set({
+          tasks: get().tasks.map((task) => (task?.id === taskId ? updatedTask : task))
+        })
       },
       deleteTask: async (id: string) => {
         await window.api.task.softDelete(id)

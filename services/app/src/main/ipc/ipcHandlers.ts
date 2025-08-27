@@ -14,6 +14,9 @@ export function registerTaskHandlers(taskRepo: TaskRepository) {
   ipcMain.handle('task.update', (_, id: string, contents: Partial<OmittedTask>) =>
     taskRepo.update(id, contents)
   )
+  ipcMain.handle('task.addTag', (_, taskId: string, tagId: string) =>
+    taskRepo.addTag(taskId, tagId)
+  )
   ipcMain.handle('task.softDelete', (_, id: string) => taskRepo.softDelete(id))
 }
 

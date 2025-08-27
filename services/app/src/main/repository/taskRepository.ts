@@ -85,7 +85,7 @@ export class TaskRepository {
     return tasks as TaskWithTags[]
   }
 
-  update(id: string, contents: Partial<Task>): Task {
+  update(id: string, contents: Partial<OmittedTask>): TaskWithTags {
     const now = new Date().toISOString()
 
     const stmt = this.db.prepare(
@@ -105,6 +105,26 @@ export class TaskRepository {
     }
 
     return this.getWithTags(id)!
+  }
+
+  addTag(taskId: string, tagId: string) {
+    const { count } = this.db
+      .prepare(`SELECT COUNT(*) as count FROM task_tag WHERE task_id = :taskId`)
+      .get({ taskId }) as { count: number }
+    if (count >= 5) {
+      throw new Error('A task can have a maximum of 5 tags')
+    }
+
+    const exists = this.db
+      .prepare(`SELECT 1 FROM task_tag WHERE task_id = :taskId AND tag_id = :tagId`)
+      .get({ taskId, tagId })
+    if (exists) {
+      throw new Error('Tag already associated with the task')
+    }
+
+    const stmt = this.db.prepare(`INSERT INTO task_tag (task_id, tag_id) VALUES (:taskId, :tagId)`)
+    stmt.run({ taskId, tagId })
+    return this.getWithTags(taskId)!
   }
 
   softDelete(id: string) {

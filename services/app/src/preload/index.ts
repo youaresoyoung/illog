@@ -9,6 +9,7 @@ const api = {
     getAll: () => ipcRenderer.invoke('task.getAll'),
     update: (id: string, contents: Partial<OmittedTask>) =>
       ipcRenderer.invoke('task.update', id, contents),
+    addTag: (taskId: string, tagId: string) => ipcRenderer.invoke('task.addTag', taskId, tagId),
     softDelete: (id: string) => ipcRenderer.invoke('task.softDelete', id)
   },
   note: {

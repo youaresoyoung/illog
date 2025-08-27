@@ -1,10 +1,10 @@
 import { ChangeEvent, useState } from 'react'
-import { Task } from 'services/app/src/types'
+import { TaskWithTags } from 'services/app/src/types'
 import { useTaskStore } from '../../stores/useTaskStore'
 import { TagSection } from '../tag/TagSection'
 
 type Props = {
-  task: Task
+  task: TaskWithTags
   handleDeleteTask: (id: string) => void
 }
 
@@ -32,7 +32,7 @@ export const TaskCard = ({ task, handleDeleteTask }: Props) => {
       <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
       <button onClick={handleSave}>Save</button>
 
-      <TagSection />
+      <TagSection task={task} />
     </li>
   )
 }
