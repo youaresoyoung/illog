@@ -1,12 +1,12 @@
-import { Tag } from 'services/app/src/types'
+import { OmittedTag, Tag } from 'services/app/src/types'
 import { create } from 'zustand'
 import { combine } from 'zustand/middleware'
 
 interface TagState {
   tags: Tag[]
   loadTags: () => Promise<void>
-  createTag: (tag: Partial<Tag>) => Promise<Tag>
-  updateTag: (id: string, contents: Partial<Tag>) => Promise<Tag>
+  createTag: (tag: Partial<OmittedTag>) => Promise<void>
+  updateTag: (id: string, contents: Partial<OmittedTag>) => Promise<void>
   deleteTag: (id: string) => Promise<void>
 }
 
@@ -16,17 +16,15 @@ export const useTagStore = create<TagState>(
       const tags = await window.api.tag.getAll()
       set({ tags })
     },
-    createTag: async (tag: Partial<Tag>) => {
-      const AddedTag = await window.api.tag.create(tag)
-      set({ tags: [...get().tags, AddedTag] })
-      return AddedTag
+    createTag: async (tag: Partial<OmittedTag>) => {
+      const createdTag = await window.api.tag.create(tag)
+      set({ tags: [...get().tags, createdTag] })
     },
-    updateTag: async (id: string, contents: Partial<Tag>) => {
+    updateTag: async (id: string, contents: Partial<OmittedTag>) => {
       const updatedTag = await window.api.tag.update(id, contents)
       set({
         tags: get().tags.map((tag) => (tag.id === id ? updatedTag : tag))
       })
-      return updatedTag
     },
     deleteTag: async (id: string) => {
       await window.api.tag.softDelete(id)
