@@ -1,26 +1,17 @@
 import { Database } from 'better-sqlite3'
 
 import { randomUUID } from 'crypto'
-import { Task } from '../../types'
+import { OmittedTask, Task, TaskWithTags } from '../../types'
 
 // TODO: apply zod
 export class TaskRepository {
   constructor(private db: Database) {}
 
-  create(task: Partial<Task>) {
+  create(task: Partial<OmittedTask>): TaskWithTags {
     const id = randomUUID()
     const now = new Date().toISOString()
 
-    const {
-      title = 'Untitled',
-      status = 'todo',
-      project_id = null,
-      end_time = null,
-      created_at = now,
-      updated_at = now,
-      done_at = null,
-      deleted_at = null
-    } = task
+    const { title = 'Untitled', status = 'todo', project_id = null } = task
 
     const stmt = this.db
       .prepare(`INSERT INTO task (id, title, status, project_id, end_time, created_at, updated_at, done_at, deleted_at)
@@ -31,19 +22,43 @@ export class TaskRepository {
       title,
       status,
       project_id,
-      end_time,
-      created_at,
-      updated_at,
-      done_at,
-      deleted_at
+      end_time: null,
+      created_at: now,
+      updated_at: now,
+      done_at: null,
+      deleted_at: null
     })
 
-    return this.get(id)
+    return this.getWithTags(id)!
   }
 
   get(id: string): Task | null {
     const stmt = this.db.prepare(`SELECT * FROM task WHERE id = :id AND deleted_at IS NULL`)
     const task = stmt.get({ id }) as Task | undefined
+    return task ?? null
+  }
+
+  getWithTags(id: string): TaskWithTags | null {
+    const stmt = this.db.prepare(
+      `SELECT task.*,
+          COALESCE(
+            json_group_array(
+              CASE WHEN tag.id IS NOT NULL THEN
+                json_object('id', tag.id, 'name', tag.name, 'color', tag.color)
+              END
+            ),
+            json('[]')
+          ) AS tags
+       FROM task
+       LEFT JOIN task_tag ON task_tag.task_id = task.id
+       LEFT JOIN tag ON tag.id = task_tag.tag_id AND tag.deleted_at IS NULL
+       WHERE task.id = :id AND task.deleted_at IS NULL
+       GROUP BY task.id`
+    )
+    const task = stmt.get({ id }) as TaskWithTags | undefined
+    if (task) {
+      task.tags = JSON.parse(task?.tags as unknown as string) || []
+    }
     return task ?? null
   }
 
@@ -76,7 +91,7 @@ export class TaskRepository {
       throw new Error('Task not found or no changes made')
     }
 
-    return this.get(id)!
+    return this.getWithTags(id)!
   }
 
   softDelete(id: string) {
