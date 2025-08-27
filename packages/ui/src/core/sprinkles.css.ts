@@ -1,5 +1,5 @@
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles'
-import { tokens } from 'packages/themes/dist'
+import { tokens } from '@illog/themes'
 
 const space = tokens.size.space
 

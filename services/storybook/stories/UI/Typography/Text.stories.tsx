@@ -2,18 +2,9 @@ import { Text } from '@illog/ui'
 import { Meta, StoryObj } from '@storybook/react-vite'
 import { styles, tokens } from '@illog/themes'
 import '@illog/ui/style.css'
+import { getColorOptions } from '../../../utils/getColorOptions'
 
-const colors = Object.entries(tokens.colors.light.text).reduce((acc, [key, value]) => {
-  if (typeof value === 'string') {
-    acc.push(value)
-  } else {
-    Object.entries(value).forEach(([subKey]) => {
-      acc.push(`${key}.${subKey}`)
-    })
-  }
-  return acc
-}, [] as string[])
-
+const colors = getColorOptions(tokens.colors.light.text)
 const meta = {
   component: Text,
   argTypes: {

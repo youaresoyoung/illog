@@ -3,7 +3,7 @@ import { textStyle } from './text.css'
 import { CSSProperties } from '@vanilla-extract/css'
 import { Sprinkles } from '../../core/sprinkles.css'
 import { AsProp, NestedKeys, PropsToOmit } from '../../core/types'
-import { tokens } from 'packages/themes/dist'
+import { tokens } from '@illog/themes'
 
 type TextColorToken = NestedKeys<typeof tokens.colors.light.text>
 
