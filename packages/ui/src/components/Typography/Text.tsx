@@ -2,7 +2,7 @@ import { textVariants } from './text.css'
 import { sprinkles } from '../../core/sprinkles.css'
 import clsx from 'clsx'
 import { TextProps } from './types'
-import { tokens } from 'packages/themes/dist'
+import { tokens } from '@illog/themes'
 import { getKeyFromPath, splitSprinkleProps } from '../../utils/util'
 import { createElement } from 'react'
 

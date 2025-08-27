@@ -14,38 +14,44 @@
   "scripts": {
     "build": "pnpm run build:tsc && pnpm run build:esbuild",
     "build:tsc": "tsc -p tsconfig.build.json",
-    "build:esbuild": "node build.ts",
+    "build:esbuild": "pnpm run icons && ts-node build.ts",
     "build:watch": "pnpm run build:tsc && NODE_ENV=development pnpm run build:esbuild --watch",
     "build:dev": "pnpm run build:tsc && NODE_ENV=development pnpm run build:esbuild",
     "build:prod": "pnpm run build:tsc && NODE_ENV=production pnpm run build:esbuild",
     "test": "vitest run",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "icons": "ts-node ./src/utils/generate-icons.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.12.3",
   "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "@illog/esbuild-config": "workspace:*",
     "@illog/themes": "workspace:*",
-    "@vanilla-extract/css": "^1.17.4",
     "@vanilla-extract/recipes": "^0.5.7",
     "@vanilla-extract/sprinkles": "^1.6.5"
   },
   "devDependencies": {
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
+    "@vanilla-extract/css": "^1.17.4",
     "@vanilla-extract/esbuild-plugin": "^2.3.18",
     "@vanilla-extract/vite-plugin": "^5.1.1",
     "@vitejs/plugin-react": "^4.7.0",
     "@vitest/browser": "^3.2.4",
     "clsx": "^2.1.1",
+    "esbuild-plugin-svgr": "^3.1.1",
     "playwright": "^1.54.2",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "vitest": "^3.2.4",
     "vitest-browser-react": "^1.0.1"
+  },
+  "peerDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   }
 }

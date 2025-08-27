@@ -1,5 +1,6 @@
 export const icon = {
-  small: 24,
-  medium: 32,
-  large: 40
+  extraSmall: 12,
+  small: 16,
+  medium: 20,
+  large: 24
 }
