@@ -3,9 +3,14 @@ import { openDB } from './db'
 import { join } from 'path'
 import { TaskRepository } from './repository/taskRepository'
 import { isDev } from '../utils/utils'
-import { registerTaskHandlers, registerTaskNoteHandlers } from './ipc/ipcHandlers'
+import {
+  registerTaskHandlers,
+  registerTaskNoteHandlers,
+  registerTagHandlers
+} from './ipc/ipcHandlers'
 import { NoteService } from './service/NoteService'
 import { NoteRepository } from './repository/noteRepository'
+import { TagReposity } from './repository/tagRepository'
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -35,6 +40,9 @@ app.whenReady().then(() => {
   const noteRepo = new NoteRepository(db)
   const noteService = new NoteService(noteRepo)
   registerTaskNoteHandlers(noteRepo, noteService)
+
+  const tagRepo = new TagReposity(db)
+  registerTagHandlers(tagRepo)
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

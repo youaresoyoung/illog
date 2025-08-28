@@ -1,14 +1,16 @@
 import { ChangeEvent, useState } from 'react'
-import { Task } from 'services/app/src/types'
-import { useTaskStore } from '../../stores/taskStore'
+import { TaskWithTags } from 'services/app/src/types'
+import { useTaskStore } from '../../stores/useTaskStore'
+import { TagSection } from '../tag/TagSection'
 
 type Props = {
-  task: Task
+  task: TaskWithTags
   handleDeleteTask: (id: string) => void
 }
 
 export const TaskCard = ({ task, handleDeleteTask }: Props) => {
-  const openTaskNote = useTaskStore((state) => state.openTaskNote)
+  const openTaskNote = useTaskStore((s) => s.openTaskNote)
+  const updateTask = useTaskStore((s) => s.updateTask)
   const [form, setForm] = useState({ ...task })
 
   const handleClickCard = () => {
@@ -21,8 +23,7 @@ export const TaskCard = ({ task, handleDeleteTask }: Props) => {
 
   // after test, it will be changed to save automatically when input loses focus
   const handleSave = async () => {
-    const updatedTask = await window.api.task.update(form.id, form)
-    setForm(updatedTask)
+    updateTask(form.id, form)
   }
 
   return (
@@ -30,6 +31,8 @@ export const TaskCard = ({ task, handleDeleteTask }: Props) => {
       <input type="text" name="title" value={form.title} onChange={handleChange} />
       <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
       <button onClick={handleSave}>Save</button>
+
+      <TagSection task={task} />
     </li>
   )
 }
