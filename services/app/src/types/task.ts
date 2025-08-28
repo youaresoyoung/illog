@@ -1,4 +1,5 @@
 import { Status, Timestamp, UUID } from './common'
+import { Tag } from './tag'
 
 export interface TaskNote {
   task_id: UUID
@@ -22,3 +23,12 @@ export interface Task {
   done_at?: Timestamp
   deleted_at?: Timestamp
 }
+
+export interface TaskWithTags extends Task {
+  tags: Tag[]
+}
+
+export type OmittedTask = Omit<
+  Task,
+  'id' | 'end_time' | 'created_at' | 'updated_at' | 'done_at' | 'deleted_at'
+>

@@ -9,9 +9,10 @@ CREATE TABLE IF NOT EXISTS project (
 CREATE TABLE IF NOT EXISTS tag (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL UNIQUE,
-  color TEXT NOT NULL DEFAULT 'blue' CHECK (color IN ('blue', 'green', 'yellow', 'purple', 'red', 'gray')),
+  color TEXT NOT NULL DEFAULT 'gray' CHECK (color IN ('blue', 'green', 'yellow', 'purple', 'red', 'gray')),
   created_at TEXT,
-  updated_at TEXT
+  updated_at TEXT,
+  deleted_at TEXT
 );
 
 CREATE TABLE IF NOT EXISTS task_tag (
