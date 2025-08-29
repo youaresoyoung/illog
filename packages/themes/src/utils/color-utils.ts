@@ -7,5 +7,5 @@ function hexToRgb(hex: string): string {
 }
 
 export function rgba(baseColor: string, alpha: number): string {
-  return `${hexToRgb(baseColor)}, ${alpha})`
+  return `rgba(${hexToRgb(baseColor)}, ${alpha})`
 }
