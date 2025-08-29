@@ -28,8 +28,13 @@ interface RendererAPI {
   }
 }
 
+interface ThemeAPI {
+  onChange: (callback: (isDark: boolean) => void) => void
+}
+
 declare global {
   interface Window {
     api: RendererAPI
+    theme: ThemeAPI
   }
 }

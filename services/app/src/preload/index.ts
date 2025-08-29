@@ -29,4 +29,13 @@ const api = {
   }
 }
 
+const theme = {
+  onChange: (cb: (isDark: boolean) => void) => {
+    ipcRenderer.on('theme.changed', (_event, isDark) => {
+      cb(isDark)
+    })
+  }
+}
+
 contextBridge.exposeInMainWorld('api', api)
+contextBridge.exposeInMainWorld('theme', theme)
