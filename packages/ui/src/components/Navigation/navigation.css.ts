@@ -1,6 +1,7 @@
 import { style } from '@vanilla-extract/css'
 import { tokens } from 'packages/themes/dist'
 import { backgroundColors, borderColors, textColors } from '../../core/tokens/generatedColors'
+import { recipe } from '@vanilla-extract/recipes'
 
 export const containerBase = style({
   width: 256,
@@ -28,6 +29,18 @@ export const itemLinkBase = style({
   selectors: {
     '&:hover': {
       backgroundColor: backgroundColors.backgroundDefaultDefaultHover
+    },
+    '&.isActive': {
+      backgroundColor: backgroundColors.backgroundBrandSecondary
+    }
+  }
+})
+
+export const itemLinkRecipe = recipe({
+  base: itemLinkBase,
+  variants: {
+    isActive: {
+      true: { backgroundColor: backgroundColors.backgroundDefaultSecondary }
     }
   }
 })

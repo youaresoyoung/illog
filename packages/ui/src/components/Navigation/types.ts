@@ -17,6 +17,8 @@ export type ItemProps = {
   to: string
   iconName?: IconName
   label: string
+  isActive?: boolean
+  onClick?: () => void
   children?: ReactNode
   disabled?: boolean
 } & Sprinkles

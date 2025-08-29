@@ -1,30 +1,36 @@
 // import { Link } from 'react-router'
 import { ItemProps } from './types'
 // import { useNavContext } from '../../hooks/useNavigation'
-import { itemBase, itemLinkBase } from './navigation.css'
+import { itemBase, itemLinkBase, itemLinkRecipe } from './navigation.css'
 import { Link } from 'react-router'
 import { Icon } from '../Icon'
+import clsx from 'clsx'
 
-export const Item = ({ id, iconName, label, to, children, disabled }: ItemProps) => {
-  //   const { activeId, updateActiveId } = useNavContext()
-  //   const isActive = activeId === id
-
-  //   const handleClick = (e: React.MouseEvent) => {
-  //     if (disabled) {
-  //       e.preventDefault()
-  //       return
-  //     }
-  //     updateActiveId(id)
-  //   }
+export const Item = ({
+  id,
+  iconName,
+  label,
+  to,
+  isActive,
+  onClick = () => {},
+  children,
+  disabled
+}: ItemProps) => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (disabled) {
+      e.preventDefault()
+      return
+    }
+    onClick()
+  }
 
   return (
-    <li className={itemBase}>
+    <li className={itemBase} onClick={handleClick}>
       <Link
         id={id}
-        className={itemLinkBase}
+        className={clsx([itemLinkBase, itemLinkRecipe({ isActive })])}
         to={to}
         aria-disabled={disabled}
-        //   onClick={handleClick}
       >
         {iconName && <Icon name={iconName} />}
         {label}
