@@ -12,7 +12,7 @@
     "./themes.css": "./dist/themes.css"
   },
   "scripts": {
-    "build": "pnpm run build:tsc && pnpm run build:esbuild",
+    "build": "pnpm run build:tokens &&pnpm run build:tsc && pnpm run build:esbuild",
     "build:tsc": "tsc -p tsconfig.build.json",
     "build:esbuild": "pnpm run build:css && node build.ts",
     "build:watch": "pnpm run build:tsc && NODE_ENV=development pnpm run build:esbuild --watch",
