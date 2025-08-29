@@ -29,6 +29,18 @@ export const itemLinkBase = style({
   selectors: {
     '&:hover': {
       backgroundColor: backgroundColors.backgroundDefaultDefaultHover
+    },
+    '&.isActive': {
+      backgroundColor: backgroundColors.backgroundBrandSecondary
+    }
+  }
+})
+
+export const itemLinkRecipe = recipe({
+  base: itemLinkBase,
+  variants: {
+    isActive: {
+      true: { backgroundColor: backgroundColors.backgroundDefaultSecondary }
     }
   }
 })
