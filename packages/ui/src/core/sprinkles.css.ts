@@ -52,16 +52,81 @@ export const colorProperties = defineProperties({
 
 export const borderProperties = defineProperties({
   properties: {
-    borderRadius: tokens.size.radius,
     borderWidth: tokens.size.stroke,
+    borderColor: borderColors,
+    borderRadius: tokens.size.radius,
     borderStyle: ['solid', 'dashed', 'dotted', 'double', 'none']
   },
   shorthands: {
     rounded: ['borderRadius'],
-    border: ['borderWidth']
+    border: ['borderWidth'],
+    borderStyle: ['borderStyle']
   }
 })
 
-export const sprinkles = createSprinkles(spacingProperties, colorProperties, borderProperties)
+export const displayProperties = defineProperties({
+  properties: {
+    display: ['none', 'block', 'inline', 'inline-block', 'flex', 'grid'],
+    overflow: ['visible', 'hidden', 'scroll', 'auto'],
+    position: ['static', 'relative', 'absolute', 'fixed', 'sticky'],
+    top: ['0', 'auto'],
+    right: ['0', 'auto'],
+    bottom: ['0', 'auto'],
+    left: ['0', 'auto'],
+    zIndex: [0, 1, 10, 100, 1000]
+  },
+  shorthands: {
+    inset: ['top', 'right', 'bottom', 'left'],
+    z: ['zIndex']
+  }
+})
+
+export const flexProperties = defineProperties({
+  properties: {
+    flexDirection: ['row', 'row-reverse', 'column', 'column-reverse'],
+    flexWrap: ['nowrap', 'wrap', 'wrap-reverse'],
+    justifyContent: [
+      'flex-start',
+      'flex-end',
+      'center',
+      'space-between',
+      'space-around',
+      'space-evenly'
+    ],
+    alignItems: ['flex-start', 'flex-end', 'center', 'stretch', 'baseline'],
+    alignContent: ['flex-start', 'flex-end', 'center', 'stretch', 'space-between', 'space-around'],
+    alignSelf: ['auto', 'flex-start', 'flex-end', 'center', 'stretch', 'baseline'],
+    gap: tokens.size.space
+  },
+  shorthands: {
+    justify: ['justifyContent'],
+    align: ['alignItems']
+  }
+})
+
+export const gridProperties = defineProperties({
+  properties: {
+    gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)', 'repeat(4, 1fr)'],
+    gridTemplateRows: ['repeat(1, 1fr)', 'repeat(2, 1fr)'],
+    justifyItems: ['start', 'end', 'center', 'stretch'],
+    alignItems: ['start', 'end', 'center', 'stretch'],
+    gap: tokens.size.space
+  },
+  shorthands: {
+    gridColumns: ['gridTemplateColumns'],
+    gridRows: ['gridTemplateRows'],
+    gridJustify: ['justifyItems'],
+    gridAlign: ['alignItems']
+  }
+})
+
+export const sprinkles = createSprinkles(
+  spacingProperties,
+  colorProperties,
+  borderProperties,
+  displayProperties,
+  flexProperties,
+  gridProperties
+)
 
 export type Sprinkles = Parameters<typeof sprinkles>[0]
