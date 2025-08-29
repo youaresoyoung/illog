@@ -8,10 +8,12 @@ export function splitSprinkleProps<T extends Record<string, unknown>>(
   const restProps: Partial<T> = {}
 
   for (const key in props) {
-    if (sprinkleKeys.has(key as keyof Sprinkles)) {
-      sprinkleProps[key as keyof Sprinkles] = props[key] as Sprinkles[keyof Sprinkles]
+    const typedKey = key as keyof T
+    if (sprinkleKeys.has(typedKey as keyof Sprinkles)) {
+      type K = Extract<typeof typedKey, keyof Sprinkles>
+      sprinkleProps[typedKey as K] = props[typedKey] as Sprinkles[K]
     } else {
-      restProps[key as keyof T] = props[key]
+      restProps[typedKey] = props[typedKey]
     }
   }
 
