@@ -2,14 +2,12 @@ import { ReactNode } from 'react'
 import { textStyle } from './text.css'
 import { CSSProperties } from '@vanilla-extract/css'
 import { Sprinkles } from '../../core/sprinkles.css'
-import { AsProp, NestedKeys, PropsToOmit } from '../../core/types'
-import { tokens } from '@illog/themes'
-
-type TextColorToken = NestedKeys<typeof tokens.colors.light.text>
+import { AsProp, PropsToOmit } from '../../core/types'
+import { textColors } from '../../core/tokens/generatedColors'
 
 type TextOwnProps = {
   textStyle?: textStyle
-  color?: TextColorToken
+  color?: keyof typeof textColors
   children?: ReactNode
   align?: CSSProperties['textAlign']
   className?: string
