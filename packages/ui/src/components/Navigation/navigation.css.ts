@@ -44,12 +44,3 @@ export const itemLinkRecipe = recipe({
     }
   }
 })
-
-export const itemLinkRecipe = recipe({
-  base: itemLinkBase,
-  variants: {
-    isActive: {
-      true: { backgroundColor: backgroundColors.backgroundDefaultSecondary }
-    }
-  }
-})
