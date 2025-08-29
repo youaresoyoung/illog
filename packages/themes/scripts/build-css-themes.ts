@@ -62,7 +62,7 @@ const generateThemeCSSVariables = (tokens) => {
       addBlock(`:root`, tokens.colors.light)
     }
     if (tokens.colors.dark) {
-      addBlock(`:root[data-theme="dark"]`, tokens.colors.dark)
+      addBlock(`:root .theme-dark`, tokens.colors.dark)
     }
   }
 
