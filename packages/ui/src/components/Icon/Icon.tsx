@@ -1,15 +1,12 @@
 import Icons from '../../assets/svg'
-import { NestedKeys } from '../../core/types'
-import { getKeyFromPath } from '../../utils/util'
 import { tokens } from '@illog/themes'
 import { IconName } from './types'
-
-type IconColorToken = NestedKeys<typeof tokens.colors.light.icon>
+import { iconColors } from '../../core/tokens/generatedColors'
 
 export type IconProps = {
   name: IconName
   size?: keyof typeof tokens.size.icon
-  color?: IconColorToken
+  color?: keyof typeof iconColors
 }
 
 export const Icon = (props: IconProps) => {
@@ -27,9 +24,7 @@ export const Icon = (props: IconProps) => {
       width={tokens.size.icon[size]}
       height={tokens.size.icon[size]}
       style={{
-        color: color
-          ? getKeyFromPath(color, tokens.colors.light.icon)
-          : tokens.colors.light.icon.default.default
+        color: color ? iconColors[color] : iconColors.iconDefaultDefault
       }}
       aria-label={name}
       role="img"
