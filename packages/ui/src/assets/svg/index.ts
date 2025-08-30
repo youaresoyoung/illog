@@ -1,3 +1,5 @@
+// ⚠️ Auto-generated file - Do not edit
+
 import calendar_today from './ic_calendar_today_24.svg';
 import calendar_week from './ic_calendar_week_24.svg';
 import cancel from './ic_cancel_24.svg';

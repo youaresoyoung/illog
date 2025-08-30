@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const dir = join(__dirname, '../../src/assets/svg')
+const dir = join(__dirname, '../src/assets/svg')
 const files = readdirSync(dir).filter((file) => file.endsWith('.svg'))
 
 const fillDefaultColorRegEx = new RegExp(`fill="${tokens.colors.light.icon.default.default}"`, 'gi')
@@ -53,11 +53,19 @@ const iconNameType = `export type IconName = ${iconNames};\n`
 const iconNameOptionsExport = `export const IconNameOptions: IconName[] = [\n${iconNameOptions}\n];\n`
 const iconDefaultExport = `export default {\n${iconExports}\n};\n`
 
+writeFileSync(join(__dirname, '../src/assets/svg/index.ts'), `${imports}\n\n${iconDefaultExport}`)
 writeFileSync(
-  join(__dirname, '../../src/assets/svg/index.ts'),
-  `${imports}\n\n${iconDefaultExport}`
-)
-writeFileSync(
-  join(__dirname, '../../src/components/Icon/types.ts'),
+  join(__dirname, '../src/components/Icon/types.ts'),
   `${iconNameType}\n${iconNameOptionsExport}`
 )
+
+let fileContent = '// ⚠️ Auto-generated file - Do not edit\n\n'
+fileContent += `${imports}\n\n${iconDefaultExport}`
+writeFileSync(join(__dirname, '../src/assets/svg/index.ts'), fileContent)
+
+fileContent = '// ⚠️ Auto-generated file - Do not edit\n\n'
+fileContent += `${iconNameType}\n${iconNameOptionsExport}`
+writeFileSync(join(__dirname, '../src/components/Icon/types.ts'), fileContent)
+
+console.log('✅ Successfully generated svg/index.ts')
+console.log('✅ Successfully generated components/Icon/types.ts')

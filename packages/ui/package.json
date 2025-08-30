@@ -18,7 +18,7 @@
     "build:watch": "pnpm run build:tsc && NODE_ENV=development pnpm run build:esbuild --watch",
     "build:dev": "pnpm run build:tsc && NODE_ENV=development pnpm run build:esbuild",
     "build:prod": "pnpm run build:tsc && NODE_ENV=production pnpm run build:esbuild",
-    "build:icons": "ts-node ./src/utils/generate-icons.ts",
+    "build:icons": "ts-node ./scripts/generate-icons.ts",
     "build:color": "ts-node ./scripts/generate-color-objects.ts",
     "test": "vitest run",
     "test:watch": "vitest --watch"
