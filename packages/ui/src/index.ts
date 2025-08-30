@@ -10,8 +10,8 @@ export * as Navigation from './components/Navigation'
 
 // Types
 export type { IconName } from './components/Icon/types'
-export type { NavList } from './hooks'
+export type { NavList } from './context'
 export { IconNameOptions } from './components/Icon/types'
 
 // Hooks
-export { NavProvider, useNavContext } from './hooks'
+export { NavProvider, useNavContext } from './context'
