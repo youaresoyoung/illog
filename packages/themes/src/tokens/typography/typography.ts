@@ -13,7 +13,7 @@ export const typography = {
     base: primitive.scale[6],
     large: primitive.scale[7],
     small: primitive.scale[5],
-    fontWeight: primitive.weight.regular
+    fontWeight: primitive.weight.semiBold
   },
   heading: {
     fontFamily: primitive.family.sans,
