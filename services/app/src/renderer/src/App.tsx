@@ -3,6 +3,7 @@ import { Layout } from './components/layout/Layout'
 import { Today } from './pages/Today'
 import { ThisWeek } from './pages/ThisWeek'
 import { Reflection } from './pages/Reflection'
+import { ThemeProvider } from './context/ThemeContext'
 
 const router = createHashRouter([
   {
@@ -26,7 +27,11 @@ const router = createHashRouter([
 ])
 
 function App(): React.JSX.Element {
-  return <RouterProvider router={router} />
+  return (
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  )
 }
 
 export default App

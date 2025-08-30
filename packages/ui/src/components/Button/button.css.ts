@@ -1,5 +1,6 @@
 import { recipe } from '@vanilla-extract/recipes'
 import { styles, tokens } from '@illog/themes'
+import { backgroundColors, borderColors, textColors } from '../../core/tokens/generatedColors'
 
 const buttonBase = {
   display: 'inline-flex',
@@ -10,7 +11,7 @@ const buttonBase = {
   border: 'none',
   textDecoration: 'none',
   backgroundColor: 'transparent',
-  color: tokens.colors.light.text.default.default,
+  color: textColors.textDefaultDefault,
   appearance: 'none' as const,
   transition: 'all 0.2s ease-in-out',
   ...styles.text.singleLine.bodyBase
@@ -26,19 +27,19 @@ export const buttonRecipe = recipe({
     },
     variant: {
       primary: {
-        color: tokens.colors.light.text.brand.onBrand,
-        border: `${tokens.size.stroke.border}px solid ${tokens.colors.light.border.brand.default}`,
-        backgroundColor: tokens.colors.light.background.brand.default,
+        color: textColors.textBrandOnBrand,
+        border: `${tokens.size.stroke.border}px solid ${borderColors.borderBrandDefault}`,
+        backgroundColor: backgroundColors.backgroundBrandDefault,
 
         ':hover': {
-          color: tokens.colors.light.text.brand.onBrand,
-          backgroundColor: tokens.colors.light.background.brand.defaultHover
+          color: textColors.textBrandOnBrand,
+          backgroundColor: backgroundColors.backgroundBrandDefaultHover
         },
         ':disabled': {
           cursor: 'default',
-          color: tokens.colors.light.text.disabled.default,
-          backgroundColor: tokens.colors.light.background.disabled.default,
-          borderColor: tokens.colors.light.border.disabled.default
+          color: textColors.textDisabledDefault,
+          backgroundColor: backgroundColors.backgroundDisabledDefault,
+          borderColor: borderColors.borderDisabledDefault
         }
       }
     },
