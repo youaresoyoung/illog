@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, nativeTheme } from 'electron'
 import { openDB } from './db'
 import { join } from 'path'
 import { TaskRepository } from './repository/taskRepository'
@@ -27,10 +27,17 @@ function createWindow() {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  return mainWindow
 }
 
 app.whenReady().then(() => {
-  createWindow()
+  const mainWindow = createWindow()
+
+  nativeTheme.on('updated', () => {
+    const isDark = nativeTheme.shouldUseDarkColors
+    mainWindow.webContents.send('theme.changed', isDark)
+  })
 
   const db = openDB()
 
