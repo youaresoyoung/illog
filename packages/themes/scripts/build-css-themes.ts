@@ -1,5 +1,7 @@
 import { tokens } from '@illog/themes'
-import { mkdirSync, write, writeFileSync } from 'fs'
+import { mkdirSync, writeFileSync } from 'fs'
+
+type ThemeTokens = typeof import('@illog/themes').tokens
 
 const toKebab = (raw: unknown) => {
   const str = String(raw)
@@ -48,7 +50,7 @@ const flatten = (
   return result
 }
 
-const generateThemeCSSVariables = (tokens) => {
+const generateThemeCSSVariables = (tokens: ThemeTokens) => {
   const blocks: string[] = []
 
   const addBlock = (selector: string, obj: Record<string, unknown>) => {
@@ -77,7 +79,7 @@ const generateThemeCSSVariables = (tokens) => {
   return blocks
 }
 
-const generateThemeCSS = (tokens) => {
+const generateThemeCSS = (tokens: ThemeTokens) => {
   const variables = generateThemeCSSVariables(tokens)
 
   mkdirSync('dist', { recursive: true })
