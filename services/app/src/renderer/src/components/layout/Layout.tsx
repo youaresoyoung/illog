@@ -16,7 +16,7 @@ export const Layout = () => {
   }, [loadTags, loadTasks])
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
+    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#FAFAF9' }}>
       <LeftPanel />
       <MainContent>
         <Outlet />
