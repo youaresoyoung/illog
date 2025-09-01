@@ -1,6 +1,4 @@
-// import { Link } from 'react-router'
 import { ItemProps } from './types'
-// import { useNavContext } from '../../hooks/useNavigation'
 import { itemBase, itemLinkBase, itemLinkRecipe } from './navigation.css'
 import { Link } from 'react-router'
 import { Icon } from '../Icon'

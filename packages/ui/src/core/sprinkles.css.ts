@@ -109,14 +109,14 @@ export const gridProperties = defineProperties({
     gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)', 'repeat(4, 1fr)'],
     gridTemplateRows: ['repeat(1, 1fr)', 'repeat(2, 1fr)'],
     justifyItems: ['start', 'end', 'center', 'stretch'],
-    alignItems: ['start', 'end', 'center', 'stretch'],
+    gridAlignItems: ['start', 'end', 'center', 'stretch'],
     gap: tokens.size.space
   },
   shorthands: {
     gridColumns: ['gridTemplateColumns'],
     gridRows: ['gridTemplateRows'],
     gridJustify: ['justifyItems'],
-    gridAlign: ['alignItems']
+    gridAlign: ['gridAlignItems']
   }
 })
 
