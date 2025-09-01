@@ -4,6 +4,8 @@ import { Today } from './pages/Today'
 import { ThisWeek } from './pages/ThisWeek'
 import { Reflection } from './pages/Reflection'
 import { ThemeProvider } from './context/ThemeContext'
+import { NavProvider } from '@illog/ui'
+import { PAGE_LIST } from './constant/nav'
 
 const router = createHashRouter([
   {
@@ -29,7 +31,9 @@ const router = createHashRouter([
 function App(): React.JSX.Element {
   return (
     <ThemeProvider>
-      <RouterProvider router={router} />
+      <NavProvider list={PAGE_LIST} defaultActiveId={PAGE_LIST[0].id}>
+        <RouterProvider router={router} />
+      </NavProvider>
     </ThemeProvider>
   )
 }
