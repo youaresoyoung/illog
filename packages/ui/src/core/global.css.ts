@@ -22,3 +22,12 @@ globalStyle('input', {
   fontSize: 'inherit',
   color: 'inherit'
 })
+
+globalStyle('button', {
+  background: 'transparent',
+  border: 'none',
+  outline: 'none',
+  font: 'inherit',
+  color: 'inherit',
+  cursor: 'pointer'
+})
