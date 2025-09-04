@@ -13,43 +13,18 @@ const getIconColor = (color: string) => {
   return `textTag${capitalize(color) as Capitalize<typeof color>}` as keyof typeof textColors
 }
 
-export const Tag = ({
-  tag,
-  className,
-  isVisibleRemoveButton,
-  openTagSelector,
-  onRemove
-}: TagProps) => {
+export const Tag = ({ tag, className, removeFromTask }: TagProps) => {
   const handleClickRemove = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     if ('id' in tag && tag.id) {
-      onRemove?.(tag.id)
+      removeFromTask?.(tag.id)
     }
-  }
-
-  const handleClickAddTag = (e: MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
-    if (openTagSelector) {
-      openTagSelector()
-    }
-  }
-
-  if (openTagSelector) {
-    return (
-      <button
-        className={clsx([style.tagBase, style.tagAddButton, className])}
-        onClick={handleClickAddTag}
-      >
-        <Icon size="extraSmall" name="plus" color={getIconColor(textColors.textDefaultSecondary)} />
-        <span>{tag.name}</span>
-      </button>
-    )
   }
 
   return (
     <span className={clsx([style.tagRecipe({ color: tag.color }), className])}>
       {tag.name}
-      {isVisibleRemoveButton && (
+      {removeFromTask && (
         <button onClick={handleClickRemove}>
           <Icon size="extraSmall" name="cancel" color={getIconColor(tag.color)} />
         </button>
