@@ -1,10 +1,10 @@
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles'
-import { tokens } from '@illog/themes'
+import { tokens, styles } from '@illog/themes'
 import { backgroundColors, borderColors, textColors } from './tokens/generatedColors'
 
 const space = tokens.size.space
 
-export const spacingProperties = defineProperties({
+const spacingProperties = defineProperties({
   properties: {
     margin: space,
     marginTop: space,
@@ -39,7 +39,7 @@ export const spacingProperties = defineProperties({
   }
 })
 
-export const colorProperties = defineProperties({
+const colorProperties = defineProperties({
   properties: {
     backgroundColor: backgroundColors,
     color: textColors,
@@ -50,7 +50,7 @@ export const colorProperties = defineProperties({
   }
 })
 
-export const borderProperties = defineProperties({
+const borderProperties = defineProperties({
   properties: {
     borderWidth: tokens.size.stroke,
     borderColor: borderColors,
@@ -64,7 +64,7 @@ export const borderProperties = defineProperties({
   }
 })
 
-export const displayProperties = defineProperties({
+const displayProperties = defineProperties({
   properties: {
     display: ['none', 'block', 'inline', 'inline-block', 'flex', 'grid'],
     overflow: ['visible', 'hidden', 'scroll', 'auto'],
@@ -81,7 +81,7 @@ export const displayProperties = defineProperties({
   }
 })
 
-export const flexProperties = defineProperties({
+const flexProperties = defineProperties({
   properties: {
     flexDirection: ['row', 'row-reverse', 'column', 'column-reverse'],
     flexWrap: ['nowrap', 'wrap', 'wrap-reverse'],
@@ -104,7 +104,7 @@ export const flexProperties = defineProperties({
   }
 })
 
-export const gridProperties = defineProperties({
+const gridProperties = defineProperties({
   properties: {
     gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(2, 1fr)', 'repeat(3, 1fr)', 'repeat(4, 1fr)'],
     gridTemplateRows: ['repeat(1, 1fr)', 'repeat(2, 1fr)'],
@@ -120,13 +120,38 @@ export const gridProperties = defineProperties({
   }
 })
 
+const dropShadow = styles.dropShadow
+
+function shadowToCss(shadow: (typeof dropShadow)[keyof typeof dropShadow]) {
+  return shadow
+    .map((s) => {
+      const { x, y } = s.position
+      return `${x}px ${y}px ${s.blur}px ${s.spread}px ${s.color}`
+    })
+    .join(', ')
+}
+
+export const shadowTokens = Object.fromEntries(
+  Object.entries(dropShadow).map(([k, v]) => [k, shadowToCss(v)])
+)
+
+const effectProperties = defineProperties({
+  properties: {
+    boxShadow: shadowTokens
+  },
+  shorthands: {
+    shadow: ['boxShadow']
+  }
+})
+
 export const sprinkles = createSprinkles(
   spacingProperties,
   colorProperties,
   borderProperties,
   displayProperties,
   flexProperties,
-  gridProperties
+  gridProperties,
+  effectProperties
 )
 
 export type Sprinkles = Parameters<typeof sprinkles>[0]

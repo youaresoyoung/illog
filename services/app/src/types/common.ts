@@ -2,7 +2,7 @@ export type UUID = string
 
 export type ISODate = string
 
-export type Timestamp = number
+export type Timestamp = string
 
 export type Color = 'blue' | 'green' | 'yellow' | 'purple' | 'red' | 'gray'
 
