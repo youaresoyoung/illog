@@ -27,11 +27,18 @@ export const Tag = ({
     }
   }
 
+  const handleClickAddTag = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    if (openTagSelector) {
+      openTagSelector()
+    }
+  }
+
   if (openTagSelector) {
     return (
       <button
         className={clsx([style.tagBase, style.tagAddButton, className])}
-        onClick={openTagSelector}
+        onClick={handleClickAddTag}
       >
         <Icon size="extraSmall" name="plus" color={getIconColor(textColors.textDefaultSecondary)} />
         <span>{tag.name}</span>
