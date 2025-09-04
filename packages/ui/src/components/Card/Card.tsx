@@ -10,6 +10,7 @@ export const Card = <T extends ElementType>({ onClick, className, children }: Ca
       as="li"
       display="flex"
       flexDirection="column"
+      gap="400"
       bg="backgroundDefaultDefault"
       p="600"
       rounded="200"

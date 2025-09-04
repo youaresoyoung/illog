@@ -18,7 +18,7 @@ const inputBase = {
   borderRadius: tokens.size.radius[100],
   border: `${tokens.size.stroke.border}px solid ${backgroundColors.backgroundDefaultDefault}`,
   transition: 'border-color 0.2s',
-  ...styles.text.bodyBase,
+  ...styles.text.bodyStrong,
   padding: tokens.size.space[200]
 }
 
