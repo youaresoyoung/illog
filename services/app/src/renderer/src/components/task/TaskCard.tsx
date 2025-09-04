@@ -23,7 +23,7 @@ export const TaskCard = ({ task, handleDeleteTask }: Props) => {
   }
 
   return (
-    <Card key={task.id} onClick={handleClickCard}>
+    <Card onClick={handleClickCard}>
       <div>
         <Input
           style={{ paddingLeft: 0 }}

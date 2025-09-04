@@ -1,19 +1,19 @@
 import { ChangeEvent, Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { useAutoSave } from './useAutoSave'
 
-export const useAutoSaveInput = <T>(
-  initialValue: T,
-  onSave: (value: T) => Promise<void> | void,
+export const useAutoSaveInput = (
+  initialValue: string,
+  onSave: (value: string) => Promise<void> | void,
   delay: number = 1000
 ): [
-  value: T,
-  setValue: Dispatch<SetStateAction<T>>,
+  value: string,
+  setValue: Dispatch<SetStateAction<string>>,
   handleChange: (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void
 ] => {
-  const [value, setValue] = useState<T>(initialValue)
+  const [value, setValue] = useState<string>(initialValue)
 
   const handleChange = useCallback((e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-    setValue(e.target.value as T)
+    setValue(e.target.value)
   }, [])
 
   useAutoSave(value, onSave, delay)

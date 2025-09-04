@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 
 import * as style from './input.css'
-import { InputProps } from './tpyes'
+import { InputProps } from './types'
 
 export const Input = (props: InputProps) => {
   const {
