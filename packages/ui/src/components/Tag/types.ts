@@ -16,5 +16,6 @@ export type OmittedTag = Omit<TagType, 'id' | 'created_at' | 'updated_at' | 'del
 export type TagProps = {
   tag: TagType | OmittedTag
   isVisibleRemoveButton?: boolean
+  openTagSelector?: () => void
   onRemove?: (id: string) => void
 } & HTMLAttributes<HTMLSpanElement>
