@@ -14,3 +14,11 @@ globalStyle('a', {
   textDecoration: 'none',
   color: 'inherit'
 })
+
+globalStyle('input', {
+  border: 'none',
+  outline: 'none',
+  fontFamily: 'inherit',
+  fontSize: 'inherit',
+  color: 'inherit'
+})

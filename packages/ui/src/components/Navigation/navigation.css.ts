@@ -29,6 +29,9 @@ export const itemLinkBase = style({
   selectors: {
     '&:hover': {
       backgroundColor: backgroundColors.backgroundDefaultDefaultHover
+    },
+    '&.isActive': {
+      backgroundColor: backgroundColors.backgroundBrandSecondary
     }
   }
 })

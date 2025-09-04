@@ -7,6 +7,8 @@ export { Button } from './components/Button'
 export { Icon } from './components/Icon'
 export { Box } from './components/Box'
 export * as Navigation from './components/Navigation'
+export { Card } from './components/Card'
+export { Input } from './components/Input'
 
 // Types
 export type { IconName } from './components/Icon/types'
