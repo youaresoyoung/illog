@@ -5,5 +5,17 @@ type Props = {
 }
 
 export const MainContent = ({ children }: Props) => {
-  return <main style={{ marginLeft: '256px', padding: '12px' }}>{children}</main>
+  return (
+    <main
+      style={{
+        minWidth: 592,
+        marginLeft: '256px',
+        display: 'flex',
+        flexDirection: 'column',
+        margin: '0 auto'
+      }}
+    >
+      {children}
+    </main>
+  )
 }
