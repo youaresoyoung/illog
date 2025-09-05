@@ -1,4 +1,4 @@
-import { MouseEvent, useMemo, useRef, useState } from 'react'
+import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { TaskWithTags } from 'services/app/src/types'
 import { useTaskStore } from '../../stores/useTaskStore'
@@ -30,18 +30,38 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
     e.stopPropagation()
     if (!tagsSectionRef.current) return
 
+    updateSelectorPosition()
+    setIsOpen((prev) => !prev)
+  }
+
+  const updateSelectorPosition = () => {
+    if (!tagsSectionRef.current) return
+
     const rect = tagsSectionRef.current.getBoundingClientRect()
     setSelectorPosition({
-      top: rect.bottom + window.scrollY + 8,
-      left: rect.left + window.scrollX
+      top: rect.bottom + 8,
+      left: rect.left
     })
-
-    setIsOpen((prev) => !prev)
   }
 
   const handleRemoveTagClick = async (tagId: string) => {
     await removeTag(task.id, tagId)
   }
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleScroll = () => updateSelectorPosition()
+    const handleResize = () => updateSelectorPosition()
+
+    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [isOpen])
 
   return (
     <>
