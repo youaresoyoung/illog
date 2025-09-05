@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css'
 import { backgroundColors, borderColors, textColors } from '../../core/tokens/generatedColors'
-import { styles, tokens } from 'packages/themes/dist'
+import { styles, tokens } from '@illog/themes'
 
 export const container = style({
   position: 'fixed',
