@@ -19,7 +19,6 @@ export const useTagSelector = ({
   maxTagLength
 }: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 })
 
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -75,24 +74,12 @@ export const useTagSelector = ({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  useEffect(() => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect()
-      setDropdownPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
-        width: rect.width
-      })
-    }
-  }, [])
-
   return {
     searchTerm,
     setSearchTerm,
     defaultSelectedTags,
     filteredTags,
     canCreateNew,
-    dropdownPosition,
     inputRef,
     containerRef,
     handleTagSelect,
