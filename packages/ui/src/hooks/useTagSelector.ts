@@ -4,19 +4,21 @@ import { OmittedTag, TagType } from '../components/Tag/types'
 type Props = {
   tags: TagType[]
   defaultSelectedTags: TagType[]
+  maxTagLength: number
   addTagToTask: (tagId: string) => Promise<void>
   createTag: (tag: Partial<OmittedTag>) => Promise<string>
   removeTagFromTask: (tagId: string) => Promise<void>
-  maxTagLength: number
+  closeTagSelector: () => void
 }
 
 export const useTagSelector = ({
   tags,
   defaultSelectedTags,
+  maxTagLength,
   addTagToTask,
   createTag,
   removeTagFromTask,
-  maxTagLength
+  closeTagSelector
 }: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -68,11 +70,12 @@ export const useTagSelector = ({
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setSearchTerm('')
+        closeTagSelector()
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+  }, [closeTagSelector])
 
   return {
     searchTerm,

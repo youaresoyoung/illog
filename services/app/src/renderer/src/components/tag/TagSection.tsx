@@ -11,8 +11,9 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
   const createTag = useTagStore((s) => s.createTag)
   const removeTag = useTaskStore((s) => s.removeTag)
 
-  const [isOpen, setIsOpen] = useState(false)
   const tagsSectionRef = useRef<HTMLDivElement>(null)
+
+  const [isOpen, setIsOpen] = useState(false)
   const [selectorPosition, setSelectorPosition] = useState<{ top: number; left: number }>({
     top: 0,
     left: 0
@@ -88,11 +89,12 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
         <TagSelector
           tags={filteredTags}
           defaultSelectedTags={task.tags}
+          placeholder="Search tags..."
+          position={selectorPosition}
           addTagToTask={handleAddTagToTask}
           createTag={createTag}
           removeTagFromTask={handleRemoveTagClick}
-          placeholder="Search tags..."
-          position={selectorPosition}
+          closeTagSelector={() => setIsOpen(false)}
         />
       )}
     </>

@@ -8,25 +8,27 @@ import { Divider } from '../Divider/Divider'
 type Props = {
   tags: TagType[]
   defaultSelectedTags: TagType[]
+  placeholder: string
+  position: { top: number; left: number }
+  maxTagLength?: number
+  className?: string
   addTagToTask: (tagId: string) => Promise<void>
   createTag: (tag: Partial<OmittedTag>) => Promise<string>
   removeTagFromTask: (tagId: string) => Promise<void>
-  placeholder: string
-  maxTagLength?: number
-  position: { top: number; left: number }
-  className?: string
+  closeTagSelector: () => void
 }
 
 export const TagSelector = ({
   tags = [],
   defaultSelectedTags,
-  addTagToTask,
-  createTag,
-  removeTagFromTask,
   placeholder = 'Search tags...',
   maxTagLength = 100,
   position = { top: 0, left: 0 },
-  className
+  className,
+  addTagToTask,
+  createTag,
+  removeTagFromTask,
+  closeTagSelector
 }: Props) => {
   const {
     searchTerm,
@@ -43,10 +45,11 @@ export const TagSelector = ({
   } = useTagSelector({
     tags,
     defaultSelectedTags,
+    maxTagLength,
     addTagToTask,
     createTag,
     removeTagFromTask,
-    maxTagLength
+    closeTagSelector
   })
 
   return (
