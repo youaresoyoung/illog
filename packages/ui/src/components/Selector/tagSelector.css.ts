@@ -66,3 +66,15 @@ export const createNewTagButton = style({
   color: textColors.textDefaultSecondary,
   ...styles.text.captionStrong
 })
+
+export const input = style({
+  backgroundColor: 'transparent',
+  color: textColors.textDefaultDefault,
+  ...styles.text.bodySmall,
+
+  selectors: {
+    '&::placeholder': {
+      color: textColors.textDefaultTertiary
+    }
+  }
+})

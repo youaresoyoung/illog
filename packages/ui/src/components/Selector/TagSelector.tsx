@@ -58,6 +58,7 @@ export const TagSelector = ({
       <div className={style.inputWrapper}>
         <SelectedTags tags={defaultSelectedTags} removeFromTask={handleRemoveTagFromTask} />
         <input
+          className={style.input}
           ref={inputRef}
           type="text"
           value={searchTerm}
@@ -66,6 +67,7 @@ export const TagSelector = ({
           placeholder={selectedTags.length === 0 ? placeholder : ''}
           maxLength={maxTagLength}
           autoComplete="off"
+          autoFocus={true}
         />
       </div>
       <Divider />
