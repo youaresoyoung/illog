@@ -1,7 +1,12 @@
 import { style } from '@vanilla-extract/css'
 import { recipe } from '@vanilla-extract/recipes'
 import { styles, tokens } from '@illog/themes'
-import { backgroundColors, borderColors, textColors } from '../../core/tokens/generatedColors'
+import {
+  backgroundColors,
+  borderColors,
+  iconColors,
+  textColors
+} from '../../core/tokens/generatedColors'
 
 export const tagBase = style({
   display: 'inline-flex',
@@ -45,6 +50,33 @@ export const tagRecipe = recipe({
         backgroundColor: backgroundColors.backgroundTagYellow,
         color: textColors.textTagYellow
       })
+    }
+  }
+})
+
+export const addTagButtonRecipe = recipe({
+  base: {
+    height: 24,
+    gap: tokens.size.space[100],
+    border: `${tokens.size.stroke.border}px dashed ${borderColors.borderDefaultSecondary}`
+  },
+  variants: {
+    variant: {
+      default: {
+        backgroundColor: backgroundColors.backgroundDefaultDefault,
+        color: textColors.textDefaultSecondary,
+
+        '&:hover': {
+          backgroundColor: backgroundColors.backgroundDefaultDefaultHover,
+          color: textColors.textDefaultDefault,
+          borderColor: borderColors.borderDefaultTertiary
+        }
+      },
+      error: {
+        backgroundColor: backgroundColors.backgroundDangerSecondary,
+        color: textColors.textDangerDefault,
+        borderColor: borderColors.borderDangerDefault
+      }
     }
   }
 })

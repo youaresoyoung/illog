@@ -26,7 +26,7 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
     await addTag(task.id, tagId)
   }
 
-  const handleTagsSectionClick = (e: MouseEvent<HTMLDivElement>) => {
+  const handleTagsSectionClick = (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
     e.stopPropagation()
     if (!tagsSectionRef.current) return
 
@@ -46,16 +46,23 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
   return (
     <>
       <div ref={tagsSectionRef} onClick={handleTagsSectionClick}>
-        <ul style={{ display: 'flex', gap: '8px' }}>
-          {task.tags.map((tag) => (
-            <li key={tag.id}>
-              <Tag
-                tag={{ id: tag.id, name: tag.name, color: tag.color }}
-                removeFromTask={handleRemoveTagClick}
-              />
-            </li>
-          ))}
-        </ul>
+        {task.tags.length > 0 ? (
+          <ul style={{ display: 'flex', gap: '8px' }}>
+            {task.tags.map((tag) => (
+              <li key={tag.id}>
+                <Tag
+                  tag={{ id: tag.id, name: tag.name, color: tag.color }}
+                  removeFromTask={handleRemoveTagClick}
+                />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <Tag
+            tag={{ id: 'Add Tag', name: 'Add Tag', color: 'gray' }}
+            openTagSelector={handleTagsSectionClick}
+          />
+        )}
       </div>
       {isOpen && (
         <TagSelector
