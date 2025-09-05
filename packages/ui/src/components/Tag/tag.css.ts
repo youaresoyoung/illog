@@ -12,10 +12,9 @@ export const tagBase = style({
   padding: `${tokens.size.space[150]}px ${tokens.size.space[300]}px`
 })
 
-export const tagAddButton = style({
-  height: 24,
-  gap: tokens.size.space[100],
-  border: `${tokens.size.stroke.border}px dashed ${borderColors.borderDefaultSecondary}`
+export const tagRemoveButton = style({
+  display: 'flex',
+  alignItems: 'center'
 })
 
 export const tagRecipe = recipe({

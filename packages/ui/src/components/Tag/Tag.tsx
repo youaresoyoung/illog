@@ -22,13 +22,13 @@ export const Tag = ({ tag, className, removeFromTask }: TagProps) => {
   }
 
   return (
-    <span className={clsx([style.tagRecipe({ color: tag.color }), className])}>
-      {tag.name}
+    <div className={clsx([style.tagRecipe({ color: tag.color }), className])}>
+      <span>{tag.name}</span>
       {removeFromTask && (
-        <button onClick={handleClickRemove}>
+        <button className={style.tagRemoveButton} onClick={handleClickRemove}>
           <Icon size="extraSmall" name="cancel" color={getIconColor(tag.color)} />
         </button>
       )}
-    </span>
+    </div>
   )
 }
