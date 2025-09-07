@@ -5,7 +5,7 @@ import { combine } from 'zustand/middleware'
 interface TagState {
   tags: Tag[]
   loadTags: () => Promise<void>
-  createTag: (tag: Partial<OmittedTag>) => Promise<void>
+  createTag: (tag: Partial<OmittedTag>) => Promise<string>
   updateTag: (id: string, contents: Partial<OmittedTag>) => Promise<void>
   deleteTag: (id: string) => Promise<void>
 }
@@ -19,6 +19,7 @@ export const useTagStore = create<TagState>(
     createTag: async (tag: Partial<OmittedTag>) => {
       const createdTag = await window.api.tag.create(tag)
       set({ tags: [...get().tags, createdTag] })
+      return createdTag.id
     },
     updateTag: async (id: string, contents: Partial<OmittedTag>) => {
       const updatedTag = await window.api.tag.update(id, contents)
