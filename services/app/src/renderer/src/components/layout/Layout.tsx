@@ -16,7 +16,8 @@ export const Layout = () => {
   }, [loadTags, loadTasks])
 
   return (
-    <div style={{ display: 'flex', height: '100%', backgroundColor: '#FAFAF9' }}>
+    // TODO: change to Container component
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#FAFAF9' }}>
       <LeftPanel />
       <MainContent>
         <Outlet />

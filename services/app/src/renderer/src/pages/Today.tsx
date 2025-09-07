@@ -17,7 +17,7 @@ export const Today = () => {
   return (
     <>
       {/* Box -> Container */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" my="1200">
+      <Box display="flex" justifyContent="space-between" alignItems="center">
         <Text as="h2" textStyle="subheading">
           Today’s Log
         </Text>
