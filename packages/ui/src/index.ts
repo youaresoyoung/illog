@@ -9,6 +9,9 @@ export { Box } from './components/Box'
 export * as Navigation from './components/Navigation'
 export { Card } from './components/Card'
 export { Input } from './components/Input'
+export { Tag } from './components/Tag'
+export { TagSelector } from './components/Selector'
+export { Divider } from './components/Divider'
 
 // Types
 export type { IconName } from './components/Icon/types'
@@ -17,3 +20,4 @@ export { IconNameOptions } from './components/Icon/types'
 
 // Hooks
 export { NavProvider, useNavContext } from './context'
+export { useAutoSaveInput, useDebouncedCallback, useDebounce, useAutoSave } from './hooks'

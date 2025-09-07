@@ -2,7 +2,7 @@ import { MouseEvent } from 'react'
 import { Icon } from '../Icon'
 import clsx from 'clsx'
 import * as style from './tag.css'
-import { textColors } from '../../core/tokens/generatedColors'
+import { iconColors, textColors } from '../../core/tokens/generatedColors'
 import { TagProps } from './types'
 
 function capitalize(string: string) {
@@ -15,45 +15,46 @@ const getIconColor = (color: string) => {
 
 export const Tag = ({
   tag,
+  addTagButtonVariant = 'default',
   className,
-  isVisibleRemoveButton,
   openTagSelector,
-  onRemove
+  removeFromTask
 }: TagProps) => {
   const handleClickRemove = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     if ('id' in tag && tag.id) {
-      onRemove?.(tag.id)
-    }
-  }
-
-  const handleClickAddTag = (e: MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
-    if (openTagSelector) {
-      openTagSelector()
+      removeFromTask?.(tag.id)
     }
   }
 
   if (openTagSelector) {
     return (
       <button
-        className={clsx([style.tagBase, style.tagAddButton, className])}
-        onClick={handleClickAddTag}
+        className={clsx([
+          style.tagBase,
+          style.addTagButtonRecipe({ variant: addTagButtonVariant }),
+          className
+        ])}
+        onClick={(e: MouseEvent<HTMLButtonElement>) => openTagSelector?.(e)}
       >
-        <Icon size="extraSmall" name="plus" color={getIconColor(textColors.textDefaultSecondary)} />
+        <Icon
+          size="extraSmall"
+          name="plus"
+          color={addTagButtonVariant === 'error' ? 'iconDangerDefault' : 'iconDefaultSecondary'}
+        />
         <span>{tag.name}</span>
       </button>
     )
   }
 
   return (
-    <span className={clsx([style.tagRecipe({ color: tag.color }), className])}>
-      {tag.name}
-      {isVisibleRemoveButton && (
-        <button onClick={handleClickRemove}>
+    <div className={clsx([style.tagRecipe({ color: tag.color }), className])}>
+      <span>{tag.name}</span>
+      {removeFromTask && (
+        <button className={style.tagRemoveButton} onClick={handleClickRemove}>
           <Icon size="extraSmall" name="cancel" color={getIconColor(tag.color)} />
         </button>
       )}
-    </span>
+    </div>
   )
 }
