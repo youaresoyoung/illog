@@ -16,7 +16,7 @@ export const TagList = ({ tags, searchTerm, canCreateNew, onSelect, onCreate }: 
       <p className={style.tagListDescription}>Select tag or create one</p>
       {canCreateNew ? (
         <button type="button" onClick={onCreate} className={style.createNewTagButton}>
-          Create <Tag tag={{ id: 'preview', name: searchTerm || 'd', color: 'blue' }} />
+          Create <Tag tag={{ id: 'preview', name: searchTerm, color: 'blue' }} />
         </button>
       ) : (
         <ul className={style.tagList}>

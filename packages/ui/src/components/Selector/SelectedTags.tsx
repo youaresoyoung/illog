@@ -9,7 +9,7 @@ type Props = {
 export const SelectedTags = ({ tags, removeFromTask }: Props) => (
   <>
     {tags.map((tag) => (
-      <Tag key={tag.name} tag={tag} removeFromTask={() => removeFromTask(tag.id)} />
+      <Tag key={tag.id} tag={tag} removeFromTask={() => removeFromTask(tag.id)} />
     ))}
   </>
 )
