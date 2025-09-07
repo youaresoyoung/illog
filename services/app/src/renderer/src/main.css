@@ -1,2 +1,12 @@
 @import '@illog/themes/themes.css';
 @import '@illog/ui/index.css';
+
+@font-face {
+  font-family: 'Inter';
+  src: url('./assets/fonts/InterVariable.ttf') format('truetype');
+  font-weight: 400;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}

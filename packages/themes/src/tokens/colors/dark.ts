@@ -27,12 +27,12 @@ export const background = {
     tertiaryHover: brand[800]
   },
   tag: {
-    blue: blue[400],
-    green: green[400],
-    yellow: yellow[400],
-    purple: purple[400],
-    red: red[400],
-    gray: gray[400]
+    blue: white[1000],
+    green: white[1000],
+    yellow: gray[900],
+    purple: white[1000],
+    red: white[1000],
+    gray: gray[900]
   },
   state: {
     done: blue[400],
