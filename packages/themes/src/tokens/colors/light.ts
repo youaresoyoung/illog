@@ -32,7 +32,7 @@ export const background = {
     yellow: yellow[100],
     purple: purple[100],
     red: red[100],
-    gray: gray[100]
+    gray: gray[200]
   },
   state: {
     done: green[500],
