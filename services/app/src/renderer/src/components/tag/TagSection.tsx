@@ -18,9 +18,12 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
     left: 0
   })
 
-  const filteredTags = useMemo(() => {
-    return tags
-  }, [tags])
+  const filteredTags = useMemo(() => tags, [tags])
+
+  const syncedTaskTags = useMemo(
+    () => task.tags.map((t) => tags.find((it) => it.id === t.id) ?? t),
+    [task.tags, tags]
+  )
 
   const handleAddTagToTask = async (tagId: string) => {
     await addTag(task.id, tagId)
@@ -66,9 +69,9 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
   return (
     <>
       <div ref={tagsSectionRef} onClick={handleTagsSectionClick}>
-        {task.tags.length > 0 ? (
+        {syncedTaskTags.length > 0 ? (
           <ul style={{ display: 'flex', gap: '8px' }}>
-            {task.tags.map((tag) => (
+            {syncedTaskTags.map((tag) => (
               <li key={tag.id}>
                 <Tag
                   tag={{ id: tag.id, name: tag.name, color: tag.color }}
@@ -87,7 +90,7 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
       {isOpen && (
         <TagSelector
           tags={filteredTags}
-          defaultSelectedTags={task.tags}
+          defaultSelectedTags={syncedTaskTags}
           placeholder="Search tags..."
           position={selectorPosition}
           addTagToTask={handleAddTagToTask}
