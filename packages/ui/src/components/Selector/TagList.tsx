@@ -4,6 +4,7 @@ import { Icon } from '../Icon'
 import { TagEditor } from './TagEditor'
 import * as style from './tagSelector.css'
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { Portal } from '../Portal'
 
 type Props = {
   tags: TagType[]
@@ -86,11 +87,10 @@ export const TagList = ({ tags, searchTerm, canCreateNew, onSelect, onCreate }: 
         <ul className={style.tagList}>
           {tags.map((tag) => (
             <li className={style.tagItem} key={tag.id} onClick={() => onSelect(tag)}>
-              <div className={style.tagItemContent}>
+              <div>
                 <Tag tag={tag} />
                 <button
                   type="button"
-                  className={style.moreButton}
                   tabIndex={-1}
                   aria-label="edit tag"
                   ref={(el) => {
@@ -105,24 +105,26 @@ export const TagList = ({ tags, searchTerm, canCreateNew, onSelect, onCreate }: 
                 </button>
               </div>
               {editingTagId === tag.id && editorPosition && (
-                <div
-                  ref={editorRef}
-                  style={{
-                    position: 'fixed',
-                    left: editorPosition.left,
-                    top: editorPosition.top,
-                    zIndex: 9999
-                  }}
-                >
-                  <TagEditor
-                    name={tag.name}
-                    color={tag.color}
-                    onDelete={handleCloseEditor}
-                    onChange={(newName, newColor) => {
-                      console.log('tag updated', newName, newColor)
+                <Portal>
+                  <div
+                    ref={editorRef}
+                    style={{
+                      position: 'fixed',
+                      left: editorPosition.left,
+                      top: editorPosition.top,
+                      zIndex: 9999
                     }}
-                  />
-                </div>
+                  >
+                    <TagEditor
+                      name={tag.name}
+                      color={tag.color}
+                      onDelete={handleCloseEditor}
+                      onChange={(newName, newColor) => {
+                        console.log('tag updated', newName, newColor)
+                      }}
+                    />
+                  </div>
+                </Portal>
               )}
             </li>
           ))}
