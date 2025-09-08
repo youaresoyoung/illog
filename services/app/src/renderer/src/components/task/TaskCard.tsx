@@ -1,5 +1,5 @@
 import { TaskWithTags } from 'services/app/src/types'
-import { useTaskStore } from '../../stores/useTaskStore'
+import { useTaskActions } from '../../stores/useTaskStore'
 import { TagSection } from '../tag/TagSection'
 import { Card, Input, Text, useAutoSaveInput } from '@illog/ui'
 
@@ -9,8 +9,7 @@ type Props = {
 }
 
 export const TaskCard = ({ task, handleDeleteTask }: Props) => {
-  const openTaskNote = useTaskStore((s) => s.openTaskNote)
-  const updateTask = useTaskStore((s) => s.updateTask)
+  const { openTaskNote, updateTask } = useTaskActions()
 
   const [title, , handleChange] = useAutoSaveInput(
     task.title,

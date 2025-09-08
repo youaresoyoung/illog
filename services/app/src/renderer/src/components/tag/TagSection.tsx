@@ -1,15 +1,14 @@
 import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { TaskWithTags } from 'services/app/src/types'
-import { useTaskStore } from '../../stores/useTaskStore'
+import { useTaskActions } from '../../stores/useTaskStore'
 import { Tag, TagSelector } from '@illog/ui'
-import { useTagStore } from '../../stores/useTagStore'
+import { useTagActions, useTagState } from '../../stores/useTagStore'
 
 export const TagSection = ({ task }: { task: TaskWithTags }) => {
-  const tags = useTagStore((s) => s.tags)
-  const addTag = useTaskStore((s) => s.addTag)
-  const createTag = useTagStore((s) => s.createTag)
-  const removeTag = useTaskStore((s) => s.removeTag)
+  const { tags } = useTagState()
+  const { createTag, updateTag, deleteTag } = useTagActions()
+  const { addTag, removeTag } = useTaskActions()
 
   const tagsSectionRef = useRef<HTMLDivElement>(null)
 
@@ -92,8 +91,10 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
           placeholder="Search tags..."
           position={selectorPosition}
           addTagToTask={handleAddTagToTask}
-          createTag={createTag}
           removeTagFromTask={handleRemoveTagClick}
+          createTag={createTag}
+          deleteTag={deleteTag}
+          updateTag={updateTag}
           closeTagSelector={() => setIsOpen(false)}
         />
       )}

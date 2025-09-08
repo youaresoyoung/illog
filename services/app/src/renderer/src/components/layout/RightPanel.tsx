@@ -1,8 +1,8 @@
 import { useAutoSaveNote } from '../../hooks/useAutoSaveNote'
-import { useTaskStore } from '../../stores/useTaskStore'
+import { useTaskState } from '../../stores/useTaskStore'
 
 export const RightPanel = () => {
-  const currentTaskId = useTaskStore((state) => state.currentTaskId)
+  const { currentTaskId } = useTaskState()
   const [note, handleChange] = useAutoSaveNote(currentTaskId)
 
   return (

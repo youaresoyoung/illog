@@ -1,11 +1,10 @@
 import { TaskCard } from '../components/task/TaskCard'
-import { useTaskStore } from '../stores/useTaskStore'
+import { useTaskActions, useTaskState } from '../stores/useTaskStore'
 import { Box, Button, Icon, Text } from '@illog/ui'
 
 export const Today = () => {
-  const tasks = useTaskStore((s) => s.tasks)
-  const createTask = useTaskStore((s) => s.createTask)
-  const deleteTask = useTaskStore((s) => s.deleteTask)
+  const { tasks } = useTaskState()
+  const { createTask, deleteTask } = useTaskActions()
 
   const handleAddLogClick = () => {
     createTask({

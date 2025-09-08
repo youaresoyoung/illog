@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Color } from 'services/app/src/types'
 import { TagEditor } from './TagEditor'
-import { useTaskStore } from '../../stores/useTaskStore'
+import { useTaskActions } from '../../stores/useTaskStore'
 
 type Props = {
   id: string
@@ -11,7 +11,7 @@ type Props = {
 }
 
 export const TagItem = ({ id, name, color, taskId }: Props) => {
-  const addTag = useTaskStore((s) => s.addTag)
+  const { addTag } = useTaskActions()
   const [isEditMode, setIsEditMode] = useState(false)
 
   const handleClick = () => {
