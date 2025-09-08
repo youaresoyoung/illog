@@ -1,5 +1,5 @@
 import { Tag } from '../Tag'
-import { OmittedTag, TagType } from '../Tag/types'
+import { OmittedTag, TagType, TagColor } from '../Tag/types'
 import { Icon } from '../Icon'
 import { TagEditor } from './TagEditor'
 import * as style from './tagSelector.css'
@@ -10,6 +10,7 @@ type Props = {
   tags: TagType[]
   searchTerm: string
   canCreateNew: boolean
+  previewColor: TagColor
   onSelect: (tag: TagType) => Promise<void>
   onCreate: () => Promise<void>
   onDeleteTag: (tagId: string) => Promise<void>
@@ -21,6 +22,7 @@ const TagListBase = ({
   tags,
   searchTerm,
   canCreateNew,
+  previewColor,
   onSelect,
   onCreate,
   onDeleteTag,
@@ -93,7 +95,7 @@ const TagListBase = ({
       <p className={style.tagListDescription}>Select tag or create one</p>
       {canCreateNew ? (
         <button type="button" onClick={onCreate} className={style.createNewTagButton}>
-          Create <Tag tag={{ id: 'preview', name: searchTerm || 'new tag', color: 'blue' }} />
+          Create <Tag tag={{ id: 'preview', name: searchTerm || 'new tag', color: previewColor }} />
         </button>
       ) : (
         <ul className={style.tagList}>

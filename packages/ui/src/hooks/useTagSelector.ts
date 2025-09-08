@@ -1,5 +1,5 @@
 import { KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { OmittedTag, TagType } from '../components/Tag/types'
+import { OmittedTag, TagColor, TagType } from '../components/Tag/types'
 
 type Props = {
   tags: TagType[]
@@ -10,6 +10,11 @@ type Props = {
   createTag: (tag: Partial<OmittedTag>) => Promise<string>
   deleteTag: (tagId: string) => Promise<void>
   closeTagSelector: () => void
+}
+
+const pickRandomColor = (): TagColor => {
+  const colors: TagColor[] = ['blue', 'gray', 'green', 'purple', 'red', 'yellow']
+  return colors[Math.floor(Math.random() * colors.length)]
 }
 
 export const useTagSelector = ({
@@ -23,6 +28,7 @@ export const useTagSelector = ({
   closeTagSelector
 }: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
+  const [previewColor, setPreviewColor] = useState<TagColor>(pickRandomColor)
 
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -71,11 +77,11 @@ export const useTagSelector = ({
 
   const handleCreateTag = useCallback(async () => {
     if (!canCreateNew) return
-    const id = await createTag({ name: searchTerm.trim() })
+    const id = await createTag({ name: searchTerm.trim(), color: previewColor })
     await addTagToTask(id)
     setSearchTerm('')
     inputRef.current?.focus()
-  }, [canCreateNew, createTag, addTagToTask, searchTerm])
+  }, [canCreateNew, createTag, addTagToTask, searchTerm, previewColor])
 
   const handleDeleteTag = useCallback(
     async (tagId: string) => {
@@ -119,6 +125,12 @@ export const useTagSelector = ({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [closeTagSelector])
 
+  useEffect(() => {
+    if (canCreateNew) {
+      setPreviewColor(pickRandomColor())
+    }
+  }, [canCreateNew])
+
   return {
     searchTerm,
     setSearchTerm,
@@ -126,6 +138,7 @@ export const useTagSelector = ({
     selectedTags,
     filteredTags,
     canCreateNew,
+    previewColor,
     inputRef,
     containerRef,
     handleTagSelect,

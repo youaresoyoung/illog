@@ -41,6 +41,7 @@ export const TagSelector = ({
     selectedTags: syncedSelectedTags,
     filteredTags,
     canCreateNew,
+    previewColor,
     inputRef,
     containerRef,
     handleTagSelect,
@@ -85,6 +86,7 @@ export const TagSelector = ({
         tags={filteredTags}
         searchTerm={searchTerm}
         canCreateNew={canCreateNew}
+        previewColor={previewColor}
         onSelect={handleTagSelect}
         onCreate={handleCreateTag}
         onDeleteTag={handleDeleteTag}
