@@ -3,6 +3,7 @@ import { Icon } from '../Icon'
 import * as style from './tagEditor.css'
 import { backgroundColors } from '../../core/tokens/generatedColors'
 import { Divider } from '../Divider'
+import { OmittedTag, TagColor, TagType } from '../Tag/types'
 
 const COLORS = [
   { name: 'Blue', value: 'blue', preview: backgroundColors.backgroundTagBlue },
@@ -14,35 +15,40 @@ const COLORS = [
 ]
 
 type Props = {
-  name?: string
-  color?: string
-  onDelete?: () => void
-  onChange?: (name: string, color: string) => void
+  tag: TagType
+  onDelete?: (tagId: string) => Promise<void>
+  onChange?: (tagId: string, contents: Partial<OmittedTag>) => Promise<void>
 }
 
-export const TagEditor = ({ name = '', color = 'blue', onDelete, onChange }: Props) => {
-  const [tagName, setTagName] = useState(name)
-  const [tagColor, setTagColor] = useState(color)
+export const TagEditor = ({ tag, onDelete, onChange }: Props) => {
+  const [currentTag, setCurrentTag] = useState({
+    ...tag
+  })
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTagName(e.target.value)
-    onChange?.(e.target.value, tagColor)
+  const handleNameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCurrentTag((prev) => ({ ...prev, name: e.target.value }))
+    onChange?.(currentTag.id, { name: e.target.value, color: currentTag.color })
   }
-  const handleColorChange = (value: string) => {
-    setTagColor(value)
-    onChange?.(tagName, value)
+
+  const handleColorChange = async (value: TagColor) => {
+    setCurrentTag((prev) => ({ ...prev, color: value }))
+    onChange?.(currentTag.id, { name: currentTag.name, color: value })
+  }
+
+  const handleDelete = async () => {
+    onDelete?.(currentTag.id)
   }
 
   return (
-    <div className={style.editorContainer}>
+    <div className={style.editorContainer} data-tag-editor-root>
       <input
         className={style.nameInput}
-        value={tagName}
+        value={currentTag.name}
         onChange={handleNameChange}
         placeholder="Tag Name"
       />
       <div className={style.deleteRow}>
-        <button className={style.deleteButton} onClick={onDelete}>
+        <button className={style.deleteButton} onClick={handleDelete}>
           <Icon name="trash" />
           <span>Delete</span>
         </button>
@@ -50,7 +56,11 @@ export const TagEditor = ({ name = '', color = 'blue', onDelete, onChange }: Pro
       <Divider />
       <div className={style.colorList}>
         {COLORS.map((c) => (
-          <div key={c.value} className={style.colorItem} onClick={() => handleColorChange(c.value)}>
+          <div
+            key={c.value}
+            className={style.colorItem}
+            onClick={() => handleColorChange(c.value as TagColor)}
+          >
             <span className={style.colorPreview} style={{ background: c.preview }} />
             <span className={style.colorName}>{c.name}</span>
           </div>
