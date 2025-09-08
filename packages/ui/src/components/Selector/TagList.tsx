@@ -99,23 +99,23 @@ const TagListBase = ({
         <ul className={style.tagList}>
           {tags.map((tag) => (
             <li className={style.tagItem} key={tag.id} onClick={() => onSelect(tag)}>
-              <div>
-                <Tag tag={tag} />
-                <button
-                  type="button"
-                  tabIndex={-1}
-                  aria-label="edit tag"
-                  ref={(el) => {
-                    moreBtnRefs.current[tag.id] = el
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleMoreClick(tag.id)
-                  }}
-                >
-                  <Icon name="more" />
-                </button>
-              </div>
+              <Tag tag={tag} />
+              {/* TODO: Implement Icon button */}
+              <button
+                className={style.moreButton}
+                type="button"
+                tabIndex={-1}
+                aria-label="edit tag"
+                ref={(el) => {
+                  moreBtnRefs.current[tag.id] = el
+                }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleMoreClick(tag.id)
+                }}
+              >
+                <Icon name="more" size="large" />
+              </button>
               {editingTagId === tag.id && editorPosition && (
                 <Portal container={portalContainerRef?.current ?? undefined}>
                   <div

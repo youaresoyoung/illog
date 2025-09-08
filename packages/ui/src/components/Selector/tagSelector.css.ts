@@ -48,6 +48,9 @@ export const tagList = style({
 })
 
 export const tagItem = style({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
   padding: `${tokens.size.space[100]}px ${tokens.size.space[200]}px`,
   borderRadius: tokens.size.radius[200],
   cursor: 'pointer',
@@ -56,6 +59,12 @@ export const tagItem = style({
       backgroundColor: backgroundColors.backgroundDefaultDefaultHover
     }
   }
+})
+
+export const moreButton = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center'
 })
 
 export const createNewTagButton = style({

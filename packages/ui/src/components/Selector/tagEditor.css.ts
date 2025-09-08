@@ -19,6 +19,7 @@ export const nameInput = style({
   alignItems: 'center',
   flexWrap: 'wrap',
   gap: tokens.size.space[200],
+  ...styles.text.bodySmall,
   padding: tokens.size.space[200],
   borderRadius: tokens.size.radius[100],
   backgroundColor: backgroundColors.backgroundDefaultSecondary
