@@ -130,7 +130,12 @@ const TagListBase = ({
                       zIndex: 9999
                     }}
                   >
-                    <TagEditor tag={tag} onDelete={onDeleteTag} onChange={onUpdateTag} />
+                    <TagEditor
+                      tag={tag}
+                      onDelete={onDeleteTag}
+                      onChange={onUpdateTag}
+                      onCloseEditor={handleCloseEditor}
+                    />
                   </div>
                 </Portal>
               )}

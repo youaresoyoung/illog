@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { KeyboardEvent, useState } from 'react'
 import { Icon } from '../Icon'
 import * as style from './tagEditor.css'
 import { backgroundColors } from '../../core/tokens/generatedColors'
@@ -16,27 +16,35 @@ const COLORS = [
 
 type Props = {
   tag: TagType
-  onDelete?: (tagId: string) => Promise<void>
-  onChange?: (tagId: string, contents: Partial<OmittedTag>) => Promise<void>
+  onDelete: (tagId: string) => Promise<void>
+  onChange: (tagId: string, contents: Partial<OmittedTag>) => Promise<void>
+  onCloseEditor: () => void
 }
 
-export const TagEditor = ({ tag, onDelete, onChange }: Props) => {
+export const TagEditor = ({ tag, onDelete, onChange, onCloseEditor }: Props) => {
   const [currentTag, setCurrentTag] = useState({
     ...tag
   })
 
   const handleNameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setCurrentTag((prev) => ({ ...prev, name: e.target.value }))
-    onChange?.(currentTag.id, { name: e.target.value, color: currentTag.color })
+    onChange(currentTag.id, { name: e.target.value, color: currentTag.color })
   }
 
   const handleColorChange = async (value: TagColor) => {
     setCurrentTag((prev) => ({ ...prev, color: value }))
-    onChange?.(currentTag.id, { name: currentTag.name, color: value })
+    onChange(currentTag.id, { name: currentTag.name, color: value })
   }
 
   const handleDelete = async () => {
-    onDelete?.(currentTag.id)
+    onDelete(currentTag.id)
+  }
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onChange(currentTag.id, { name: currentTag.name, color: currentTag.color })
+      onCloseEditor()
+    }
   }
 
   return (
@@ -46,6 +54,7 @@ export const TagEditor = ({ tag, onDelete, onChange }: Props) => {
         value={currentTag.name}
         onChange={handleNameChange}
         placeholder="Tag Name"
+        onKeyDown={handleKeyDown}
       />
       <div className={style.deleteRow}>
         <button className={style.deleteButton} onClick={handleDelete}>
