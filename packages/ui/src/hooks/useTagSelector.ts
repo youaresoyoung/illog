@@ -1,4 +1,4 @@
-import { KeyboardEvent, useEffect, useRef, useState } from 'react'
+import { KeyboardEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { OmittedTag, TagType } from '../components/Tag/types'
 
 type Props = {
@@ -6,8 +6,9 @@ type Props = {
   defaultSelectedTags: TagType[]
   maxTagLength: number
   addTagToTask: (tagId: string) => Promise<void>
-  createTag: (tag: Partial<OmittedTag>) => Promise<string>
   removeTagFromTask: (tagId: string) => Promise<void>
+  createTag: (tag: Partial<OmittedTag>) => Promise<string>
+  deleteTag: (tagId: string) => Promise<void>
   closeTagSelector: () => void
 }
 
@@ -16,8 +17,9 @@ export const useTagSelector = ({
   defaultSelectedTags,
   maxTagLength,
   addTagToTask,
-  createTag,
   removeTagFromTask,
+  createTag,
+  deleteTag,
   closeTagSelector
 }: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -25,50 +27,90 @@ export const useTagSelector = ({
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const filteredTags = tags.filter(
-    (tag) =>
-      !defaultSelectedTags.includes(tag) &&
-      tag.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const normalizedSearch = searchTerm.toLowerCase()
+  const selectedTagIds = useMemo(
+    () => new Set(defaultSelectedTags.map((t) => t.id)),
+    [defaultSelectedTags]
   )
 
-  const canCreateNew =
-    Boolean(searchTerm.trim()) &&
-    searchTerm.length <= maxTagLength &&
-    !tags.some((tag) => tag.name.toLowerCase() === searchTerm.toLowerCase())
+  const selectedTags = useMemo(
+    () => defaultSelectedTags.map((t) => tags.find((it) => it.id === t.id) ?? t),
+    [defaultSelectedTags, tags]
+  )
 
-  const handleTagSelect = async (tag: TagType) => {
-    if (!defaultSelectedTags.includes(tag)) {
-      await addTagToTask(tag.id)
-    }
+  const filteredTags = useMemo(
+    () => tags.filter((tag) => tag.name.toLowerCase().includes(normalizedSearch)),
+    [tags, normalizedSearch]
+  )
+
+  const canCreateNew = useMemo(() => {
+    const trimmed = searchTerm.trim()
+    if (!trimmed) return false
+    if (trimmed.length > maxTagLength) return false
+    const exists = tags.some((tag) => tag.name.toLowerCase() === normalizedSearch)
+    return !exists
+  }, [searchTerm, maxTagLength, tags, normalizedSearch])
+
+  const handleTagSelect = useCallback(
+    async (tag: TagType) => {
+      if (!selectedTagIds.has(tag.id)) {
+        await addTagToTask(tag.id)
+      }
+      setSearchTerm('')
+      inputRef.current?.focus()
+    },
+    [addTagToTask, selectedTagIds]
+  )
+
+  const handleRemoveTagFromTask = useCallback(
+    async (tagId: string) => {
+      await removeTagFromTask(tagId)
+    },
+    [removeTagFromTask]
+  )
+
+  const handleCreateTag = useCallback(async () => {
+    if (!canCreateNew) return
+    const id = await createTag({ name: searchTerm.trim() })
+    await addTagToTask(id)
     setSearchTerm('')
     inputRef.current?.focus()
-  }
+  }, [canCreateNew, createTag, addTagToTask, searchTerm])
 
-  const handleRemoveTagFromTask = async (tagId: string) => {
-    await removeTagFromTask(tagId)
-  }
+  const handleDeleteTag = useCallback(
+    async (tagId: string) => {
+      await deleteTag(tagId)
+      await removeTagFromTask(tagId)
+    },
+    [deleteTag, removeTagFromTask]
+  )
 
-  const handleCreateTag = async () => {
-    if (!canCreateNew) return
-    const createTagId = await createTag({ name: searchTerm.trim() })
-    addTagToTask(createTagId)
-    setSearchTerm('')
-  }
-
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && canCreateNew) {
-      e.preventDefault()
-      handleCreateTag()
-    } else if (e.key === 'Backspace' && !searchTerm && defaultSelectedTags.length > 0) {
-      handleRemoveTagFromTask(defaultSelectedTags[defaultSelectedTags.length - 1].id)
-    } else if (e.key === 'Escape') {
-      setSearchTerm('')
-    }
-  }
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter' && canCreateNew) {
+        e.preventDefault()
+        void handleCreateTag()
+      } else if (e.key === 'Backspace' && !searchTerm && defaultSelectedTags.length > 0) {
+        void handleRemoveTagFromTask(defaultSelectedTags[defaultSelectedTags.length - 1].id)
+      } else if (e.key === 'Escape') {
+        setSearchTerm('')
+      }
+    },
+    [canCreateNew, handleCreateTag, searchTerm, defaultSelectedTags, handleRemoveTagFromTask]
+  )
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+      const target = event.target as HTMLElement | null
+      const isInContainer = !!(
+        containerRef.current &&
+        target &&
+        containerRef.current.contains(target)
+      )
+      const isInTagEditor = !!(
+        target && (target.closest('[data-tag-editor-root]') as HTMLElement | null)
+      )
+      if (!isInContainer && !isInTagEditor) {
         setSearchTerm('')
         closeTagSelector()
       }
@@ -81,6 +123,7 @@ export const useTagSelector = ({
     searchTerm,
     setSearchTerm,
     defaultSelectedTags,
+    selectedTags,
     filteredTags,
     canCreateNew,
     inputRef,
@@ -88,6 +131,7 @@ export const useTagSelector = ({
     handleTagSelect,
     handleRemoveTagFromTask,
     handleCreateTag,
+    handleDeleteTag,
     handleKeyDown
   }
 }
