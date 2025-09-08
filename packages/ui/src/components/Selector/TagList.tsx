@@ -1,20 +1,32 @@
 import { Tag } from '../Tag'
-import { TagType } from '../Tag/types'
+import { OmittedTag, TagType } from '../Tag/types'
 import { Icon } from '../Icon'
 import { TagEditor } from './TagEditor'
 import * as style from './tagSelector.css'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback, memo, RefObject } from 'react'
 import { Portal } from '../Portal'
 
 type Props = {
   tags: TagType[]
   searchTerm: string
   canCreateNew: boolean
-  onSelect: (tag: TagType) => void
-  onCreate: () => void
+  onSelect: (tag: TagType) => Promise<void>
+  onCreate: () => Promise<void>
+  onDeleteTag: (tagId: string) => Promise<void>
+  onUpdateTag: (tagId: string, contents: Partial<OmittedTag>) => Promise<void>
+  portalContainerRef?: RefObject<Element | DocumentFragment | null>
 }
 
-export const TagList = ({ tags, searchTerm, canCreateNew, onSelect, onCreate }: Props) => {
+const TagListBase = ({
+  tags,
+  searchTerm,
+  canCreateNew,
+  onSelect,
+  onCreate,
+  onDeleteTag,
+  onUpdateTag,
+  portalContainerRef
+}: Props) => {
   const [editingTagId, setEditingTagId] = useState<string | null>(null)
   const [editorPosition, setEditorPosition] = useState<{ left: number; top: number } | null>(null)
   const moreBtnRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({})
@@ -105,9 +117,12 @@ export const TagList = ({ tags, searchTerm, canCreateNew, onSelect, onCreate }: 
                 </button>
               </div>
               {editingTagId === tag.id && editorPosition && (
-                <Portal>
+                <Portal container={portalContainerRef?.current ?? undefined}>
                   <div
                     ref={editorRef}
+                    onClick={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
                     style={{
                       position: 'fixed',
                       left: editorPosition.left,
@@ -115,14 +130,7 @@ export const TagList = ({ tags, searchTerm, canCreateNew, onSelect, onCreate }: 
                       zIndex: 9999
                     }}
                   >
-                    <TagEditor
-                      name={tag.name}
-                      color={tag.color}
-                      onDelete={handleCloseEditor}
-                      onChange={(newName, newColor) => {
-                        console.log('tag updated', newName, newColor)
-                      }}
-                    />
+                    <TagEditor tag={tag} onDelete={onDeleteTag} onChange={onUpdateTag} />
                   </div>
                 </Portal>
               )}
@@ -133,3 +141,6 @@ export const TagList = ({ tags, searchTerm, canCreateNew, onSelect, onCreate }: 
     </div>
   )
 }
+
+export const TagList = memo(TagListBase)
+TagList.displayName = 'TagList'
