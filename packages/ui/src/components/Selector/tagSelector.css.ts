@@ -1,22 +1,26 @@
 import { style } from '@vanilla-extract/css'
 import { backgroundColors, borderColors, textColors } from '../../core/tokens/generatedColors'
-import { styles, tokens } from 'packages/themes/dist'
+import { styles, tokens } from '@illog/themes'
+import { sprinkles } from '../../core/sprinkles.css'
 
-export const container = style({
-  position: 'fixed',
-  top: tokens.size.space['negative200'],
-  left: 0,
-  zIndex: 1000,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: tokens.size.space[200],
-  width: 296,
-  maxHeight: 400,
-  padding: tokens.size.space[200],
-  backgroundColor: backgroundColors.backgroundDefaultDefault,
-  border: `${tokens.size.stroke.border}px solid ${borderColors.borderDefaultDefault}`,
-  borderRadius: tokens.size.radius[200]
-})
+export const container = style([
+  sprinkles({ shadow: '400' }),
+  {
+    position: 'fixed',
+    top: tokens.size.space['negative200'],
+    left: 0,
+    zIndex: 1000,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: tokens.size.space[200],
+    width: 296,
+    maxHeight: 400,
+    padding: tokens.size.space[200],
+    backgroundColor: backgroundColors.backgroundDefaultDefault,
+    border: `${tokens.size.stroke.border}px solid ${borderColors.borderDefaultDefault}`,
+    borderRadius: tokens.size.radius[200]
+  }
+])
 
 export const inputWrapper = style({
   display: 'flex',
@@ -48,6 +52,9 @@ export const tagList = style({
 })
 
 export const tagItem = style({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
   padding: `${tokens.size.space[100]}px ${tokens.size.space[200]}px`,
   borderRadius: tokens.size.radius[200],
   cursor: 'pointer',
@@ -56,6 +63,12 @@ export const tagItem = style({
       backgroundColor: backgroundColors.backgroundDefaultDefaultHover
     }
   }
+})
+
+export const moreButton = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center'
 })
 
 export const createNewTagButton = style({

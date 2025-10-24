@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { useTagStore } from '../../stores/useTagStore'
+import { useTagActions } from '../../stores/useTagStore'
 import { Color } from 'services/app/src/types'
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 }
 
 export const TagEditor = ({ id, name }: Props) => {
-  const { deleteTag, updateTag } = useTagStore()
+  const { deleteTag, updateTag } = useTagActions()
 
   const [tagName, setTagName] = useState(name)
   const inputSelectRef = useRef<HTMLInputElement>(null)

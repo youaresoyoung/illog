@@ -12,6 +12,7 @@ export { Input } from './components/Input'
 export { Tag } from './components/Tag'
 export { TagSelector } from './components/Selector'
 export { Divider } from './components/Divider'
+export { Portal } from './components/Portal'
 
 // Types
 export type { IconName } from './components/Icon/types'

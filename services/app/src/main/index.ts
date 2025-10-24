@@ -32,13 +32,6 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  const mainWindow = createWindow()
-
-  nativeTheme.on('updated', () => {
-    const isDark = nativeTheme.shouldUseDarkColors
-    mainWindow.webContents.send('theme.changed', isDark)
-  })
-
   const db = openDB()
 
   const taskRepo = new TaskRepository(db)
@@ -50,6 +43,13 @@ app.whenReady().then(() => {
 
   const tagRepo = new TagReposity(db)
   registerTagHandlers(tagRepo)
+
+  const mainWindow = createWindow()
+
+  nativeTheme.on('updated', () => {
+    const isDark = nativeTheme.shouldUseDarkColors
+    mainWindow.webContents.send('theme.changed', isDark)
+  })
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

@@ -13,8 +13,10 @@ type Props = {
   maxTagLength?: number
   className?: string
   addTagToTask: (tagId: string) => Promise<void>
-  createTag: (tag: Partial<OmittedTag>) => Promise<string>
   removeTagFromTask: (tagId: string) => Promise<void>
+  createTag: (tag: Partial<OmittedTag>) => Promise<string>
+  deleteTag: (tagId: string) => Promise<void>
+  updateTag: (tagId: string, contents: Partial<OmittedTag>) => Promise<void>
   closeTagSelector: () => void
 }
 
@@ -26,29 +28,35 @@ export const TagSelector = ({
   position = { top: 0, left: 0 },
   className,
   addTagToTask,
-  createTag,
   removeTagFromTask,
+  createTag,
+  deleteTag,
+  updateTag,
   closeTagSelector
 }: Props) => {
   const {
     searchTerm,
     setSearchTerm,
     defaultSelectedTags: selectedTags,
+    selectedTags: syncedSelectedTags,
     filteredTags,
     canCreateNew,
+    previewColor,
     inputRef,
     containerRef,
     handleTagSelect,
     handleRemoveTagFromTask,
     handleCreateTag,
+    handleDeleteTag,
     handleKeyDown
   } = useTagSelector({
     tags,
     defaultSelectedTags,
     maxTagLength,
     addTagToTask,
-    createTag,
     removeTagFromTask,
+    createTag,
+    deleteTag,
     closeTagSelector
   })
 
@@ -59,7 +67,7 @@ export const TagSelector = ({
       style={{ top: position.top, left: position.left }}
     >
       <div className={style.inputWrapper}>
-        <SelectedTags tags={defaultSelectedTags} removeFromTask={handleRemoveTagFromTask} />
+        <SelectedTags tags={syncedSelectedTags} removeFromTask={handleRemoveTagFromTask} />
         <input
           className={style.input}
           ref={inputRef}
@@ -78,8 +86,12 @@ export const TagSelector = ({
         tags={filteredTags}
         searchTerm={searchTerm}
         canCreateNew={canCreateNew}
+        previewColor={previewColor}
         onSelect={handleTagSelect}
         onCreate={handleCreateTag}
+        onDeleteTag={handleDeleteTag}
+        onUpdateTag={updateTag}
+        portalContainerRef={containerRef}
       />
     </div>
   )
