@@ -1,6 +1,7 @@
 import { OmittedTag, Tag } from 'services/app/src/types'
 import { create } from 'zustand'
 import { combine } from 'zustand/middleware'
+import { useShallow } from 'zustand/react/shallow'
 
 interface TagState {
   tags: Tag[]
@@ -35,3 +36,16 @@ export const useTagStore = create<TagState>(
     }
   }))
 )
+
+// Selector helpers for idiomatic usage in components (grouped selects with shallow)
+export const useTagActions = () =>
+  useTagStore(
+    useShallow((s) => ({
+      loadTags: s.loadTags,
+      createTag: s.createTag,
+      updateTag: s.updateTag,
+      deleteTag: s.deleteTag
+    }))
+  )
+
+export const useTagState = () => useTagStore(useShallow((s) => ({ tags: s.tags })))

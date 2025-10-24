@@ -1,6 +1,7 @@
 import { OmittedTask, TaskWithTags } from 'services/app/src/types'
 import { create } from 'zustand'
 import { combine } from 'zustand/middleware'
+import { useShallow } from 'zustand/react/shallow'
 
 interface TaskState {
   tasks: TaskWithTags[]
@@ -64,3 +65,27 @@ export const useTaskStore = create<TaskState>()(
     })
   )
 )
+
+// Selector helpers (grouped selects with shallow compare) for idiomatic usage in components
+export const useTaskActions = () =>
+  useTaskStore(
+    useShallow((s) => ({
+      loadTasks: s.loadTasks,
+      createTask: s.createTask,
+      updateTask: s.updateTask,
+      deleteTask: s.deleteTask,
+      addTag: s.addTag,
+      removeTag: s.removeTag,
+      openTaskNote: s.openTaskNote,
+      closeTaskNote: s.closeTaskNote
+    }))
+  )
+
+export const useTaskState = () =>
+  useTaskStore(
+    useShallow((s) => ({
+      tasks: s.tasks,
+      currentTaskId: s.currentTaskId,
+      isTaskNoteOpen: s.isTaskNoteOpen
+    }))
+  )

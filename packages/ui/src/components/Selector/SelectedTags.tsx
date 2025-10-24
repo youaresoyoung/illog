@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Tag } from '../Tag'
 import { TagType } from '../Tag/types'
 
@@ -6,10 +7,13 @@ type Props = {
   removeFromTask: (id: string) => void
 }
 
-export const SelectedTags = ({ tags, removeFromTask }: Props) => (
+const SelectedTagsBase = ({ tags, removeFromTask }: Props) => (
   <>
     {tags.map((tag) => (
       <Tag key={tag.id} tag={tag} removeFromTask={() => removeFromTask(tag.id)} />
     ))}
   </>
 )
+
+export const SelectedTags = memo(SelectedTagsBase)
+SelectedTags.displayName = 'SelectedTags'

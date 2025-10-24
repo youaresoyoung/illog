@@ -1,15 +1,14 @@
 import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { TaskWithTags } from 'services/app/src/types'
-import { useTaskStore } from '../../stores/useTaskStore'
+import { useTaskActions } from '../../stores/useTaskStore'
 import { Tag, TagSelector } from '@illog/ui'
-import { useTagStore } from '../../stores/useTagStore'
+import { useTagActions, useTagState } from '../../stores/useTagStore'
 
 export const TagSection = ({ task }: { task: TaskWithTags }) => {
-  const tags = useTagStore((s) => s.tags)
-  const addTag = useTaskStore((s) => s.addTag)
-  const createTag = useTagStore((s) => s.createTag)
-  const removeTag = useTaskStore((s) => s.removeTag)
+  const { tags } = useTagState()
+  const { createTag, updateTag, deleteTag } = useTagActions()
+  const { addTag, removeTag } = useTaskActions()
 
   const tagsSectionRef = useRef<HTMLDivElement>(null)
 
@@ -19,9 +18,12 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
     left: 0
   })
 
-  const filteredTags = useMemo(() => {
-    return tags
-  }, [tags])
+  const filteredTags = useMemo(() => tags, [tags])
+
+  const syncedTaskTags = useMemo(
+    () => task.tags.map((t) => tags.find((it) => it.id === t.id) ?? t),
+    [task.tags, tags]
+  )
 
   const handleAddTagToTask = async (tagId: string) => {
     await addTag(task.id, tagId)
@@ -67,9 +69,9 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
   return (
     <>
       <div ref={tagsSectionRef} onClick={handleTagsSectionClick}>
-        {task.tags.length > 0 ? (
+        {syncedTaskTags.length > 0 ? (
           <ul style={{ display: 'flex', gap: '8px' }}>
-            {task.tags.map((tag) => (
+            {syncedTaskTags.map((tag) => (
               <li key={tag.id}>
                 <Tag
                   tag={{ id: tag.id, name: tag.name, color: tag.color }}
@@ -88,12 +90,14 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
       {isOpen && (
         <TagSelector
           tags={filteredTags}
-          defaultSelectedTags={task.tags}
+          defaultSelectedTags={syncedTaskTags}
           placeholder="Search tags..."
           position={selectorPosition}
           addTagToTask={handleAddTagToTask}
-          createTag={createTag}
           removeTagFromTask={handleRemoveTagClick}
+          createTag={createTag}
+          deleteTag={deleteTag}
+          updateTag={updateTag}
           closeTagSelector={() => setIsOpen(false)}
         />
       )}
