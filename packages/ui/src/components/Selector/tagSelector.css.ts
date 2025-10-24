@@ -1,22 +1,26 @@
 import { style } from '@vanilla-extract/css'
 import { backgroundColors, borderColors, textColors } from '../../core/tokens/generatedColors'
 import { styles, tokens } from '@illog/themes'
+import { sprinkles } from '../../core/sprinkles.css'
 
-export const container = style({
-  position: 'fixed',
-  top: tokens.size.space['negative200'],
-  left: 0,
-  zIndex: 1000,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: tokens.size.space[200],
-  width: 296,
-  maxHeight: 400,
-  padding: tokens.size.space[200],
-  backgroundColor: backgroundColors.backgroundDefaultDefault,
-  border: `${tokens.size.stroke.border}px solid ${borderColors.borderDefaultDefault}`,
-  borderRadius: tokens.size.radius[200]
-})
+export const container = style([
+  sprinkles({ shadow: '400' }),
+  {
+    position: 'fixed',
+    top: tokens.size.space['negative200'],
+    left: 0,
+    zIndex: 1000,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: tokens.size.space[200],
+    width: 296,
+    maxHeight: 400,
+    padding: tokens.size.space[200],
+    backgroundColor: backgroundColors.backgroundDefaultDefault,
+    border: `${tokens.size.stroke.border}px solid ${borderColors.borderDefaultDefault}`,
+    borderRadius: tokens.size.radius[200]
+  }
+])
 
 export const inputWrapper = style({
   display: 'flex',

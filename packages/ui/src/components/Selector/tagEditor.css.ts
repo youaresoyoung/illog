@@ -2,17 +2,21 @@ import { styles } from '@illog/themes'
 import { style } from '@vanilla-extract/css'
 import { backgroundColors, borderColors, textColors } from '../../core/tokens/generatedColors'
 import { tokens } from 'packages/themes/dist'
+import { sprinkles } from '../../core/sprinkles.css'
 
-export const editorContainer = style({
-  background: backgroundColors.backgroundDefaultDefault,
-  borderRadius: tokens.size.radius[200],
-  padding: tokens.size.space[200],
-  minWidth: 200,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: tokens.size.space[200],
-  border: `${tokens.size.stroke.border}px solid ${borderColors.borderDefaultDefault}`
-})
+export const editorContainer = style([
+  sprinkles({ shadow: '400' }),
+  {
+    background: backgroundColors.backgroundDefaultDefault,
+    borderRadius: tokens.size.radius[200],
+    padding: tokens.size.space[200],
+    minWidth: 200,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: tokens.size.space[200],
+    border: `${tokens.size.stroke.border}px solid ${borderColors.borderDefaultDefault}`
+  }
+])
 
 export const nameInput = style({
   display: 'flex',
