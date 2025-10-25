@@ -88,17 +88,31 @@ export class TaskRepository {
   update(id: string, contents: Partial<OmittedTask>): TaskWithTags {
     const now = new Date().toISOString()
 
-    const stmt = this.db.prepare(
-      `UPDATE task 
-       SET title = COALESCE(:title, title), 
-           status = COALESCE(:status, status),
-           project_id = COALESCE(:project_id, project_id),
-           end_time = COALESCE(:end_time, end_time),
-           updated_at = :updated_at
-       WHERE id = :id AND deleted_at IS NULL`
-    )
+    const updates: string[] = []
+    const params: Record<string, unknown> = { id, updated_at: now }
 
-    const result = stmt.run({ ...contents, updated_at: now, id })
+    if (contents.title !== undefined) {
+      updates.push('title = :title')
+      params.title = contents.title
+    }
+    if (contents.status !== undefined) {
+      updates.push('status = :status')
+      params.status = contents.status
+    }
+    if (contents.project_id !== undefined) {
+      updates.push('project_id = :project_id')
+      params.project_id = contents.project_id
+    }
+
+    updates.push('updated_at = :updated_at')
+
+    if (updates.length === 1) {
+      return this.getWithTags(id)!
+    }
+
+    const query = `UPDATE task SET ${updates.join(', ')} WHERE id = :id AND deleted_at IS NULL`
+    const stmt = this.db.prepare(query)
+    const result = stmt.run(params)
 
     if (result.changes === 0) {
       throw new Error('Task not found or no changes made')
