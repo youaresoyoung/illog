@@ -21,11 +21,26 @@ export const useCreateTag = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (tag: Partial<OmittedTag>) => window.api.tag.create(tag),
+    mutationFn: async (tag: Partial<OmittedTag>) => {
+      const newTag = await window.api.tag.create(tag)
+      return newTag
+    },
     onSuccess: (newTag) => {
-      queryClient.setQueryData<Tag[]>(queryKeys.tags.all, (old) =>
-        old ? [...old, newTag] : [newTag]
-      )
+      queryClient.setQueryData<Tag[]>(queryKeys.tags.all, (old) => {
+        if (!old) return [newTag]
+
+        const exists = old.find((t) => t.id === newTag.id)
+        if (exists) {
+          return old.map((t) => (t.id === newTag.id ? newTag : t))
+        }
+
+        return [...old, newTag]
+      })
+
+      queryClient.setQueryData(queryKeys.tags.detail(newTag.id), newTag)
+    },
+    onError: (error) => {
+      console.error('Tag creation failed:', error)
     }
   })
 }
@@ -34,13 +49,33 @@ export const useUpdateTag = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, contents }: { id: string; contents: Partial<OmittedTag> }) =>
-      window.api.tag.update(id, contents),
+    mutationFn: async ({ id, contents }: { id: string; contents: Partial<OmittedTag> }) => {
+      const updatedTag = await window.api.tag.update(id, contents)
+      return updatedTag
+    },
+    onMutate: async ({ id, contents }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.tags.all })
+
+      const previousTags = queryClient.getQueryData<Tag[]>(queryKeys.tags.all)
+
+      queryClient.setQueryData<Tag[]>(queryKeys.tags.all, (old) =>
+        old?.map((tag) => (tag.id === id ? { ...tag, ...contents } : tag))
+      )
+
+      return { previousTags }
+    },
     onSuccess: (updatedTag) => {
       queryClient.setQueryData<Tag[]>(queryKeys.tags.all, (old) =>
         old?.map((tag) => (tag.id === updatedTag.id ? updatedTag : tag))
       )
       queryClient.setQueryData(queryKeys.tags.detail(updatedTag.id), updatedTag)
+      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.today() })
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTags) {
+        queryClient.setQueryData(queryKeys.tags.all, context.previousTags)
+      }
+      console.error('Tag update failed:', _err)
     }
   })
 }

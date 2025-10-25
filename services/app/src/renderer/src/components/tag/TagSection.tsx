@@ -34,7 +34,12 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
   )
 
   const handleAddTagToTask = async (tagId: string) => {
-    addTag({ taskId: task.id, tagId })
+    try {
+      await addTag({ taskId: task.id, tagId })
+    } catch (error) {
+      console.error('Failed to add tag to task:', error)
+      throw error
+    }
   }
 
   const handleTagsSectionClick = (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
@@ -55,24 +60,45 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
     })
   }
 
+  // TODO: need to handle errors properly
   const handleRemoveTagClick = async (tagId: string) => {
-    removeTag({ taskId: task.id, tagId })
+    try {
+      await removeTag({ taskId: task.id, tagId })
+    } catch (error) {
+      console.error('Failed to remove tag from task:', error)
+      throw error
+    }
   }
 
   const handleCreateTag = async (tag: Partial<{ name: string; color: Color }>) => {
-    const newTag = await createTag(tag)
-    return newTag.id
+    try {
+      const newTag = await createTag(tag)
+      return newTag.id
+    } catch (error) {
+      console.error('Failed to create tag:', error)
+      throw error
+    }
   }
 
   const handleUpdateTag = async (
     tagId: string,
     contents: Partial<{ name: string; color: Color }>
   ) => {
-    await updateTag({ id: tagId, contents })
+    try {
+      await updateTag({ id: tagId, contents })
+    } catch (error) {
+      console.error('Failed to update tag:', error)
+      throw error
+    }
   }
 
   const handleDeleteTag = async (tagId: string) => {
-    await deleteTag(tagId)
+    try {
+      await deleteTag(tagId)
+    } catch (error) {
+      console.error('Failed to delete tag:', error)
+      throw error
+    }
   }
 
   useEffect(() => {

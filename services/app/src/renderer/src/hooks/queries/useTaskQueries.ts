@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { OmittedTask, TaskWithTags } from '../../../../types'
+import { OmittedTask, TaskWithTags, Tag } from '../../../../types'
 import { queryKeys } from './queryKeys'
 
 export const useTodayTasks = () => {
@@ -94,11 +94,36 @@ export const useAddTagToTask = () => {
   return useMutation({
     mutationFn: ({ taskId, tagId }: { taskId: string; tagId: string }) =>
       window.api.task.addTag(taskId, tagId),
+    onMutate: async ({ taskId, tagId }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
+
+      const previousTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
+      const allTags = queryClient.getQueryData<Tag[]>(queryKeys.tags.all)
+      const tagToAdd = allTags?.find((t) => t.id === tagId)
+
+      if (tagToAdd) {
+        queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+          old?.map((task) =>
+            task.id === taskId && !task.tags.some((t) => t.id === tagId)
+              ? { ...task, tags: [...task.tags, tagToAdd] }
+              : task
+          )
+        )
+      }
+
+      return { previousTasks }
+    },
     onSuccess: (updatedTask) => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
       queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(queryKeys.tasks.today(), context.previousTasks)
+      }
+      console.error('Failed to add tag to task:', _err)
     }
   })
 }
@@ -109,11 +134,30 @@ export const useRemoveTagFromTask = () => {
   return useMutation({
     mutationFn: ({ taskId, tagId }: { taskId: string; tagId: string }) =>
       window.api.task.removeTag(taskId, tagId),
+    onMutate: async ({ taskId, tagId }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
+
+      const previousTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
+
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+        old?.map((task) =>
+          task.id === taskId ? { ...task, tags: task.tags.filter((tag) => tag.id !== tagId) } : task
+        )
+      )
+
+      return { previousTasks }
+    },
     onSuccess: (updatedTask) => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
       queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(queryKeys.tasks.today(), context.previousTasks)
+      }
+      console.error('Failed to remove tag from task:', _err)
     }
   })
 }
