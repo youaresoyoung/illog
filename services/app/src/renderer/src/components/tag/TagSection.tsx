@@ -1,14 +1,22 @@
 import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
 
-import { TaskWithTags } from 'services/app/src/types'
-import { useTaskActions } from '../../stores/useTaskStore'
+import { Color, TaskWithTags } from 'services/app/src/types'
 import { Tag, TagSelector } from '@illog/ui'
-import { useTagActions, useTagState } from '../../stores/useTagStore'
+import {
+  useAllTags,
+  useCreateTag,
+  useUpdateTag,
+  useDeleteTag
+} from '../../hooks/queries/useTagQueries'
+import { useAddTagToTask, useRemoveTagFromTask } from '../../hooks/queries/useTaskQueries'
 
 export const TagSection = ({ task }: { task: TaskWithTags }) => {
-  const { tags } = useTagState()
-  const { createTag, updateTag, deleteTag } = useTagActions()
-  const { addTag, removeTag } = useTaskActions()
+  const { data: tags = [] } = useAllTags()
+  const { mutateAsync: createTag } = useCreateTag()
+  const { mutateAsync: updateTag } = useUpdateTag()
+  const { mutateAsync: deleteTag } = useDeleteTag()
+  const { mutateAsync: addTag } = useAddTagToTask()
+  const { mutateAsync: removeTag } = useRemoveTagFromTask()
 
   const tagsSectionRef = useRef<HTMLDivElement>(null)
 
@@ -26,7 +34,7 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
   )
 
   const handleAddTagToTask = async (tagId: string) => {
-    await addTag(task.id, tagId)
+    addTag({ taskId: task.id, tagId })
   }
 
   const handleTagsSectionClick = (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
@@ -48,7 +56,23 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
   }
 
   const handleRemoveTagClick = async (tagId: string) => {
-    await removeTag(task.id, tagId)
+    removeTag({ taskId: task.id, tagId })
+  }
+
+  const handleCreateTag = async (tag: Partial<{ name: string; color: Color }>) => {
+    const newTag = await createTag(tag)
+    return newTag.id
+  }
+
+  const handleUpdateTag = async (
+    tagId: string,
+    contents: Partial<{ name: string; color: Color }>
+  ) => {
+    await updateTag({ id: tagId, contents })
+  }
+
+  const handleDeleteTag = async (tagId: string) => {
+    await deleteTag(tagId)
   }
 
   useEffect(() => {
@@ -95,9 +119,9 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
           position={selectorPosition}
           addTagToTask={handleAddTagToTask}
           removeTagFromTask={handleRemoveTagClick}
-          createTag={createTag}
-          deleteTag={deleteTag}
-          updateTag={updateTag}
+          createTag={handleCreateTag}
+          deleteTag={handleDeleteTag}
+          updateTag={handleUpdateTag}
           closeTagSelector={() => setIsOpen(false)}
         />
       )}

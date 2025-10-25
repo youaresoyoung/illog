@@ -1,24 +1,25 @@
 import { TaskWithTags } from 'services/app/src/types'
-import { useTaskActions } from '../../stores/useTaskStore'
 import { TagSection } from '../tag/TagSection'
 import { Card, Input, Text, useAutoSaveInput } from '@illog/ui'
+import { useUpdateTask } from '../../hooks/queries/useTaskQueries'
 
 type Props = {
   task: TaskWithTags
-  handleDeleteTask: (id: string) => void
+  handleDeleteTask?: (id: string) => void
+  handleOpenNote: (id: string) => void
 }
 
-export const TaskCard = ({ task, handleDeleteTask }: Props) => {
-  const { openTaskNote, updateTask } = useTaskActions()
+export const TaskCard = ({ task, handleOpenNote }: Props) => {
+  const { mutate: updateTask } = useUpdateTask()
 
   const [title, , handleChange] = useAutoSaveInput(
     task.title,
-    (value) => updateTask(task.id, { ...task, title: value }),
+    (value) => updateTask({ id: task.id, contents: { title: value } }),
     1000
   )
 
   const handleClickCard = () => {
-    openTaskNote(task.id)
+    handleOpenNote(task.id)
   }
 
   return (
