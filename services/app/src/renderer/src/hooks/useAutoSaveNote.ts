@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { TaskNote } from 'services/app/src/types'
+import { useTaskNote, useAutoSaveNote as useAutoSaveNoteMutation } from './queries/useNoteQueries'
 
 export const useAutoSaveNote = (
   currentTaskId: string | undefined
@@ -7,34 +8,33 @@ export const useAutoSaveNote = (
   note: TaskNote | null,
   handleChange: (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void
 ] => {
-  const [note, setNote] = useState<TaskNote | null>(null)
+  const { data: fetchedNote } = useTaskNote(currentTaskId)
+  const { mutate: saveNote } = useAutoSaveNoteMutation()
+
+  const [localContent, setLocalContent] = useState<string>('')
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    if (fetchedNote) {
+      setLocalContent(fetchedNote.content || '')
+    } else {
+      setLocalContent('')
+    }
+  }, [fetchedNote])
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const { value } = e.target
-    setNote((prev) => ({ ...(prev ?? { task_id: currentTaskId }), content: value }) as TaskNote)
+    setLocalContent(value)
 
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
 
-    timeoutRef.current = setTimeout(async () => {
+    timeoutRef.current = setTimeout(() => {
       if (currentTaskId) {
-        try {
-          const { conflict, note } = await window.api.note.autoSave(
-            currentTaskId,
-            value,
-            Date.now()
-          )
-          if (!conflict) {
-            const { task_id, content, updated_at } = note
-            setNote({
-              task_id: task_id,
-              content: content,
-              updated_at: updated_at
-            })
-          }
-        } catch (e) {
-          console.error(e)
-        }
+        saveNote({
+          taskId: currentTaskId,
+          content: value,
+          clientUpdatedAt: Date.now()
+        })
       }
     }, 1000)
   }
@@ -45,30 +45,11 @@ export const useAutoSaveNote = (
     }
   }, [])
 
-  useEffect(() => {
-    if (!currentTaskId) {
-      setNote(null)
-      return
-    }
-
-    let isMounted = true
-    const loadNote = async () => {
-      try {
-        const note = await window.api.note.findByTaskId(currentTaskId)
-        if (isMounted) {
-          setNote(note)
-        }
-      } catch (e) {
-        console.error(e)
-      }
-    }
-
-    loadNote()
-
-    return () => {
-      isMounted = false
-    }
-  }, [currentTaskId])
+  const note: TaskNote | null = fetchedNote
+    ? { ...fetchedNote, content: localContent }
+    : currentTaskId
+      ? { task_id: currentTaskId, content: localContent, updated_at: new Date().toISOString() }
+      : null
 
   return [note, handleChange]
 }

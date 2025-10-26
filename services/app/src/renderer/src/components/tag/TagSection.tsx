@@ -1,14 +1,22 @@
 import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
 
-import { TaskWithTags } from 'services/app/src/types'
-import { useTaskActions } from '../../stores/useTaskStore'
+import { Color, TaskWithTags } from 'services/app/src/types'
 import { Tag, TagSelector } from '@illog/ui'
-import { useTagActions, useTagState } from '../../stores/useTagStore'
+import {
+  useAllTags,
+  useCreateTag,
+  useUpdateTag,
+  useDeleteTag
+} from '../../hooks/queries/useTagQueries'
+import { useAddTagToTask, useRemoveTagFromTask } from '../../hooks/queries/useTaskQueries'
 
 export const TagSection = ({ task }: { task: TaskWithTags }) => {
-  const { tags } = useTagState()
-  const { createTag, updateTag, deleteTag } = useTagActions()
-  const { addTag, removeTag } = useTaskActions()
+  const { data: tags = [] } = useAllTags()
+  const { mutateAsync: createTag } = useCreateTag()
+  const { mutateAsync: updateTag } = useUpdateTag()
+  const { mutateAsync: deleteTag } = useDeleteTag()
+  const { mutateAsync: addTag } = useAddTagToTask()
+  const { mutateAsync: removeTag } = useRemoveTagFromTask()
 
   const tagsSectionRef = useRef<HTMLDivElement>(null)
 
@@ -26,7 +34,12 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
   )
 
   const handleAddTagToTask = async (tagId: string) => {
-    await addTag(task.id, tagId)
+    try {
+      await addTag({ taskId: task.id, tagId })
+    } catch (error) {
+      console.error('Failed to add tag to task:', error)
+      throw error
+    }
   }
 
   const handleTagsSectionClick = (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
@@ -47,8 +60,45 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
     })
   }
 
+  // TODO: need to handle errors properly
   const handleRemoveTagClick = async (tagId: string) => {
-    await removeTag(task.id, tagId)
+    try {
+      await removeTag({ taskId: task.id, tagId })
+    } catch (error) {
+      console.error('Failed to remove tag from task:', error)
+      throw error
+    }
+  }
+
+  const handleCreateTag = async (tag: Partial<{ name: string; color: Color }>) => {
+    try {
+      const newTag = await createTag(tag)
+      return newTag.id
+    } catch (error) {
+      console.error('Failed to create tag:', error)
+      throw error
+    }
+  }
+
+  const handleUpdateTag = async (
+    tagId: string,
+    contents: Partial<{ name: string; color: Color }>
+  ) => {
+    try {
+      await updateTag({ id: tagId, contents })
+    } catch (error) {
+      console.error('Failed to update tag:', error)
+      throw error
+    }
+  }
+
+  const handleDeleteTag = async (tagId: string) => {
+    try {
+      await deleteTag(tagId)
+    } catch (error) {
+      console.error('Failed to delete tag:', error)
+      throw error
+    }
   }
 
   useEffect(() => {
@@ -95,9 +145,9 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
           position={selectorPosition}
           addTagToTask={handleAddTagToTask}
           removeTagFromTask={handleRemoveTagClick}
-          createTag={createTag}
-          deleteTag={deleteTag}
-          updateTag={updateTag}
+          createTag={handleCreateTag}
+          deleteTag={handleDeleteTag}
+          updateTag={handleUpdateTag}
           closeTagSelector={() => setIsOpen(false)}
         />
       )}

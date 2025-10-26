@@ -6,6 +6,7 @@ import { Reflection } from './pages/Reflection'
 import { ThemeProvider } from './context/ThemeContext'
 import { NavProvider } from '@illog/ui'
 import { PAGE_LIST } from './constant/nav'
+import { QueryProvider } from './providers/QueryProvider'
 
 const router = createHashRouter([
   {
@@ -30,11 +31,13 @@ const router = createHashRouter([
 
 function App(): React.JSX.Element {
   return (
-    <ThemeProvider>
-      <NavProvider list={PAGE_LIST} defaultActiveId={PAGE_LIST[0].id}>
-        <RouterProvider router={router} />
-      </NavProvider>
-    </ThemeProvider>
+    <QueryProvider>
+      <ThemeProvider>
+        <NavProvider list={PAGE_LIST} defaultActiveId={PAGE_LIST[0].id}>
+          <RouterProvider router={router} />
+        </NavProvider>
+      </ThemeProvider>
+    </QueryProvider>
   )
 }
 
