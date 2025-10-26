@@ -2,19 +2,10 @@ import { Outlet } from 'react-router'
 import { LeftPanel } from './LeftPanel'
 import { MainContent } from './MainContent'
 import { RightPanel } from './RightPanel'
-import { useTaskActions, useTaskState } from '../../stores/useTaskStore'
-import { useTagActions } from '../../stores/useTagStore'
-import { useEffect } from 'react'
+import { useUIStoreState } from '../../stores/useUIStore'
 
 export const Layout = () => {
-  const { isTaskNoteOpen } = useTaskState()
-  const { loadTasks } = useTaskActions()
-  const { loadTags } = useTagActions()
-
-  useEffect(() => {
-    loadTasks()
-    loadTags()
-  }, [loadTags, loadTasks])
+  const { isTaskNoteOpen } = useUIStoreState()
 
   return (
     // TODO: change to Container component
