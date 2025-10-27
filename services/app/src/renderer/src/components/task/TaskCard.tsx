@@ -1,6 +1,6 @@
 import { TaskWithTags } from 'services/app/src/types'
 import { TagSection } from '../tag/TagSection'
-import { Card, Input, Text, useAutoSaveInput } from '@illog/ui'
+import { Card, Input, useAutoSaveInput } from '@illog/ui'
 import { useUpdateTask } from '../../hooks/queries/useTaskQueries'
 
 type Props = {

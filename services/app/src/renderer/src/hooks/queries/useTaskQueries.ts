@@ -38,25 +38,39 @@ export const useUpdateTask = () => {
       window.api.task.update(id, contents),
     onMutate: async ({ id, contents }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.detail(id) })
 
       const previousTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
+      const previousTask = queryClient.getQueryData<TaskWithTags>(queryKeys.tasks.detail(id))
 
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) => (task.id === id ? { ...task, ...contents } : task))
       )
 
-      return { previousTasks }
+      queryClient.setQueryData<TaskWithTags>(queryKeys.tasks.detail(id), (old) =>
+        old ? { ...old, ...contents } : old
+      )
+
+      return { previousTasks, previousTask, id }
     },
     onError: (_err, _variables, context) => {
       if (context?.previousTasks) {
         queryClient.setQueryData(queryKeys.tasks.today(), context.previousTasks)
       }
+      if (context?.previousTask && context?.id) {
+        queryClient.setQueryData(queryKeys.tasks.detail(context.id), context.previousTask)
+      }
     },
     onSuccess: (updatedTask) => {
       queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
+
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+        old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+      )
     },
-    onSettled: () => {
+    onSettled: (_data, _error, variables) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.tasks.today() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.detail(variables.id) })
     }
   })
 }
