@@ -10,7 +10,10 @@ const migrationsPath = isDev()
 export const migrations = [
   {
     version: 1,
-    up: readFileSync(join(migrationsPath, '001_initial_schema.sql'), 'utf8'),
-    down: ''
+    up: readFileSync(join(migrationsPath, '001_initial_schema.sql'), 'utf8')
+  },
+  {
+    version: 2,
+    up: readFileSync(join(migrationsPath, '002_add_description_to_task.sql'), 'utf8')
   }
 ]

@@ -95,6 +95,10 @@ export class TaskRepository {
       updates.push('title = :title')
       params.title = contents.title
     }
+    if (contents.description !== undefined) {
+      updates.push('description = :description')
+      params.description = contents.description
+    }
     if (contents.status !== undefined) {
       updates.push('status = :status')
       params.status = contents.status

@@ -15,6 +15,7 @@ export interface TaskTag {
 export interface Task {
   id: UUID
   title: string
+  description: string
   status: Status
   project_id: UUID | null
   end_time?: Timestamp
