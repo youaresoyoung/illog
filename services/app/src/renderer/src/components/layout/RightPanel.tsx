@@ -15,12 +15,20 @@ export const RightPanel = () => {
     (value) => updateTask({ id: task!.id, contents: { title: value } }),
     1000
   )
+  const [description, setDescription, handleDescriptionChange] = useAutoSaveInput(
+    task?.description || '',
+    (value) => updateTask({ id: task!.id, contents: { description: value } }),
+    1000
+  )
 
   useEffect(() => {
     if (task?.title !== undefined) {
       setTitle(task.title)
     }
-  }, [task?.title, setTitle])
+    if (task?.description !== undefined) {
+      setDescription(task.description)
+    }
+  }, [task?.title, setTitle, task?.description, setDescription])
 
   return (
     <div
@@ -31,6 +39,7 @@ export const RightPanel = () => {
       }}
     >
       <Input value={title} onChange={handleTitleChange} />
+      <Input value={description} onChange={handleDescriptionChange} />
       <textarea
         placeholder="Type your notes here..."
         style={{ width: '100%', height: '100%' }}
