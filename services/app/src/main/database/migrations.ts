@@ -7,13 +7,21 @@ const migrationsPath = isDev()
   ? join(app.getAppPath(), 'src/main/database/migrations')
   : join(process.resourcesPath, 'migrations')
 
+const getMigrationFiles = (fileName: string) => {
+  return readFileSync(join(migrationsPath, `${fileName}.sql`), 'utf8')
+}
+
 export const migrations = [
   {
     version: 1,
-    up: readFileSync(join(migrationsPath, '001_initial_schema.sql'), 'utf8')
+    up: getMigrationFiles('001_initial_schema')
   },
   {
     version: 2,
-    up: readFileSync(join(migrationsPath, '002_add_description_to_task.sql'), 'utf8')
+    up: getMigrationFiles('002_add_description_to_task')
+  },
+  {
+    version: 3,
+    up: getMigrationFiles('003_set_timer_columns')
   }
 ]

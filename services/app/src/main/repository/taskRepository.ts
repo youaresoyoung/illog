@@ -14,15 +14,16 @@ export class TaskRepository {
     const { title = 'Untitled', status = 'todo', project_id = null } = task
 
     const stmt = this.db
-      .prepare(`INSERT INTO task (id, title, status, project_id, end_time, created_at, updated_at, done_at, deleted_at)
-                VALUES (:id, :title, :status, :project_id, :end_time, :created_at, :updated_at , :done_at, :deleted_at)`)
+      .prepare(`INSERT INTO task (id, title, status, project_id, timer_start, timer_end, created_at, updated_at, done_at, deleted_at)
+                VALUES (:id, :title, :status, :project_id, :timer_start, :timer_end, :created_at, :updated_at , :done_at, :deleted_at)`)
 
     stmt.run({
       id,
       title,
       status,
       project_id,
-      end_time: null,
+      timer_start: Date.now(),
+      timer_end: null,
       created_at: now,
       updated_at: now,
       done_at: null,
@@ -106,6 +107,14 @@ export class TaskRepository {
     if (contents.project_id !== undefined) {
       updates.push('project_id = :project_id')
       params.project_id = contents.project_id
+    }
+    if (contents.timer_start !== undefined) {
+      updates.push('timer_start = :timer_start')
+      params.timer_start = contents.timer_start
+    }
+    if (contents.timer_end !== undefined) {
+      updates.push('timer_end = :timer_end')
+      params.timer_end = contents.timer_end
     }
 
     updates.push('updated_at = :updated_at')
