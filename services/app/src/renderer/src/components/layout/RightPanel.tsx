@@ -2,6 +2,7 @@ import { useAutoSaveNote } from '../../hooks/useAutoSaveNote'
 import { useUIStoreState } from '../../stores/useUIStore'
 import { useTask, useUpdateTask } from '../../hooks/queries'
 import { Input, useAutoSaveInput } from '@illog/ui'
+import { TagSection } from '../tag/TagSection'
 
 export const RightPanel = () => {
   const { currentTaskId } = useUIStoreState()
@@ -21,6 +22,11 @@ export const RightPanel = () => {
     1000
   )
 
+  if (!task) {
+    // TODO: better error handling UX
+    return <div>Try refreshing the page</div>
+  }
+
   return (
     <div
       style={{
@@ -31,6 +37,7 @@ export const RightPanel = () => {
     >
       <Input value={title} onChange={handleTitleChange} />
       <Input value={description} onChange={handleDescriptionChange} />
+      <TagSection task={task} />
       <textarea
         placeholder="Type your notes here..."
         style={{ width: '100%', height: '100%' }}
