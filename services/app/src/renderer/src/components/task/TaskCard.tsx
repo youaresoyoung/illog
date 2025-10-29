@@ -1,6 +1,6 @@
 import { TaskWithTags } from 'services/app/src/types'
 import { TagSection } from '../tag/TagSection'
-import { Card, Input, Text, useAutoSaveInput } from '@illog/ui'
+import { Card, Input, useAutoSaveInput } from '@illog/ui'
 import { useUpdateTask } from '../../hooks/queries/useTaskQueries'
 
 type Props = {
@@ -12,9 +12,14 @@ type Props = {
 export const TaskCard = ({ task, handleOpenNote }: Props) => {
   const { mutate: updateTask } = useUpdateTask()
 
-  const [title, , handleChange] = useAutoSaveInput(
+  const [title, , handleChangeTitle] = useAutoSaveInput(
     task.title,
     (value) => updateTask({ id: task.id, contents: { title: value } }),
+    1000
+  )
+  const [description, , handleChangeDescription] = useAutoSaveInput(
+    task.description,
+    (value) => updateTask({ id: task.id, contents: { description: value } }),
     1000
   )
 
@@ -31,11 +36,16 @@ export const TaskCard = ({ task, handleOpenNote }: Props) => {
           name="title"
           placeholder="Log title..."
           value={title}
-          onChange={handleChange}
+          onChange={handleChangeTitle}
         />
-        <Text as="p" textStyle="bodySmall" color="textDefaultSecondary">
-          Description
-        </Text>
+        <Input
+          style={{ paddingLeft: 0 }}
+          type="text"
+          name="description"
+          placeholder="description..."
+          value={description}
+          onChange={handleChangeDescription}
+        />
       </div>
       {/* <button onClick={() => handleDeleteTask(task.id)}>Delete</button> */}
 

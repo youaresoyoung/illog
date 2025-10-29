@@ -15,12 +15,14 @@ export interface TaskTag {
 export interface Task {
   id: UUID
   title: string
+  description: string
   status: Status
   project_id: UUID | null
-  end_time?: Timestamp
+  timer_start?: Timestamp
+  timer_end?: Timestamp
   created_at: Timestamp
   updated_at: Timestamp
-  done_at?: Timestamp
+  done_at?: Timestamp // business logic (task done)
   deleted_at?: Timestamp
 }
 
@@ -28,7 +30,4 @@ export interface TaskWithTags extends Task {
   tags: Tag[]
 }
 
-export type OmittedTask = Omit<
-  Task,
-  'id' | 'end_time' | 'created_at' | 'updated_at' | 'done_at' | 'deleted_at'
->
+export type OmittedTask = Omit<Task, 'id' | 'created_at' | 'updated_at' | 'done_at' | 'deleted_at'>

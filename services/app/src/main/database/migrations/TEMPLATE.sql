@@ -1,0 +1,5 @@
+-- Migration Template File
+-- Migration: {number}_{description}
+-- Created: {date}
+-- Description: {detailed description}
+-- Write your SQL here

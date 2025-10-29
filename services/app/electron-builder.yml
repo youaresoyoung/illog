@@ -8,6 +8,9 @@ files:
   - package.json
   - build/**
   - resources/**
+extraResources:
+  - from: src/main/database/migrations
+    to: migrations
 asarUnpack:
   - resources/**
 win:
