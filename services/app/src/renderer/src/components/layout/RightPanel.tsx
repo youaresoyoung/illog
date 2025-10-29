@@ -1,30 +1,36 @@
 import { useAutoSaveNote } from '../../hooks/useAutoSaveNote'
-import { useUIStoreState } from '../../stores/useUIStore'
 import { useTask, useUpdateTask } from '../../hooks/queries'
 import { Input, useAutoSaveInput } from '@illog/ui'
 import { TagSection } from '../tag/TagSection'
 
-export const RightPanel = () => {
-  const { currentTaskId } = useUIStoreState()
-  const { data: task } = useTask(currentTaskId!)
-  const [note, handleChange] = useAutoSaveNote(currentTaskId)
+type Props = {
+  taskId: string
+}
+
+export const RightPanel = ({ taskId }: Props) => {
+  const { data: task } = useTask(taskId)
+  const [note, handleChange] = useAutoSaveNote(taskId)
 
   const { mutate: updateTask } = useUpdateTask()
 
   const [title, , handleTitleChange] = useAutoSaveInput(
     task?.title || '',
-    (value) => updateTask({ id: task!.id, contents: { title: value } }),
+    (value) => {
+      if (task) updateTask({ id: task.id, contents: { title: value } })
+    },
     1000
   )
   const [description, , handleDescriptionChange] = useAutoSaveInput(
     task?.description || '',
-    (value) => updateTask({ id: task!.id, contents: { description: value } }),
+    (value) => {
+      if (task) updateTask({ id: task.id, contents: { description: value } })
+    },
     1000
   )
 
   if (!task) {
     // TODO: better error handling UX
-    return <div>Try refreshing the page</div>
+    return <div>Loading...</div>
   }
 
   return (
