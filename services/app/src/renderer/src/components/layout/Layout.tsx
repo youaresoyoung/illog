@@ -5,7 +5,7 @@ import { RightPanel } from './RightPanel'
 import { useUIStoreState } from '../../stores/useUIStore'
 
 export const Layout = () => {
-  const { isTaskNoteOpen } = useUIStoreState()
+  const { isTaskNoteOpen, currentTaskId } = useUIStoreState()
 
   return (
     // TODO: change to Container component
@@ -14,7 +14,7 @@ export const Layout = () => {
       <MainContent>
         <Outlet />
       </MainContent>
-      {isTaskNoteOpen && <RightPanel />}
+      {isTaskNoteOpen && currentTaskId && <RightPanel taskId={currentTaskId} />}
     </div>
   )
 }

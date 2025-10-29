@@ -5,7 +5,10 @@ import { queryKeys } from './queryKeys'
 export const useTaskNote = (taskId: string | undefined) => {
   return useQuery({
     queryKey: queryKeys.notes.byTaskId(taskId!),
-    queryFn: () => window.api.note.findByTaskId(taskId!),
+    queryFn: async () => {
+      const result = await window.api.note.findByTaskId(taskId!)
+      return result ?? null
+    },
     enabled: !!taskId
   })
 }
