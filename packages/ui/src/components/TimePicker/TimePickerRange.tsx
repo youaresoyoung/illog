@@ -1,17 +1,10 @@
 import { TimePickerRangeProps } from './types'
+import { Inline } from '../Inline'
 
-export const TimePickerRange = ({ children, className, style }: TimePickerRangeProps) => {
-  const defaultStyle: React.CSSProperties = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    marginBottom: '8px',
-    ...style
-  }
-
+export const TimePickerRange = ({ children, className }: TimePickerRangeProps) => {
   return (
-    <div className={className} style={defaultStyle}>
+    <Inline gap="200" align="center" mb="200" className={className}>
       {children}
-    </div>
+    </Inline>
   )
 }

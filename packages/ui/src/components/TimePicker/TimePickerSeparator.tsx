@@ -1,19 +1,10 @@
 import { TimePickerSeparatorProps } from './types'
+import { Box } from '../Box'
 
-export const TimePickerSeparator = ({
-  children = '–',
-  className,
-  style
-}: TimePickerSeparatorProps) => {
-  const defaultStyle: React.CSSProperties = {
-    color: '#9b9a97',
-    fontSize: '14px',
-    ...style
-  }
-
+export const TimePickerSeparator = ({ children = '–', className }: TimePickerSeparatorProps) => {
   return (
-    <span className={className} style={defaultStyle}>
+    <Box as="span" color="textDefaultSecondary" className={className}>
       {children}
-    </span>
+    </Box>
   )
 }

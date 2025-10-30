@@ -1,10 +1,11 @@
 import { formatTime, formatDate, formatDay } from './formatTime'
 import { useTimePickerContext } from './TimePicker'
 import { TimePickerSummaryProps } from './types'
+import { Box } from '../Box'
+import { Text } from '../Typography'
 
 export const TimePickerSummary = ({
   className,
-  style,
   showTime = true,
   showDate = true
 }: TimePickerSummaryProps) => {
@@ -14,33 +15,26 @@ export const TimePickerSummary = ({
     return null
   }
 
-  const defaultStyle: React.CSSProperties = {
-    fontSize: '12px',
-    color: '#787774',
-    lineHeight: '1.5',
-    ...style
-  }
-
   return (
-    <div className={className} style={defaultStyle}>
+    <Box className={className}>
       {showTime && startDate && formatTime(startDate)}{' '}
       {showDate && !isSameDay && startDate && (
-        <span>
+        <Text as="span" textStyle="singleLineCaption" color="textBrandTertiary">
           {formatDate(startDate)} ({formatDay(startDate)})
-        </span>
+        </Text>
       )}
       {!isSameDay && startDate && endDate && ' - '}
       {showTime && endDate && formatTime(endDate)}{' '}
       {showDate && !isSameDay && endDate && (
-        <span>
+        <Text as="span" textStyle="singleLineCaption" color="textBrandTertiary">
           {formatDate(endDate)} ({formatDay(endDate)})
-        </span>
+        </Text>
       )}
       {showDate && isSameDay && startDate && (
-        <span>
+        <Text as="span" textStyle="singleLineCaption" color="textBrandTertiary">
           {formatDate(startDate)} ({formatDay(startDate)})
-        </span>
+        </Text>
       )}
-    </div>
+    </Box>
   )
 }
