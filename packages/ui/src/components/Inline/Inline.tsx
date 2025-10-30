@@ -1,0 +1,48 @@
+import { createElement, ElementType } from 'react'
+import { InlineProps } from './types'
+import { splitSprinkleProps } from '../../utils/util'
+import { sprinkles } from '../../core/sprinkles.css'
+import clsx from 'clsx'
+
+/**
+ * Inline - A flexible container component that arranges its children in a horizontal line with customizable spacing, alignment, and wrapping options.
+ *
+ * @example
+ * <Inline gap="200" align="center">
+ *   <Icon />
+ *   <Typography>Label</Typography>
+ * </Inline>
+ */
+export const Inline = <T extends ElementType = 'div'>(props: InlineProps<T>) => {
+  const {
+    as = 'div',
+    className,
+    children,
+    gap,
+    align,
+    justify,
+    wrap = 'nowrap',
+    ...restProps
+  } = props
+
+  const [sprinkleProps, nativeProps] = splitSprinkleProps(restProps)
+
+  const inlineSprinkles = sprinkles({
+    display: 'flex',
+    flexDirection: 'row',
+    gap: gap,
+    alignItems: align,
+    justifyContent: justify,
+    flexWrap: wrap,
+    ...sprinkleProps
+  })
+
+  return createElement(
+    as,
+    {
+      ...nativeProps,
+      className: clsx([inlineSprinkles, className])
+    },
+    children
+  )
+}
