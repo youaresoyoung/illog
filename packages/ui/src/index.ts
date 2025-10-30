@@ -13,11 +13,13 @@ export { Tag } from './components/Tag'
 export { TagSelector } from './components/Selector'
 export { Divider } from './components/Divider'
 export { Portal } from './components/Portal'
+export { TimePicker } from './components/TimePicker'
 
 // Types
 export type { IconName } from './components/Icon/types'
 export type { NavList } from './context'
 export { IconNameOptions } from './components/Icon/types'
+export type { TimePickerValue, TimePickerProps } from './components/TimePicker'
 
 // Hooks
 export { NavProvider, useNavContext } from './context'
