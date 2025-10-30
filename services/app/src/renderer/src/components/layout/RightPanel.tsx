@@ -1,6 +1,6 @@
 import { useAutoSaveNote } from '../../hooks/useAutoSaveNote'
 import { useTask, useUpdateTask } from '../../hooks/queries'
-import { Input, useAutoSaveInput } from '@illog/ui'
+import { Input, TimePicker, useAutoSaveInput } from '@illog/ui'
 import { TagSection } from '../tag/TagSection'
 
 type Props = {
@@ -33,6 +33,16 @@ export const RightPanel = ({ taskId }: Props) => {
     return <div>Loading...</div>
   }
 
+  const handleDateTimeChange = (value: { start: string | null; end: string | null }) => {
+    updateTask({
+      id: task.id,
+      contents: {
+        timer_start: value.start ?? undefined,
+        timer_end: value.end ?? undefined
+      }
+    })
+  }
+
   return (
     <div
       style={{
@@ -43,7 +53,20 @@ export const RightPanel = ({ taskId }: Props) => {
     >
       <Input value={title} onChange={handleTitleChange} />
       <Input value={description} onChange={handleDescriptionChange} />
-      <TagSection task={task} />
+      <div>
+        <TagSection task={task} />
+        <TimePicker
+          value={{ start: task.timer_start ?? null, end: task.timer_end ?? null }}
+          onChange={handleDateTimeChange}
+        >
+          <TimePicker.Range>
+            <TimePicker.Input field="start" placeholder="Start time" />
+            <TimePicker.Separator />
+            <TimePicker.Input field="end" placeholder="End time" />
+          </TimePicker.Range>
+          <TimePicker.Summary showTime={false} />
+        </TimePicker>
+      </div>
       <textarea
         placeholder="Type your notes here..."
         style={{ width: '100%', height: '100%' }}
