@@ -11,6 +11,10 @@ import {
 import { NoteService } from './service/NoteService'
 import { NoteRepository } from './repository/noteRepository'
 import { TagReposity } from './repository/tagRepository'
+import { GeminiService } from './service/GeminiService'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -37,8 +41,12 @@ app.whenReady().then(() => {
   const taskRepo = new TaskRepository(db)
   registerTaskHandlers(taskRepo)
 
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error('Missing GEMINI_API_KEY in environment variables')
+  }
+  const geminiService = new GeminiService(process.env.GEMINI_API_KEY)
   const noteRepo = new NoteRepository(db)
-  const noteService = new NoteService(noteRepo)
+  const noteService = new NoteService(noteRepo, geminiService)
   registerTaskNoteHandlers(noteRepo, noteService)
 
   const tagRepo = new TagReposity(db)
