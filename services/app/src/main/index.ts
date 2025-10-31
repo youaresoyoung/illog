@@ -13,6 +13,7 @@ import { NoteRepository } from './repository/noteRepository'
 import { TagReposity } from './repository/tagRepository'
 import { GeminiService } from './service/GeminiService'
 import dotenv from 'dotenv'
+import { ReflectionRepository } from './repository/reflectionRepository'
 
 dotenv.config()
 
@@ -46,7 +47,8 @@ app.whenReady().then(() => {
   }
   const geminiService = new GeminiService(process.env.GEMINI_API_KEY)
   const noteRepo = new NoteRepository(db)
-  const noteService = new NoteService(noteRepo, geminiService)
+  const reflectionRepo = new ReflectionRepository(db)
+  const noteService = new NoteService(noteRepo, reflectionRepo, geminiService)
   registerTaskNoteHandlers(noteRepo, noteService)
 
   const tagRepo = new TagReposity(db)

@@ -1,4 +1,4 @@
-import { OmittedTag, Tag, Task, TaskNote, TaskWithTags } from './src/types'
+import { OmittedTag, Tag, Task, TaskNote, TaskReflection, TaskWithTags } from './src/types'
 
 interface RendererAPI {
   task: {
@@ -18,7 +18,14 @@ interface RendererAPI {
       content: string,
       clientUpdatedAt: number
     ) => Promise<{ note: TaskNote; savedAt: number; conflict: boolean }>
-    reflectionNote: (text: string) => Promise<string>
+    reflectionNoteStream: (
+      taskId: string,
+      text: string,
+      onChunk: (data: { chunk: string; done: boolean }) => void
+    ) => Promise<void>
+    removeReflectionListener: () => Promise<void>
+    getReflection: (taskId: string) => Promise<TaskReflection | null>
+    deleteReflection: (taskId: string) => Promise<void>
   }
   tag: {
     create: (tag: Partial<OmittedTag>) => Promise<Tag>

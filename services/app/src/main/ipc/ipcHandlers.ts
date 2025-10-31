@@ -28,7 +28,19 @@ export function registerTaskNoteHandlers(noteRepo: NoteRepository, noteService: 
   ipcMain.handle('note.autoSave', (_, taskId, content, clientUpdatedAt) =>
     noteService.autoSave(taskId, content, clientUpdatedAt)
   )
-  ipcMain.handle('note.reflectionNote', (_, text: string) => noteService.reflectionNote(text))
+  ipcMain.handle('note.reflectionNoteStream', async (event, taskId: string, text: string) => {
+    const stream = noteService.reflectionNoteStream(taskId, text)
+    for await (const data of stream) {
+      event.sender.send('note.reflectionNoteStreamChunk', data)
+    }
+  })
+  ipcMain.handle('note.getReflection', (_, taskId: string) => noteService.getReflection(taskId))
+  ipcMain.handle('note.deleteReflection', (_, taskId: string) =>
+    noteService.deleteReflection(taskId)
+  )
+  ipcMain.handle('note.removeReflectionListener', (event) => {
+    event.sender.removeAllListeners('note.reflectionNoteStreamChunk')
+  })
 }
 
 export function registerTagHandlers(tagRepo: TagReposity) {
