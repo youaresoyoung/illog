@@ -17,7 +17,8 @@ const api = {
   note: {
     findByTaskId: (taskId: string) => ipcRenderer.invoke('note.findByTaskId', taskId),
     autoSave: (taskId: string, content: string, clientUpdatedAt: number) =>
-      ipcRenderer.invoke('note.autoSave', taskId, content, clientUpdatedAt)
+      ipcRenderer.invoke('note.autoSave', taskId, content, clientUpdatedAt),
+    reflectionNote: (text: string) => ipcRenderer.invoke('note.reflectionNote', text)
   },
   tag: {
     create: (tag: Partial<OmittedTag>) => ipcRenderer.invoke('tag.create', tag),
