@@ -7,6 +7,16 @@ export interface TaskNote {
   updated_at: Timestamp
 }
 
+export interface TaskReflection {
+  id: UUID
+  task_id: UUID
+  content: string
+  original_note_hash?: string
+  model_name?: string
+  created_at: Timestamp
+  updated_at: Timestamp
+}
+
 export interface TaskTag {
   task_id: UUID
   tag_id: UUID

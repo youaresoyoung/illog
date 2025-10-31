@@ -23,5 +23,9 @@ export const migrations = [
   {
     version: 3,
     up: getMigrationFiles('003_set_timer_columns')
+  },
+  {
+    version: 4,
+    up: getMigrationFiles('004_add_task_reflection')
   }
 ]
