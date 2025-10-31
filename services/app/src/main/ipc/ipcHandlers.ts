@@ -28,6 +28,7 @@ export function registerTaskNoteHandlers(noteRepo: NoteRepository, noteService: 
   ipcMain.handle('note.autoSave', (_, taskId, content, clientUpdatedAt) =>
     noteService.autoSave(taskId, content, clientUpdatedAt)
   )
+  ipcMain.handle('note.reflectionNote', (_, text: string) => noteService.reflectionNote(text))
 }
 
 export function registerTagHandlers(tagRepo: TagReposity) {

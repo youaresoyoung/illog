@@ -1,5 +1,6 @@
 import { TaskNote } from '../../types'
 import { NoteRepository } from '../repository/noteRepository'
+import { GeminiService } from './GeminiService'
 
 type AutoSaveResult =
   | { savedAt: number; conflict: true }
@@ -8,7 +9,13 @@ type AutoSaveResult =
 export class NoteService {
   private queue: Promise<AutoSaveResult> = Promise.resolve({ savedAt: Date.now(), conflict: true })
 
-  constructor(private repo: NoteRepository) {}
+  constructor(
+    private repo: NoteRepository,
+    private geminiService: GeminiService
+  ) {
+    this.repo = repo
+    this.geminiService = geminiService
+  }
 
   autoSave(taskId: string, content: string, clientUpdatedAt: number) {
     this.queue = this.queue.then(async () => {
@@ -24,5 +31,9 @@ export class NoteService {
     })
 
     return this.queue
+  }
+
+  reflectionNote(text: string) {
+    return this.geminiService.reflectionNote(text)
   }
 }

@@ -18,6 +18,7 @@ interface RendererAPI {
       content: string,
       clientUpdatedAt: number
     ) => Promise<{ note: TaskNote; savedAt: number; conflict: boolean }>
+    reflectionNote: (text: string) => Promise<string>
   }
   tag: {
     create: (tag: Partial<OmittedTag>) => Promise<Tag>
