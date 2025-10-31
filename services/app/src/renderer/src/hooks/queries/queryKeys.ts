@@ -11,5 +11,9 @@ export const queryKeys = {
   notes: {
     all: ['notes'] as const,
     byTaskId: (taskId: string) => [...queryKeys.notes.all, 'task', taskId] as const
+  },
+  reflections: {
+    all: ['reflections'] as const,
+    byTaskId: (taskId: string) => [...queryKeys.reflections.all, 'task', taskId] as const
   }
 }
