@@ -18,7 +18,10 @@ const api = {
     findByTaskId: (taskId: string) => ipcRenderer.invoke('note.findByTaskId', taskId),
     autoSave: (taskId: string, content: string, clientUpdatedAt: number) =>
       ipcRenderer.invoke('note.autoSave', taskId, content, clientUpdatedAt),
-    reflectionNote: (text: string) => ipcRenderer.invoke('note.reflectionNote', text)
+    reflectionNoteStream: (taskId: string, text: string) =>
+      ipcRenderer.invoke('note.reflectionNoteStream', taskId, text),
+    getReflection: (taskId: string) => ipcRenderer.invoke('note.getReflection', taskId),
+    deleteReflection: (taskId: string) => ipcRenderer.invoke('note.deleteReflection', taskId)
   },
   tag: {
     create: (tag: Partial<OmittedTag>) => ipcRenderer.invoke('tag.create', tag),

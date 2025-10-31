@@ -17,6 +17,17 @@ export interface TaskReflection {
   updated_at: Timestamp
 }
 
+export type CreateTaskReflectionParams = Omit<
+  TaskReflection,
+  'id' | 'model_name' | 'id' | 'created_at' | 'updated_at'
+>
+
+export type UpdateTaskReflectionParams = Pick<
+  TaskReflection,
+  'id' | 'task_id' | 'content' | 'original_note_hash'
+> &
+  Partial<Omit<TaskReflection, 'model_name' | 'created_at' | 'updated_at'>>
+
 export interface TaskTag {
   task_id: UUID
   tag_id: UUID

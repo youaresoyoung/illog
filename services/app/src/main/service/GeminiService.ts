@@ -10,7 +10,7 @@ export class GeminiService {
     this.textRankService = new TextRankService()
   }
 
-  async reflectionNote(text: string): Promise<string> {
+  async *reflectionNoteStream(text: string): AsyncGenerator<string, void> {
     if (!text || text.trim().length === 0) {
       throw new Error('Invalid input text')
     }
@@ -41,16 +41,23 @@ export class GeminiService {
         }
       })
 
-      let result = ''
       for await (const chunk of res) {
-        result += chunk.text
+        if (chunk.text) {
+          yield chunk.text
+        }
       }
-
-      return result
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       console.error('Error generating summary:', error)
       throw new Error(`Failed to generate summary: ${errorMessage}`)
     }
+  }
+
+  async reflectionNote(text: string): Promise<string> {
+    let result = ''
+    for await (const chuck of this.reflectionNoteStream(text)) {
+      result += chuck
+    }
+    return result
   }
 }
