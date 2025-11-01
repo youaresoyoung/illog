@@ -1,6 +1,6 @@
 import { createElement, ElementType } from 'react'
 import { CenterProps } from './types'
-import { splitSprinkleProps } from '../../utils/util'
+import { extractSprinkleProps } from '../../utils/util'
 import { sprinkles } from '../../core/sprinkles.css'
 import clsx from 'clsx'
 
@@ -15,7 +15,7 @@ import clsx from 'clsx'
 export const Center = <T extends ElementType = 'div'>(props: CenterProps<T>) => {
   const { as = 'div', className, children, ...restProps } = props
 
-  const [sprinkleProps, nativeProps] = splitSprinkleProps(restProps)
+  const [sprinkleProps, nativeProps] = extractSprinkleProps(restProps)
 
   const centerSprinkles = sprinkles({
     display: 'flex',

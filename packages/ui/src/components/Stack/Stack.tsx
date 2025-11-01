@@ -1,6 +1,6 @@
 import { createElement, ElementType } from 'react'
 import { StackProps } from './types'
-import { splitSprinkleProps } from '../../utils/util'
+import { extractSprinkleProps } from '../../utils/util'
 import { sprinkles } from '../../core/sprinkles.css'
 import clsx from 'clsx'
 
@@ -26,7 +26,7 @@ export const Stack = <T extends ElementType = 'div'>(props: StackProps<T>) => {
     ...restProps
   } = props
 
-  const [sprinkleProps, nativeProps] = splitSprinkleProps(restProps)
+  const [sprinkleProps, nativeProps] = extractSprinkleProps(restProps)
 
   const stackSprinkles = sprinkles({
     display: 'flex',
