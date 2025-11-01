@@ -66,17 +66,21 @@ const borderProperties = defineProperties({
 
 const displayProperties = defineProperties({
   properties: {
-    display: ['none', 'block', 'inline', 'inline-block', 'flex', 'grid'],
+    display: [
+      'none',
+      'block',
+      'inline',
+      'inline-block',
+      'flex',
+      'inline-flex',
+      'grid',
+      'inline-grid'
+    ],
     overflow: ['visible', 'hidden', 'scroll', 'auto'],
     position: ['static', 'relative', 'absolute', 'fixed', 'sticky'],
-    top: ['0', 'auto'],
-    right: ['0', 'auto'],
-    bottom: ['0', 'auto'],
-    left: ['0', 'auto'],
-    zIndex: [0, 1, 10, 100, 1000]
+    zIndex: [-1, 0, 1, 10, 100, 1000]
   },
   shorthands: {
-    inset: ['top', 'right', 'bottom', 'left'],
     z: ['zIndex']
   }
 })
@@ -96,6 +100,9 @@ const flexProperties = defineProperties({
     alignItems: ['flex-start', 'flex-end', 'center', 'stretch', 'baseline'],
     alignContent: ['flex-start', 'flex-end', 'center', 'stretch', 'space-between', 'space-around'],
     alignSelf: ['auto', 'flex-start', 'flex-end', 'center', 'stretch', 'baseline'],
+    flex: ['0', '1', 'initial', 'auto', 'none', '0 0 auto', '1 1 auto'],
+    flexGrow: [0, 1],
+    flexShrink: [0, 1],
     gap: tokens.size.space
   },
   shorthands: {
@@ -144,6 +151,47 @@ const effectProperties = defineProperties({
   }
 })
 
+const sizeProperties = defineProperties({
+  properties: {
+    width: [
+      '0',
+      '25%',
+      '50%',
+      '75%',
+      '100%',
+      'auto',
+      'min-content',
+      'max-content',
+      'fit-content',
+      ...Object.values(space).map((v) => `${v}px`)
+    ],
+    height: [
+      '0',
+      '25%',
+      '50%',
+      '75%',
+      '100%',
+      'auto',
+      'min-content',
+      'max-content',
+      'fit-content',
+      ...Object.values(space).map((v) => `${v}px`)
+    ],
+    minWidth: ['0', 'min-content', 'max-content', 'fit-content'],
+    maxWidth: ['none', 'min-content', 'max-content', 'fit-content'],
+    minHeight: ['0', 'min-content', 'max-content', 'fit-content'],
+    maxHeight: ['none', 'min-content', 'max-content', 'fit-content']
+  },
+  shorthands: {
+    w: ['width'],
+    h: ['height'],
+    minW: ['minWidth'],
+    maxW: ['maxWidth'],
+    minH: ['minHeight'],
+    maxH: ['maxHeight']
+  }
+})
+
 export const sprinkles = createSprinkles(
   spacingProperties,
   colorProperties,
@@ -151,7 +199,8 @@ export const sprinkles = createSprinkles(
   displayProperties,
   flexProperties,
   gridProperties,
-  effectProperties
+  effectProperties,
+  sizeProperties
 )
 
 export type Sprinkles = Parameters<typeof sprinkles>[0]
