@@ -3,18 +3,23 @@ import { LeftPanel } from './LeftPanel'
 import { MainContent } from './MainContent'
 import { RightPanel } from './RightPanel'
 import { useUIStoreState } from '../../stores/useUIStore'
+import { Box } from '@illog/ui'
 
 export const Layout = () => {
   const { isTaskNoteOpen, currentTaskId } = useUIStoreState()
 
   return (
-    // TODO: change to Container component
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#FAFAF9' }}>
+    <Box
+      display="flex"
+      minHeight="100vh"
+      backgroundColor="backgroundBrandTertiary"
+      overflow="hidden"
+    >
       <LeftPanel />
       <MainContent>
         <Outlet />
       </MainContent>
       {isTaskNoteOpen && currentTaskId && <RightPanel taskId={currentTaskId} />}
-    </div>
+    </Box>
   )
 }
