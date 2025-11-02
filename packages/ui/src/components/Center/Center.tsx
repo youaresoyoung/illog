@@ -1,21 +1,23 @@
 import { createElement, ElementType } from 'react'
 import { CenterProps } from './types'
-import { splitSprinkleProps } from '../../utils/util'
+import { extractSprinkleProps } from '../../utils/util'
 import { sprinkles } from '../../core/sprinkles.css'
 import clsx from 'clsx'
+import { convertStylePropsToCSS, extractStyleProps } from '../../core/styleProps'
 
 /**
  * Center - A container component that centers its children both vertically and horizontally.
- *
- * @example
- * <Center>
- *   <Spinner />
- * </Center>
  */
 export const Center = <T extends ElementType = 'div'>(props: CenterProps<T>) => {
-  const { as = 'div', className, children, ...restProps } = props
+  const { as = 'div', className, children, style } = props
 
-  const [sprinkleProps, nativeProps] = splitSprinkleProps(restProps)
+  const [styleProps, withoutStyleProps] = extractStyleProps(props)
+  const [sprinkleProps, restProps] = extractSprinkleProps(withoutStyleProps)
+
+  const mergedStyle = {
+    ...convertStylePropsToCSS(styleProps),
+    ...style
+  }
 
   const centerSprinkles = sprinkles({
     display: 'flex',
@@ -27,8 +29,9 @@ export const Center = <T extends ElementType = 'div'>(props: CenterProps<T>) => 
   return createElement(
     as,
     {
-      ...nativeProps,
-      className: clsx([centerSprinkles, className])
+      ...restProps,
+      className: clsx([centerSprinkles, className]),
+      style: mergedStyle
     },
     children
   )

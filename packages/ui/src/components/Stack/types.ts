@@ -1,6 +1,7 @@
 import { ComponentPropsWithRef, ElementType } from 'react'
 import { AsProp, PropsToOmit } from '../../core/types'
 import { Sprinkles } from '../../core/sprinkles.css'
+import { StyleProps } from '../../core/styleProps'
 
 type StackOwnProps = {
   direction?: 'row' | 'row-reverse' | 'column' | 'column-reverse'
@@ -9,9 +10,10 @@ type StackOwnProps = {
   justify?: Sprinkles['justifyContent']
   wrap?: Sprinkles['flexWrap']
 } & Omit<
-  Sprinkles,
+  Omit<Sprinkles, keyof StyleProps>,
   'display' | 'flexDirection' | 'gap' | 'alignItems' | 'justifyContent' | 'flexWrap'
->
+> &
+  StyleProps
 
 export type StackProps<T extends ElementType = 'div'> = StackOwnProps &
   AsProp<T> &

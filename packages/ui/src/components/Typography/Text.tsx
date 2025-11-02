@@ -2,14 +2,14 @@ import { textVariants } from './text.css'
 import { sprinkles } from '../../core/sprinkles.css'
 import clsx from 'clsx'
 import { TextProps } from './types'
-import { splitSprinkleProps } from '../../utils/util'
+import { extractSprinkleProps } from '../../utils/util'
 import { createElement } from 'react'
 import { textColors } from '../../core/tokens/generatedColors'
 
 export const Text = <T extends React.ElementType>(props: TextProps<T>) => {
   const { as = 'p', textStyle = 'bodyBase', color, className, children, ...rest } = props
 
-  const [sprinkleProps, restProps] = splitSprinkleProps(rest)
+  const [sprinkleProps, restProps] = extractSprinkleProps(rest)
 
   return createElement(
     as,

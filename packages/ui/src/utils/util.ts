@@ -1,6 +1,6 @@
 import { sprinkles, Sprinkles } from '../core/sprinkles.css'
 
-export function splitSprinkleProps<T extends Record<string, unknown>>(
+export function extractSprinkleProps<T extends Record<string, unknown>>(
   props: T
 ): [Partial<Sprinkles>, Omit<T, keyof Sprinkles>] {
   const sprinkleKeys = new Set<keyof Sprinkles>(sprinkles.properties)

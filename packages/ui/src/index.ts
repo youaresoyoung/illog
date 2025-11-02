@@ -14,13 +14,24 @@ export { TagSelector } from './components/Selector'
 export { Divider } from './components/Divider'
 export { Portal } from './components/Portal'
 export { TimePicker } from './components/TimePicker'
+export { Dialog } from './components/Dialog'
 
 // Types
 export type { IconName } from './components/Icon/types'
 export type { NavList } from './context'
 export { IconNameOptions } from './components/Icon/types'
 export type { TimePickerValue, TimePickerProps } from './components/TimePicker'
+export type { Sprinkles } from './core/sprinkles.css'
+export type { StyleProps } from './core/styleProps'
+export type { BoxProps } from './components/Box/types'
+export type { TextProps } from './components/Typography/types'
 
 // Hooks
 export { NavProvider, useNavContext } from './context'
-export { useAutoSaveInput, useDebouncedCallback, useDebounce, useAutoSave } from './hooks'
+export {
+  useAutoSaveInput,
+  useDebouncedCallback,
+  useDebounce,
+  useAutoSave,
+  useDialog
+} from './hooks'
