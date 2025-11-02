@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes, ReactNode, Ref } from 'react'
 
 export type ButtonProps = {
-  variant: 'primary' // TODO: Extend this as needed for more variants
+  variant: 'primary' | 'secondary'
   size?: 'sm' | 'md' | 'lg'
   isDisabled?: boolean
   onClick?: () => void

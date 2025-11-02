@@ -41,6 +41,22 @@ export const buttonRecipe = recipe({
           backgroundColor: backgroundColors.backgroundDisabledDefault,
           borderColor: borderColors.borderDisabledDefault
         }
+      },
+      secondary: {
+        color: textColors.textBrandDefault,
+        border: `${tokens.size.stroke.border}px solid ${borderColors.borderDefaultDefault}`,
+        backgroundColor: backgroundColors.backgroundDefaultDefault,
+
+        ':hover': {
+          color: textColors.textDefaultDefault,
+          backgroundColor: backgroundColors.backgroundDefaultDefaultHover
+        },
+        ':disabled': {
+          cursor: 'default',
+          color: textColors.textDisabledDefault,
+          backgroundColor: backgroundColors.backgroundDisabledDefault,
+          borderColor: borderColors.borderDisabledDefault
+        }
       }
     },
     isFullWidth: {
