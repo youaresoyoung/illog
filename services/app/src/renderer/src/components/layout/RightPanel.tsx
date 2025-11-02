@@ -1,6 +1,15 @@
 import { useAutoSaveNote } from '../../hooks/useAutoSaveNote'
 import { useReflection, useReflectionStream, useTask, useUpdateTask } from '../../hooks/queries'
-import { Button, Input, TimePicker, useAutoSaveInput } from '@illog/ui'
+import {
+  Box,
+  Button,
+  Dialog,
+  Input,
+  Stack,
+  TimePicker,
+  useAutoSaveInput,
+  useDialog
+} from '@illog/ui'
 import { TagSection } from '../tag/TagSection'
 
 type Props = {
@@ -14,6 +23,7 @@ export const RightPanel = ({ taskId }: Props) => {
   const [note, handleChange] = useAutoSaveNote(taskId)
   const { mutate: updateTask } = useUpdateTask()
 
+  const [isDialogOpen, openDialog, closeDialog] = useDialog({ initialOpen: false })
   const [title, , handleTitleChange] = useAutoSaveInput(
     task?.title || '',
     (value) => {
@@ -53,14 +63,15 @@ export const RightPanel = ({ taskId }: Props) => {
 
   const handleReflectNote = async () => {
     if (existingReflection) {
-      const shouldOverwrite = window.confirm(
-        'An AI summary already exists. Do you want to overwrite it?'
-      )
-      if (!shouldOverwrite) return
-      startReflectionGeneration()
-    } else {
-      startReflectionGeneration()
+      return openDialog()
     }
+
+    startReflectionGeneration()
+  }
+
+  const handleConfirmClick = () => {
+    closeDialog()
+    startReflectionGeneration()
   }
 
   if (!task) {
@@ -69,12 +80,15 @@ export const RightPanel = ({ taskId }: Props) => {
   }
 
   return (
-    <div
-      style={{
-        width: '594px',
-        borderLeft: '1px solid #ccc',
-        padding: '12px'
-      }}
+    <Box
+      width="594px"
+      height="100vh"
+      overflow="scroll"
+      borderLeft="border"
+      borderLeftColor="borderDefaultDefault"
+      borderLeftStyle="solid"
+      p="300"
+      backgroundColor="backgroundDefaultDefault"
     >
       <Input value={title} onChange={handleTitleChange} />
       <Input value={description} onChange={handleDescriptionChange} />
@@ -108,8 +122,31 @@ export const RightPanel = ({ taskId }: Props) => {
       />
       <div>
         <h4>AI Reflection</h4>
-        <p>{displayReflectionText}</p>
+        <Stack
+          as="p"
+          height="320px"
+          bg="backgroundDefaultSecondary"
+          p="200"
+          mt="400"
+          overflow="auto"
+        >
+          {displayReflectionText}
+        </Stack>
       </div>
-    </div>
+      <Dialog isOpen={isDialogOpen} onClose={closeDialog}>
+        <Dialog.Title>Do you want to delete the previous summary?</Dialog.Title>
+        <Dialog.Description>
+          To generate a new summary, the existing summary will be deleted.
+        </Dialog.Description>
+        <Dialog.Footer>
+          <Button variant="secondary" isFullWidth onClick={closeDialog}>
+            Cancel
+          </Button>
+          <Button variant="primary" isFullWidth onClick={handleConfirmClick}>
+            Confirm
+          </Button>
+        </Dialog.Footer>
+      </Dialog>
+    </Box>
   )
 }
