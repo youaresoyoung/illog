@@ -3,15 +3,11 @@ import { StackProps } from './types'
 import { extractSprinkleProps } from '../../utils/util'
 import { sprinkles } from '../../core/sprinkles.css'
 import clsx from 'clsx'
+import { convertStylePropsToCSS, extractStyleProps } from '../../core/styleProps'
 
 /**
  * Stack - A flexible container component that arranges its children in a vertical or horizontal stack with customizable spacing, alignment, and wrapping options.
  *
- * @example
- * <Stack direction="column" gap="200" align="center">
- *   <Button />
- *   <Button />
- * </Stack>
  */
 export const Stack = <T extends ElementType = 'div'>(props: StackProps<T>) => {
   const {
@@ -23,10 +19,13 @@ export const Stack = <T extends ElementType = 'div'>(props: StackProps<T>) => {
     align,
     justify,
     wrap = 'nowrap',
-    ...restProps
+    style
   } = props
 
-  const [sprinkleProps, nativeProps] = extractSprinkleProps(restProps)
+  const [styleProps, withoutStyleProps] = extractStyleProps(props)
+  const [sprinkleProps, restProps] = extractSprinkleProps(withoutStyleProps)
+
+  const mergedStyle = { ...convertStylePropsToCSS(styleProps), ...style }
 
   const stackSprinkles = sprinkles({
     display: 'flex',
@@ -41,8 +40,9 @@ export const Stack = <T extends ElementType = 'div'>(props: StackProps<T>) => {
   return createElement(
     as,
     {
-      ...nativeProps,
-      className: clsx([stackSprinkles, className])
+      ...restProps,
+      className: clsx([stackSprinkles, className]),
+      style: mergedStyle
     },
     children
   )
