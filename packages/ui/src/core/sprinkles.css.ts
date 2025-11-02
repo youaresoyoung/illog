@@ -53,14 +53,33 @@ const colorProperties = defineProperties({
 const borderProperties = defineProperties({
   properties: {
     borderWidth: tokens.size.stroke,
+    borderTopWidth: tokens.size.stroke,
+    borderRightWidth: tokens.size.stroke,
+    borderBottomWidth: tokens.size.stroke,
+    borderLeftWidth: tokens.size.stroke,
     borderColor: borderColors,
+    borderTopColor: borderColors,
+    borderRightColor: borderColors,
+    borderBottomColor: borderColors,
+    borderLeftColor: borderColors,
     borderRadius: tokens.size.radius,
-    borderStyle: ['solid', 'dashed', 'dotted', 'double', 'none']
+    borderStyle: ['solid', 'dashed', 'dotted', 'double', 'none'],
+    borderTopStyle: ['solid', 'dashed', 'dotted', 'double', 'none'],
+    borderRightStyle: ['solid', 'dashed', 'dotted', 'double', 'none'],
+    borderBottomStyle: ['solid', 'dashed', 'dotted', 'double', 'none'],
+    borderLeftStyle: ['solid', 'dashed', 'dotted', 'double', 'none']
   },
   shorthands: {
     rounded: ['borderRadius'],
     border: ['borderWidth'],
-    borderStyle: ['borderStyle']
+    borderTop: ['borderTopWidth'],
+    borderRight: ['borderRightWidth'],
+    borderBottom: ['borderBottomWidth'],
+    borderLeft: ['borderLeftWidth'],
+    borderTopW: ['borderTopWidth'],
+    borderRightW: ['borderRightWidth'],
+    borderBottomW: ['borderBottomWidth'],
+    borderLeftW: ['borderLeftWidth']
   }
 })
 
