@@ -192,6 +192,15 @@ const sizeProperties = defineProperties({
   }
 })
 
+const textProperties = defineProperties({
+  properties: {
+    textAlign: ['left', 'right', 'center', 'justify'],
+    textDecoration: ['none', 'underline', 'line-through', 'overline'],
+    textTransform: ['none', 'capitalize', 'uppercase', 'lowercase'],
+    lineHeight: ['normal', '1', '1.25', '1.5', '2']
+  }
+})
+
 export const sprinkles = createSprinkles(
   spacingProperties,
   colorProperties,
@@ -200,7 +209,8 @@ export const sprinkles = createSprinkles(
   flexProperties,
   gridProperties,
   effectProperties,
-  sizeProperties
+  sizeProperties,
+  textProperties
 )
 
 export type Sprinkles = Parameters<typeof sprinkles>[0]
