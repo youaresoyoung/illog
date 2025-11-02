@@ -31,3 +31,11 @@ globalStyle('button', {
   color: 'inherit',
   cursor: 'pointer'
 })
+
+globalStyle('dialog', {
+  border: 'none'
+})
+
+globalStyle('dialog::backdrop', {
+  background: 'rgba(0, 0, 0, 0.5)'
+})
