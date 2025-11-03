@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Color, TaskWithTags } from 'services/app/src/types'
-import { Tag, TagSelector } from '@illog/ui'
+import { Inline, Stack, Tag, TagSelector } from '@illog/ui'
 import {
   useAllTags,
   useCreateTag,
@@ -118,25 +118,25 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
 
   return (
     <>
-      <div ref={tagsSectionRef} onClick={handleTagsSectionClick}>
+      <Stack ref={tagsSectionRef} onClick={handleTagsSectionClick} minW="0" overflow="hidden">
         {syncedTaskTags.length > 0 ? (
-          <ul style={{ display: 'flex', gap: '8px' }}>
+          <Inline as="ul" role="list" gap="200" w="100%" wrap="wrap">
             {syncedTaskTags.map((tag) => (
-              <li key={tag.id}>
+              <Inline minW="0" maxW="100%" key={tag.id}>
                 <Tag
                   tag={{ id: tag.id, name: tag.name, color: tag.color }}
                   removeFromTask={handleRemoveTagClick}
                 />
-              </li>
+              </Inline>
             ))}
-          </ul>
+          </Inline>
         ) : (
           <Tag
             tag={{ id: 'Add Tag', name: 'Add Tag', color: 'gray' }}
             openTagSelector={handleTagsSectionClick}
           />
         )}
-      </div>
+      </Stack>
       {isOpen && (
         <TagSelector
           tags={filteredTags}

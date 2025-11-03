@@ -53,14 +53,33 @@ const colorProperties = defineProperties({
 const borderProperties = defineProperties({
   properties: {
     borderWidth: tokens.size.stroke,
+    borderTopWidth: tokens.size.stroke,
+    borderRightWidth: tokens.size.stroke,
+    borderBottomWidth: tokens.size.stroke,
+    borderLeftWidth: tokens.size.stroke,
     borderColor: borderColors,
+    borderTopColor: borderColors,
+    borderRightColor: borderColors,
+    borderBottomColor: borderColors,
+    borderLeftColor: borderColors,
     borderRadius: tokens.size.radius,
-    borderStyle: ['solid', 'dashed', 'dotted', 'double', 'none']
+    borderStyle: ['solid', 'dashed', 'dotted', 'double', 'none'],
+    borderTopStyle: ['solid', 'dashed', 'dotted', 'double', 'none'],
+    borderRightStyle: ['solid', 'dashed', 'dotted', 'double', 'none'],
+    borderBottomStyle: ['solid', 'dashed', 'dotted', 'double', 'none'],
+    borderLeftStyle: ['solid', 'dashed', 'dotted', 'double', 'none']
   },
   shorthands: {
     rounded: ['borderRadius'],
     border: ['borderWidth'],
-    borderStyle: ['borderStyle']
+    borderTop: ['borderTopWidth'],
+    borderRight: ['borderRightWidth'],
+    borderBottom: ['borderBottomWidth'],
+    borderLeft: ['borderLeftWidth'],
+    borderTopW: ['borderTopWidth'],
+    borderRightW: ['borderRightWidth'],
+    borderBottomW: ['borderBottomWidth'],
+    borderLeftW: ['borderLeftWidth']
   }
 })
 
@@ -178,7 +197,7 @@ const sizeProperties = defineProperties({
       ...Object.values(space).map((v) => `${v}px`)
     ],
     minWidth: ['0', 'min-content', 'max-content', 'fit-content'],
-    maxWidth: ['none', 'min-content', 'max-content', 'fit-content'],
+    maxWidth: ['none', 'min-content', 'max-content', 'fit-content', '100%'],
     minHeight: ['0', 'min-content', 'max-content', 'fit-content'],
     maxHeight: ['none', 'min-content', 'max-content', 'fit-content']
   },
@@ -197,7 +216,23 @@ const textProperties = defineProperties({
     textAlign: ['left', 'right', 'center', 'justify'],
     textDecoration: ['none', 'underline', 'line-through', 'overline'],
     textTransform: ['none', 'capitalize', 'uppercase', 'lowercase'],
-    lineHeight: ['normal', '1', '1.25', '1.5', '2']
+    lineHeight: ['normal', '1', '1.25', '1.5', '2'],
+    whiteSpace: ['normal', 'nowrap', 'pre', 'pre-wrap', 'pre-line'],
+    textOverflow: ['clip', 'ellipsis']
+  }
+})
+
+const compositionProperties = defineProperties({
+  properties: {
+    truncate: {
+      true: {
+        display: 'block',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        minWidth: 0
+      }
+    }
   }
 })
 
@@ -210,7 +245,8 @@ export const sprinkles = createSprinkles(
   gridProperties,
   effectProperties,
   sizeProperties,
-  textProperties
+  textProperties,
+  compositionProperties
 )
 
 export type Sprinkles = Parameters<typeof sprinkles>[0]

@@ -2,19 +2,32 @@ import { Outlet } from 'react-router'
 import { LeftPanel } from './LeftPanel'
 import { MainContent } from './MainContent'
 import { RightPanel } from './RightPanel'
-import { useUIStoreState } from '../../stores/useUIStore'
+import { useUIStoreState, useUIStoreActions } from '../../stores/useUIStore'
+import { Box, Overlay } from '@illog/ui'
 
 export const Layout = () => {
   const { isTaskNoteOpen, currentTaskId } = useUIStoreState()
+  const { closeTaskNote } = useUIStoreActions()
 
   return (
-    // TODO: change to Container component
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#FAFAF9' }}>
+    <Box
+      display="flex"
+      minHeight="100vh"
+      backgroundColor="backgroundBrandTertiary"
+      overflow="hidden"
+    >
       <LeftPanel />
       <MainContent>
         <Outlet />
       </MainContent>
-      {isTaskNoteOpen && currentTaskId && <RightPanel taskId={currentTaskId} />}
-    </div>
+
+      <Overlay
+        isOpen={isTaskNoteOpen && !!currentTaskId}
+        onClose={closeTaskNote}
+        animation="slideRight"
+      >
+        {currentTaskId && <RightPanel taskId={currentTaskId} />}
+      </Overlay>
+    </Box>
   )
 }

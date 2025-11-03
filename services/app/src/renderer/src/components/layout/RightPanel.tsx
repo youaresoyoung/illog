@@ -1,7 +1,12 @@
-import { useAutoSaveNote } from '../../hooks/useAutoSaveNote'
-import { useReflection, useReflectionStream, useTask, useUpdateTask } from '../../hooks/queries'
-import { Button, Input, TimePicker, useAutoSaveInput } from '@illog/ui'
+import { useEffect, useRef } from 'react'
+import { useTask, useUpdateTask } from '../../hooks/queries'
+import { Inline, Input, Stack, Text, TimePicker, useAutoSaveInput } from '@illog/ui'
 import { TagSection } from '../tag/TagSection'
+import { MAX_TAG_LENGTH, TaskNote } from '../../../../types'
+
+import { useTaskNote } from '../../hooks/queries/useNoteQueries'
+import { TextareaSection } from '../right-panel/TextareaSection'
+import { ReflectionSection } from '../right-panel/ReflectionSection'
 
 type Props = {
   taskId: string
@@ -9,9 +14,9 @@ type Props = {
 
 export const RightPanel = ({ taskId }: Props) => {
   const { data: task } = useTask(taskId)
-  const { data: existingReflection } = useReflection(taskId)
-  const { generateReflection, isStreaming, streamedContent, resetStream } = useReflectionStream()
-  const [note, handleChange] = useAutoSaveNote(taskId)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  const { data: note } = useTaskNote(taskId) as { data: TaskNote | null }
   const { mutate: updateTask } = useUpdateTask()
 
   const [title, , handleTitleChange] = useAutoSaveInput(
@@ -29,9 +34,6 @@ export const RightPanel = ({ taskId }: Props) => {
     1000
   )
 
-  const displayReflectionText =
-    isStreaming || streamedContent ? streamedContent : existingReflection?.content || ''
-
   const handleDateTimeChange = (value: { start: string | null; end: string | null }) => {
     if (!task) return
 
@@ -44,24 +46,11 @@ export const RightPanel = ({ taskId }: Props) => {
     })
   }
 
-  const startReflectionGeneration = async () => {
-    if (!note?.content) return
-
-    resetStream()
-    await generateReflection(taskId, note.content)
-  }
-
-  const handleReflectNote = async () => {
-    if (existingReflection) {
-      const shouldOverwrite = window.confirm(
-        'An AI summary already exists. Do you want to overwrite it?'
-      )
-      if (!shouldOverwrite) return
-      startReflectionGeneration()
-    } else {
-      startReflectionGeneration()
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0
     }
-  }
+  }, [taskId])
 
   if (!task) {
     // TODO: better error handling UX
@@ -69,47 +58,64 @@ export const RightPanel = ({ taskId }: Props) => {
   }
 
   return (
-    <div
-      style={{
-        width: '594px',
-        borderLeft: '1px solid #ccc',
-        padding: '12px'
-      }}
-    >
-      <Input value={title} onChange={handleTitleChange} />
-      <Input value={description} onChange={handleDescriptionChange} />
-      <div>
-        <TagSection task={task} />
-        <TimePicker
-          value={{ start: task.timer_start ?? null, end: task.timer_end ?? null }}
-          onChange={handleDateTimeChange}
-        >
-          <TimePicker.Range>
-            <TimePicker.Input field="start" placeholder="Start time" />
-            <TimePicker.Separator />
-            <TimePicker.Input field="end" placeholder="End time" />
-          </TimePicker.Range>
-          <TimePicker.Summary showTime={false} />
-        </TimePicker>
-      </div>
-      <Button
-        variant="primary"
-        size="md"
-        onClick={handleReflectNote}
-        isDisabled={isStreaming || !note?.content}
+    <>
+      <Stack
+        ref={scrollContainerRef}
+        width="720px"
+        height="100vh"
+        overflow="scroll"
+        borderLeft="border"
+        borderLeftColor="borderDefaultDefault"
+        borderLeftStyle="solid"
+        px="600"
+        py="1200"
+        backgroundColor="backgroundDefaultDefault"
+        gap="1200"
       >
-        {isStreaming ? 'Generating...' : 'AI Reflection'}
-      </Button>
-      <textarea
-        placeholder="Type your notes here..."
-        style={{ width: '100%', height: '400px' }}
-        value={note?.content || ''}
-        onChange={handleChange}
-      />
-      <div>
-        <h4>AI Reflection</h4>
-        <p>{displayReflectionText}</p>
-      </div>
-    </div>
+        <Stack>
+          <Input value={title} onChange={handleTitleChange} placeholder="Log title..." />
+          <Input
+            value={description}
+            onChange={handleDescriptionChange}
+            placeholder="description..."
+          />
+          <Text textStyle="caption" mt="100">
+            Last edited at {new Date(task?.updated_at).toLocaleString()}
+          </Text>
+        </Stack>
+        <Inline gap="1200">
+          <Stack gap="400" flex="1" minWidth="0" overflow="hidden">
+            <Inline>
+              <Text textStyle="bodyStrong">Tags</Text>
+              <Text textStyle="captionStrong" color="textDefaultTertiary" px="300" py="100">
+                {task.tags.length}/{MAX_TAG_LENGTH} used
+              </Text>
+            </Inline>
+            <TagSection task={task} />
+          </Stack>
+          <Stack flex="1" gap="400">
+            <Text textStyle="bodyStrong">Time</Text>
+            <Stack>
+              <TimePicker
+                value={{ start: task.timer_start ?? null, end: task.timer_end ?? null }}
+                onChange={handleDateTimeChange}
+              >
+                <TimePicker.Range>
+                  <TimePicker.Input field="start" placeholder="Start time" />
+                  <TimePicker.Separator />
+                  <TimePicker.Input field="end" placeholder="End time" />
+                </TimePicker.Range>
+                <TimePicker.Summary showTime={false} />
+              </TimePicker>
+            </Stack>
+          </Stack>
+        </Inline>
+
+        <Stack gap="200">
+          <TextareaSection taskId={task.id} note={note} />
+        </Stack>
+        <ReflectionSection taskId={task.id} noteContent={note?.content} />
+      </Stack>
+    </>
   )
 }
