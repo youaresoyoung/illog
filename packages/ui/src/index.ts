@@ -15,6 +15,7 @@ export { Divider } from './components/Divider'
 export { Portal } from './components/Portal'
 export { TimePicker } from './components/TimePicker'
 export { Dialog } from './components/Dialog'
+export { Overlay } from './components/Overlay'
 
 // Types
 export type { IconName } from './components/Icon/types'
@@ -25,6 +26,7 @@ export type { Sprinkles } from './core/sprinkles.css'
 export type { StyleProps } from './core/styleProps'
 export type { BoxProps } from './components/Box/types'
 export type { TextProps } from './components/Typography/types'
+export type { OverlayProps, OverlayAnimation } from './components/Overlay/types'
 
 // Hooks
 export { NavProvider, useNavContext } from './context'
