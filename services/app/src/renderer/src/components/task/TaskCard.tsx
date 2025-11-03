@@ -28,7 +28,7 @@ export const TaskCard = ({ task, handleOpenNote }: Props) => {
   }
 
   return (
-    <Card onClick={handleClickCard}>
+    <Card onClick={handleClickCard} maxWidth="100%">
       <div>
         <Input
           style={{ paddingLeft: 0 }}
