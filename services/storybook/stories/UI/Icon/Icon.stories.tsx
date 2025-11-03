@@ -4,7 +4,7 @@ import { IconNameOptions } from '@illog/ui'
 import { Meta, StoryObj } from '@storybook/react-vite'
 import { getColorOptions } from '../../../utils/getColorOptions'
 
-const colors = getColorOptions(tokens.colors.light.icon)
+const colors = getColorOptions('icon', tokens.colors.light.icon)
 const meta = {
   component: _Icon,
   argTypes: {
@@ -30,5 +30,5 @@ export const Icon: Story = {}
 Icon.args = {
   name: 'check',
   size: 'medium',
-  color: 'default.default'
+  color: 'iconDefaultDefault'
 }
