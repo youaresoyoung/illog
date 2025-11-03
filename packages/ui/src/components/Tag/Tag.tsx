@@ -2,8 +2,9 @@ import { MouseEvent } from 'react'
 import { Icon } from '../Icon'
 import clsx from 'clsx'
 import * as style from './tag.css'
-import { iconColors, textColors } from '../../core/tokens/generatedColors'
+import { textColors } from '../../core/tokens/generatedColors'
 import { TagProps } from './types'
+import { Inline } from '../Inline'
 
 function capitalize(string: string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
@@ -48,13 +49,15 @@ export const Tag = ({
   }
 
   return (
-    <div className={clsx([style.tagRecipe({ color: tag.color }), className])}>
-      <span>{tag.name}</span>
+    <Inline className={clsx([style.tagRecipe({ color: tag.color }), className])} maxWidth="100%">
+      <Inline as="span" truncate="true">
+        {tag.name}
+      </Inline>
       {removeFromTask && (
         <button className={style.tagRemoveButton} onClick={handleClickRemove}>
           <Icon size="extraSmall" name="cancel" color={getIconColor(tag.color)} />
         </button>
       )}
-    </div>
+    </Inline>
   )
 }
