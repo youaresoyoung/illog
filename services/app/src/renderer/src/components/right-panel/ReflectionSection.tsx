@@ -94,7 +94,7 @@ export const ReflectionSection = ({ taskId, noteContent }: TextareaSectionProps)
           backgroundColor="backgroundDefaultSecondary"
           minHeight="240px"
           p="300"
-          overflow="auto"
+          mt="600"
         >
           <LexicalComposer initialConfig={initialConfig}>
             <Text as="div" position="relative" textStyle="bodyBase">

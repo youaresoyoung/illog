@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { useTask, useUpdateTask } from '../../hooks/queries'
 import { Inline, Input, Stack, Text, TimePicker, useAutoSaveInput } from '@illog/ui'
 import { TagSection } from '../tag/TagSection'
@@ -13,6 +14,7 @@ type Props = {
 
 export const RightPanel = ({ taskId }: Props) => {
   const { data: task } = useTask(taskId)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const { data: note } = useTaskNote(taskId) as { data: TaskNote | null }
   const { mutate: updateTask } = useUpdateTask()
@@ -44,6 +46,12 @@ export const RightPanel = ({ taskId }: Props) => {
     })
   }
 
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0
+    }
+  }, [taskId])
+
   if (!task) {
     // TODO: better error handling UX
     return <div>Loading...</div>
@@ -52,6 +60,7 @@ export const RightPanel = ({ taskId }: Props) => {
   return (
     <>
       <Stack
+        ref={scrollContainerRef}
         width="720px"
         height="100vh"
         overflow="scroll"

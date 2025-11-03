@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 
-import { $getRoot, EditorState } from 'lexical'
+import { $createParagraphNode, $createTextNode, $getRoot, EditorState } from 'lexical'
 import { LexicalComposer } from '@lexical/react/LexicalComposer'
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin'
 import { ContentEditable } from '@lexical/react/LexicalContentEditable'
@@ -57,19 +57,19 @@ function InitialContentPlugin({ content }: InitialContentPluginProps) {
 
   useEffect(() => {
     if (!isInitialized.current && content) {
-      editor.update(() => {
-        const root = $getRoot()
-        root.clear()
-        const paragraph = root.getFirstChild()
-        if (paragraph) {
-          paragraph.remove()
+      editor.update(
+        () => {
+          const root = $getRoot()
+          root.clear()
+          const paragraph = $createParagraphNode()
+          const textNode = $createTextNode(content)
+          paragraph.append(textNode)
+          root.append(paragraph)
+        },
+        {
+          discrete: true
         }
-        root.selectEnd()
-        const selection = root.select()
-        if (selection) {
-          selection.insertText(content)
-        }
-      })
+      )
       isInitialized.current = true
     }
   }, [editor, content])
@@ -101,7 +101,6 @@ export const TextareaSection = ({ taskId, note }: TextareaSectionProps) => {
       backgroundColor="backgroundDefaultDefault"
       p="300"
       minHeight="400px"
-      overflow="auto"
     >
       <LexicalComposer initialConfig={initialConfig}>
         <Text as="div" position="relative" textStyle="bodyBase">
