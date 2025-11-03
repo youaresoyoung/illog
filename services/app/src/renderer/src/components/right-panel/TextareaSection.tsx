@@ -103,23 +103,22 @@ export const TextareaSection = ({ taskId, note }: TextareaSectionProps) => {
       minHeight="400px"
     >
       <LexicalComposer initialConfig={initialConfig}>
-        <Text as="div" position="relative" textStyle="bodyBase">
+        <Stack position="relative">
           <PlainTextPlugin
             contentEditable={
               <ContentEditable
                 style={{
-                  minHeight: '360px',
-                  outline: 'none',
-                  fontFamily: 'inherit'
+                  minHeight: '360px'
                 }}
+                className="md"
               />
             }
             placeholder={
               <Text
-                textStyle="bodyBase"
+                textStyle="bodySmall"
                 color="textDisabledDefault"
                 position="absolute"
-                top="0"
+                top="0.5em"
                 left="0"
               >
                 Start typing your notes here...
@@ -127,7 +126,7 @@ export const TextareaSection = ({ taskId, note }: TextareaSectionProps) => {
             }
             ErrorBoundary={LexicalErrorBoundary}
           />
-        </Text>
+        </Stack>
         <HistoryPlugin />
         <AutoSavePlugin taskId={taskId} saveNote={saveNote} />
         {note?.content && <InitialContentPlugin content={note.content} />}

@@ -97,24 +97,23 @@ export const ReflectionSection = ({ taskId, noteContent }: TextareaSectionProps)
           mt="600"
         >
           <LexicalComposer initialConfig={initialConfig}>
-            <Text as="div" position="relative" textStyle="bodyBase">
+            <Stack position="relative">
               <InitialContentPlugin content={displayReflectionText} />
               <RichTextPlugin
                 contentEditable={
                   <ContentEditable
                     style={{
-                      outline: 'none',
-                      minHeight: '240px',
-                      fontFamily: 'inherit'
+                      minHeight: '240px'
                     }}
+                    className="md"
                   />
                 }
                 placeholder={
                   <Text
-                    textStyle="bodyBase"
+                    textStyle="bodySmall"
                     color="textDisabledDefault"
                     position="absolute"
-                    top="0"
+                    top="0.5em"
                     left="0"
                   >
                     No reflection generated yet...
@@ -122,7 +121,7 @@ export const ReflectionSection = ({ taskId, noteContent }: TextareaSectionProps)
                 }
                 ErrorBoundary={LexicalErrorBoundary}
               />
-            </Text>
+            </Stack>
           </LexicalComposer>
         </Stack>
       </Stack>
