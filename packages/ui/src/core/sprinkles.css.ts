@@ -216,7 +216,23 @@ const textProperties = defineProperties({
     textAlign: ['left', 'right', 'center', 'justify'],
     textDecoration: ['none', 'underline', 'line-through', 'overline'],
     textTransform: ['none', 'capitalize', 'uppercase', 'lowercase'],
-    lineHeight: ['normal', '1', '1.25', '1.5', '2']
+    lineHeight: ['normal', '1', '1.25', '1.5', '2'],
+    whiteSpace: ['normal', 'nowrap', 'pre', 'pre-wrap', 'pre-line'],
+    textOverflow: ['clip', 'ellipsis']
+  }
+})
+
+const compositionProperties = defineProperties({
+  properties: {
+    truncate: {
+      true: {
+        display: 'block',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        minWidth: 0
+      }
+    }
   }
 })
 
@@ -229,7 +245,8 @@ export const sprinkles = createSprinkles(
   gridProperties,
   effectProperties,
   sizeProperties,
-  textProperties
+  textProperties,
+  compositionProperties
 )
 
 export type Sprinkles = Parameters<typeof sprinkles>[0]
