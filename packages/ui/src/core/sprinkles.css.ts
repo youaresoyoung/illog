@@ -197,7 +197,7 @@ const sizeProperties = defineProperties({
       ...Object.values(space).map((v) => `${v}px`)
     ],
     minWidth: ['0', 'min-content', 'max-content', 'fit-content'],
-    maxWidth: ['none', 'min-content', 'max-content', 'fit-content'],
+    maxWidth: ['none', 'min-content', 'max-content', 'fit-content', '100%'],
     minHeight: ['0', 'min-content', 'max-content', 'fit-content'],
     maxHeight: ['none', 'min-content', 'max-content', 'fit-content']
   },
