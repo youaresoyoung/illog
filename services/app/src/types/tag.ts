@@ -1,5 +1,6 @@
 import { Color, Timestamp, UUID } from './common'
 
+export const MAX_TAG_LENGTH = 3
 export interface Tag {
   id: UUID
   name: string

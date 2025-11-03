@@ -4,7 +4,12 @@ import { CardProps } from './types'
 import { cardBase } from './Card.css'
 import clsx from 'clsx'
 
-export const Card = <T extends ElementType>({ onClick, className, children }: CardProps<T>) => {
+export const Card = <T extends ElementType>({
+  onClick,
+  className,
+  maxWidth,
+  children
+}: CardProps<T>) => {
   return (
     <Box
       as="li"
@@ -16,6 +21,7 @@ export const Card = <T extends ElementType>({ onClick, className, children }: Ca
       rounded="200"
       shadow="100"
       role="button"
+      maxWidth={maxWidth}
       tabIndex={0}
       onClick={onClick}
       className={clsx([cardBase, className])}
