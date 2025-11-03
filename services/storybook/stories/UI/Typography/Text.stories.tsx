@@ -1,10 +1,9 @@
 import { Text } from '@illog/ui'
 import { Meta, StoryObj } from '@storybook/react-vite'
 import { styles, tokens } from '@illog/themes'
-import '@illog/ui/style.css'
 import { getColorOptions } from '../../../utils/getColorOptions'
 
-const colors = getColorOptions(tokens.colors.light.text)
+const colors = getColorOptions('text', tokens.colors.light.text)
 const meta = {
   component: Text,
   argTypes: {
@@ -37,6 +36,6 @@ type Story = StoryObj<typeof Text>
 export const Primary: Story = {}
 Primary.args = {
   textStyle: 'heading',
-  color: 'brand.default',
+  color: 'textDefaultDefault',
   children: 'Hello, world!'
 }
