@@ -89,8 +89,7 @@ export const TextareaSection = ({ taskId, note }: TextareaSectionProps) => {
     namespace: 'NoteEditor',
     onError: (error: Error) => {
       console.error('Lexical Error:', error)
-    },
-    editorState: note?.content || undefined
+    }
   }
 
   return (

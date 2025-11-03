@@ -55,8 +55,7 @@ export const ReflectionSection = ({ taskId, noteContent }: TextareaSectionProps)
     nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, CodeNode, CodeHighlightNode, LinkNode],
     onError: (error: Error) => {
       console.error('Lexical Error:', error)
-    },
-    editorState: displayReflectionText || undefined
+    }
   }
 
   const startReflectionGeneration = async () => {
