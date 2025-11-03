@@ -4,6 +4,7 @@ import { CSSProperties } from '@vanilla-extract/css'
 import { Sprinkles } from '../../core/sprinkles.css'
 import { AsProp, PropsToOmit } from '../../core/types'
 import { textColors } from '../../core/tokens/generatedColors'
+import { StyleProps } from '../../core/styleProps'
 
 type TextOwnProps = {
   textStyle?: textStyle
@@ -12,7 +13,8 @@ type TextOwnProps = {
   align?: CSSProperties['textAlign']
   className?: string
   style?: CSSProperties
-} & Sprinkles
+} & Omit<Sprinkles, keyof StyleProps> &
+  StyleProps
 
 export type TextProps<T extends React.ElementType> = TextOwnProps &
   AsProp<T> &
