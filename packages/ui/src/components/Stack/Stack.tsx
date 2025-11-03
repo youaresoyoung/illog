@@ -19,7 +19,8 @@ export const Stack = <T extends ElementType = 'div'>(props: StackProps<T>) => {
     align,
     justify,
     wrap = 'nowrap',
-    style
+    style,
+    ref
   } = props
 
   const [styleProps, withoutStyleProps] = extractStyleProps(props)
@@ -42,7 +43,8 @@ export const Stack = <T extends ElementType = 'div'>(props: StackProps<T>) => {
     {
       ...restProps,
       className: clsx([stackSprinkles, className]),
-      style: mergedStyle
+      style: mergedStyle,
+      ref
     },
     children
   )
