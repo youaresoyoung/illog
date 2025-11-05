@@ -1,0 +1,76 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+      time: '09:00'
+      timezone: 'America/Vancouver'
+    open-pull-requests-limit: 5
+    labels:
+      - 'dependencies'
+      - 'automated'
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'
+    reviewers:
+      - 'youaresoyoung'
+
+  - package-ecosystem: 'npm'
+    directory: '/packages/ui'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 3
+    labels:
+      - 'dependencies'
+      - 'ui'
+    commit-message:
+      prefix: 'chore(ui)'
+
+  - package-ecosystem: 'npm'
+    directory: '/packages/themes'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 3
+    labels:
+      - 'dependencies'
+      - 'themes'
+    commit-message:
+      prefix: 'chore(themes)'
+
+  - package-ecosystem: 'npm'
+    directory: '/services/app'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 5
+    labels:
+      - 'dependencies'
+      - 'app'
+    commit-message:
+      prefix: 'chore(app)'
+
+  - package-ecosystem: 'npm'
+    directory: '/services/storybook'
+    schedule:
+      interval: 'weekly'
+      day: 'monday'
+    open-pull-requests-limit: 3
+    labels:
+      - 'dependencies'
+      - 'storybook'
+    commit-message:
+      prefix: 'chore(storybook)'
+
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'monthly'
+    labels:
+      - 'dependencies'
+      - 'github-actions'
+    commit-message:
+      prefix: 'ci'
