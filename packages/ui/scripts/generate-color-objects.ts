@@ -18,7 +18,7 @@ function parseCssVars(block: string) {
   const result: Record<string, string> = {}
   let match
   while ((match = regex.exec(block)) !== null) {
-    const [_, name] = match
+    const [, name] = match
 
     const camelCaseName = name.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase())
     result[camelCaseName] = `var(--${name})`

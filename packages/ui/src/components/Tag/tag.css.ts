@@ -1,12 +1,7 @@
 import { style } from '@vanilla-extract/css'
 import { recipe } from '@vanilla-extract/recipes'
 import { styles, tokens } from '@illog/themes'
-import {
-  backgroundColors,
-  borderColors,
-  iconColors,
-  textColors
-} from '../../core/tokens/generatedColors'
+import { backgroundColors, borderColors, textColors } from '../../core/tokens/generatedColors'
 
 export const tagBase = style({
   display: 'inline-flex',

@@ -34,7 +34,7 @@ export const TagEditor = ({ id, name }: Props) => {
     document.addEventListener('mousedown', onClickOutSide)
 
     return () => document.removeEventListener('mousedown', onClickOutSide)
-  }, [])
+  }, [id, name, updateTag])
 
   return (
     <div>
