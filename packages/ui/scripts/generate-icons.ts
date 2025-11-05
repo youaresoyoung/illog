@@ -2,6 +2,7 @@ import { readdirSync, readFileSync, writeFileSync } from 'fs'
 import { tokens } from '@illog/themes'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
+import { execSync } from 'child_process'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -66,6 +67,16 @@ writeFileSync(join(__dirname, '../src/assets/svg/index.ts'), fileContent)
 fileContent = '// ⚠️ Auto-generated file - Do not edit\n\n'
 fileContent += `${iconNameType}\n${iconNameOptionsExport}`
 writeFileSync(join(__dirname, '../src/components/Icon/types.ts'), fileContent)
+
+// NOTE: Formatting with Prettier after writing files
+const svgIndexPath = join(__dirname, '../src/assets/svg/index.ts')
+const iconTypesPath = join(__dirname, '../src/components/Icon/types.ts')
+
+try {
+  execSync(`prettier --write "${svgIndexPath}" "${iconTypesPath}"`, { stdio: 'ignore' })
+} catch {
+  console.warn('⚠️  Prettier formatting failed, but files were generated')
+}
 
 console.log('✅ Successfully generated svg/index.ts')
 console.log('✅ Successfully generated components/Icon/types.ts')

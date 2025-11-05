@@ -1,5 +1,6 @@
 import { tokens } from '@illog/themes'
 import { mkdirSync, writeFileSync } from 'fs'
+import { execSync } from 'child_process'
 
 type ThemeTokens = typeof import('@illog/themes').tokens
 
@@ -83,7 +84,15 @@ const generateThemeCSS = (tokens: ThemeTokens) => {
   const variables = generateThemeCSSVariables(tokens)
 
   mkdirSync('dist', { recursive: true })
-  writeFileSync('dist/themes.css', variables.join('\n\n'), 'utf-8')
+  const cssPath = 'dist/themes.css'
+  writeFileSync(cssPath, variables.join('\n\n'), 'utf-8')
+
+  // NOTE: Formatting with Prettier after writing files
+  try {
+    execSync(`prettier --write "${cssPath}"`, { stdio: 'ignore' })
+  } catch {
+    console.warn('⚠️  Prettier formatting failed, but file was generated')
+  }
 
   console.log('✅ Successfully generated dist/themes.css')
 }

@@ -2,6 +2,7 @@ import fs from 'fs'
 import { createRequire } from 'module'
 import path, { dirname } from 'path'
 import { fileURLToPath } from 'url'
+import { execSync } from 'child_process'
 
 const require = createRequire(import.meta.url)
 const themesPath = require.resolve('@illog/themes/themes.css')
@@ -18,7 +19,7 @@ function parseCssVars(block: string) {
   const result: Record<string, string> = {}
   let match
   while ((match = regex.exec(block)) !== null) {
-    const [_, name] = match
+    const [, name] = match
 
     const camelCaseName = name.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase())
     result[camelCaseName] = `var(--${name})`
@@ -50,4 +51,12 @@ for (const groupName in groupedColors) {
 }
 
 fs.writeFileSync(outputPath, fileContent)
+
+// NOTE: Formatting with Prettier after writing files
+try {
+  execSync(`prettier --write "${outputPath}"`, { stdio: 'ignore' })
+} catch {
+  console.warn('⚠️  Prettier formatting failed, but file was generated')
+}
+
 console.log('✅ Successfully generated generatedColors.ts')

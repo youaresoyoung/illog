@@ -5,7 +5,9 @@ import eslintPluginReactRefresh from 'eslint-plugin-react-refresh'
 import eslintConfigPrettier from 'eslint-config-prettier'
 
 export default tseslint.config(
-  { ignores: ['**/node_modules', '**/dist'] },
+  {
+    ignores: ['**/node_modules', '**/dist', '**/out', '**/build', '**/*.tsbuildinfo', '.cache']
+  },
   tseslint.configs.recommended,
   eslintPluginReact.configs.flat.recommended,
   eslintPluginReact.configs.flat['jsx-runtime'],
