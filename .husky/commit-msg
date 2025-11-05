@@ -1,0 +1,78 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+commit_msg_file=$1
+commit_msg=$(cat "$commit_msg_file")
+
+# Allowed patterns:
+# 1. Conventional Commits: "feat: description" or "feat(scope): description"
+# 2. PR Merge format: "[#123] feat: description" or "[PR-123] feat: description"
+# 3. Gitmoji format: ":bug: fix bug" or ":sparkles: add feature"
+# 4. WIP/merge commits: "Merge ...", "WIP: ...", "wip: ..."
+
+# Conventional Commits Pattern
+conventional_pattern="^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,}"
+
+# PR Merge Pattern (e.g., "[#123] feat: description")
+pr_pattern="^\[#?[0-9]+\] (feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,}"
+
+# Gitmoji Pattern (only valid gitmoji.dev codes)
+# Based on https://gitmoji.dev
+gitmoji_list="art|zap|fire|bug|ambulance|sparkles|memo|rocket|lipstick|tada|white_check_mark|lock|closed_lock_with_key|bookmark|rotating_light|construction|green_heart|arrow_down|arrow_up|pushpin|construction_worker|chart_with_upwards_trend|recycle|heavy_plus_sign|heavy_minus_sign|wrench|hammer|globe_with_meridians|pencil2|poop|rewind|twisted_rightwards_arrows|package|alien|truck|page_facing_up|boom|bento|wheelchair|bulb|beers|speech_balloon|card_file_box|loud_sound|mute|busts_in_silhouette|children_crossing|building_construction|iphone|clown_face|egg|see_no_evil|camera_flash|alembic|mag|label|seedling|triangular_flag_on_post|goal_net|dizzy|wastebasket|passport_control|adhesive_bandage|monocle_face|coffin|test_tube|necktie|stethoscope|bricks|technologist|money_with_wings|thread|safety_vest|airplane"
+gitmoji_pattern="^:($gitmoji_list): .{1,}"
+
+# WIP/Merge Pattern
+special_pattern="^(Merge |WIP:|wip:|Revert |fixup!|squash!)"
+
+if echo "$commit_msg" | grep -Eq "$conventional_pattern"; then
+    exit 0
+elif echo "$commit_msg" | grep -Eq "$pr_pattern"; then
+    exit 0
+elif echo "$commit_msg" | grep -Eq "$gitmoji_pattern"; then
+    exit 0
+elif echo "$commit_msg" | grep -Eq "$special_pattern"; then
+    exit 0
+else
+    echo ""
+    echo "❌ Invalid commit message format!"
+    echo ""
+    echo "Allowed formats:"
+    echo ""
+    echo "1️⃣  Conventional Commits:"
+    echo "    feat: add new feature"
+    echo "    fix(ui): resolve button issue"
+    echo ""
+    echo "2️⃣  PR Merge format:"
+    echo "    [#123] feat: add new feature"
+    echo "    [PR-456] fix: resolve issue"
+    echo ""
+    echo "3️⃣  Gitmoji format:"
+    echo "    :sparkles: add new feature"
+    echo "    :bug: fix bug"
+    echo "    :memo: update docs"
+    echo ""
+    echo "  Common Gitmoji:"
+    echo "    :sparkles:  (new feature)       :bug:  (bug fix)"
+    echo "    :memo:  (documentation)         :art:  (code structure)"
+    echo "    :zap:  (performance)            :fire:  (remove code)"
+    echo "    :lipstick:  (UI/style)          :construction:  (WIP)"
+    echo "    :white_check_mark:  (tests)     :wrench:  (config)"
+    echo "    :rocket:  (deploy)              :recycle:  (refactor)"
+    echo "    :heavy_plus_sign:  (add dep)    :heavy_minus_sign:  (remove dep)"
+    echo "    :arrow_up:  (upgrade dep)       :arrow_down:  (downgrade dep)"
+    echo "    :lock:  (security)              :green_heart:  (fix CI)"
+    echo "    :rotating_light:  (lint warn)   :pencil2:  (typo)"
+    echo "    :boom:  (breaking change)       :truck:  (move/rename)"
+    echo ""
+    echo "  Full list: https://gitmoji.dev"
+    echo ""
+    echo "4️⃣  Special commits:"
+    echo "    WIP: work in progress"
+    echo "    Merge branch 'feature' into develop"
+    echo ""
+    echo "Current message:"
+    echo "  $commit_msg"
+    echo ""
+    exit 1
+fi
+

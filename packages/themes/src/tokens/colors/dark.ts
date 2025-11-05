@@ -1,4 +1,4 @@
-import { blue, brand, gray, green, purple, red, white, yellow } from './primitive'
+import { blue, brand, gray, green, red, white, yellow } from './primitive'
 
 export const background = {
   default: {
