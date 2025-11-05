@@ -1,0 +1,202 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - staging
+      - main
+  push:
+    branches:
+      - develop
+      - staging
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.filter.outputs.packages }}
+      ui: ${{ steps.filter.outputs.ui }}
+      themes: ${{ steps.filter.outputs.themes }}
+      app: ${{ steps.filter.outputs.app }}
+      storybook: ${{ steps.filter.outputs.storybook }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            packages:
+              - 'packages/**'
+            ui:
+              - 'packages/ui/**'
+            themes:
+              - 'packages/themes/**'
+            app:
+              - 'services/app/**'
+              - 'packages/**'
+            storybook:
+              - 'services/storybook/**'
+              - 'packages/ui/**'
+
+  lint:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.packages == 'true' || needs.detect-changes.outputs.app == 'true' || needs.detect-changes.outputs.storybook == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Check formatting
+        run: pnpm prettier --check .
+
+  build-packages:
+    name: Build & Test Packages
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.packages == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm build:packages
+
+      - name: Run UI tests
+        if: needs.detect-changes.outputs.ui == 'true'
+        run: pnpm --filter @illog/ui test
+
+      - name: Cache build artifacts
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            packages/*/dist
+          key: packages-build-${{ github.sha }}
+
+  build-app:
+    name: Build Electron App
+    runs-on: ${{ matrix.os }}
+    needs: [detect-changes, build-packages]
+    if: needs.detect-changes.outputs.app == 'true'
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Restore package builds
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            packages/*/dist
+          key: packages-build-${{ github.sha }}
+
+      - name: Build Electron app
+        run: pnpm --filter illog build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build-${{ matrix.os }}
+          path: services/app/out
+          retention-days: 7
+
+  build-storybook:
+    name: Build Storybook
+    runs-on: ubuntu-latest
+    needs: [detect-changes, build-packages]
+    if: needs.detect-changes.outputs.storybook == 'true'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Restore package builds
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            packages/*/dist
+          key: packages-build-${{ github.sha }}
+
+      - name: Build Storybook
+        run: pnpm --filter storybook build
+        continue-on-error: true
+
+  ci-success:
+    name: CI Success
+    runs-on: ubuntu-latest
+    needs: [lint, build-packages, build-app, build-storybook]
+    if: always()
+    steps:
+      - name: Check all jobs
+        run: |
+          if [ "${{ contains(needs.*.result, 'failure') }}" == "true" ]; then
+            echo "Some jobs failed!"
+            exit 1
+          fi
+          echo "All checks passed!"
