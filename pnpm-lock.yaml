@@ -245,8 +245,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
       '@storybook/react-vite':
-        specifier: ^9.0.18
-        version: 9.1.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(rollup@4.52.5)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(typescript@5.9.3)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))
+        specifier: ^10.0.6
+        version: 10.0.6(esbuild@0.25.11)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(rollup@4.52.5)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(typescript@5.9.3)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))
       react:
         specifier: ^19.1.0
         version: 19.2.0
@@ -995,43 +995,54 @@ packages:
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
-  '@storybook/builder-vite@9.1.13':
-    resolution: {integrity: sha512-pmtIjU02ASJOZKdL8DoxWXJgZnpTDgD5WmMnjKJh9FaWmc2YiCW2Y6VRxPox96OM655jYHQe5+UIbk3Cwtwb4A==}
+  '@storybook/builder-vite@10.0.6':
+    resolution: {integrity: sha512-WD5BfYezOQC0B4ItY9HJg9zb4MbNjsZcfXipAQi7+i9dYNWegdAhg7Aq6arsRZ2YMMOiSpVEJhzmK08XRx+szA==}
     peerDependencies:
-      storybook: ^9.1.13
+      storybook: ^10.0.6
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0
 
-  '@storybook/csf-plugin@9.1.13':
-    resolution: {integrity: sha512-EMpzYuyt9FDcxxfBChWzfId50y8QMpdenviEQ8m+pa6c+ANx3pC5J6t7y0khD8TQu815sTy+nc6cc8PC45dPUA==}
+  '@storybook/csf-plugin@10.0.6':
+    resolution: {integrity: sha512-etPIKPoLAhG8wTRZrmvOiDi70CstkE8Y5fYuYhffThCP8tc2RwHEuwLrsK/6Mf9PAkTmIk/CjYG+Rp2qLqNNtg==}
     peerDependencies:
-      storybook: ^9.1.13
+      esbuild: '*'
+      rollup: '*'
+      storybook: ^10.0.6
+      vite: '*'
+      webpack: '*'
+    peerDependenciesMeta:
+      esbuild:
+        optional: true
+      rollup:
+        optional: true
+      vite:
+        optional: true
+      webpack:
+        optional: true
 
   '@storybook/global@5.0.0':
     resolution: {integrity: sha512-FcOqPAXACP0I3oJ/ws6/rrPT9WGhu915Cg8D02a9YxLo0DE9zI+a9A5gRGvmQ09fiWPukqI8ZAEoQEdWUKMQdQ==}
 
-  '@storybook/react-dom-shim@9.1.13':
-    resolution: {integrity: sha512-/tMr9TmV3+98GEQO0S03k4gtKHGCpv9+k9Dmnv+TJK3TBz7QsaFEzMwe3gCgoTaebLACyVveDiZkWnCYAWB6NA==}
+  '@storybook/react-dom-shim@10.0.6':
+    resolution: {integrity: sha512-UdPSWwgo7WQg8vWIxT379pwrC2uFZX9u12Enap8//zVCJNZYHmjTLbV2P+pQ4zD0UFcqcBljptJEbu7FUMYx+A==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      storybook: ^9.1.13
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      storybook: ^10.0.6
 
-  '@storybook/react-vite@9.1.13':
-    resolution: {integrity: sha512-mV1bZ1bpkNQygnuDo1xMGAS5ZXuoXFF0WGmr/BzNDGmRhZ1K1HQh42kC0w3PklckFBUwCFxmP58ZwTFzf+/dJA==}
-    engines: {node: '>=20.0.0'}
+  '@storybook/react-vite@10.0.6':
+    resolution: {integrity: sha512-zDnOk89LDOpN0yhTCYRb8bkm6LdchGMfcCxKLQhEnSmkMmPwXsj/CADUc1Oipqih7D0JR/gxuadx+3y41znmSg==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      storybook: ^9.1.13
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      storybook: ^10.0.6
       vite: ^5.0.0 || ^6.0.0 || ^7.0.0
 
-  '@storybook/react@9.1.13':
-    resolution: {integrity: sha512-B0UpYikKf29t8QGcdmumWojSQQ0phSDy/Ne2HYdrpNIxnUvHHUVOlGpq4lFcIDt52Ip5YG5GuAwJg3+eR4LCRg==}
-    engines: {node: '>=20.0.0'}
+  '@storybook/react@10.0.6':
+    resolution: {integrity: sha512-17SMthmwPDzX6Ex5MNnXhDS8DirGyo2I9g8VV/VtnXFWIl2r/+ZSAHjAM4NG0Tv3qia7l/jQxwL1YKk9qVRZxw==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-      storybook: ^9.1.13
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      storybook: ^10.0.6
       typescript: '>= 4.9.x'
     peerDependenciesMeta:
       typescript:
@@ -2115,6 +2126,10 @@ packages:
   emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
 
+  empathic@2.0.0:
+    resolution: {integrity: sha512-i6UzDscO/XfAcNYD75CfICkmfLedpyPDdozrLMmQc5ORaQcdMoc21OnlEylMIqI7U8eniKrPMxxtj8k0vhmJhA==}
+    engines: {node: '>=14'}
+
   encoding@0.1.13:
     resolution: {integrity: sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==}
 
@@ -2386,10 +2401,6 @@ packages:
   find-up@5.0.0:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
-
-  find-up@7.0.0:
-    resolution: {integrity: sha512-YyZM99iHrqLKjmt4LJDj58KI+fYyufRLBSYcqycxf//KpBk9FoewoGX0450m9nB44qrZnovzC2oeP5hUibxc/g==}
-    engines: {node: '>=18'}
 
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
@@ -3017,10 +3028,6 @@ packages:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
 
-  locate-path@7.2.0:
-    resolution: {integrity: sha512-gvVijfZvn7R+2qyPX8mAuKcFGDf6Nc61GdvGafQsHL0sBIxfKzA+usWn4GFC/bk+QdwPUD4kWFJLhElipq+0VA==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-
   lodash.debounce@4.0.8:
     resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
 
@@ -3444,10 +3451,6 @@ packages:
     resolution: {integrity: sha512-TYOanM3wGwNGsZN2cVTYPArw454xnXj5qmWF1bEoAc4+cU/ol7GVh7odevjp1FNHduHc3KZMcFduxU5Xc6uJRQ==}
     engines: {node: '>=10'}
 
-  p-limit@4.0.0:
-    resolution: {integrity: sha512-5b0R4txpzjPWVw/cXXUResoD4hb6U/x9BH08L7nw+GN1sezDzPdxeRvpc9c433fZhBan/wusjbCsqwqm4EIBIQ==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-
   p-locate@3.0.0:
     resolution: {integrity: sha512-x+12w/To+4GFfgJhBEpiDcLozRJGegY+Ei7/z0tSLkMmxGZNybVMSfWj9aJn8Z5Fc7dBUNJOOVgPv2H7IwulSQ==}
     engines: {node: '>=6'}
@@ -3455,10 +3458,6 @@ packages:
   p-locate@5.0.0:
     resolution: {integrity: sha512-LaNjtRWUBY++zB5nE/NwcaoMylSPk+S+ZHNB1TzdbMJMny6dynpAGt7X/tl/QYq3TIeE6nxHppbo2LGymrG5Pw==}
     engines: {node: '>=10'}
-
-  p-locate@6.0.0:
-    resolution: {integrity: sha512-wPrq66Llhl7/4AGC6I+cqxT07LhXvWL08LNXz1fENOw0Ap4sRZZ/gZpTTJ5jpurzzzfS2W/Ge9BY3LgLjCShcw==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   p-map@4.0.0:
     resolution: {integrity: sha512-/bjOqmgETBYB5BoEeGVea8dmvHb2m9GLy1E9W43yeyfP6QQCZGFNa+XRceJEuDB6zqr+gKpIAmlLebMpykw/MQ==}
@@ -3486,10 +3485,6 @@ packages:
   path-exists@4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
     engines: {node: '>=8'}
-
-  path-exists@5.0.0:
-    resolution: {integrity: sha512-RjhtfwJOxzcFmNOi6ltcbcu4Iu+FL3zEj83dk4kAS+fVpTxXLO1b38RvJgT/0QwvV/L3aY9TAnyv0EOqW4GoMQ==}
-    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   path-is-absolute@1.0.1:
     resolution: {integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==}
@@ -4355,10 +4350,6 @@ packages:
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
-  unicorn-magic@0.1.0:
-    resolution: {integrity: sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ==}
-    engines: {node: '>=18'}
-
   union@0.5.0:
     resolution: {integrity: sha512-N6uOhuW6zO95P3Mel2I2zMsbsanvvtgn6jVqJv4vbVcz/JN0OkL9suomjQGmWtxJQXOCqUJvquc1sMeNz/IwlA==}
     engines: {node: '>= 0.8.0'}
@@ -4379,9 +4370,9 @@ packages:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
 
-  unplugin@1.16.1:
-    resolution: {integrity: sha512-4/u/j4FrCKdi17jaxuJA0jClGxB1AvU2hw/IuayPc4ay1XGaJs/rbb4v5WKwAjNifjmXK9PIFyuPiaK8azyR9w==}
-    engines: {node: '>=14.0.0'}
+  unplugin@2.3.10:
+    resolution: {integrity: sha512-6NCPkv1ClwH+/BGE9QeoTIl09nuiAt0gS28nn1PvYXsGKRwM2TCbFA2QiilmehPDTXIe684k4rZI1yl3A1PCUw==}
+    engines: {node: '>=18.12.0'}
 
   update-browserslist-db@1.1.4:
     resolution: {integrity: sha512-q0SPT4xyU84saUX+tomz1WLkxUbuaJnR1xWt17M7fJtEJigJeWUNGUqrauFXsHnqev9y9JTRGwk13tFBuKby4A==}
@@ -4647,10 +4638,6 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
-
-  yocto-queue@1.2.1:
-    resolution: {integrity: sha512-AyeEbWOu/TAXdxlV9wmGcR0+yh2j3vYPGOECcIj2S7MkrLyC7ne+oye2BKTItt0ii2PHk4cDy+95+LshzbXnGg==}
-    engines: {node: '>=12.20'}
 
   zustand@5.0.8:
     resolution: {integrity: sha512-gyPKpIaxY9XcO2vSMrLbiER7QMAMGOQZVRdJ6Zi782jkbzZygq5GI9nG8g+sMgitRtndwaBSl7uiqC49o1SSiw==}
@@ -5465,33 +5452,41 @@ snapshots:
 
   '@standard-schema/spec@1.0.0': {}
 
-  '@storybook/builder-vite@9.1.13(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))':
+  '@storybook/builder-vite@10.0.6(esbuild@0.25.11)(rollup@4.52.5)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
-      '@storybook/csf-plugin': 9.1.13(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))
+      '@storybook/csf-plugin': 10.0.6(esbuild@0.25.11)(rollup@4.52.5)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))
       storybook: 9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))
       ts-dedent: 2.2.0
       vite: 7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)
+    transitivePeerDependencies:
+      - esbuild
+      - rollup
+      - webpack
 
-  '@storybook/csf-plugin@9.1.13(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))':
+  '@storybook/csf-plugin@10.0.6(esbuild@0.25.11)(rollup@4.52.5)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
       storybook: 9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))
-      unplugin: 1.16.1
+      unplugin: 2.3.10
+    optionalDependencies:
+      esbuild: 0.25.11
+      rollup: 4.52.5
+      vite: 7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)
 
   '@storybook/global@5.0.0': {}
 
-  '@storybook/react-dom-shim@9.1.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))':
+  '@storybook/react-dom-shim@10.0.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))':
     dependencies:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
       storybook: 9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))
 
-  '@storybook/react-vite@9.1.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(rollup@4.52.5)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(typescript@5.9.3)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))':
+  '@storybook/react-vite@10.0.6(esbuild@0.25.11)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(rollup@4.52.5)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(typescript@5.9.3)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))':
     dependencies:
       '@joshwooding/vite-plugin-react-docgen-typescript': 0.6.1(typescript@5.9.3)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))
       '@rollup/pluginutils': 5.3.0(rollup@4.52.5)
-      '@storybook/builder-vite': 9.1.13(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))
-      '@storybook/react': 9.1.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(typescript@5.9.3)
-      find-up: 7.0.0
+      '@storybook/builder-vite': 10.0.6(esbuild@0.25.11)(rollup@4.52.5)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))
+      '@storybook/react': 10.0.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(typescript@5.9.3)
+      empathic: 2.0.0
       magic-string: 0.30.21
       react: 19.2.0
       react-docgen: 8.0.2
@@ -5501,14 +5496,16 @@ snapshots:
       tsconfig-paths: 4.2.0
       vite: 7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)
     transitivePeerDependencies:
+      - esbuild
       - rollup
       - supports-color
       - typescript
+      - webpack
 
-  '@storybook/react@9.1.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(typescript@5.9.3)':
+  '@storybook/react@10.0.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))(typescript@5.9.3)':
     dependencies:
       '@storybook/global': 5.0.0
-      '@storybook/react-dom-shim': 9.1.13(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))
+      '@storybook/react-dom-shim': 10.0.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(storybook@9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1)))
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
       storybook: 9.1.13(@testing-library/dom@10.4.1)(prettier@3.6.2)(vite@7.1.12(@types/node@24.9.1)(tsx@4.20.6)(yaml@2.8.1))
@@ -6866,6 +6863,8 @@ snapshots:
 
   emoji-regex@9.2.2: {}
 
+  empathic@2.0.0: {}
+
   encoding@0.1.13:
     dependencies:
       iconv-lite: 0.6.3
@@ -7258,12 +7257,6 @@ snapshots:
     dependencies:
       locate-path: 6.0.0
       path-exists: 4.0.0
-
-  find-up@7.0.0:
-    dependencies:
-      locate-path: 7.2.0
-      path-exists: 5.0.0
-      unicorn-magic: 0.1.0
 
   flat-cache@4.0.1:
     dependencies:
@@ -7955,10 +7948,6 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
-  locate-path@7.2.0:
-    dependencies:
-      p-locate: 6.0.0
-
   lodash.debounce@4.0.8: {}
 
   lodash.merge@4.6.2: {}
@@ -8418,10 +8407,6 @@ snapshots:
     dependencies:
       yocto-queue: 0.1.0
 
-  p-limit@4.0.0:
-    dependencies:
-      yocto-queue: 1.2.1
-
   p-locate@3.0.0:
     dependencies:
       p-limit: 2.3.0
@@ -8429,10 +8414,6 @@ snapshots:
   p-locate@5.0.0:
     dependencies:
       p-limit: 3.1.0
-
-  p-locate@6.0.0:
-    dependencies:
-      p-limit: 4.0.0
 
   p-map@4.0.0:
     dependencies:
@@ -8456,8 +8437,6 @@ snapshots:
   path-exists@3.0.0: {}
 
   path-exists@4.0.0: {}
-
-  path-exists@5.0.0: {}
 
   path-is-absolute@1.0.1: {}
 
@@ -9413,8 +9392,6 @@ snapshots:
 
   undici-types@7.16.0: {}
 
-  unicorn-magic@0.1.0: {}
-
   union@0.5.0:
     dependencies:
       qs: 6.14.0
@@ -9431,9 +9408,11 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unplugin@1.16.1:
+  unplugin@2.3.10:
     dependencies:
+      '@jridgewell/remapping': 2.3.5
       acorn: 8.15.0
+      picomatch: 4.0.3
       webpack-virtual-modules: 0.6.2
 
   update-browserslist-db@1.1.4(browserslist@4.27.0):
@@ -9707,8 +9686,6 @@ snapshots:
       lib0: 0.2.114
 
   yocto-queue@0.1.0: {}
-
-  yocto-queue@1.2.1: {}
 
   zustand@5.0.8(@types/react@19.2.2)(react@19.2.0):
     optionalDependencies:
