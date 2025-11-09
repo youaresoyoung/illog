@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-react'
 import { Button } from './Button'
-import { userEvent } from '@vitest/browser/context'
+import { userEvent } from 'vitest/browser'
 import { createRef } from 'react'
 
 // TODO: Add more tests for different variants, sizes, and states
