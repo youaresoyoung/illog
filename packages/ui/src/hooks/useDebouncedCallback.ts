@@ -13,7 +13,7 @@ export const useDebouncedCallback = <T extends (...args: any[]) => any>(
   }, [callback])
 
   const debouncedCallback = useCallback(
-    ((...args: Parameters<T>) => {
+    (...args: Parameters<T>) => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
       }
@@ -21,9 +21,9 @@ export const useDebouncedCallback = <T extends (...args: any[]) => any>(
       timeoutRef.current = setTimeout(() => {
         callbackRef.current(...args)
       }, delay)
-    }) as T,
+    },
     [delay]
-  )
+  ) as T
 
   useEffect(() => {
     return () => {
