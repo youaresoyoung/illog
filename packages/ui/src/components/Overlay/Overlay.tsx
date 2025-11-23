@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, MouseEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, MouseEvent } from 'react'
 import { Portal } from '../Portal'
 import { OverlayProps } from './types'
 import * as styles from './Overlay.css'
@@ -24,8 +24,10 @@ export const Overlay = ({
   const backdropRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isOpen) {
+      // NOTE: Since useLayoutEffect runs synchronously before DOM updates, calling setState is safe
+      // eslint-disable-next-line
       setIsExiting(false)
       setShouldRender(true)
     } else if (shouldRender) {

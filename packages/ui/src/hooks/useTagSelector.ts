@@ -28,7 +28,7 @@ export const useTagSelector = ({
   closeTagSelector
 }: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
-  const [previewColor, setPreviewColor] = useState<TagColor>(pickRandomColor)
+  const [previewColor, setPreviewColor] = useState<TagColor>(() => pickRandomColor())
 
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -80,6 +80,7 @@ export const useTagSelector = ({
     const id = await createTag({ name: searchTerm.trim(), color: previewColor })
     await addTagToTask(id)
     setSearchTerm('')
+    setPreviewColor(pickRandomColor())
     inputRef.current?.focus()
   }, [canCreateNew, createTag, addTagToTask, searchTerm, previewColor])
 
@@ -124,12 +125,6 @@ export const useTagSelector = ({
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [closeTagSelector])
-
-  useEffect(() => {
-    if (canCreateNew) {
-      setPreviewColor(pickRandomColor())
-    }
-  }, [canCreateNew])
 
   return {
     searchTerm,

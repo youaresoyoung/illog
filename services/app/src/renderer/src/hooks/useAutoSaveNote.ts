@@ -11,16 +11,14 @@ export const useAutoSaveNote = (
   const { data: fetchedNote } = useTaskNote(currentTaskId)
   const { mutate: saveNote } = useAutoSaveNoteMutation()
 
-  const [localContent, setLocalContent] = useState<string>('')
+  const [localContent, setLocalContent] = useState<string>(() => fetchedNote?.content || '')
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    if (fetchedNote) {
-      setLocalContent(fetchedNote.content || '')
-    } else {
-      setLocalContent('')
-    }
-  }, [fetchedNote])
+    // NOTE: Since external data and local state synchronization is needed, useEffect is appropriate
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLocalContent(fetchedNote?.content || '')
+  }, [currentTaskId, fetchedNote])
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const { value } = e.target

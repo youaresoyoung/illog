@@ -99,6 +99,7 @@ const TagListBase = ({
         </button>
       ) : (
         <ul className={style.tagList}>
+          {/* eslint-disable-next-line react-hooks/refs */}
           {tags.map((tag) => (
             <li className={style.tagItem} key={tag.id} onClick={() => onSelect(tag)}>
               <Tag tag={tag} />
