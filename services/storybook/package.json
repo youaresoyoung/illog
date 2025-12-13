@@ -17,8 +17,8 @@
     "@illog/themes": "workspace:*",
     "@illog/ui": "workspace:*",
     "@storybook/react-vite": "^9.0.18",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "storybook": "^9.0.18",
     "vite": "^7.0.2"
   }
