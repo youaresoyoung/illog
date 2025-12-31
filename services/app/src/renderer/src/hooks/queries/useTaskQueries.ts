@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { OmittedTask, TaskWithTags, Tag } from '../../../../types'
+import { OmittedTask, TaskWithTags, Tag, TaskFilters } from '../../../../types'
 import { queryKeys } from './queryKeys'
 
 export const useTodayTasks = () => {
@@ -9,11 +9,19 @@ export const useTodayTasks = () => {
   })
 }
 
-export const useTask = (id: string) => {
+export const useTaskById = (id: string) => {
   return useQuery({
     queryKey: queryKeys.tasks.detail(id),
     queryFn: () => window.api.task.getWithTags(id),
     enabled: !!id
+  })
+}
+
+export const useTasksByFilters = (filters: TaskFilters) => {
+  return useQuery({
+    queryKey: queryKeys.tasks.filtered(filters),
+    queryFn: () => window.api.task.getTasks(filters),
+    enabled: !!filters
   })
 }
 

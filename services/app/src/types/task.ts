@@ -52,3 +52,16 @@ export interface TaskWithTags extends Task {
 }
 
 export type OmittedTask = Omit<Task, 'id' | 'created_at' | 'updated_at' | 'done_at' | 'deleted_at'>
+
+export type TaskFilters = {
+  status?: Status
+  project_id?: string
+  tag_ids?: string[]
+  date_from?: string
+  date_to?: string
+  search?: string
+}
+
+export type TaskSortBy = 'created_at' | 'updated_at' | 'done_at' | 'title'
+
+export type TaskSortOrder = 'asc' | 'desc'

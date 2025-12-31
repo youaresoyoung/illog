@@ -3,13 +3,14 @@ import { ipcMain } from 'electron'
 import { TaskRepository } from '../repository/taskRepository'
 import { NoteRepository } from '../repository/noteRepository'
 import { TagReposity } from '../repository/tagRepository'
-import { OmittedTag, OmittedTask } from '../../types'
+import { OmittedTag, OmittedTask, TaskFilters } from '../../types'
 
 // TODO: error handling
 export function registerTaskHandlers(taskRepo: TaskRepository) {
   ipcMain.handle('task.create', (_, task: Partial<OmittedTask>) => taskRepo.create(task))
   ipcMain.handle('task.get', (_, id: string) => taskRepo.get(id))
   ipcMain.handle('task.getWithTags', (_, id: string) => taskRepo.getWithTags(id))
+  ipcMain.handle('task.getTasks', (_, filters?: TaskFilters) => taskRepo.getTasks(filters))
   ipcMain.handle('task.getAll', () => taskRepo.getAll())
   ipcMain.handle('task.update', (_, id: string, contents: Partial<OmittedTask>) =>
     taskRepo.update(id, contents)

@@ -1,7 +1,7 @@
 import { Database } from 'better-sqlite3'
 
 import { randomUUID } from 'crypto'
-import { OmittedTask, Task, TaskWithTags } from '../../types'
+import { OmittedTask, Task, TaskFilters, TaskWithTags } from '../../types'
 
 // TODO: apply zod
 export class TaskRepository {
@@ -58,6 +58,66 @@ export class TaskRepository {
       task.tags = JSON.parse(task?.tags as unknown as string) || []
     }
     return task ?? null
+  }
+
+  getTasks(filters?: TaskFilters): TaskWithTags[] {
+    const conditions: string[] = ['task.deleted_at IS NULL']
+    const params: Record<string, unknown> = {}
+
+    if (filters?.status) {
+      conditions.push('task.status = :status')
+      params.status = filters.status
+    }
+
+    if (filters?.project_id) {
+      conditions.push('task.project_id = :project_id')
+      params.project_id = filters.project_id
+    }
+
+    if (filters?.date_from) {
+      conditions.push('task.created_at >= :date_from')
+      params.date_from = filters.date_from
+    }
+
+    if (filters?.date_to) {
+      conditions.push('task.created_at <= :date_to')
+      params.date_to = filters.date_to
+    }
+
+    if (filters?.search) {
+      conditions.push('(task.title LIKE :search OR task.description LIKE :search)')
+      params.search = `%${filters.search}%`
+    }
+
+    let tagJoinCondition = ''
+    if (filters?.tag_ids && filters.tag_ids.length > 0) {
+      tagJoinCondition = `AND task_tag.tag_id IN (${filters.tag_ids.map((_, index) => `:tag_id_${index}`).join(', ')})`
+      filters.tag_ids.forEach((tagId, index) => {
+        params[`tag_id_${index}`] = tagId
+      })
+    }
+
+    const query = `SELECT task.*, COALESCE(
+            json_group_array(
+              json_object('id', tag.id, 'name', tag.name, 'color', tag.color)
+            ) FILTER (WHERE tag.id IS NOT NULL), json('[]')
+          ) AS tags
+       FROM task
+       LEFT JOIN task_tag ON task_tag.task_id = task.id ${tagJoinCondition}
+       LEFT JOIN tag ON tag.id = task_tag.tag_id AND tag.deleted_at IS NULL
+       WHERE ${conditions.join(' AND ')}
+       GROUP BY task.id
+       ORDER BY task.created_at DESC`
+
+    const stmt = this.db.prepare(query)
+    const tasks = stmt.all(params) as TaskWithTags[] | undefined
+
+    if (tasks) {
+      tasks.forEach((task) => {
+        task.tags = JSON.parse(task?.tags as unknown as string) || []
+      })
+    }
+    return tasks as TaskWithTags[]
   }
 
   getAll(): TaskWithTags[] {

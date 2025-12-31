@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { useTask, useUpdateTask } from '../../hooks/queries'
+import { useTaskById, useUpdateTask } from '../../hooks/queries'
 import { Inline, Input, Stack, Text, TimePicker, useAutoSaveInput } from '@illog/ui'
 import { TagSection } from '../tag/TagSection'
 import { MAX_TAG_LENGTH, TaskNote } from '../../../../types'
@@ -13,7 +13,7 @@ type Props = {
 }
 
 export const RightPanel = ({ taskId }: Props) => {
-  const { data: task } = useTask(taskId)
+  const { data: task } = useTaskById(taskId)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   const { data: note } = useTaskNote(taskId) as { data: TaskNote | null }

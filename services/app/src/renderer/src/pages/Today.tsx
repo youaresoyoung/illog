@@ -1,7 +1,8 @@
 import { TaskCard } from '../components/task/TaskCard'
-import { Box, Button, Icon, Text } from '@illog/ui'
+import { Button, Icon, Text } from '@illog/ui'
 import { useTodayTasks, useCreateTask, useDeleteTask } from '../hooks/queries/useTaskQueries'
 import { useUIStoreActions } from '../stores/useUIStore'
+import { ContentHeader } from '../components/layout/ContentHeader'
 
 export const Today = () => {
   const { data: tasks, isLoading, error } = useTodayTasks()
@@ -27,16 +28,16 @@ export const Today = () => {
 
   return (
     <>
-      {/* Box -> Container */}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Text as="h2" textStyle="subheading">
-          Today&apos;s Log
-        </Text>
-        <Button variant="primary" onClick={handleAddLogClick}>
-          <Icon name="plus" size="small" color="iconBrandOnBrand" />
-          Add log
-        </Button>
-      </Box>
+      <ContentHeader
+        title="Today's Log"
+        button={
+          <Button variant="primary" onClick={handleAddLogClick}>
+            <Icon name="plus" size="small" color="iconBrandOnBrand" />
+            Add log
+          </Button>
+        }
+      />
+
       {tasks && tasks.length > 0 ? (
         <ul style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {tasks.map((task) => (

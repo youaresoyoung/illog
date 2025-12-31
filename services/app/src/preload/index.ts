@@ -1,11 +1,12 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { OmittedTag, OmittedTask } from '../types'
+import { OmittedTag, OmittedTask, TaskFilters } from '../types'
 
 const api = {
   task: {
     create: (task: Partial<OmittedTask>) => ipcRenderer.invoke('task.create', task),
     get: (id: string) => ipcRenderer.invoke('task.get', id),
     getWithTags: (id: string) => ipcRenderer.invoke('task.getWithTags', id),
+    getTasks: (filters?: TaskFilters) => ipcRenderer.invoke('task.getTasks', filters),
     getAll: () => ipcRenderer.invoke('task.getAll'),
     update: (id: string, contents: Partial<OmittedTask>) =>
       ipcRenderer.invoke('task.update', id, contents),
