@@ -1,7 +1,7 @@
 import { Database } from 'better-sqlite3'
 
 import { randomUUID } from 'crypto'
-import { OmittedTask, Task, TaskFilters, TaskWithTags } from '../../types'
+import { OmittedTask, Task, TaskFilters, TaskWithTags } from '../types'
 
 // TODO: apply zod
 export class TaskRepository {
@@ -14,16 +14,16 @@ export class TaskRepository {
     const { title = 'Untitled', status = 'todo', project_id = null } = task
 
     const stmt = this.db
-      .prepare(`INSERT INTO task (id, title, status, project_id, timer_start, timer_end, created_at, updated_at, done_at, deleted_at)
-                VALUES (:id, :title, :status, :project_id, :timer_start, :timer_end, :created_at, :updated_at , :done_at, :deleted_at)`)
+      .prepare(`INSERT INTO task (id, title, status, project_id, start_at, end_at, created_at, updated_at, done_at, deleted_at)
+                VALUES (:id, :title, :status, :project_id, :start_at, :end_at, :created_at, :updated_at , :done_at, :deleted_at)`)
 
     stmt.run({
       id,
       title,
       status,
       project_id,
-      timer_start: Date.now(),
-      timer_end: null,
+      start_at: now,
+      end_at: null,
       created_at: now,
       updated_at: now,
       done_at: null,
@@ -168,13 +168,13 @@ export class TaskRepository {
       updates.push('project_id = :project_id')
       params.project_id = contents.project_id
     }
-    if (contents.timer_start !== undefined) {
-      updates.push('timer_start = :timer_start')
-      params.timer_start = contents.timer_start
+    if (contents.start_at !== undefined) {
+      updates.push('start_at = :start_at')
+      params.start_at = contents.start_at
     }
-    if (contents.timer_end !== undefined) {
-      updates.push('timer_end = :timer_end')
-      params.timer_end = contents.timer_end
+    if (contents.end_at !== undefined) {
+      updates.push('end_at = :end_at')
+      params.end_at = contents.end_at
     }
 
     updates.push('updated_at = :updated_at')
@@ -209,8 +209,13 @@ export class TaskRepository {
       throw new Error('Tag already associated with the task')
     }
 
-    const stmt = this.db.prepare(`INSERT INTO task_tag (task_id, tag_id) VALUES (:taskId, :tagId)`)
-    stmt.run({ taskId, tagId })
+    const now = new Date().toISOString()
+    const stmtAddTags = this.db.prepare(
+      `INSERT INTO task_tag (task_id, tag_id) VALUES (:taskId, :tagId)`
+    )
+    const stmtUpdate = this.db.prepare(`UPDATE task SET updated_at = :now WHERE id = :taskId`)
+    stmtAddTags.run({ taskId, tagId })
+    stmtUpdate.run({ taskId, now })
     return this.getWithTags(taskId)!
   }
 
@@ -228,9 +233,12 @@ export class TaskRepository {
   }
 
   removeTag(taskId: string, tagId: string) {
-    const stmt = this.db.prepare(`DELETE FROM task_tag WHERE task_id = :taskId AND tag_id = :tagId`)
-    stmt.run({ taskId, tagId })
-
+    const stmtDeleteTag = this.db.prepare(
+      `DELETE FROM task_tag WHERE task_id = :taskId AND tag_id = :tagId`
+    )
+    const stmtUpdate = this.db.prepare(`UPDATE task SET updated_at = :now WHERE id = :taskId`)
+    stmtDeleteTag.run({ taskId, tagId })
+    stmtUpdate.run({ taskId, now: new Date().toISOString() })
     return this.getWithTags(taskId)!
   }
 }

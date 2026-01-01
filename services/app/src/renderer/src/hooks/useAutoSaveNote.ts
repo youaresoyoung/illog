@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { TaskNote } from 'services/app/src/types'
+
 import { useTaskNote, useAutoSaveNote as useAutoSaveNoteMutation } from './queries/useNoteQueries'
+import { TaskNote } from '../types'
 
 export const useAutoSaveNote = (
   currentTaskId: string | undefined

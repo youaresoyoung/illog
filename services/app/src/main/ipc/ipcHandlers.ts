@@ -3,7 +3,7 @@ import { ipcMain } from 'electron'
 import { TaskRepository } from '../repository/taskRepository'
 import { NoteRepository } from '../repository/noteRepository'
 import { TagReposity } from '../repository/tagRepository'
-import { OmittedTag, OmittedTask, TaskFilters } from '../../types'
+import { OmittedTag, OmittedTask, TaskFilters } from '../types'
 
 // TODO: error handling
 export function registerTaskHandlers(taskRepo: TaskRepository) {

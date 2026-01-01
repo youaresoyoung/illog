@@ -1,5 +1,5 @@
 import { Database } from 'better-sqlite3'
-import { TaskNote } from '../../types'
+import { TaskNote } from '../types'
 
 export class NoteRepository {
   constructor(private db: Database) {}

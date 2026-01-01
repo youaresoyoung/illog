@@ -1,5 +1,5 @@
 import { Database } from 'better-sqlite3'
-import { CreateTaskReflectionParams, TaskReflection, UpdateTaskReflectionParams } from '../../types'
+import { CreateTaskReflectionParams, TaskReflection, UpdateTaskReflectionParams } from '../types'
 import { randomUUID } from 'crypto'
 
 export class ReflectionRepository {

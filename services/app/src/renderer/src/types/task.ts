@@ -1,10 +1,10 @@
-import { Status, Timestamp, UUID } from './common'
+import { ISODate, Status, UUID } from './common'
 import { Tag } from './tag'
 
 export interface TaskNote {
   task_id: UUID
   content: string
-  updated_at: Timestamp
+  updated_at: ISODate
 }
 
 export interface TaskReflection {
@@ -13,8 +13,8 @@ export interface TaskReflection {
   content: string
   original_note_hash?: string
   model_name?: string
-  created_at: Timestamp
-  updated_at: Timestamp
+  created_at: ISODate
+  updated_at: ISODate
 }
 
 export type CreateTaskReflectionParams = Omit<
@@ -39,12 +39,12 @@ export interface Task {
   description: string
   status: Status
   project_id: UUID | null
-  timer_start?: Timestamp
-  timer_end?: Timestamp
-  created_at: Timestamp
-  updated_at: Timestamp
-  done_at?: Timestamp // business logic (task done)
-  deleted_at?: Timestamp
+  start_at?: ISODate
+  end_at?: ISODate
+  created_at: ISODate
+  updated_at: ISODate
+  done_at?: ISODate // business logic (task done)
+  deleted_at?: ISODate
 }
 
 export interface TaskWithTags extends Task {

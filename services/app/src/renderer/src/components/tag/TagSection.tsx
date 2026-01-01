@@ -1,6 +1,5 @@
 import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
 
-import { Color, TaskWithTags } from 'services/app/src/types'
 import { Inline, Stack, Tag, TagSelector } from '@illog/ui'
 import {
   useAllTags,
@@ -9,6 +8,7 @@ import {
   useDeleteTag
 } from '../../hooks/queries/useTagQueries'
 import { useAddTagToTask, useRemoveTagFromTask } from '../../hooks/queries/useTaskQueries'
+import { TaskWithTags, Color } from '../../types'
 
 export const TagSection = ({ task }: { task: TaskWithTags }) => {
   const { data: tags = [] } = useAllTags()

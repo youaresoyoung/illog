@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useTaskById, useUpdateTask } from '../../hooks/queries'
 import { Inline, Input, Stack, Text, TimePicker, useAutoSaveInput } from '@illog/ui'
 import { TagSection } from '../tag/TagSection'
-import { MAX_TAG_LENGTH, TaskNote } from '../../../../types'
+import { MAX_TAG_LENGTH, TaskNote } from '../../types'
 
 import { useTaskNote } from '../../hooks/queries/useNoteQueries'
 import { TextareaSection } from '../right-panel/TextareaSection'
@@ -40,8 +40,8 @@ export const RightPanel = ({ taskId }: Props) => {
     updateTask({
       id: task.id,
       contents: {
-        timer_start: value.start ?? undefined,
-        timer_end: value.end ?? undefined
+        start_at: value.start ?? undefined,
+        end_at: value.end ?? undefined
       }
     })
   }
@@ -97,7 +97,7 @@ export const RightPanel = ({ taskId }: Props) => {
             <Text textStyle="bodyStrong">Time</Text>
             <Stack>
               <TimePicker
-                value={{ start: task.timer_start ?? null, end: task.timer_end ?? null }}
+                value={{ start: task.start_at ?? null, end: task.timer_end ?? null }}
                 onChange={handleDateTimeChange}
               >
                 <TimePicker.Range>

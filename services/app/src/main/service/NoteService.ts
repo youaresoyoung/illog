@@ -1,5 +1,5 @@
 import { createHash } from 'crypto'
-import { TaskNote, TaskReflection } from '../../types'
+import { TaskNote, TaskReflection } from '../types'
 import { NoteRepository } from '../repository/noteRepository'
 import { GeminiService } from './GeminiService'
 import { ReflectionRepository } from '../repository/reflectionRepository'

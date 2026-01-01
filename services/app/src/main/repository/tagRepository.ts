@@ -1,5 +1,5 @@
 import { Database } from 'better-sqlite3'
-import { OmittedTag, Tag } from '../../types'
+import { OmittedTag, Tag } from '../types'
 import { randomUUID } from 'crypto'
 import { normalizeName } from '../../utils/utils'
 

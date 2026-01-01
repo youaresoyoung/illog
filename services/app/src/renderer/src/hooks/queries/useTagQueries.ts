@@ -1,4 +1,4 @@
-import { OmittedTag, Tag } from 'services/app/src/types'
+import { OmittedTag, Tag } from '../../types'
 import { queryKeys } from './queryKeys'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 

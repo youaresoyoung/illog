@@ -11,7 +11,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 
 import { Stack, Text } from '@illog/ui'
 import { useAutoSaveNote } from '../../hooks/queries/useNoteQueries'
-import { TaskNote } from 'services/app/src/types'
+import { TaskNote } from '../../types'
 
 type AutoSavePluginProps = {
   taskId: string

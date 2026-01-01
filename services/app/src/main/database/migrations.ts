@@ -27,5 +27,9 @@ export const migrations = [
   {
     version: 4,
     up: getMigrationFiles('004_add_task_reflection')
+  },
+  {
+    version: 5,
+    up: getMigrationFiles('005_rename_task_columns')
   }
 ]

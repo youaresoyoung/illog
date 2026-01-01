@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { OmittedTag, OmittedTask, TaskFilters } from '../types'
+import { OmittedTag, OmittedTask, TaskFilters } from '../main/types'
 
 const api = {
   task: {

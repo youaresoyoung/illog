@@ -1,4 +1,4 @@
-import { TaskFilters } from 'services/app/src/types'
+import { TaskFilters } from '../../types'
 
 export const queryKeys = {
   tasks: {

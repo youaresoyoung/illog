@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { TaskNote } from '../../../../types'
+import { TaskNote } from '../../types'
 import { queryKeys } from './queryKeys'
 import { useCallback, useState } from 'react'
 
