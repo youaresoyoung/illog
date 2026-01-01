@@ -27,7 +27,7 @@ jobs:
       app: ${{ steps.filter.outputs.app }}
       storybook: ${{ steps.filter.outputs.storybook }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -54,7 +54,7 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.packages == 'true' || needs.detect-changes.outputs.app == 'true' || needs.detect-changes.outputs.storybook == 'true'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -82,7 +82,7 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.packages == 'true'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -131,7 +131,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -166,7 +166,7 @@ jobs:
     needs: [detect-changes, build-packages]
     if: needs.detect-changes.outputs.storybook == 'true'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
