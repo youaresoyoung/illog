@@ -75,13 +75,19 @@ export class TaskRepository {
     }
 
     if (filters?.date_from) {
+      const dateFrom = filters?.time_zone
+        ? new Date(filters.date_from).toISOString()
+        : filters.date_from
+
       conditions.push('task.created_at >= :date_from')
-      params.date_from = filters.date_from
+      params.date_from = dateFrom
     }
 
     if (filters?.date_to) {
+      const dateTo = filters?.time_zone ? new Date(filters.date_to).toISOString() : filters.date_to
+
       conditions.push('task.created_at <= :date_to')
-      params.date_to = filters.date_to
+      params.date_to = dateTo
     }
 
     if (filters?.search) {

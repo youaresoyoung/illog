@@ -14,7 +14,7 @@ commit_msg=$(cat "$commit_msg_file")
 conventional_pattern="^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,}"
 
 # PR Merge Pattern (e.g., "[#123] feat: description")
-pr_pattern="^\[#?[0-9]+\] (feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,}"
+pr_pattern="^\[#?[A-Z]+-?[0-9]+\] (feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,}"
 
 # Gitmoji Pattern (only valid gitmoji.dev codes)
 # Based on https://gitmoji.dev

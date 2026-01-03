@@ -60,6 +60,7 @@ export type TaskFilters = {
   date_from?: string
   date_to?: string
   search?: string
+  time_zone?: string
 }
 
 export type TaskSortBy = 'created_at' | 'updated_at' | 'done_at' | 'title'
