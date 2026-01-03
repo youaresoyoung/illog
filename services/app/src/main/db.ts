@@ -1,15 +1,21 @@
 import Database from 'better-sqlite3'
 import { app } from 'electron'
 import { join } from 'path'
-import { migrate } from '@blackglory/better-sqlite3-migrations'
-import { migrations } from './database/migrations'
+import { drizzle } from 'drizzle-orm/better-sqlite3'
+import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
+import * as schema from './database/schema'
 
 export function openDB() {
-  const dbPath = join(app.getPath('userData'), 'illog.db')
+  if (!process.env.DB_FILE_NAME) {
+    throw Error('DB_FILE_NAME is not defined in environment variables')
+  }
 
-  const db = new Database(dbPath)
+  const dbPath = join(app.getPath('userData'), process.env.DB_FILE_NAME)
 
-  migrate(db, migrations)
+  const sqlite = new Database(dbPath)
+  const db = drizzle(sqlite, { schema })
 
-  return db
+  migrate(db, { migrationsFolder: join(__dirname, './database/migrations') })
+
+  return { db, sqlite }
 }
