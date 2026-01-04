@@ -10,8 +10,9 @@ export function registerTaskHandlers(taskRepo: TaskRepository) {
   ipcMain.handle('task.create', (_, task: Partial<OmittedTask>) => taskRepo.create(task))
   ipcMain.handle('task.get', (_, id: string) => taskRepo.get(id))
   ipcMain.handle('task.getWithTags', (_, id: string) => taskRepo.getWithTags(id))
-  ipcMain.handle('task.getTasks', (_, filters?: TaskFilters) => taskRepo.getTasks(filters))
-  ipcMain.handle('task.getAll', () => taskRepo.getAll())
+  ipcMain.handle('task.getTasksWithTags', (_, filters?: TaskFilters) =>
+    taskRepo.getTasksWithTags(filters)
+  )
   ipcMain.handle('task.update', (_, id: string, contents: Partial<OmittedTask>) =>
     taskRepo.update(id, contents)
   )

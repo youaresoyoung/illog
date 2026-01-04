@@ -3,13 +3,9 @@ import { and, count, desc, eq, getTableColumns, gte, isNull, like, lte, or, sql 
 import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
 import { InsertTask, tasks, tags, taskTags, Tag, Task } from '../database/schema'
 import * as schema from '../database/schema'
-import Database from 'better-sqlite3'
 
 export class TaskRepository {
-  constructor(
-    private db: BetterSQLite3Database<typeof schema>,
-    private sqlite: Database.Database
-  ) {}
+  constructor(private db: BetterSQLite3Database<typeof schema>) {}
 
   async create(task: InsertTask): Promise<TaskWithTags> {
     const [inserted] = this.db.insert(tasks).values(task).returning().all()
@@ -64,17 +60,17 @@ export class TaskRepository {
     if (filters?.status) {
       conditions.push(eq(tasks.status, filters.status))
     }
-    if (filters?.project_id) {
-      conditions.push(eq(tasks.projectId, filters?.project_id))
+    if (filters?.projectId) {
+      conditions.push(eq(tasks.projectId, filters?.projectId))
     }
-    if (filters?.date_from) {
-      const dateFrom = filters?.time_zone
-        ? new Date(filters.date_from).toISOString()
-        : filters.date_from
+    if (filters?.dateFrom) {
+      const dateFrom = filters?.timeZone
+        ? new Date(filters.dateFrom).toISOString()
+        : filters.dateFrom
       conditions.push(gte(tasks.createdAt, dateFrom))
     }
-    if (filters?.date_to) {
-      const dateTo = filters?.time_zone ? new Date(filters.date_to).toISOString() : filters.date_to
+    if (filters?.dateTo) {
+      const dateTo = filters?.timeZone ? new Date(filters.dateTo).toISOString() : filters.dateTo
       conditions.push(lte(tasks.createdAt, dateTo))
     }
     if (filters?.search) {

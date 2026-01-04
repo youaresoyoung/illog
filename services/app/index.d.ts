@@ -1,20 +1,12 @@
-import {
-  OmittedTag,
-  Tag,
-  Task,
-  TaskFilters,
-  TaskNote,
-  TaskReflection,
-  TaskWithTags
-} from './src/types'
+import { Task } from './src/main/database/schema'
+import { OmittedTag, Tag, TaskFilters, TaskNote, TaskReflection, TaskWithTags } from './src/types'
 
 interface RendererAPI {
   task: {
     create: (task: Partial<Task>) => Promise<TaskWithTags>
     get: (id: string) => Promise<Task | null>
     getWithTags: (id: string) => Promise<TaskWithTags | null>
-    getTasks: (filters?: TaskFilters) => Promise<TaskWithTags[]>
-    getAll: () => Promise<TaskWithTags[]>
+    getTasksWithTags: (filters?: TaskFilters) => Promise<TaskWithTags[]>
     update: (id: string, contents: Partial<Task>) => Promise<TaskWithTags>
     addTag: (taskId: string, tagId: string) => Promise<TaskWithTags>
     softDelete: (id: string) => Promise<void>

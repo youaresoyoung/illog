@@ -5,7 +5,8 @@ import { queryKeys } from './queryKeys'
 export const useTodayTasks = () => {
   return useQuery({
     queryKey: queryKeys.tasks.today(),
-    queryFn: () => window.api.task.getTasks({ date_from: new Date().toISOString().split('T')[0] })
+    queryFn: () =>
+      window.api.task.getTasksWithTags({ date_from: new Date().toISOString().split('T')[0] })
   })
 }
 
@@ -20,7 +21,7 @@ export const useTaskById = (id: string) => {
 export const useTasksByFilters = (filters: TaskFilters) => {
   return useQuery({
     queryKey: queryKeys.tasks.filtered(filters),
-    queryFn: () => window.api.task.getTasks(filters),
+    queryFn: () => window.api.task.getTasksWithTags(filters),
     enabled: !!filters
   })
 }

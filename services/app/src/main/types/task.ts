@@ -1,5 +1,5 @@
-import { Status, ISODate, UUID } from './common'
-import { Tag } from './tag'
+import { Tag, Task, TaskStatus } from '../database/schema'
+import { ISODate, UUID } from './common'
 
 export interface TaskNote {
   task_id: UUID
@@ -28,25 +28,6 @@ export type UpdateTaskReflectionParams = Pick<
 > &
   Partial<Omit<TaskReflection, 'model_name' | 'created_at' | 'updated_at'>>
 
-export interface TaskTag {
-  task_id: UUID
-  tag_id: UUID
-}
-
-export interface Task {
-  id: UUID
-  title: string
-  description: string
-  status: Status
-  project_id: UUID | null
-  start_at?: ISODate
-  end_at?: ISODate
-  created_at: ISODate
-  updated_at: ISODate
-  done_at?: ISODate // business logic (task done)
-  deleted_at?: ISODate
-}
-
 export interface TaskWithTags extends Task {
   tags: Tag[]
 }
@@ -54,15 +35,11 @@ export interface TaskWithTags extends Task {
 export type OmittedTask = Omit<Task, 'id' | 'created_at' | 'updated_at' | 'done_at' | 'deleted_at'>
 
 export type TaskFilters = {
-  status?: Status
-  project_id?: string
-  tag_ids?: string[]
-  date_from?: string
-  date_to?: string
+  status?: TaskStatus
+  projectId?: string
+  tagIds?: string[]
+  dateFrom?: string
+  dateTo?: string
   search?: string
-  time_zone?: string
+  timeZone?: string
 }
-
-export type TaskSortBy = 'created_at' | 'updated_at' | 'done_at' | 'title'
-
-export type TaskSortOrder = 'asc' | 'desc'
