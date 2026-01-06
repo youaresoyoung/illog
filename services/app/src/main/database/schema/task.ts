@@ -1,4 +1,4 @@
-import { index, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { relations, sql } from 'drizzle-orm'
 import { projects } from './project'
 import { taskNotes } from './note'
@@ -14,20 +14,23 @@ export const tasks = sqliteTable(
   {
     id: text('id')
       .primaryKey()
-      .$defaultFn(() => randomUUID())
-      .notNull(),
+      .notNull()
+      .$defaultFn(() => randomUUID()),
     title: text('title').notNull().default('Untitled'),
-    description: text('title'),
+    description: text('description'),
     status: text('status', { enum: taskStatusEnum }).notNull().default('todo'),
     projectId: text('project_id').references(() => projects.id, { onDelete: 'cascade' }),
-    endTime: text('end_time'),
-    createdAt: text('created_at')
+    endTime: integer('end_time', { mode: 'timestamp' }),
+    createdAt: integer('created_at', { mode: 'timestamp' })
       .notNull()
-      .default(sql`(datetime('now'))`),
-    updatedAt: text('updated_at'),
-    doneAt: text('done_at'),
-    deletedAt: text('deleted_at'),
-    startTime: text('started_at')
+      .default(sql`(unixepoch())`),
+    updatedAt: integer('updated_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`(unixepoch())`)
+      .$onUpdate(() => sql`(unixepoch())`),
+    doneAt: integer('done_at', { mode: 'timestamp' }),
+    deletedAt: integer('deleted_at', { mode: 'timestamp' }),
+    startTime: integer('started_at', { mode: 'timestamp' })
   },
   (table) => ({
     statusIdx: index('task_status_idx').on(table.status),

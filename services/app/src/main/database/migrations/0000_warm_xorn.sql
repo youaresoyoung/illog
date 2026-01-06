@@ -19,9 +19,9 @@ CREATE TABLE `tag` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
 	`color` text DEFAULT 'gray' NOT NULL,
-	`created_at` text DEFAULT (datetime('now')) NOT NULL,
-	`updated_at` text,
-	`deleted_at` text
+	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`updated_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`deleted_at` integer
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `tag_name_unique` ON `tag` (`name`);--> statement-breakpoint
@@ -29,16 +29,16 @@ CREATE UNIQUE INDEX `tag_name_idx` ON `tag` (`name`);--> statement-breakpoint
 CREATE INDEX `tag_deleted_at_idx` ON `tag` (`deleted_at`);--> statement-breakpoint
 CREATE TABLE `task` (
 	`id` text PRIMARY KEY NOT NULL,
-	`title` text,
+	`title` text DEFAULT 'Untitled' NOT NULL,
+	`description` text,
 	`status` text DEFAULT 'todo' NOT NULL,
 	`project_id` text,
-	`end_time` text,
-	`created_at` text DEFAULT (datetime('now')) NOT NULL,
-	`updated_at` text,
-	`done_at` text,
-	`deleted_at` text,
-	`started_at` text,
-	`end_at` text,
+	`end_time` integer,
+	`created_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`updated_at` integer DEFAULT (unixepoch()) NOT NULL,
+	`done_at` integer,
+	`deleted_at` integer,
+	`started_at` integer,
 	FOREIGN KEY (`project_id`) REFERENCES `project`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
@@ -47,7 +47,6 @@ CREATE INDEX `task_deleted_at_idx` ON `task` (`deleted_at`);--> statement-breakp
 CREATE INDEX `task_status_deleted_idx` ON `task` (`status`,`deleted_at`);--> statement-breakpoint
 CREATE INDEX `task_created_at_idx` ON `task` (`created_at`);--> statement-breakpoint
 CREATE INDEX `task_start_at_idx` ON `task` (`started_at`);--> statement-breakpoint
-CREATE INDEX `task_end_at_idx` ON `task` (`end_at`);--> statement-breakpoint
 CREATE TABLE `task_tag` (
 	`task_id` text NOT NULL,
 	`tag_id` text NOT NULL,

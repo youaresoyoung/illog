@@ -14,6 +14,7 @@ export * from './taskReflection'
 export type Task = typeof tasks.$inferSelect
 export type InsertTask = typeof tasks.$inferInsert
 export type Tag = typeof tags.$inferSelect
+export type InsertTag = typeof tags.$inferInsert
 export type Project = typeof projects.$inferSelect
 export type TaskNote = typeof taskNotes.$inferSelect
 export type TaskReflection = typeof taskReflections.$inferSelect

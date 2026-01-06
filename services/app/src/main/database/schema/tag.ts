@@ -1,5 +1,5 @@
 import { relations, sql } from 'drizzle-orm'
-import { index, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
+import { index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
 import { taskTags } from './taskTag'
 import { randomUUID } from 'crypto'
 
@@ -11,15 +11,18 @@ export const tags = sqliteTable(
   {
     id: text('id')
       .primaryKey()
-      .$defaultFn(() => randomUUID())
-      .notNull(),
+      .notNull()
+      .$defaultFn(() => randomUUID()),
     name: text('name').notNull().unique(),
     color: text('color', { enum: tagColorEnum }).notNull().default('gray'),
-    createdAt: text('created_at')
+    createdAt: integer('created_at', { mode: 'timestamp' })
       .notNull()
-      .default(sql`(datetime('now'))`),
-    updatedAt: text('updated_at'),
-    deletedAt: text('deleted_at')
+      .default(sql`(unixepoch())`),
+    updatedAt: integer('updated_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`(unixepoch())`)
+      .$onUpdate(() => sql`(unixepoch())`),
+    deletedAt: integer('deleted_at', { mode: 'timestamp' })
   },
   (table) => ({
     nameIdx: uniqueIndex('tag_name_idx').on(table.name),
