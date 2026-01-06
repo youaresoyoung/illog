@@ -1,4 +1,4 @@
-import { OmittedTask, TaskFilters, TaskWithTags } from '../types'
+import { CreateTaskParams, TaskFilters, TaskWithTags } from '../types'
 import { and, count, desc, eq, getTableColumns, gte, isNull, like, lte, or, sql } from 'drizzle-orm'
 import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
 import { InsertTask, tasks, tags, taskTags, Tag, Task } from '../database/schema'
@@ -7,7 +7,7 @@ import * as schema from '../database/schema'
 export class TaskRepository {
   constructor(private db: BetterSQLite3Database<typeof schema>) {}
 
-  async create(task: InsertTask): Promise<TaskWithTags> {
+  async create(task: CreateTaskParams): Promise<TaskWithTags> {
     const [inserted] = this.db.insert(tasks).values(task).returning().all()
 
     return { ...inserted, tags: [] }
@@ -63,15 +63,15 @@ export class TaskRepository {
     if (filters?.projectId) {
       conditions.push(eq(tasks.projectId, filters?.projectId))
     }
-    if (filters?.dateFrom) {
-      const dateFrom = filters?.timeZone
-        ? new Date(filters.dateFrom).toISOString()
-        : filters.dateFrom
-      conditions.push(gte(tasks.createdAt, dateFrom))
+    if (filters?.startTime) {
+      const startTime = filters?.timeZone
+        ? new Date(filters.startTime).toISOString()
+        : filters.startTime
+      conditions.push(gte(tasks.createdAt, startTime))
     }
-    if (filters?.dateTo) {
-      const dateTo = filters?.timeZone ? new Date(filters.dateTo).toISOString() : filters.dateTo
-      conditions.push(lte(tasks.createdAt, dateTo))
+    if (filters?.endTime) {
+      const endTime = filters?.timeZone ? new Date(filters.endTime).toISOString() : filters.endTime
+      conditions.push(lte(tasks.createdAt, endTime))
     }
     if (filters?.search) {
       const searchCondition = or(
@@ -104,9 +104,9 @@ export class TaskRepository {
     return results.map((item) => ({ ...item, tags: JSON.parse(item?.tags as string) }))
   }
 
-  async update(id: string, contents: Partial<OmittedTask>): Promise<TaskWithTags> {
+  async update(id: string, contents: TaskFilters): Promise<TaskWithTags> {
     const now = new Date().toISOString()
-    const updateData: Record<string, unknown> = { updatedAt: now }
+    const updateData: Partial<InsertTask> = { updatedAt: now }
 
     if (contents.title !== undefined) {
       updateData.title = contents.title
@@ -116,19 +116,18 @@ export class TaskRepository {
     }
     if (contents.status !== undefined) {
       updateData.status = contents.status
+      if (updateData.status === 'in_progress') {
+        updateData.doneAt = now
+      }
     }
     if (contents.projectId !== undefined) {
       updateData.projectId = contents.projectId
     }
-    if (contents.startAt !== undefined) {
-      updateData.startAt = contents.startAt
+    if (contents.startTime !== undefined) {
+      updateData.startTime = contents.startTime
     }
-    if (contents.endAt !== undefined) {
-      updateData.endAt = contents.endAt
-    }
-
-    if (updateData.length === 1) {
-      return this.getWithTags(id)!
+    if (contents.endTime !== undefined) {
+      updateData.endTime = contents.endTime
     }
 
     const task = await this.db.update(tasks).set(updateData).where(eq(tasks.id, id))

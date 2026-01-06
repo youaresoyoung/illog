@@ -27,16 +27,14 @@ export const tasks = sqliteTable(
     updatedAt: text('updated_at'),
     doneAt: text('done_at'),
     deletedAt: text('deleted_at'),
-    startAt: text('started_at'),
-    endAt: text('end_at')
+    startTime: text('started_at')
   },
   (table) => ({
     statusIdx: index('task_status_idx').on(table.status),
     deletedAtIdx: index('task_deleted_at_idx').on(table.deletedAt),
     statusDeletedIdx: index('task_status_deleted_idx').on(table.status, table.deletedAt),
     createdAtIdx: index('task_created_at_idx').on(table.createdAt),
-    startAtIdx: index('task_start_at_idx').on(table.startAt),
-    endAtIdx: index('task_end_at_idx').on(table.endAt)
+    startTimeIdx: index('task_start_at_idx').on(table.startTime)
   })
 )
 

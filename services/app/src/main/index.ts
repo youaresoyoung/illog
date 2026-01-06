@@ -43,7 +43,7 @@ app.whenReady().then(() => {
 
   const { db, sqlite } = openDB()
 
-  const taskRepo = new TaskRepository(db, sqlite)
+  const taskRepo = new TaskRepository(db)
   registerTaskHandlers(taskRepo)
 
   const geminiService = new GeminiService(process.env.GEMINI_API_KEY)
