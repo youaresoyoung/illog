@@ -1,28 +1,44 @@
-import { Database } from 'better-sqlite3'
-import { TaskNote } from '../types'
+import { eq } from 'drizzle-orm'
+import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
+import * as schema from '../database/schema'
+import { taskNotes } from '../database/schema'
+import type { TaskNote } from '../../shared/types'
 
 export class NoteRepository {
-  constructor(private db: Database) {}
+  constructor(private db: BetterSQLite3Database<typeof schema>) {}
 
   findByTaskId(taskId: string): TaskNote | null {
-    const stmt = this.db.prepare(`SELECT * FROM task_note WHERE task_id = :taskId`)
-    return stmt.get({ taskId }) as TaskNote | null
+    const note = this.db.select().from(taskNotes).where(eq(taskNotes.taskId, taskId)).get()
+
+    return note ?? null
   }
 
   upsert(taskId: string, content: string, savedAt: number): TaskNote {
-    const stmt = this.db.prepare(
-      `INSERT INTO task_note (task_id, content, updated_at)
-      VALUES (:taskId, :content, :savedAt)
-      ON CONFLICT(task_id) DO UPDATE SET
-      content = excluded.content,
-      updated_at = excluded.updated_at`
-    )
-    const result = stmt.run({ taskId, content, savedAt })
+    const result = this.db
+      .insert(taskNotes)
+      .values({
+        taskId,
+        content,
+        updatedAt: String(savedAt)
+      })
+      .onConflictDoUpdate({
+        target: taskNotes.taskId,
+        set: {
+          content,
+          updatedAt: String(savedAt)
+        }
+      })
+      .returning()
+      .get()
 
-    if (result.changes === 0) {
-      throw new Error('Task not found or no changes made')
+    if (!result) {
+      throw new Error('Failed to upsert note')
     }
 
-    return this.findByTaskId(taskId) as TaskNote
+    return result
+  }
+
+  delete(taskId: string): void {
+    this.db.delete(taskNotes).where(eq(taskNotes.taskId, taskId)).run()
   }
 }

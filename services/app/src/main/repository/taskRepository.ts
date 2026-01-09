@@ -1,4 +1,4 @@
-import { CreateTaskParams, TaskFilters, TaskWithTags } from '../types'
+import type { TaskFilterParams, TaskWithTags, UpdateTaskRequest } from '../../shared/types'
 import { and, count, desc, eq, getTableColumns, gte, isNull, like, lte, or, sql } from 'drizzle-orm'
 import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
 import { InsertTask, tasks, tags, taskTags, Tag, Task } from '../database/schema'
@@ -7,8 +7,8 @@ import * as schema from '../database/schema'
 export class TaskRepository {
   constructor(private db: BetterSQLite3Database<typeof schema>) {}
 
-  async create(task: CreateTaskParams): Promise<TaskWithTags> {
-    const [inserted] = this.db.insert(tasks).values(task).returning().all()
+  async create(): Promise<TaskWithTags> {
+    const [inserted] = this.db.insert(tasks).values({}).returning().all()
 
     return { ...inserted, tags: [] }
   }
@@ -54,7 +54,7 @@ export class TaskRepository {
     }
   }
 
-  async getTasksWithTags(filters?: TaskFilters): Promise<TaskWithTags[]> {
+  async getTasksWithTags(filters?: TaskFilterParams): Promise<TaskWithTags[]> {
     const conditions = [isNull(tasks.deletedAt)]
 
     if (filters?.status) {
@@ -64,14 +64,10 @@ export class TaskRepository {
       conditions.push(eq(tasks.projectId, filters?.projectId))
     }
     if (filters?.startTime) {
-      const startTime = filters?.timeZone
-        ? new Date(filters.startTime).toISOString()
-        : filters.startTime
-      conditions.push(gte(tasks.createdAt, startTime))
+      conditions.push(gte(tasks.createdAt, new Date(filters.startTime)))
     }
     if (filters?.endTime) {
-      const endTime = filters?.timeZone ? new Date(filters.endTime).toISOString() : filters.endTime
-      conditions.push(lte(tasks.createdAt, endTime))
+      conditions.push(lte(tasks.createdAt, new Date(filters.endTime)))
     }
     if (filters?.search) {
       const searchCondition = or(
@@ -104,9 +100,8 @@ export class TaskRepository {
     return results.map((item) => ({ ...item, tags: JSON.parse(item?.tags as string) }))
   }
 
-  async update(id: string, contents: TaskFilters): Promise<TaskWithTags> {
-    const now = new Date().toISOString()
-    const updateData: Partial<InsertTask> = { updatedAt: now }
+  async update(id: string, contents: UpdateTaskRequest): Promise<TaskWithTags> {
+    const updateData: Partial<InsertTask> = {}
 
     if (contents.title !== undefined) {
       updateData.title = contents.title
@@ -116,23 +111,24 @@ export class TaskRepository {
     }
     if (contents.status !== undefined) {
       updateData.status = contents.status
-      if (updateData.status === 'in_progress') {
-        updateData.doneAt = now
+      // 'done' 상태로 변경 시 doneAt 타임스탬프 설정
+      if (contents.status === 'done') {
+        updateData.doneAt = new Date()
       }
     }
     if (contents.projectId !== undefined) {
       updateData.projectId = contents.projectId
     }
     if (contents.startTime !== undefined) {
-      updateData.startTime = contents.startTime
+      updateData.startTime = contents.startTime ? new Date(contents.startTime) : null
     }
     if (contents.endTime !== undefined) {
-      updateData.endTime = contents.endTime
+      updateData.endTime = contents.endTime ? new Date(contents.endTime) : null
     }
 
-    const task = await this.db.update(tasks).set(updateData).where(eq(tasks.id, id))
+    const result = this.db.update(tasks).set(updateData).where(eq(tasks.id, id)).run()
 
-    if (task.changes === 0) {
+    if (result.changes === 0) {
       throw new Error('Task not found or no changes made')
     }
 
@@ -159,23 +155,18 @@ export class TaskRepository {
       throw new Error('Tag already associated with the task')
     }
 
-    const now = new Date().toISOString()
-
     await this.db.insert(taskTags).values({
       taskId: taskId,
       tagId: tagId
     })
-    await this.db.update(tasks).set({ updatedAt: now }).where(eq(tasks.id, taskId))
 
     return this.getWithTags(taskId)
   }
 
   async softDelete(id: string) {
-    const now = new Date().toISOString()
-
     const deletedTask = await this.db
       .update(tasks)
-      .set({ deletedAt: now })
+      .set({ deletedAt: sql`(unixepoch())` })
       .where(and(eq(tasks.id, id), isNull(tasks.deletedAt)))
 
     if (deletedTask.changes === 0) {
@@ -183,14 +174,12 @@ export class TaskRepository {
     }
   }
 
-  async removeTag(taskId: string, tagId: string) {
-    const now = new Date().toISOString()
-
-    await this.db
+  async removeTag(taskId: string, tagId: string): Promise<TaskWithTags> {
+    this.db
       .delete(taskTags)
       .where(and(eq(taskTags.taskId, taskId), eq(taskTags.tagId, tagId)))
-    await this.db.update(tasks).set({ updatedAt: now }).where(eq(tasks.id, taskId))
+      .run()
 
-    return this.getWithTags(taskId)!
+    return this.getWithTags(taskId)
   }
 }

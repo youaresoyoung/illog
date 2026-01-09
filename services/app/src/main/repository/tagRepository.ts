@@ -1,87 +1,96 @@
-import { Database } from 'better-sqlite3'
-import { OmittedTag, Tag } from '../types'
-import { randomUUID } from 'crypto'
 import { normalizeName } from '../../utils/utils'
+import type { CreateTagRequest, UpdateTagRequest } from '../../shared/types'
+import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
+import * as schema from '../database/schema'
+import { InsertTag, Tag, tags } from '../database/schema'
+import { and, eq, isNull, sql } from 'drizzle-orm'
 
-export class TagReposity {
-  constructor(private db: Database) {}
+export class TagRepository {
+  constructor(private db: BetterSQLite3Database<typeof schema>) {}
 
-  create(tag: Partial<OmittedTag>): Tag {
-    const now = new Date().toISOString()
-    const name = normalizeName(tag.name ?? 'Untitled')
-    const color = tag.color ?? 'gray'
+  create(tag: CreateTagRequest): Tag {
+    const name = normalizeName(tag.name)
 
-    const existingTag = this.db.prepare(`SELECT * FROM tag WHERE name = :name`).get({ name }) as
-      | Tag
-      | undefined
+    const existingTag = this.db.select().from(tags).where(eq(tags.name, name)).get()
 
     if (existingTag) {
-      if (existingTag.deleted_at) {
-        const stmt = this.db.prepare(
-          `UPDATE tag SET color = :color, updated_at = :updated_at, deleted_at = NULL 
-           WHERE id = :id`
-        )
-        stmt.run({ id: existingTag.id, color, updated_at: now })
-        return this.get(existingTag.id)!
+      if (existingTag.deletedAt) {
+        const restored = this.db
+          .update(tags)
+          .set({
+            color: tag.color,
+            deletedAt: null
+          })
+          .where(eq(tags.id, existingTag.id))
+          .returning()
+          .get()
+
+        return restored
       } else {
         throw new Error(`Tag with name "${name}" already exists`)
       }
     }
 
-    const id = randomUUID()
-    const stmt = this.db.prepare(
-      `INSERT INTO tag (id, name, color, created_at, updated_at, deleted_at) 
-       VALUES (:id, :name, :color, :created_at, :updated_at, :deleted_at)`
-    )
+    const insertData: InsertTag = {
+      name,
+      color: tag.color
+    }
 
-    stmt.run({ id, name, color, created_at: now, updated_at: now, deleted_at: null })
-    return this.get(id)!
+    const newTag = this.db.insert(tags).values(insertData).returning().get()
+
+    return newTag
   }
 
   get(id: string): Tag | null {
-    const stmt = this.db.prepare(`SELECT * FROM tag WHERE id = :id AND deleted_at IS NULL`)
-    return (stmt.get({ id }) as Tag) ?? null
+    const tag = this.db
+      .select()
+      .from(tags)
+      .where(and(eq(tags.id, id), isNull(tags.deletedAt)))
+      .get()
+
+    return tag ?? null
   }
 
   getAll(): Tag[] {
-    const stmt = this.db.prepare(`SELECT * FROM tag WHERE deleted_at IS NULL`)
-    return (stmt.all() as Tag[]) ?? []
+    const tagsList = this.db.select().from(tags).where(isNull(tags.deletedAt)).all()
+
+    return tagsList
   }
 
-  update(id: string, contents: Partial<OmittedTag>): Tag {
-    const now = new Date().toISOString()
-
-    const updates: string[] = []
-    const params: Record<string, unknown> = { id, updated_at: now }
+  update(id: string, contents: UpdateTagRequest): Tag {
+    const updateData: Partial<InsertTag> = {}
 
     if (contents.name !== undefined) {
-      const normalizedName = normalizeName(contents.name)
-      updates.push('name = :name')
-      params.name = normalizedName
+      updateData.name = normalizeName(contents.name)
     }
 
     if (contents.color !== undefined) {
-      updates.push('color = :color')
-      params.color = contents.color
+      updateData.color = contents.color
     }
 
-    updates.push('updated_at = :updated_at')
+    const updatedTag = this.db
+      .update(tags)
+      .set(updateData)
+      .where(and(eq(tags.id, id), isNull(tags.deletedAt)))
+      .returning()
+      .get()
 
-    if (updates.length === 1) {
-      return this.get(id)!
+    if (!updatedTag) {
+      throw new Error('Tag not found or no changes made')
     }
 
-    const query = `UPDATE tag SET ${updates.join(', ')} WHERE id = :id AND deleted_at IS NULL`
-    const stmt = this.db.prepare(query)
-    stmt.run(params)
-
-    return this.get(id)!
+    return updatedTag
   }
 
-  softDelete(id: string) {
-    const stmt = this.db.prepare(
-      `UPDATE tag SET deleted_at = :now WHERE id = :id AND deleted_at IS NULL`
-    )
-    stmt.run({ id, now: new Date().toISOString() })
+  softDelete(id: string): void {
+    const result = this.db
+      .update(tags)
+      .set({ deletedAt: sql`(unixepoch())` })
+      .where(and(eq(tags.id, id), isNull(tags.deletedAt)))
+      .run()
+
+    if (result.changes === 0) {
+      throw new Error('Tag not found')
+    }
   }
 }

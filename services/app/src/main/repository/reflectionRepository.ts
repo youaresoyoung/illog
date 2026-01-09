@@ -1,86 +1,82 @@
-import { Database } from 'better-sqlite3'
-import { CreateTaskReflectionParams, TaskReflection, UpdateTaskReflectionParams } from '../types'
-import { randomUUID } from 'crypto'
+import { eq, sql } from 'drizzle-orm'
+import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
+import * as schema from '../database/schema'
+import { taskReflections } from '../database/schema'
+import type {
+  TaskReflection,
+  CreateReflectionParams,
+  UpdateReflectionParams
+} from '../../shared/types'
 
 export class ReflectionRepository {
-  constructor(private db: Database) {}
+  constructor(private db: BetterSQLite3Database<typeof schema>) {}
 
   findByTaskId(taskId: string): TaskReflection | null {
-    const stmt = this.db.prepare('SELECT * FROM task_reflection WHERE task_id = :taskId')
-    return stmt.get({ taskId }) as TaskReflection | null
+    const reflection = this.db
+      .select()
+      .from(taskReflections)
+      .where(eq(taskReflections.taskId, taskId))
+      .get()
+
+    return reflection ?? null
   }
 
-  create({
-    task_id,
-    content,
-    original_note_hash
-  }: CreateTaskReflectionParams): Omit<TaskReflection, 'model_name'> {
-    const id = randomUUID()
-    const now = Date.now().toLocaleString()
-    const model_name = process.env.MODEL_NAME
-    const stmt = this.db.prepare(
-      `INSERT INTO task_reflection 
-       (id, task_id, content, original_note_hash, model_name, created_at, updated_at) 
-       VALUES 
-       (:id, :task_id, :content, :original_note_hash, :model_name, :created_at, :updated_at)`
-    )
-    stmt.run({
-      id,
-      task_id,
-      content,
-      original_note_hash,
-      model_name,
-      created_at: now,
-      updated_at: now
-    })
+  create(params: CreateReflectionParams): TaskReflection {
+    const modelName = process.env.MODEL_NAME ?? null
 
-    return this.findByTaskId(task_id)!
+    const result = this.db
+      .insert(taskReflections)
+      .values({
+        taskId: params.taskId,
+        content: params.content,
+        originalNoteHash: params.originalNoteHash ?? null,
+        modelName
+      })
+      .returning()
+      .get()
+
+    if (!result) {
+      throw new Error('Failed to create reflection')
+    }
+
+    return result
   }
 
-  update({
-    id,
-    task_id,
-    content,
-    original_note_hash
-  }: UpdateTaskReflectionParams): Omit<TaskReflection, 'model_name'> {
-    const now = Date.now().toLocaleString()
-    const stmt = this.db.prepare(
-      `UPDATE task_reflection
-       SET content = :content,
-          original_note_hash = :original_note_hash,
-          updated_at = :updated_at
-      WHERE id = :id AND task_id = :task_id`
-    )
-    const result = stmt.run({
-      id,
-      task_id,
-      content,
-      original_note_hash,
-      updated_at: now
-    })
+  update(params: UpdateReflectionParams): TaskReflection {
+    const result = this.db
+      .update(taskReflections)
+      .set({
+        content: params.content,
+        originalNoteHash: params.originalNoteHash ?? null,
+        updatedAt: sql`(datetime('now'))`
+      })
+      .where(eq(taskReflections.id, params.id))
+      .returning()
+      .get()
 
-    if (result.changes === 0) {
+    if (!result) {
       throw new Error('Reflection not found')
     }
 
-    return this.findByTaskId(task_id)!
+    return result
   }
 
   delete(taskId: string): void {
-    const stmt = this.db.prepare('DELETE FROM task_reflection WHERE task_id = :taskId')
-    stmt.run({ taskId })
+    this.db.delete(taskReflections).where(eq(taskReflections.taskId, taskId)).run()
   }
 
-  upsert({
-    task_id,
-    content,
-    original_note_hash
-  }: CreateTaskReflectionParams | UpdateTaskReflectionParams): TaskReflection {
-    const existing = this.findByTaskId(task_id)
+  upsert(params: CreateReflectionParams): TaskReflection {
+    const existing = this.findByTaskId(params.taskId)
+
     if (existing) {
-      return this.update({ id: existing.id, task_id, content, original_note_hash })
-    } else {
-      return this.create({ task_id, content, original_note_hash })
+      return this.update({
+        id: existing.id,
+        taskId: params.taskId,
+        content: params.content,
+        originalNoteHash: params.originalNoteHash
+      })
     }
+
+    return this.create(params)
   }
 }
