@@ -1,20 +1,26 @@
-import { NoteService } from './../service/NoteService'
 import { ipcMain } from 'electron'
+import { NoteService } from '../service/NoteService'
 import { TaskRepository } from '../repository/taskRepository'
 import { NoteRepository } from '../repository/noteRepository'
-import { TagReposity } from '../repository/tagRepository'
-import { CreateTaskParams, OmittedTag, TaskFilters } from '../types'
+import { TagRepository } from '../repository/tagRepository'
+import type {
+  TaskFilterParams,
+  UpdateTaskRequest,
+  CreateTagRequest,
+  UpdateTagRequest
+} from '../../shared/types'
 
-// TODO: error handling
+// TODO: add proper error handling wrapper
+
 export function registerTaskHandlers(taskRepo: TaskRepository) {
-  ipcMain.handle('task.create', (_, task: CreateTaskParams) => taskRepo.create(task))
+  ipcMain.handle('task.create', () => taskRepo.create())
   ipcMain.handle('task.get', (_, id: string) => taskRepo.get(id))
   ipcMain.handle('task.getWithTags', (_, id: string) => taskRepo.getWithTags(id))
-  ipcMain.handle('task.getTasksWithTags', (_, filters?: TaskFilters) =>
+  ipcMain.handle('task.getTasksWithTags', (_, filters?: TaskFilterParams) =>
     taskRepo.getTasksWithTags(filters)
   )
-  ipcMain.handle('task.update', (_, id: string, contents: TaskFilters) =>
-    taskRepo.update(id, contents)
+  ipcMain.handle('task.update', (_, id: string, data: UpdateTaskRequest) =>
+    taskRepo.update(id, data)
   )
   ipcMain.handle('task.addTag', (_, taskId: string, tagId: string) =>
     taskRepo.addTag(taskId, tagId)
@@ -26,8 +32,8 @@ export function registerTaskHandlers(taskRepo: TaskRepository) {
 }
 
 export function registerTaskNoteHandlers(noteRepo: NoteRepository, noteService: NoteService) {
-  ipcMain.handle('note.findByTaskId', (_, taskId) => noteRepo.findByTaskId(taskId))
-  ipcMain.handle('note.autoSave', (_, taskId, content, clientUpdatedAt) =>
+  ipcMain.handle('note.findByTaskId', (_, taskId: string) => noteRepo.findByTaskId(taskId))
+  ipcMain.handle('note.autoSave', (_, taskId: string, content: string, clientUpdatedAt: number) =>
     noteService.autoSave(taskId, content, clientUpdatedAt)
   )
   ipcMain.handle('note.reflectionNoteStream', async (event, taskId: string, text: string) => {
@@ -45,12 +51,10 @@ export function registerTaskNoteHandlers(noteRepo: NoteRepository, noteService: 
   })
 }
 
-export function registerTagHandlers(tagRepo: TagReposity) {
-  ipcMain.handle('tag.create', (_, tag: Partial<OmittedTag>) => tagRepo.create(tag))
+export function registerTagHandlers(tagRepo: TagRepository) {
+  ipcMain.handle('tag.create', (_, data: CreateTagRequest) => tagRepo.create(data))
   ipcMain.handle('tag.get', (_, id: string) => tagRepo.get(id))
   ipcMain.handle('tag.getAll', () => tagRepo.getAll())
-  ipcMain.handle('tag.update', (_, id: string, contents: Partial<OmittedTag>) =>
-    tagRepo.update(id, contents)
-  )
+  ipcMain.handle('tag.update', (_, id: string, data: UpdateTagRequest) => tagRepo.update(id, data))
   ipcMain.handle('tag.softDelete', (_, id: string) => tagRepo.softDelete(id))
 }

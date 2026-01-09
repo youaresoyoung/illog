@@ -1,13 +1,22 @@
-import { Task } from './src/main/database/schema'
-import { OmittedTag, Tag, TaskFilters, TaskNote, TaskReflection, TaskWithTags } from './src/types'
+import type {
+  Task,
+  Tag,
+  TaskWithTags,
+  TaskNote,
+  TaskReflection,
+  TaskFilterParams,
+  UpdateTaskRequest,
+  CreateTagRequest,
+  UpdateTagRequest
+} from './src/shared/types'
 
 interface RendererAPI {
   task: {
-    create: (task: Partial<Task>) => Promise<TaskWithTags>
+    create: () => Promise<TaskWithTags>
     get: (id: string) => Promise<Task | null>
     getWithTags: (id: string) => Promise<TaskWithTags | null>
-    getTasksWithTags: (filters?: TaskFilters) => Promise<TaskWithTags[]>
-    update: (id: string, contents: Partial<Task>) => Promise<TaskWithTags>
+    getTasksWithTags: (filters?: TaskFilterParams) => Promise<TaskWithTags[]>
+    update: (id: string, data: UpdateTaskRequest) => Promise<TaskWithTags>
     addTag: (taskId: string, tagId: string) => Promise<TaskWithTags>
     softDelete: (id: string) => Promise<void>
     removeTag: (taskId: string, tagId: string) => Promise<TaskWithTags>
@@ -29,10 +38,10 @@ interface RendererAPI {
     deleteReflection: (taskId: string) => Promise<void>
   }
   tag: {
-    create: (tag: Partial<OmittedTag>) => Promise<Tag>
+    create: (data: CreateTagRequest) => Promise<Tag>
     get: (id: string) => Promise<Tag | null>
-    getAll: () => Promise<Tag[] | []>
-    update: (id: string, contents: Partial<OmittedTag>) => Promise<Tag>
+    getAll: () => Promise<Tag[]>
+    update: (id: string, data: UpdateTagRequest) => Promise<Tag>
     softDelete: (id: string) => Promise<void>
   }
 }

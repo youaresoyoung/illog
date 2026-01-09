@@ -11,11 +11,10 @@ export function openDB() {
   }
 
   const dbPath = join(app.getPath('userData'), process.env.DB_FILE_NAME)
-
   const sqlite = new Database(dbPath)
   const db = drizzle(sqlite, { schema })
 
   migrate(db, { migrationsFolder: join(__dirname, './database/migrations') })
 
-  return { db, sqlite }
+  return { db }
 }

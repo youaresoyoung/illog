@@ -10,7 +10,7 @@ import {
 } from './ipc/ipcHandlers'
 import { NoteService } from './service/NoteService'
 import { NoteRepository } from './repository/noteRepository'
-import { TagReposity } from './repository/tagRepository'
+import { TagRepository } from './repository/tagRepository'
 import { GeminiService } from './service/GeminiService'
 import dotenv from 'dotenv'
 import { ReflectionRepository } from './repository/reflectionRepository'
@@ -41,18 +41,18 @@ app.whenReady().then(() => {
     throw new Error('Missing GEMINI_API_KEY in environment variables')
   }
 
-  const { db, sqlite } = openDB()
+  const { db } = openDB()
 
   const taskRepo = new TaskRepository(db)
   registerTaskHandlers(taskRepo)
 
   const geminiService = new GeminiService(process.env.GEMINI_API_KEY)
-  const reflectionRepo = new ReflectionRepository(sqlite)
-  const noteRepo = new NoteRepository(sqlite)
+  const reflectionRepo = new ReflectionRepository(db)
+  const noteRepo = new NoteRepository(db)
   const noteService = new NoteService(noteRepo, reflectionRepo, geminiService)
   registerTaskNoteHandlers(noteRepo, noteService)
 
-  const tagRepo = new TagReposity(sqlite)
+  const tagRepo = new TagRepository(db)
   registerTagHandlers(tagRepo)
 
   const mainWindow = createWindow()

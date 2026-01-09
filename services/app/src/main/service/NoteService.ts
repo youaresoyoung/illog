@@ -1,5 +1,5 @@
 import { createHash } from 'crypto'
-import { TaskNote, TaskReflection } from '../types'
+import type { TaskNote, TaskReflection } from '../../shared/types'
 import { NoteRepository } from '../repository/noteRepository'
 import { GeminiService } from './GeminiService'
 import { ReflectionRepository } from '../repository/reflectionRepository'
@@ -15,18 +15,14 @@ export class NoteService {
     private repo: NoteRepository,
     private reflectionRepo: ReflectionRepository,
     private geminiService: GeminiService
-  ) {
-    this.repo = repo
-    this.reflectionRepo = reflectionRepo
-    this.geminiService = geminiService
-  }
+  ) {}
 
   autoSave(taskId: string, content: string, clientUpdatedAt: number) {
     this.queue = this.queue.then(async () => {
       const last = this.repo.findByTaskId(taskId)
 
-      if (last && Number(last.updated_at) > clientUpdatedAt) {
-        return { savedAt: Number(last.updated_at), conflict: true }
+      if (last && Number(last.updatedAt) > clientUpdatedAt) {
+        return { savedAt: Number(last.updatedAt), conflict: true }
       }
 
       const savedAt = Date.now()
@@ -38,7 +34,7 @@ export class NoteService {
   }
 
   async *reflectionNoteStream(
-    textId: string,
+    taskId: string,
     text: string
   ): AsyncGenerator<{ chunk: string; done: boolean }, void> {
     let fullContent = ''
@@ -50,9 +46,9 @@ export class NoteService {
     }
 
     this.reflectionRepo.upsert({
-      task_id: textId,
+      taskId,
       content: fullContent,
-      original_note_hash: noteHash
+      originalNoteHash: noteHash
     })
     yield { chunk: '', done: true }
   }

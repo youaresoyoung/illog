@@ -1,15 +1,19 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { CreateTaskParams, OmittedTag, TaskFilters } from '../main/types'
+import type {
+  TaskFilterParams,
+  UpdateTaskRequest,
+  CreateTagRequest,
+  UpdateTagRequest
+} from '../shared/types'
 
 const api = {
   task: {
-    create: (task: CreateTaskParams) => ipcRenderer.invoke('task.create', task),
+    create: () => ipcRenderer.invoke('task.create'),
     get: (id: string) => ipcRenderer.invoke('task.get', id),
     getWithTags: (id: string) => ipcRenderer.invoke('task.getWithTags', id),
-    getTasksWithTags: (filters?: TaskFilters) =>
+    getTasksWithTags: (filters?: TaskFilterParams) =>
       ipcRenderer.invoke('task.getTasksWithTags', filters),
-    getAll: () => ipcRenderer.invoke('task.getAll'),
-    update: (id: string, contents: TaskFilters) => ipcRenderer.invoke('task.update', id, contents),
+    update: (id: string, data: UpdateTaskRequest) => ipcRenderer.invoke('task.update', id, data),
     addTag: (taskId: string, tagId: string) => ipcRenderer.invoke('task.addTag', taskId, tagId),
     softDelete: (id: string) => ipcRenderer.invoke('task.softDelete', id),
     removeTag: (taskId: string, tagId: string) =>
@@ -34,11 +38,10 @@ const api = {
     deleteReflection: (taskId: string) => ipcRenderer.invoke('note.deleteReflection', taskId)
   },
   tag: {
-    create: (tag: Partial<OmittedTag>) => ipcRenderer.invoke('tag.create', tag),
+    create: (data: CreateTagRequest) => ipcRenderer.invoke('tag.create', data),
     get: (id: string) => ipcRenderer.invoke('tag.get', id),
     getAll: () => ipcRenderer.invoke('tag.getAll'),
-    update: (id: string, contents: Partial<OmittedTag>) =>
-      ipcRenderer.invoke('tag.update', id, contents),
+    update: (id: string, data: UpdateTagRequest) => ipcRenderer.invoke('tag.update', id, data),
     softDelete: (id: string) => ipcRenderer.invoke('tag.softDelete', id)
   }
 }
