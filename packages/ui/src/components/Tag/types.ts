@@ -6,12 +6,12 @@ export type TagType = {
   id: string
   name: string
   color: TagColor
-  created_at: string
-  updated_at: string
-  deleted_at: string
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date | null
 }
 
-export type OmittedTag = Omit<TagType, 'id' | 'created_at' | 'updated_at' | 'deleted_at'>
+export type OmittedTag = Omit<TagType, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
 
 export type TagProps = {
   tag: TagType | OmittedTag

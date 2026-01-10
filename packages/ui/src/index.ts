@@ -21,6 +21,7 @@ export { Dialog } from './components/Dialog'
 export { Overlay } from './components/Overlay'
 
 // Types
+export type { TagType, OmittedTag, TagColor } from './components/Tag/types'
 export type { IconName } from './components/Icon/types'
 export type { NavList } from './context'
 export { IconNameOptions } from './components/Icon/types'
