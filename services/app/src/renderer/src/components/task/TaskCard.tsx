@@ -1,7 +1,7 @@
 import { TagSection } from '../tag/TagSection'
 import { Card, Input, useAutoSaveInput } from '@illog/ui'
 import { useUpdateTask } from '../../hooks/queries/useTaskQueries'
-import { TaskWithTags } from '../../types'
+import type { TaskWithTags } from '../../../../shared/types'
 
 type Props = {
   task: TaskWithTags
@@ -14,12 +14,12 @@ export const TaskCard = ({ task, handleOpenNote }: Props) => {
 
   const [title, , handleChangeTitle] = useAutoSaveInput(
     task.title,
-    (value) => updateTask({ id: task.id, contents: { title: value } }),
+    (value) => updateTask({ id: task.id, data: { title: value } }),
     1000
   )
   const [description, , handleChangeDescription] = useAutoSaveInput(
-    task.description,
-    (value) => updateTask({ id: task.id, contents: { description: value } }),
+    task.description ?? '',
+    (value) => updateTask({ id: task.id, data: { description: value } }),
     1000
   )
 

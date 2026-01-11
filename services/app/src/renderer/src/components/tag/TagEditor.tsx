@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { Color } from '../../types'
+import type { TagColor } from '../../../../shared/types'
 import { useDeleteTag, useUpdateTag } from '../../hooks/queries'
 
 type Props = {
@@ -16,8 +16,8 @@ export const TagEditor = ({ id, name }: Props) => {
   const colorSelectRef = useRef<HTMLSelectElement>(null)
 
   const handleChangeColor = () => {
-    const color = colorSelectRef.current?.value as Color
-    updateTag({ id, contents: { color } })
+    const color = colorSelectRef.current?.value as TagColor
+    updateTag({ id, data: { color } })
   }
 
   const handleChangeName = (e: ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +28,7 @@ export const TagEditor = ({ id, name }: Props) => {
     const onClickOutSide = (e: MouseEvent) => {
       if (e.currentTarget === inputSelectRef.current) return
       if (name !== inputSelectRef.current?.value) {
-        updateTag({ id, contents: { name: inputSelectRef.current?.value } })
+        updateTag({ id, data: { name: inputSelectRef.current?.value } })
       }
     }
 

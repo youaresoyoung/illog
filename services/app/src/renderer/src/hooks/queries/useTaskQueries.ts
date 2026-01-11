@@ -1,12 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { OmittedTask, TaskWithTags, Tag, TaskFilters } from '../../types'
 import { queryKeys } from './queryKeys'
+import type {
+  Tag,
+  TaskFilterParams,
+  TaskWithTags,
+  UpdateTaskRequest
+} from '../../../../shared/types'
 
 export const useTodayTasks = () => {
   return useQuery({
     queryKey: queryKeys.tasks.today(),
     queryFn: () =>
-      window.api.task.getTasksWithTags({ date_from: new Date().toISOString().split('T')[0] })
+      window.api.task.getTasksWithTags({ startTime: new Date().toISOString().split('T')[0] })
   })
 }
 
@@ -18,7 +23,7 @@ export const useTaskById = (id: string) => {
   })
 }
 
-export const useTasksByFilters = (filters: TaskFilters) => {
+export const useTasksByFilters = (filters: TaskFilterParams) => {
   return useQuery({
     queryKey: queryKeys.tasks.filtered(filters),
     queryFn: () => window.api.task.getTasksWithTags(filters),
@@ -30,7 +35,7 @@ export const useCreateTask = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (task: Partial<OmittedTask>) => window.api.task.create(task),
+    mutationFn: () => window.api.task.create(),
     onSuccess: (newTask) => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old ? [...old, newTask] : [newTask]
@@ -43,21 +48,27 @@ export const useUpdateTask = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ id, contents }: { id: string; contents: Partial<OmittedTask> }) =>
-      window.api.task.update(id, contents),
-    onMutate: async ({ id, contents }) => {
+    mutationFn: ({ id, data }: { id: string; data: UpdateTaskRequest }) =>
+      window.api.task.update(id, data),
+    onMutate: async ({ id, data }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.detail(id) })
 
       const previousTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
       const previousTask = queryClient.getQueryData<TaskWithTags>(queryKeys.tasks.detail(id))
 
+      const safeUpdate: Partial<TaskWithTags> = {}
+      if (data.title !== undefined) safeUpdate.title = data.title
+      if (data.description !== undefined) safeUpdate.description = data.description
+      if (data.status !== undefined) safeUpdate.status = data.status
+      if (data.projectId !== undefined) safeUpdate.projectId = data.projectId
+
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
-        old?.map((task) => (task.id === id ? { ...task, ...contents } : task))
+        old?.map((task) => (task.id === id ? { ...task, ...safeUpdate } : task))
       )
 
       queryClient.setQueryData<TaskWithTags>(queryKeys.tasks.detail(id), (old) =>
-        old ? { ...old, ...contents } : old
+        old ? { ...old, ...safeUpdate } : old
       )
 
       return { previousTasks, previousTask, id }
@@ -78,7 +89,7 @@ export const useUpdateTask = () => {
       )
     },
     onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.today() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all })
       queryClient.invalidateQueries({ queryKey: queryKeys.tasks.detail(variables.id) })
     }
   })
@@ -146,7 +157,6 @@ export const useAddTagToTask = () => {
       if (context?.previousTasks) {
         queryClient.setQueryData(queryKeys.tasks.today(), context.previousTasks)
       }
-      console.error('Failed to add tag to task:', _err)
     }
   })
 }
@@ -180,7 +190,6 @@ export const useRemoveTagFromTask = () => {
       if (context?.previousTasks) {
         queryClient.setQueryData(queryKeys.tasks.today(), context.previousTasks)
       }
-      console.error('Failed to remove tag from task:', _err)
     }
   })
 }

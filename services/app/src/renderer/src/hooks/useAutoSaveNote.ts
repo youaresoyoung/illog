@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 
 import { useTaskNote, useAutoSaveNote as useAutoSaveNoteMutation } from './queries/useNoteQueries'
-import { TaskNote } from '../types'
+import type { TaskNote } from '../types'
 
 export const useAutoSaveNote = (
   currentTaskId: string | undefined
@@ -47,7 +47,7 @@ export const useAutoSaveNote = (
   const note: TaskNote | null = fetchedNote
     ? { ...fetchedNote, content: localContent }
     : currentTaskId
-      ? { task_id: currentTaskId, content: localContent, updated_at: new Date().toISOString() }
+      ? { taskId: currentTaskId, content: localContent, updatedAt: new Date().toISOString() }
       : null
 
   return [note, handleChange]

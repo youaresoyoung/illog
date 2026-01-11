@@ -2,11 +2,12 @@ import { useEffect, useRef } from 'react'
 import { useTaskById, useUpdateTask } from '../../hooks/queries'
 import { Inline, Input, Stack, Text, TimePicker, useAutoSaveInput } from '@illog/ui'
 import { TagSection } from '../tag/TagSection'
-import { MAX_TAG_LENGTH, TaskNote } from '../../types'
+import type { TaskNote } from '../../../../shared/types'
 
 import { useTaskNote } from '../../hooks/queries/useNoteQueries'
 import { TextareaSection } from '../right-panel/TextareaSection'
 import { ReflectionSection } from '../right-panel/ReflectionSection'
+import { MAX_TAG_LENGTH } from '../../../../shared/const'
 
 type Props = {
   taskId: string
@@ -22,14 +23,14 @@ export const RightPanel = ({ taskId }: Props) => {
   const [title, , handleTitleChange] = useAutoSaveInput(
     task?.title || '',
     (value) => {
-      if (task) updateTask({ id: task.id, contents: { title: value } })
+      if (task) updateTask({ id: task.id, data: { title: value } })
     },
     1000
   )
   const [description, , handleDescriptionChange] = useAutoSaveInput(
     task?.description || '',
     (value) => {
-      if (task) updateTask({ id: task.id, contents: { description: value } })
+      if (task) updateTask({ id: task.id, data: { description: value } })
     },
     1000
   )
@@ -39,9 +40,9 @@ export const RightPanel = ({ taskId }: Props) => {
 
     updateTask({
       id: task.id,
-      contents: {
-        start_at: value.start ?? undefined,
-        end_at: value.end ?? undefined
+      data: {
+        startTime: value.start,
+        endTime: value.end
       }
     })
   }
@@ -80,7 +81,7 @@ export const RightPanel = ({ taskId }: Props) => {
             placeholder="description..."
           />
           <Text textStyle="caption" mt="100">
-            Last edited at {new Date(task?.updated_at).toLocaleString()}
+            Last edited at {task.updatedAt ? new Date(task.updatedAt).toLocaleString() : 'N/A'}
           </Text>
         </Stack>
         <Inline gap="1200">
@@ -97,7 +98,10 @@ export const RightPanel = ({ taskId }: Props) => {
             <Text textStyle="bodyStrong">Time</Text>
             <Stack>
               <TimePicker
-                value={{ start: task.start_at ?? null, end: task.timer_end ?? null }}
+                value={{
+                  start: task.startTime ? task.startTime.toISOString() : null,
+                  end: task.endTime ? task.endTime.toISOString() : null
+                }}
                 onChange={handleDateTimeChange}
               >
                 <TimePicker.Range>
@@ -114,7 +118,7 @@ export const RightPanel = ({ taskId }: Props) => {
         <Stack gap="200">
           <TextareaSection taskId={task.id} note={note} />
         </Stack>
-        <ReflectionSection taskId={task.id} noteContent={note?.content} />
+        <ReflectionSection taskId={task.id} noteContent={note?.content ?? undefined} />
       </Stack>
     </>
   )

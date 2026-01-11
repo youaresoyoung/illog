@@ -1,4 +1,4 @@
-import { OmittedTag, Tag } from '../../types'
+import type { CreateTagRequest, Tag, UpdateTagRequest } from '../../../../shared/types'
 import { queryKeys } from './queryKeys'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
@@ -21,7 +21,7 @@ export const useCreateTag = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (tag: Partial<OmittedTag>) => {
+    mutationFn: async (tag: CreateTagRequest) => {
       const newTag = await window.api.tag.create(tag)
       return newTag
     },
@@ -49,17 +49,17 @@ export const useUpdateTag = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ id, contents }: { id: string; contents: Partial<OmittedTag> }) => {
-      const updatedTag = await window.api.tag.update(id, contents)
+    mutationFn: async ({ id, data }: { id: string; data: UpdateTagRequest }) => {
+      const updatedTag = await window.api.tag.update(id, data)
       return updatedTag
     },
-    onMutate: async ({ id, contents }) => {
+    onMutate: async ({ id, data }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tags.all })
 
       const previousTags = queryClient.getQueryData<Tag[]>(queryKeys.tags.all)
 
       queryClient.setQueryData<Tag[]>(queryKeys.tags.all, (old) =>
-        old?.map((tag) => (tag.id === id ? { ...tag, ...contents } : tag))
+        old?.map((tag) => (tag.id === id ? { ...tag, ...data } : tag))
       )
 
       return { previousTags }

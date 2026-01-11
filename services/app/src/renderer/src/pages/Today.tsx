@@ -11,10 +11,7 @@ export const Today = () => {
   const { openTaskNote } = useUIStoreActions()
 
   const handleAddLogClick = () => {
-    createTask({
-      title: '',
-      status: 'todo'
-    })
+    createTask()
   }
 
   // TODO: handle loading and error states

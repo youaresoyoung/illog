@@ -1,16 +1,13 @@
-import { getThisWeekDateRange } from '../utils/time'
 import { ContentHeader } from '../components/layout/ContentHeader'
 import { useTasksByFilters } from '../hooks/queries'
-import { useUserStore } from '../stores/useUserStore'
+import { useThisWeekParams } from '../hooks/useThisWeekParams'
 
 export const ThisWeek = () => {
-  const { timeZone } = useUserStore()
-  const { startOfThisWeek, endOfThisWeek } = getThisWeekDateRange(timeZone)
+  const { startTime, endTime } = useThisWeekParams()
 
   const { data: tasks } = useTasksByFilters({
-    date_from: String(startOfThisWeek),
-    date_to: String(endOfThisWeek),
-    time_zone: timeZone
+    startTime,
+    endTime
   })
 
   return (
