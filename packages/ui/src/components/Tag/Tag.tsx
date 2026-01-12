@@ -16,7 +16,7 @@ const getIconColor = (color: string) => {
 
 export const Tag = ({
   tag,
-  addTagButtonVariant = 'default',
+  addTagButtonVariant,
   className,
   openTagSelector,
   removeFromTask
@@ -28,7 +28,7 @@ export const Tag = ({
     }
   }
 
-  if (openTagSelector) {
+  if (addTagButtonVariant) {
     return (
       <button
         className={clsx([
