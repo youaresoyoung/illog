@@ -10,7 +10,8 @@
     "build:mac": "pnpm run build && electron-builder --mac",
     "build:linux": "pnpm run build && electron-builder --linux",
     "preview": "electron-vite preview",
-    "rebuild": "electron-rebuild",
+    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "postinstall": "electron-rebuild -f -w better-sqlite3",
     "db:generate": "cd src/main && npx drizzle-kit generate",
     "db:migrate": "cd src/main && npx drizzle-kit migrate",
     "db:studio": "cd src/main && npx drizzle-kit studio"
