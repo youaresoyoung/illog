@@ -11,10 +11,11 @@ export type IconProps = {
   name: IconName
   size?: keyof typeof tokens.size.icon
   color?: keyof typeof iconColors | keyof typeof textColors
+  rotate?: number
 }
 
 export const Icon = (props: IconProps) => {
-  const { name, size = 'medium', color } = props
+  const { name, size = 'medium', color, rotate } = props
 
   const IconComponent = Icons[name]
 
@@ -36,7 +37,9 @@ export const Icon = (props: IconProps) => {
       width={tokens.size.icon[size]}
       height={tokens.size.icon[size]}
       style={{
-        color: iconColor
+        color: iconColor,
+        transform: rotate ? `rotate(${rotate}deg)` : undefined,
+        transition: 'transform 0.3s ease'
       }}
       aria-label={name}
       role="img"
