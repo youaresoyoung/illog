@@ -13,7 +13,13 @@ export * as Navigation from './components/Navigation'
 export { Card } from './components/Card'
 export { Input } from './components/Input'
 export { Tag } from './components/Tag'
-export { TagSelector } from './components/Selector'
+export {
+  TagSelector,
+  ProjectSelector,
+  useTagSelectorContext,
+  useProjectSelectorContext
+} from './components/Selector'
+export { ProjectBadge } from './components/ProjectBadge'
 export { Divider } from './components/Divider'
 export { Portal } from './components/Portal'
 export { TimePicker } from './components/TimePicker'
@@ -22,6 +28,12 @@ export { Overlay } from './components/Overlay'
 
 // Types
 export type { TagType, OmittedTag, TagColor } from './components/Tag/types'
+export type {
+  ProjectType,
+  OmittedProject,
+  ProjectColor,
+  ProjectBadgeProps
+} from './components/ProjectBadge/types'
 export type { IconName } from './components/Icon/types'
 export type { NavList } from './context'
 export { IconNameOptions } from './components/Icon/types'
