@@ -1,9 +1,10 @@
 import React, { KeyboardEvent, useState } from 'react'
-import { Icon } from '../Icon'
-import * as style from './tagEditor.css'
-import { backgroundColors } from '../../core/tokens/generatedColors'
-import { Divider } from '../Divider'
-import { OmittedTag, TagColor, TagType } from '../Tag/types'
+
+import * as style from '../editor.css'
+import { backgroundColors } from 'packages/ui/src/core/tokens/generatedColors'
+import { Divider } from '../../Divider'
+import { Icon } from '../../Icon'
+import { TagType, OmittedTag, TagColor } from '../../Tag/types'
 
 const COLORS = [
   { name: 'Blue', value: 'blue', preview: backgroundColors.backgroundTagBlue },

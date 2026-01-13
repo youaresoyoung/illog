@@ -1,10 +1,10 @@
-import { Tag } from '../Tag'
-import { OmittedTag, TagType, TagColor } from '../Tag/types'
-import { Icon } from '../Icon'
+import { RefObject, useState, useRef, useCallback, useEffect, memo } from 'react'
+import { Icon } from '../../Icon'
+import { Portal } from '../../Portal'
+import { Tag } from '../../Tag'
+import { TagType, TagColor, OmittedTag } from '../../Tag/types'
+import * as style from '../selector.css'
 import { TagEditor } from './TagEditor'
-import * as style from './tagSelector.css'
-import { useEffect, useRef, useState, useCallback, memo, RefObject } from 'react'
-import { Portal } from '../Portal'
 
 type Props = {
   tags: TagType[]

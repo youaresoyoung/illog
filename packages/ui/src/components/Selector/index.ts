@@ -1,1 +1,2 @@
-export { TagSelector } from './TagSelector'
+export { TagSelector, useTagSelectorContext } from './TagSelector/index'
+export type { TagSelectorContextValue } from './TagSelector/index'
