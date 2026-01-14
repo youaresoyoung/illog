@@ -3,7 +3,9 @@ import type {
   TaskFilterParams,
   UpdateTaskRequest,
   CreateTagRequest,
-  UpdateTagRequest
+  UpdateTagRequest,
+  CreateProjectRequest,
+  UpdateProjectRequest
 } from '../shared/types'
 
 const api = {
@@ -43,6 +45,14 @@ const api = {
     getAll: () => ipcRenderer.invoke('tag.getAll'),
     update: (id: string, data: UpdateTagRequest) => ipcRenderer.invoke('tag.update', id, data),
     softDelete: (id: string) => ipcRenderer.invoke('tag.softDelete', id)
+  },
+  project: {
+    create: (data: CreateProjectRequest) => ipcRenderer.invoke('project.create', data),
+    get: (id: string) => ipcRenderer.invoke('project.get', id),
+    getAll: () => ipcRenderer.invoke('project.getAll'),
+    update: (id: string, data: UpdateProjectRequest) =>
+      ipcRenderer.invoke('project.update', id, data),
+    softDelete: (id: string) => ipcRenderer.invoke('project.softDelete', id)
   }
 }
 

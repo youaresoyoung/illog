@@ -18,11 +18,12 @@ export type InsertTaskReflection = typeof taskReflections.$inferInsert
 // Composite Types (관계 포함 타입)
 // ============================================
 
-import type { Tag, Task } from '../../main/database/schema'
+import type { Tag, Task, Project } from '../../main/database/schema'
 
-/** 태스크 + 연결된 태그 목록 */
+/** 태스크 + 연결된 태그 목록 + 프로젝트 */
 export interface TaskWithTags extends Task {
   tags: Pick<Tag, 'id' | 'name' | 'color'>[]
+  project: Pick<Project, 'id' | 'name' | 'color'> | null
 }
 
 /** 태스크 + 태그 + 노트 + 리플렉션 (상세 조회용) */

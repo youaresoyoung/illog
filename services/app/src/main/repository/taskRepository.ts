@@ -1,7 +1,7 @@
 import type { TaskFilterParams, TaskWithTags, UpdateTaskRequest } from '../../shared/types'
 import { and, count, desc, eq, getTableColumns, gte, isNull, like, lte, or, sql } from 'drizzle-orm'
 import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
-import { InsertTask, tasks, tags, taskTags, Tag, Task } from '../database/schema'
+import { InsertTask, tasks, tags, taskTags, projects, Tag, Task, Project } from '../database/schema'
 import * as schema from '../database/schema'
 
 export class TaskRepository {
@@ -10,7 +10,7 @@ export class TaskRepository {
   async create(): Promise<TaskWithTags> {
     const [inserted] = this.db.insert(tasks).values({}).returning().all()
 
-    return { ...inserted, tags: [] }
+    return { ...inserted, tags: [], project: null }
   }
 
   async get(id: string): Promise<Task> {
@@ -27,6 +27,7 @@ export class TaskRepository {
     return task
   }
 
+  // NOTE: Need to refactor function name and tag section
   async getWithTags(id: string): Promise<TaskWithTags> {
     const task = this.db
       .select({
@@ -36,11 +37,17 @@ export class TaskRepository {
             json_group_array(
               json_object('id', tag.id, 'name', tag.name, 'color', tag.color)
             ) FILTER (WHERE tag.id IS NOT NULL), json('[]')
-          )`.as('tags')
+          )`.as('tags'),
+        project: sql`
+          CASE WHEN project.id IS NOT NULL
+            THEN json_object('id', project.id, 'name', project.name, 'color', project.color)
+            ELSE NULL
+          END`.as('project')
       })
       .from(tasks)
       .leftJoin(taskTags, eq(taskTags.taskId, tasks.id))
       .leftJoin(tags, and(eq(tags.id, taskTags.tagId), isNull(tags.deletedAt)))
+      .leftJoin(projects, and(eq(projects.id, tasks.projectId), isNull(projects.deletedAt)))
       .where(and(eq(tasks.id, id), isNull(tasks.deletedAt)))
       .get()
 
@@ -50,7 +57,10 @@ export class TaskRepository {
 
     return {
       ...task,
-      tags: JSON.parse(task.tags as string) as Tag[]
+      tags: JSON.parse(task.tags as string) as Tag[],
+      project: task.project
+        ? (JSON.parse(task.project as string) as Pick<Project, 'id' | 'name' | 'color'>)
+        : null
     }
   }
 
@@ -87,17 +97,27 @@ export class TaskRepository {
             json_group_array(
               json_object('id', tag.id, 'name', tag.name, 'color', tag.color)
             ) FILTER (WHERE tag.id IS NOT NULL), json('[]')
-          )`.as('tags')
+          )`.as('tags'),
+        project: sql`
+          CASE WHEN project.id IS NOT NULL
+            THEN json_object('id', project.id, 'name', project.name, 'color', project.color)
+            ELSE NULL
+          END`.as('project')
       })
       .from(tasks)
       .leftJoin(taskTags, eq(taskTags.taskId, tasks.id))
       .leftJoin(tags, and(eq(tags.id, taskTags.tagId), isNull(tags.deletedAt)))
+      .leftJoin(projects, and(eq(projects.id, tasks.projectId), isNull(projects.deletedAt)))
       .where(and(...conditions))
       .groupBy(tasks.id)
       .orderBy(desc(tasks.createdAt))
       .all()
 
-    return results.map((item) => ({ ...item, tags: JSON.parse(item?.tags as string) }))
+    return results.map((item) => ({
+      ...item,
+      tags: JSON.parse(item?.tags as string),
+      project: item.project ? JSON.parse(item.project as string) : null
+    }))
   }
 
   async update(id: string, contents: UpdateTaskRequest): Promise<TaskWithTags> {

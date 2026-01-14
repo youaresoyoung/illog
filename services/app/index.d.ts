@@ -1,13 +1,16 @@
 import type {
   Task,
   Tag,
+  Project,
   TaskWithTags,
   TaskNote,
   TaskReflection,
   TaskFilterParams,
   UpdateTaskRequest,
   CreateTagRequest,
-  UpdateTagRequest
+  UpdateTagRequest,
+  CreateProjectRequest,
+  UpdateProjectRequest
 } from './src/shared/types'
 
 interface RendererAPI {
@@ -42,6 +45,13 @@ interface RendererAPI {
     get: (id: string) => Promise<Tag | null>
     getAll: () => Promise<Tag[]>
     update: (id: string, data: UpdateTagRequest) => Promise<Tag>
+    softDelete: (id: string) => Promise<void>
+  }
+  project: {
+    create: (data: CreateProjectRequest) => Promise<Project>
+    get: (id: string) => Promise<Project | null>
+    getAll: () => Promise<Project[]>
+    update: (id: string, data: UpdateProjectRequest) => Promise<Project>
     softDelete: (id: string) => Promise<void>
   }
 }

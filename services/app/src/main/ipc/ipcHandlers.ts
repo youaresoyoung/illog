@@ -3,11 +3,15 @@ import { NoteService } from '../service/NoteService'
 import { TaskRepository } from '../repository/taskRepository'
 import { NoteRepository } from '../repository/noteRepository'
 import { TagRepository } from '../repository/tagRepository'
+import { ProjectRepository } from '../repository/projectRepository'
+
 import type {
   TaskFilterParams,
   UpdateTaskRequest,
   CreateTagRequest,
-  UpdateTagRequest
+  UpdateTagRequest,
+  CreateProjectRequest,
+  UpdateProjectRequest
 } from '../../shared/types'
 
 // TODO: add proper error handling wrapper
@@ -57,4 +61,14 @@ export function registerTagHandlers(tagRepo: TagRepository) {
   ipcMain.handle('tag.getAll', () => tagRepo.getAll())
   ipcMain.handle('tag.update', (_, id: string, data: UpdateTagRequest) => tagRepo.update(id, data))
   ipcMain.handle('tag.softDelete', (_, id: string) => tagRepo.softDelete(id))
+}
+
+export function registerProjectHandlers(projectRepo: ProjectRepository) {
+  ipcMain.handle('project.create', (_, data: CreateProjectRequest) => projectRepo.create(data))
+  ipcMain.handle('project.get', (_, id: string) => projectRepo.get(id))
+  ipcMain.handle('project.getAll', () => projectRepo.getAll())
+  ipcMain.handle('project.update', (_, id: string, data: UpdateProjectRequest) =>
+    projectRepo.update(id, data)
+  )
+  ipcMain.handle('project.softDelete', (_, id: string) => projectRepo.softDelete(id))
 }

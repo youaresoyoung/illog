@@ -6,7 +6,8 @@ import { isDev } from '../utils/utils'
 import {
   registerTaskHandlers,
   registerTaskNoteHandlers,
-  registerTagHandlers
+  registerTagHandlers,
+  registerProjectHandlers
 } from './ipc/ipcHandlers'
 import { NoteService } from './service/NoteService'
 import { NoteRepository } from './repository/noteRepository'
@@ -14,6 +15,7 @@ import { TagRepository } from './repository/tagRepository'
 import { GeminiService } from './service/GeminiService'
 import dotenv from 'dotenv'
 import { ReflectionRepository } from './repository/reflectionRepository'
+import { ProjectRepository } from './repository/projectRepository'
 
 dotenv.config()
 
@@ -54,6 +56,9 @@ app.whenReady().then(() => {
 
   const tagRepo = new TagRepository(db)
   registerTagHandlers(tagRepo)
+
+  const projectRepo = new ProjectRepository(db)
+  registerProjectHandlers(projectRepo)
 
   const mainWindow = createWindow()
 

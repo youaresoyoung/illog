@@ -12,6 +12,9 @@ export type ISODateString = string
 /** 태그 색상 - DB enum과 동기화 */
 export type TagColor = 'blue' | 'green' | 'yellow' | 'purple' | 'red' | 'gray'
 
+/** 프로젝트 색상 - DB enum과 동기화 (TagColor와 동일) */
+export type ProjectColor = 'blue' | 'green' | 'yellow' | 'purple' | 'red' | 'gray'
+
 /** 태스크 상태 - DB enum과 동기화 (snake_case 필수) */
 export type TaskStatus = 'todo' | 'in_progress' | 'done'
 
