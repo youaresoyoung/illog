@@ -1,5 +1,6 @@
 import { TagSection } from '../tag/TagSection'
-import { Card, Input, useAutoSaveInput } from '@illog/ui'
+import { ProjectSection } from '../project/ProjectSection'
+import { Card, Inline, Input, useAutoSaveInput } from '@illog/ui'
 import { useUpdateTask } from '../../hooks/queries/useTaskQueries'
 import type { TaskWithTags } from '../../../../shared/types'
 
@@ -29,6 +30,9 @@ export const TaskCard = ({ task, handleOpenNote }: Props) => {
 
   return (
     <Card onClick={handleClickCard} maxWidth="100%">
+      <Inline>
+        <ProjectSection task={task} />
+      </Inline>
       <div>
         <Input
           style={{ paddingLeft: 0 }}

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from './queryKeys'
 import type {
   Tag,
+  Project,
   TaskFilterParams,
   TaskWithTags,
   UpdateTaskRequest
@@ -175,6 +176,85 @@ export const useRemoveTagFromTask = () => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) =>
           task.id === taskId ? { ...task, tags: task.tags.filter((tag) => tag.id !== tagId) } : task
+        )
+      )
+
+      return { previousTasks }
+    },
+    onSuccess: (updatedTask) => {
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+        old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+      )
+      queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(queryKeys.tasks.today(), context.previousTasks)
+      }
+    }
+  })
+}
+
+export const useSetProjectToTask = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ taskId, projectId }: { taskId: string; projectId: string }) =>
+      window.api.task.update(taskId, { projectId }),
+    onMutate: async ({ taskId, projectId }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
+
+      const previousTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
+      const allProjects = queryClient.getQueryData<Project[]>(queryKeys.projects.all)
+      const projectToSet = allProjects?.find((p) => p.id === projectId)
+
+      if (projectToSet) {
+        queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+          old?.map((task) =>
+            task.id === taskId
+              ? {
+                  ...task,
+                  projectId,
+                  project: {
+                    id: projectToSet.id,
+                    name: projectToSet.name,
+                    color: projectToSet.color
+                  }
+                }
+              : task
+          )
+        )
+      }
+
+      return { previousTasks }
+    },
+    onSuccess: (updatedTask) => {
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+        old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+      )
+      queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(queryKeys.tasks.today(), context.previousTasks)
+      }
+    }
+  })
+}
+
+export const useClearProjectFromTask = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (taskId: string) => window.api.task.update(taskId, { projectId: null }),
+    onMutate: async (taskId) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
+
+      const previousTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
+
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+        old?.map((task) =>
+          task.id === taskId ? { ...task, projectId: null, project: null } : task
         )
       )
 
