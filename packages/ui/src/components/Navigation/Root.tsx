@@ -26,19 +26,19 @@ import { RootProps } from './types'
  * </Navigation.Root>
  * ```
  */
-export const Root = ({
+export const Root = <T extends string = string>({
   children,
   value: controlledValue,
   onValueChange,
-  defaultValue = ''
-}: RootProps) => {
-  const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue)
+  defaultValue = '' as T
+}: RootProps<T>) => {
+  const [uncontrolledValue, setUncontrolledValue] = useState<T>(defaultValue)
 
   const isControlled = controlledValue !== undefined
   const value = isControlled ? controlledValue : uncontrolledValue
 
   const handleValueChange = useCallback(
-    (newValue: string) => {
+    (newValue: T) => {
       if (!isControlled) {
         setUncontrolledValue(newValue)
       }
@@ -50,7 +50,7 @@ export const Root = ({
   const contextValue = useMemo(
     () => ({
       value,
-      onValueChange: handleValueChange
+      onValueChange: (v: string) => handleValueChange(v as T)
     }),
     [value, handleValueChange]
   )

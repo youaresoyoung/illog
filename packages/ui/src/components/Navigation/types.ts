@@ -2,20 +2,20 @@ import { ReactNode } from 'react'
 import { Sprinkles } from '../../core/sprinkles.css'
 import { IconName } from '../Icon'
 
-export type RootProps = {
+export type RootProps<T extends string = string> = {
   children: ReactNode
   /**
    * Controlled value - current active navigation item
    */
-  value?: string
+  value?: T
   /**
    * Controlled change handler
    */
-  onValueChange?: (value: string) => void
+  onValueChange?: (value: T) => void
   /**
    * Uncontrolled default value
    */
-  defaultValue?: string
+  defaultValue?: T
 }
 
 export type ContainerProps = {
