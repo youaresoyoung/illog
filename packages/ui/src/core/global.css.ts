@@ -1,5 +1,19 @@
 import { globalStyle } from '@vanilla-extract/css'
 
+globalStyle('html', {
+  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  fontSize: '16px',
+  lineHeight: 1.5
+})
+
+globalStyle('body', {
+  fontFamily: 'inherit',
+  margin: 0,
+  padding: 0,
+  WebkitFontSmoothing: 'antialiased',
+  MozOsxFontSmoothing: 'grayscale'
+})
+
 globalStyle('*', {
   boxSizing: 'border-box',
   margin: 0,
