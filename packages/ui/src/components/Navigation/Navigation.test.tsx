@@ -3,198 +3,164 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Navigation } from './index'
 import { MemoryRouter } from 'react-router'
-import { useState } from 'react'
 
-// Navigation 컴포넌트들은 react-router의 Link를 사용하므로 Router로 감싸야 함
 const renderWithRouter = (ui: React.ReactElement, initialEntries: string[] = ['/']) => {
   return render(<MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>)
 }
 
-describe('Navigation - Uncontrolled', () => {
-  it('renders with default value', () => {
+describe('Navigation.Item - URL based active state', () => {
+  it('renders as active when URL matches (exact)', () => {
     renderWithRouter(
-      <Navigation.Root defaultValue="home">
-        <Navigation.List>
-          <Navigation.Item value="home" to="/">
-            Home
-          </Navigation.Item>
-          <Navigation.Item value="about" to="/about">
-            About
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
+      <Navigation.List>
+        <Navigation.Item to="/">Home</Navigation.Item>
+        <Navigation.Item to="/about">About</Navigation.Item>
+      </Navigation.List>,
+      ['/']
     )
 
     const homeLink = screen.getByText('Home').closest('a')
-    expect(homeLink).toHaveAttribute('aria-current', 'page')
+    const aboutLink = screen.getByText('About').closest('a')
+
+    expect(homeLink).toHaveClass('isActive_true')
+    expect(aboutLink).not.toHaveClass('isActive_true')
   })
 
-  it('updates active state on click', async () => {
+  it('updates active state when navigating', async () => {
     const user = userEvent.setup()
 
     renderWithRouter(
-      <Navigation.Root defaultValue="home">
-        <Navigation.List>
-          <Navigation.Item value="home" to="/">
-            Home
-          </Navigation.Item>
-          <Navigation.Item value="about" to="/about">
-            About
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
+      <Navigation.List>
+        <Navigation.Item to="/">Home</Navigation.Item>
+        <Navigation.Item to="/about">About</Navigation.Item>
+      </Navigation.List>,
+      ['/']
     )
 
     const aboutLink = screen.getByText('About')
     await user.click(aboutLink)
 
-    expect(aboutLink.closest('a')).toHaveAttribute('aria-current', 'page')
+    expect(aboutLink.closest('a')).toHaveClass('isActive_true')
   })
 
   it('renders with icon', () => {
     renderWithRouter(
-      <Navigation.Root defaultValue="home">
-        <Navigation.List>
-          <Navigation.Item value="home" to="/" iconName="calendar_today">
-            Home
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
+      <Navigation.List>
+        <Navigation.Item to="/" iconName="calendar_today">
+          Home
+        </Navigation.Item>
+      </Navigation.List>
     )
 
     const icon = screen.getByText('Home').parentElement?.querySelector('svg')
     expect(icon).toBeInTheDocument()
   })
-})
 
-describe('Navigation - Controlled', () => {
-  it('respects controlled value', () => {
+  it('supports startsWith matching for nested routes', () => {
     renderWithRouter(
-      <Navigation.Root value="about">
-        <Navigation.List>
-          <Navigation.Item value="home" to="/">
-            Home
-          </Navigation.Item>
-          <Navigation.Item value="about" to="/about">
-            About
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
+      <Navigation.List match="startsWith">
+        <Navigation.Item to="/settings">Settings</Navigation.Item>
+      </Navigation.List>,
+      ['/settings/profile']
     )
 
-    const aboutLink = screen.getByText('About').closest('a')
-    expect(aboutLink).toHaveAttribute('aria-current', 'page')
+    const settingsLink = screen.getByText('Settings').closest('a')
+    expect(settingsLink).toHaveClass('isActive_true')
   })
 
-  it('calls onValueChange when item is clicked', async () => {
-    const handleChange = vi.fn()
-    const user = userEvent.setup()
-
+  it('exact match does not activate for nested routes', () => {
     renderWithRouter(
-      <Navigation.Root value="home" onValueChange={handleChange}>
-        <Navigation.List>
-          <Navigation.Item value="home" to="/">
-            Home
-          </Navigation.Item>
-          <Navigation.Item value="about" to="/about">
-            About
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
+      <Navigation.List>
+        <Navigation.Item to="/settings">Settings</Navigation.Item>
+      </Navigation.List>,
+      ['/settings/profile']
     )
 
-    const aboutLink = screen.getByText('About')
-    await user.click(aboutLink)
-
-    expect(handleChange).toHaveBeenCalledWith('about')
-  })
-
-  it('integrates with external state', async () => {
-    const user = userEvent.setup()
-
-    const ControlledNav = () => {
-      const [active, setActive] = useState('home')
-
-      return (
-        <div>
-          <p data-testid="active-state">{active}</p>
-          <Navigation.Root value={active} onValueChange={setActive}>
-            <Navigation.List>
-              <Navigation.Item value="home" to="/">
-                Home
-              </Navigation.Item>
-              <Navigation.Item value="about" to="/about">
-                About
-              </Navigation.Item>
-            </Navigation.List>
-          </Navigation.Root>
-        </div>
-      )
-    }
-
-    renderWithRouter(<ControlledNav />)
-
-    expect(screen.getByTestId('active-state')).toHaveTextContent('home')
-
-    const aboutLink = screen.getByText('About')
-    await user.click(aboutLink)
-
-    expect(screen.getByTestId('active-state')).toHaveTextContent('about')
+    const settingsLink = screen.getByText('Settings').closest('a')
+    expect(settingsLink).not.toHaveClass('isActive_true')
   })
 })
 
-describe('Navigation.Item', () => {
+describe('Navigation.Item - render props', () => {
+  it('supports className as function', () => {
+    renderWithRouter(
+      <Navigation.List>
+        <Navigation.Item
+          to="/"
+          className={({ isActive }) => (isActive ? 'custom-active' : 'custom-inactive')}
+        >
+          Home
+        </Navigation.Item>
+      </Navigation.List>,
+      ['/']
+    )
+
+    const homeLink = screen.getByText('Home').closest('a')
+    expect(homeLink).toHaveClass('custom-active')
+  })
+
+  it('supports children as render function', () => {
+    renderWithRouter(
+      <Navigation.List>
+        <Navigation.Item to="/">
+          {({ isActive }) => (
+            <span data-testid="render-child">{isActive ? 'Active Home' : 'Home'}</span>
+          )}
+        </Navigation.Item>
+      </Navigation.List>,
+      ['/']
+    )
+
+    expect(screen.getByTestId('render-child')).toHaveTextContent('Active Home')
+  })
+})
+
+describe('Navigation.Item - disabled state', () => {
   it('handles disabled state', async () => {
     const user = userEvent.setup()
-    const handleChange = vi.fn()
+    const handleClick = vi.fn()
 
     renderWithRouter(
-      <Navigation.Root value="home" onValueChange={handleChange}>
-        <Navigation.List>
-          <Navigation.Item value="home" to="/">
-            Home
-          </Navigation.Item>
-          <Navigation.Item value="about" to="/about" disabled>
-            About
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
+      <Navigation.List>
+        <Navigation.Item to="/">Home</Navigation.Item>
+        <Navigation.Item to="/about" disabled onClick={handleClick}>
+          About
+        </Navigation.Item>
+      </Navigation.List>
     )
 
     const aboutLink = screen.getByText('About').closest('a')
     expect(aboutLink).toHaveAttribute('aria-disabled', 'true')
 
     await user.click(aboutLink!)
-    expect(handleChange).not.toHaveBeenCalled()
+    expect(handleClick).not.toHaveBeenCalled()
   })
 
-  it('calls custom onClick handler', async () => {
+  it('calls custom onClick handler when not disabled', async () => {
     const user = userEvent.setup()
     const customClick = vi.fn()
 
     renderWithRouter(
-      <Navigation.Root defaultValue="home">
-        <Navigation.List>
-          <Navigation.Item value="home" to="/" onClick={customClick}>
-            Home
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
+      <Navigation.List>
+        <Navigation.Item to="/" onClick={customClick}>
+          Home
+        </Navigation.Item>
+      </Navigation.List>
     )
 
     await user.click(screen.getByText('Home'))
     expect(customClick).toHaveBeenCalled()
   })
+})
 
+describe('Navigation.Item - accessibility', () => {
   it('has accessible attributes', () => {
     renderWithRouter(
-      <Navigation.Root defaultValue="home">
-        <Navigation.List>
-          <Navigation.Item value="home" to="/" aria-label="Go to home page">
-            Home
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
+      <Navigation.List>
+        <Navigation.Item to="/" aria-label="Go to home page">
+          Home
+        </Navigation.Item>
+      </Navigation.List>,
+      ['/']
     )
 
     const link = screen.getByText('Home').closest('a')
@@ -206,16 +172,27 @@ describe('Navigation.Item', () => {
 describe('Navigation.List', () => {
   it('has navigation role and label', () => {
     renderWithRouter(
-      <Navigation.Root defaultValue="home">
-        <Navigation.List>
-          <Navigation.Item value="home" to="/">
-            Home
-          </Navigation.Item>
-        </Navigation.List>
-      </Navigation.Root>
+      <Navigation.List>
+        <Navigation.Item to="/">Home</Navigation.Item>
+      </Navigation.List>
     )
 
     const nav = screen.getByRole('navigation', { name: 'Main navigation' })
     expect(nav).toBeInTheDocument()
+  })
+})
+
+describe('Navigation.Container', () => {
+  it('renders as aside element', () => {
+    renderWithRouter(
+      <Navigation.Container>
+        <Navigation.List>
+          <Navigation.Item to="/">Home</Navigation.Item>
+        </Navigation.List>
+      </Navigation.Container>
+    )
+
+    const aside = document.querySelector('aside')
+    expect(aside).toBeInTheDocument()
   })
 })

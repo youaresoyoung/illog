@@ -35,7 +35,7 @@ export type {
   ProjectBadgeProps
 } from './components/ProjectBadge/types'
 export type { IconName } from './components/Icon/types'
-export type { NavList } from './context'
+export type { ItemRenderProps, MatchStrategy } from './components/Navigation'
 export { IconNameOptions } from './components/Icon/types'
 export type { TimePickerValue, TimePickerProps } from './components/TimePicker'
 export type { Sprinkles } from './core/sprinkles.css'
@@ -49,7 +49,7 @@ export type { TextProps } from './components/Typography/types'
 export type { OverlayProps, OverlayAnimation } from './components/Overlay/types'
 
 // Hooks
-export { useNavigationContext } from './context'
+export { useNavigationListContext } from './context'
 export {
   useAutoSaveInput,
   useDebouncedCallback,

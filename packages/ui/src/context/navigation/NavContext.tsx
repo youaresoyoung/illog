@@ -1,18 +1,14 @@
 import { createContext, useContext } from 'react'
+import { MatchStrategy } from '../../components/Navigation/types'
 
-export type NavigationContextValue = {
-  value: string
-  onValueChange: (value: string) => void
+export type NavigationListContextValue = {
+  match: MatchStrategy
 }
 
-const NavigationContext = createContext<NavigationContextValue | null>(null)
+const NavigationListContext = createContext<NavigationListContextValue>({ match: 'exact' })
 
-export const NavigationProvider = NavigationContext.Provider
+export const NavigationListProvider = NavigationListContext.Provider
 
-export const useNavigationContext = () => {
-  const context = useContext(NavigationContext)
-  if (!context) {
-    throw new Error('Navigation.Item must be used within Navigation.Root')
-  }
-  return context
+export const useNavigationListContext = () => {
+  return useContext(NavigationListContext)
 }
