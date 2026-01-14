@@ -1,2 +1,2 @@
-export { NavProvider, useNavContext } from './navigation/NavContext'
-export type { NavList } from './navigation/types'
+export { useNavigationContext } from './navigation/NavContext'
+export type { NavigationContextValue } from './navigation/NavContext'

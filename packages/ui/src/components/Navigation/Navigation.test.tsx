@@ -1,199 +1,221 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { Container } from './Container'
-import { List } from './List'
-import { Item } from './Item'
+import { Navigation } from './index'
 import { MemoryRouter } from 'react-router'
+import { useState } from 'react'
 
 // Navigation 컴포넌트들은 react-router의 Link를 사용하므로 Router로 감싸야 함
 const renderWithRouter = (ui: React.ReactElement, initialEntries: string[] = ['/']) => {
   return render(<MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>)
 }
 
-describe('Navigation.Container', () => {
-  it('renders children correctly', () => {
-    const { getByText } = renderWithRouter(<Container>Navigation content</Container>)
+describe('Navigation - Uncontrolled', () => {
+  it('renders with default value', () => {
+    renderWithRouter(
+      <Navigation.Root defaultValue="home">
+        <Navigation.List>
+          <Navigation.Item value="home" to="/">
+            Home
+          </Navigation.Item>
+          <Navigation.Item value="about" to="/about">
+            About
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
+    )
 
-    expect(getByText('Navigation content')).toBeInTheDocument()
+    const homeLink = screen.getByText('Home').closest('a')
+    expect(homeLink).toHaveAttribute('aria-current', 'page')
   })
 
-  it('renders as aside element', () => {
-    const { container } = renderWithRouter(<Container>Content</Container>)
+  it('updates active state on click', async () => {
+    const user = userEvent.setup()
 
-    expect(container.querySelector('aside')).toBeInTheDocument()
+    renderWithRouter(
+      <Navigation.Root defaultValue="home">
+        <Navigation.List>
+          <Navigation.Item value="home" to="/">
+            Home
+          </Navigation.Item>
+          <Navigation.Item value="about" to="/about">
+            About
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
+    )
+
+    const aboutLink = screen.getByText('About')
+    await user.click(aboutLink)
+
+    expect(aboutLink.closest('a')).toHaveAttribute('aria-current', 'page')
   })
 
-  it('has navigation role', () => {
-    const { getByRole } = renderWithRouter(<Container>Content</Container>)
+  it('renders with icon', () => {
+    renderWithRouter(
+      <Navigation.Root defaultValue="home">
+        <Navigation.List>
+          <Navigation.Item value="home" to="/" iconName="calendar_today">
+            Home
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
+    )
 
-    expect(getByRole('navigation')).toBeInTheDocument()
-  })
-
-  it('applies custom className', () => {
-    const { container } = renderWithRouter(<Container className="custom-nav">Content</Container>)
-
-    const aside = container.querySelector('aside')
-    expect(aside).toHaveClass('custom-nav')
-  })
-
-  it('applies flex column layout', () => {
-    const { container } = renderWithRouter(<Container>Content</Container>)
-
-    const aside = container.querySelector('aside')
-    expect(aside).toHaveClass(/display_flex/)
-    expect(aside).toHaveClass(/flexDirection_column/)
+    const icon = screen.getByText('Home').parentElement?.querySelector('svg')
+    expect(icon).toBeInTheDocument()
   })
 })
 
-describe('Navigation.List', () => {
-  it('renders children correctly', () => {
-    const { getByText } = renderWithRouter(<List>List content</List>)
+describe('Navigation - Controlled', () => {
+  it('respects controlled value', () => {
+    renderWithRouter(
+      <Navigation.Root value="about">
+        <Navigation.List>
+          <Navigation.Item value="home" to="/">
+            Home
+          </Navigation.Item>
+          <Navigation.Item value="about" to="/about">
+            About
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
+    )
 
-    expect(getByText('List content')).toBeInTheDocument()
+    const aboutLink = screen.getByText('About').closest('a')
+    expect(aboutLink).toHaveAttribute('aria-current', 'page')
   })
 
-  it('renders as nav element', () => {
-    const { container } = renderWithRouter(<List>Content</List>)
+  it('calls onValueChange when item is clicked', async () => {
+    const handleChange = vi.fn()
+    const user = userEvent.setup()
 
-    expect(container.querySelector('nav')).toBeInTheDocument()
+    renderWithRouter(
+      <Navigation.Root value="home" onValueChange={handleChange}>
+        <Navigation.List>
+          <Navigation.Item value="home" to="/">
+            Home
+          </Navigation.Item>
+          <Navigation.Item value="about" to="/about">
+            About
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
+    )
+
+    const aboutLink = screen.getByText('About')
+    await user.click(aboutLink)
+
+    expect(handleChange).toHaveBeenCalledWith('about')
   })
 
-  it('applies custom className', () => {
-    const { container } = renderWithRouter(<List className="custom-list">Content</List>)
+  it('integrates with external state', async () => {
+    const user = userEvent.setup()
 
-    const nav = container.querySelector('nav')
-    expect(nav).toHaveClass('custom-list')
-  })
+    const ControlledNav = () => {
+      const [active, setActive] = useState('home')
 
-  it('spreads rest props to nav element', () => {
-    const { container } = renderWithRouter(<List data-testid="test-list">Content</List>)
+      return (
+        <div>
+          <p data-testid="active-state">{active}</p>
+          <Navigation.Root value={active} onValueChange={setActive}>
+            <Navigation.List>
+              <Navigation.Item value="home" to="/">
+                Home
+              </Navigation.Item>
+              <Navigation.Item value="about" to="/about">
+                About
+              </Navigation.Item>
+            </Navigation.List>
+          </Navigation.Root>
+        </div>
+      )
+    }
 
-    expect(container.querySelector('[data-testid="test-list"]')).toBeInTheDocument()
+    renderWithRouter(<ControlledNav />)
+
+    expect(screen.getByTestId('active-state')).toHaveTextContent('home')
+
+    const aboutLink = screen.getByText('About')
+    await user.click(aboutLink)
+
+    expect(screen.getByTestId('active-state')).toHaveTextContent('about')
   })
 })
 
 describe('Navigation.Item', () => {
-  it('renders label text', () => {
-    const { getByText } = renderWithRouter(<Item id="home" to="/home" label="Home" />)
-
-    expect(getByText('Home')).toBeInTheDocument()
-  })
-
-  it('renders as list item with link', () => {
-    const { container } = renderWithRouter(<Item id="home" to="/home" label="Home" />)
-
-    expect(container.querySelector('li')).toBeInTheDocument()
-    expect(container.querySelector('a')).toBeInTheDocument()
-  })
-
-  it('renders link with correct href', () => {
-    const { container } = renderWithRouter(
-      <Item id="dashboard" to="/dashboard" label="Dashboard" />
-    )
-
-    const link = container.querySelector('a')
-    expect(link).toHaveAttribute('href', '/dashboard')
-  })
-
-  it('applies id to link', () => {
-    const { container } = renderWithRouter(<Item id="nav-home" to="/home" label="Home" />)
-
-    const link = container.querySelector('a')
-    expect(link).toHaveAttribute('id', 'nav-home')
-  })
-
-  it('renders icon when iconName is provided', () => {
-    const { container } = renderWithRouter(
-      <Item id="settings" to="/settings" label="Settings" iconName="setting" />
-    )
-
-    expect(container.querySelector('svg')).toBeInTheDocument()
-  })
-
-  it('does not render icon when iconName is not provided', () => {
-    const { container } = renderWithRouter(<Item id="home" to="/home" label="Home" />)
-
-    expect(container.querySelector('svg')).not.toBeInTheDocument()
-  })
-
-  it('renders children', () => {
-    const { getByText } = renderWithRouter(
-      <Item id="home" to="/home" label="Home">
-        <span>Badge</span>
-      </Item>
-    )
-
-    expect(getByText('Badge')).toBeInTheDocument()
-  })
-
-  it('applies active state class when isActive is true', () => {
-    const { container } = renderWithRouter(<Item id="home" to="/home" label="Home" isActive />)
-
-    const link = container.querySelector('a')
-    expect(link).toHaveClass(/isActive_true/)
-  })
-
-  it('does not apply active state class when isActive is false', () => {
-    const { container } = renderWithRouter(
-      <Item id="home" to="/home" label="Home" isActive={false} />
-    )
-
-    const link = container.querySelector('a')
-    expect(link).not.toHaveClass(/isActive_true/)
-  })
-
-  it('calls onClick when item is clicked', async () => {
+  it('handles disabled state', async () => {
     const user = userEvent.setup()
-    const handleClick = vi.fn()
+    const handleChange = vi.fn()
 
-    const { container } = renderWithRouter(
-      <Item id="home" to="/home" label="Home" onClick={handleClick} />
+    renderWithRouter(
+      <Navigation.Root value="home" onValueChange={handleChange}>
+        <Navigation.List>
+          <Navigation.Item value="home" to="/">
+            Home
+          </Navigation.Item>
+          <Navigation.Item value="about" to="/about" disabled>
+            About
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
     )
 
-    const listItem = container.querySelector('li')!
-    await user.click(listItem)
+    const aboutLink = screen.getByText('About').closest('a')
+    expect(aboutLink).toHaveAttribute('aria-disabled', 'true')
 
-    expect(handleClick).toHaveBeenCalledTimes(1)
+    await user.click(aboutLink!)
+    expect(handleChange).not.toHaveBeenCalled()
   })
 
-  it('prevents click and navigation when disabled', async () => {
+  it('calls custom onClick handler', async () => {
     const user = userEvent.setup()
-    const handleClick = vi.fn()
+    const customClick = vi.fn()
 
-    const { container } = renderWithRouter(
-      <Item id="home" to="/home" label="Home" onClick={handleClick} disabled />
+    renderWithRouter(
+      <Navigation.Root defaultValue="home">
+        <Navigation.List>
+          <Navigation.Item value="home" to="/" onClick={customClick}>
+            Home
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
     )
 
-    const listItem = container.querySelector('li')!
-    await user.click(listItem)
-
-    expect(handleClick).not.toHaveBeenCalled()
+    await user.click(screen.getByText('Home'))
+    expect(customClick).toHaveBeenCalled()
   })
 
-  it('applies aria-disabled when disabled is true', () => {
-    const { container } = renderWithRouter(<Item id="home" to="/home" label="Home" disabled />)
+  it('has accessible attributes', () => {
+    renderWithRouter(
+      <Navigation.Root defaultValue="home">
+        <Navigation.List>
+          <Navigation.Item value="home" to="/" aria-label="Go to home page">
+            Home
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
+    )
 
-    const link = container.querySelector('a')
-    expect(link).toHaveAttribute('aria-disabled', 'true')
+    const link = screen.getByText('Home').closest('a')
+    expect(link).toHaveAttribute('aria-label', 'Go to home page')
+    expect(link).toHaveAttribute('aria-current', 'page')
   })
 })
 
-describe('Navigation compound components', () => {
-  it('renders complete navigation structure', () => {
-    const { container, getByText } = renderWithRouter(
-      <Container>
-        <List>
-          <Item id="home" to="/home" label="Home" iconName="menu" isActive />
-          <Item id="settings" to="/settings" label="Settings" iconName="setting" />
-        </List>
-      </Container>
+describe('Navigation.List', () => {
+  it('has navigation role and label', () => {
+    renderWithRouter(
+      <Navigation.Root defaultValue="home">
+        <Navigation.List>
+          <Navigation.Item value="home" to="/">
+            Home
+          </Navigation.Item>
+        </Navigation.List>
+      </Navigation.Root>
     )
 
-    expect(container.querySelector('aside')).toBeInTheDocument()
-    expect(container.querySelector('nav')).toBeInTheDocument()
-    expect(container.querySelectorAll('li')).toHaveLength(2)
-    expect(getByText('Home')).toBeInTheDocument()
-    expect(getByText('Settings')).toBeInTheDocument()
+    const nav = screen.getByRole('navigation', { name: 'Main navigation' })
+    expect(nav).toBeInTheDocument()
   })
 })

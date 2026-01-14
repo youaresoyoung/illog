@@ -9,7 +9,7 @@ export { Box } from './components/Box'
 export { Stack } from './components/Stack'
 export { Inline } from './components/Inline'
 export { Center } from './components/Center'
-export * as Navigation from './components/Navigation'
+export { Navigation } from './components/Navigation'
 export { Card } from './components/Card'
 export { Input } from './components/Input'
 export { Tag } from './components/Tag'
@@ -49,7 +49,7 @@ export type { TextProps } from './components/Typography/types'
 export type { OverlayProps, OverlayAnimation } from './components/Overlay/types'
 
 // Hooks
-export { NavProvider, useNavContext } from './context'
+export { useNavigationContext } from './context'
 export {
   useAutoSaveInput,
   useDebouncedCallback,

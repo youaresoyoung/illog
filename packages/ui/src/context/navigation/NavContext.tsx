@@ -1,54 +1,18 @@
-import { createContext, useContext, useMemo, useState } from 'react'
-import { NavList } from './types'
+import { createContext, useContext } from 'react'
 
-export type NavContextValue = {
-  navItems: Map<string, HTMLElement | null>
-  activeId: string | null
-  list: NavList
-  updateActiveId: (id: string | null) => void
-  registerNavItem: (id: string, ref: HTMLElement | null) => void
+export type NavigationContextValue = {
+  value: string
+  onValueChange: (value: string) => void
 }
 
-const NavContext = createContext<NavContextValue | null>(null)
+const NavigationContext = createContext<NavigationContextValue | null>(null)
 
-type NavProviderProps = {
-  children: React.ReactNode
-  list?: NavList
-  defaultActiveId?: string | null
-}
+export const NavigationProvider = NavigationContext.Provider
 
-export const NavProvider = ({ children, list = [], defaultActiveId = null }: NavProviderProps) => {
-  const [activeId, setActiveId] = useState<string | null>(defaultActiveId)
-  const [navItems, setNavItems] = useState<Map<string, HTMLElement | null>>(new Map())
-
-  const updateActiveId = (id: string | null) => setActiveId(id)
-
-  const registerNavItem = (id: string, ref: HTMLElement | null) => {
-    setNavItems((prev) => {
-      const next = new Map(prev)
-      next.set(id, ref)
-      return next
-    })
-  }
-
-  const value = useMemo(
-    () => ({
-      navItems,
-      activeId,
-      list,
-      updateActiveId,
-      registerNavItem
-    }),
-    [navItems, activeId, list]
-  )
-
-  return <NavContext.Provider value={value}>{children}</NavContext.Provider>
-}
-
-export const useNavContext = () => {
-  const context = useContext(NavContext)
+export const useNavigationContext = () => {
+  const context = useContext(NavigationContext)
   if (!context) {
-    throw new Error('useNavContext must be used within a NavProvider')
+    throw new Error('Navigation.Item must be used within Navigation.Root')
   }
   return context
 }
