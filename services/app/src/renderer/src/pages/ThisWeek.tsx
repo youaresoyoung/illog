@@ -1,27 +1,63 @@
+import { format } from 'date-fns'
+import { Inline, Stack, Text } from '@illog/ui'
 import { ContentHeader } from '../components/layout/ContentHeader'
+import {
+  StatsSummary,
+  ProductivityByCategory,
+  TimeDistribution,
+  DailyBreakdown,
+  WeeklyReflection
+} from '../components/this-week'
 import { useTasksByFilters } from '../hooks/queries'
 import { useThisWeekParams } from '../hooks/useThisWeekParams'
+import { getWeekId } from '../utils/thisWeekStats'
 
 export const ThisWeek = () => {
   const { startTime, endTime } = useThisWeekParams()
 
-  const { data: tasks } = useTasksByFilters({
+  const { data: tasks = [], isLoading } = useTasksByFilters({
     startTime,
     endTime
   })
 
+  const weekId = getWeekId(new Date())
+
+  const startDate = new Date(startTime)
+  const endDate = new Date(endTime)
+  const dateRangeLabel = `${format(startDate, 'MMMM d')} - ${format(endDate, 'd, yyyy')}`
+
+  if (isLoading) {
+    return (
+      <>
+        <ContentHeader title="This Week's Summary" />
+        <Text>Loading...</Text>
+      </>
+    )
+  }
+
   return (
-    <>
-      <ContentHeader title="This Week's Summary" />
-      {tasks && tasks.length > 0 ? (
-        <ul style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {tasks.map((task) => (
-            <li key={task.id}>{task.title}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>No tasks for this week</p>
-      )}
-    </>
+    <Stack gap="800" pb="1200">
+      <Stack gap="100">
+        <ContentHeader title="This Week's Summary" />
+        <Text textStyle="bodyBase" color="textDefaultTertiary">
+          {dateRangeLabel}
+        </Text>
+      </Stack>
+
+      <StatsSummary tasks={tasks} />
+
+      <Inline gap="800" align="flex-start" wrap="wrap">
+        <Stack flex="1" minWidth="300px">
+          <ProductivityByCategory tasks={tasks} />
+        </Stack>
+        <Stack minWidth="280px">
+          <TimeDistribution tasks={tasks} />
+        </Stack>
+      </Inline>
+
+      <DailyBreakdown tasks={tasks} />
+
+      <WeeklyReflection weekId={weekId} />
+    </Stack>
   )
 }

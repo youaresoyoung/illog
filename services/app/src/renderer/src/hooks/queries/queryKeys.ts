@@ -22,5 +22,9 @@ export const queryKeys = {
   reflections: {
     all: ['reflections'] as const,
     byTaskId: (taskId: string) => [...queryKeys.reflections.all, 'task', taskId] as const
+  },
+  weeklyReflections: {
+    all: ['weeklyReflections'] as const,
+    byWeekId: (weekId: string) => [...queryKeys.weeklyReflections.all, 'week', weekId] as const
   }
 }
