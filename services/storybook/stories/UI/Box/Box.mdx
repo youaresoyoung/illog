@@ -1,0 +1,67 @@
+import { Canvas, Meta, Story, Controls, Primary, Stories, ArgTypes } from '@storybook/blocks'
+import * as BoxStories from './Box.stories'
+
+<Meta of={BoxStories} />
+
+# Box
+
+Box is the **foundational building block** of our design system. It's a minimal abstraction over HTML elements that provides styling capabilities while maintaining maximum flexibility.
+
+**Think of Box as:** A styling-enabled `<div>` that can become any HTML element.
+
+Box is designed to be:
+
+- **Minimal** - No built-in layout logic or predefined styles
+- **Flexible** - Can render as any HTML element via `as` prop
+- **Universal** - The base layer for all other components (Stack, Card, Button, etc.)
+- **Unopinionated** - You control everything
+
+## When to Use Box
+
+### ✅ Use Box when:
+
+- You need a simple **wrapper** or **container**
+- You want **semantic HTML** (`as="section"`, `as="article"`, `as="nav"`)
+- You're building a **custom component** from scratch
+- You need **maximum control** with minimal abstraction
+- None of the specialized components fit your needs
+
+### ❌ Consider alternatives when:
+
+- You need **vertical/horizontal stacking** → Use **Stack** or **Inline**
+- You need **center alignment** → Use **Center**
+- You're building a **card** → Use **Card** component
+- You need **button behavior** → Use **Button** component
+
+> 💡 **Rule of thumb:** If there's a specialized component for your use case, use it. Box is for everything else.
+
+## Box vs Other Components
+
+| Component  | Purpose                     | Built on          |
+| ---------- | --------------------------- | ----------------- |
+| **Box**    | General-purpose container   | -                 |
+| **Stack**  | Vertical/horizontal layouts | Box + flex logic  |
+| **Inline** | Horizontal layouts          | Box + flex(row)   |
+| **Center** | Center alignment            | Box + centering   |
+| **Card**   | Card-style containers       | Box + card styles |
+
+**All components inherit Box's capabilities**, but add specific behavior or styling.
+
+## Examples
+
+These examples demonstrate **Box-specific features** like polymorphism and styling composition.
+
+For layout patterns (flex, stack, grid), see **Stack**, **Inline**, and **Center** components.
+
+<Stories />
+
+## Related Components
+
+- **Stack** - For vertical or horizontal layouts with consistent spacing
+- **Inline** - For horizontal layouts (optimized version of Stack with row direction)
+- **Center** - For center alignment
+- **Card** - For card-style containers
+
+## Props
+
+<ArgTypes of={BoxStories} />
