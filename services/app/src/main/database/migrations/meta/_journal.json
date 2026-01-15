@@ -8,6 +8,13 @@
       "when": 1769420273727,
       "tag": "0000_warm_xorn",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1769481533797,
+      "tag": "0001_chief_archangel",
+      "breakpoints": true
     }
   ]
 }

@@ -4,14 +4,15 @@ import { TaskRepository } from '../repository/taskRepository'
 import { NoteRepository } from '../repository/noteRepository'
 import { TagRepository } from '../repository/tagRepository'
 import { ProjectRepository } from '../repository/projectRepository'
-
+import { WeeklyReflectionRepository } from '../repository/weeklyReflectionRepository'
 import type {
   TaskFilterParams,
   UpdateTaskRequest,
   CreateTagRequest,
   UpdateTagRequest,
   CreateProjectRequest,
-  UpdateProjectRequest
+  UpdateProjectRequest,
+  UpdateWeeklyReflectionRequest
 } from '../../shared/types'
 
 // TODO: add proper error handling wrapper
@@ -71,4 +72,12 @@ export function registerProjectHandlers(projectRepo: ProjectRepository) {
     projectRepo.update(id, data)
   )
   ipcMain.handle('project.softDelete', (_, id: string) => projectRepo.softDelete(id))
+}
+
+export function registerWeeklyReflectionHandlers(repo: WeeklyReflectionRepository) {
+  ipcMain.handle('weeklyReflection.get', (_, weekId: string) => repo.findByWeekId(weekId))
+  ipcMain.handle(
+    'weeklyReflection.upsert',
+    (_, weekId: string, data: UpdateWeeklyReflectionRequest) => repo.upsert(weekId, data)
+  )
 }

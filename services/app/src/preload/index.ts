@@ -5,7 +5,8 @@ import type {
   CreateTagRequest,
   UpdateTagRequest,
   CreateProjectRequest,
-  UpdateProjectRequest
+  UpdateProjectRequest,
+  UpdateWeeklyReflectionRequest
 } from '../shared/types'
 
 const api = {
@@ -53,6 +54,11 @@ const api = {
     update: (id: string, data: UpdateProjectRequest) =>
       ipcRenderer.invoke('project.update', id, data),
     softDelete: (id: string) => ipcRenderer.invoke('project.softDelete', id)
+  },
+  weeklyReflection: {
+    get: (weekId: string) => ipcRenderer.invoke('weeklyReflection.get', weekId),
+    upsert: (weekId: string, data: UpdateWeeklyReflectionRequest) =>
+      ipcRenderer.invoke('weeklyReflection.upsert', weekId, data)
   }
 }
 

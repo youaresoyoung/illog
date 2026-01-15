@@ -7,7 +7,8 @@ import {
   registerTaskHandlers,
   registerTaskNoteHandlers,
   registerTagHandlers,
-  registerProjectHandlers
+  registerProjectHandlers,
+  registerWeeklyReflectionHandlers
 } from './ipc/ipcHandlers'
 import { NoteService } from './service/NoteService'
 import { NoteRepository } from './repository/noteRepository'
@@ -16,6 +17,7 @@ import { GeminiService } from './service/GeminiService'
 import dotenv from 'dotenv'
 import { ReflectionRepository } from './repository/reflectionRepository'
 import { ProjectRepository } from './repository/projectRepository'
+import { WeeklyReflectionRepository } from './repository/weeklyReflectionRepository'
 
 dotenv.config()
 
@@ -59,6 +61,9 @@ app.whenReady().then(() => {
 
   const projectRepo = new ProjectRepository(db)
   registerProjectHandlers(projectRepo)
+
+  const weeklyReflectionRepo = new WeeklyReflectionRepository(db)
+  registerWeeklyReflectionHandlers(weeklyReflectionRepo)
 
   const mainWindow = createWindow()
 
