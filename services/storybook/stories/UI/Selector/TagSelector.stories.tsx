@@ -10,8 +10,9 @@ import {
   type OmittedTag
 } from '@illog/ui'
 import { Meta, StoryObj } from '@storybook/react-vite'
+import TagSelectorMdx from './TagSelector.mdx'
 
-const mockTags: TagType[] = [
+const MOCK_TAGS: TagType[] = [
   {
     id: '1',
     name: 'meeting',
@@ -85,7 +86,7 @@ const TagsTrigger = ({ selectedTags }: { selectedTags: TagType[] }) => {
 }
 
 const TagSelectorDemo = ({
-  initialTags = mockTags,
+  initialTags = MOCK_TAGS,
   initialSelectedTags = []
 }: {
   initialTags?: TagType[]
@@ -164,7 +165,10 @@ const meta = {
   title: 'UI/Selector/TagSelector',
   component: TagSelectorDemo,
   parameters: {
-    layout: 'centered'
+    layout: 'centered',
+    docs: {
+      page: TagSelectorMdx
+    }
   }
 } satisfies Meta<typeof TagSelectorDemo>
 
@@ -173,15 +177,15 @@ type Story = StoryObj<typeof TagSelectorDemo>
 
 export const Default: Story = {
   args: {
-    initialTags: mockTags,
+    initialTags: MOCK_TAGS,
     initialSelectedTags: []
   }
 }
 
 export const WithSelectedTags: Story = {
   args: {
-    initialTags: mockTags,
-    initialSelectedTags: [mockTags[0], mockTags[2]]
+    initialTags: MOCK_TAGS,
+    initialSelectedTags: [MOCK_TAGS[0], MOCK_TAGS[2]]
   }
 }
 
@@ -193,8 +197,9 @@ export const EmptyList: Story = {
 }
 
 export const ManySelectedTags: Story = {
+  tags: ['!dev'],
   args: {
-    initialTags: mockTags,
-    initialSelectedTags: mockTags.slice(0, 4)
+    initialTags: MOCK_TAGS,
+    initialSelectedTags: MOCK_TAGS.slice(0, 4)
   }
 }

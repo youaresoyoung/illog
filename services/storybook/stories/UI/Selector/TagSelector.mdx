@@ -1,0 +1,347 @@
+import { Canvas, Meta, Controls, Primary, Stories } from '@storybook/blocks'
+import * as TagSelectorStories from './TagSelector.stories'
+
+<Meta of={TagSelectorStories} />
+
+# TagSelector
+
+A compound component for managing tag selection with built-in search, creation, and CRUD operations.
+
+<Primary />
+
+## Features
+
+<ul
+  style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '12px',
+    marginBottom: '24px'
+  }}
+>
+  <li>Search and filter tags</li>
+  <li>Create tags inline</li>
+  <li>Update existing tags</li>
+  <li>Delete tags</li>
+  <li>Keyboard navigation</li>
+  <li>Click outside to close</li>
+  <li>Customizable trigger</li>
+  <li>TypeScript support</li>
+</ul>
+
+## Installation
+
+```bash
+# Already included in @illog/ui package
+import { TagSelector } from '@illog/ui'
+```
+
+## Anatomy
+
+Import and structure the compound component:
+
+```tsx
+import { TagSelector } from '@illog/ui'
+
+export default () => (
+  <TagSelector.Root
+    tags={tags}
+    selectedTags={selectedTags}
+    onAddTag={handleAddTag}
+    onRemoveTag={handleRemoveTag}
+    onCreateTag={handleCreateTag}
+    onDeleteTag={handleDeleteTag}
+    onUpdateTag={handleUpdateTag}
+  >
+    <TagSelector.Trigger>{/* Custom trigger button */}</TagSelector.Trigger>
+
+    <TagSelector.Content>
+      <TagSelector.Search />
+      <TagSelector.List />
+    </TagSelector.Content>
+  </TagSelector.Root>
+)
+```
+
+## API Reference
+
+### Root
+
+The root component that provides context and manages state.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop              | Type                                    | Required | Description                                    |
+| ----------------- | --------------------------------------- | -------- | ---------------------------------------------- |
+| `tags`            | `Tag[]`                                 | Yes      | All available tags                             |
+| `selectedTags`    | `Tag[]`                                 | Yes      | Currently selected tags                        |
+| `onAddTag`        | `(tag: Tag) => void`                    | Yes      | Called when a tag is selected                  |
+| `onRemoveTag`     | `(tagId: string) => void`               | Yes      | Called when a tag is deselected                |
+| `onCreateTag`     | `(name: string, color: string) => void` | Yes      | Called when creating a new tag                 |
+| `onDeleteTag`     | `(tagId: string) => void`               | Yes      | Called when deleting a tag                     |
+| `onUpdateTag`     | `(tagId: string, updates: Tag) => void` | Yes      | Called when updating a tag                     |
+| `className`       | `string`                                | No       | CSS class for the root container               |
+| `maxTagLength`    | `number`                                | No       | Maximum characters for tag names (default: 10) |
+| `emptyMessage`    | `string`                                | No       | Message when no tags match search              |
+| `createTagLabel`  | `string`                                | No       | Label for create button (default: "태그 생성") |
+| `manageTagsLabel` | `string`                                | No       | Label for manage button (default: "태그 관리") |
+| `children`        | `ReactNode`                             | Yes      | Must contain Trigger and Content               |
+
+</div>
+
+### Trigger
+
+Opens and closes the tag selector dropdown.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop       | Type        | Required | Description                                    |
+| ---------- | ----------- | -------- | ---------------------------------------------- |
+| `asChild`  | `boolean`   | No       | Merge props with child element (default: true) |
+| `children` | `ReactNode` | Yes      | Trigger button content                         |
+
+</div>
+
+**Data Attributes:**
+
+- `data-state`: "open" | "closed"
+
+### Content
+
+Container for the dropdown content.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop       | Type        | Required | Description               |
+| ---------- | ----------- | -------- | ------------------------- |
+| `children` | `ReactNode` | Yes      | Typically Search and List |
+
+</div>
+
+### Search
+
+Input field for filtering and creating tags.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop          | Type     | Required | Description                           |
+| ------------- | -------- | -------- | ------------------------------------- |
+| `placeholder` | `string` | No       | Placeholder text (default: "검색...") |
+
+</div>
+
+### List
+
+Renders the filtered tag list with management options.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop | Type | Required | Description |
+| ---- | ---- | -------- | ----------- |
+| -    | -    | -        | No props    |
+
+</div>
+
+## Examples
+
+### Custom Trigger
+
+Use `asChild` to render your own trigger element:
+
+```tsx
+<TagSelector.Root {...handlers}>
+  <TagSelector.Trigger asChild>
+    <button className="my-custom-button">
+      {selectedTags.length > 0 ? `${selectedTags.length} tags` : 'Select tags'}
+    </button>
+  </TagSelector.Trigger>
+  {/* ... */}
+</TagSelector.Root>
+```
+
+### With Empty State Message
+
+```tsx
+<TagSelector.Root
+  tags={tags}
+  selectedTags={selectedTags}
+  emptyMessage="No tags found. Try different search terms."
+  {...handlers}
+>
+  {/* ... */}
+</TagSelector.Root>
+```
+
+### Custom Max Tag Length
+
+```tsx
+<TagSelector.Root tags={tags} selectedTags={selectedTags} maxTagLength={15} {...handlers}>
+  {/* ... */}
+</TagSelector.Root>
+```
+
+### With Custom Labels
+
+```tsx
+<TagSelector.Root
+  tags={tags}
+  selectedTags={selectedTags}
+  createTagLabel="Create New"
+  manageTagsLabel="Edit Tags"
+  {...handlers}
+>
+  {/* ... */}
+</TagSelector.Root>
+```
+
+## Accessibility
+
+### Keyboard Interactions
+
+<div style={{ marginBottom: '24px' }}>
+
+| Key                  | Action                                            |
+| -------------------- | ------------------------------------------------- |
+| `Enter`              | Toggle tag selection / Create new tag (in search) |
+| `Backspace`          | Remove last selected tag (when search is empty)   |
+| `Escape`             | Close dropdown                                    |
+| `Space` (on trigger) | Toggle dropdown                                   |
+| `Enter` (on trigger) | Toggle dropdown                                   |
+
+</div>
+
+### ARIA
+
+TagSelector implements proper ARIA attributes:
+
+- **Trigger**: `aria-expanded`, `aria-haspopup="listbox"`
+- **Search**: `role="searchbox"`, `aria-label`
+- **List**: Proper tag button semantics with click handlers
+
+### Focus Management
+
+- Focus returns to trigger when dropdown closes
+- Search input auto-focuses when dropdown opens
+- Keyboard navigation works without mouse
+
+## Custom APIs
+
+### useTagSelectorContext
+
+Access internal state and handlers from custom components:
+
+```tsx
+import { useTagSelectorContext } from '@illog/ui'
+
+function CustomTagList() {
+  const {
+    // State
+    tags,
+    selectedTags,
+    searchTerm,
+    isOpen,
+    previewColor,
+
+    // Handlers
+    selectTag,
+    removeTag,
+    createTag,
+    deleteTag,
+    updateTag,
+
+    // UI State
+    setSearchTerm,
+    setPreviewColor,
+    setIsOpen,
+
+    // Filtered Data
+    filteredTags,
+    isTagSelected,
+
+    // Config
+    maxTagLength,
+    emptyMessage,
+    createTagLabel,
+    manageTagsLabel
+  } = useTagSelectorContext()
+
+  return (
+    <div>
+      {filteredTags.map((tag) => (
+        <button key={tag.id} onClick={() => selectTag(tag)}>
+          {tag.name}
+        </button>
+      ))}
+    </div>
+  )
+}
+```
+
+**Context Values:**
+
+<div style={{ marginBottom: '24px' }}>
+
+| Property          | Type                                    | Description                  |
+| ----------------- | --------------------------------------- | ---------------------------- |
+| `tags`            | `Tag[]`                                 | All available tags           |
+| `selectedTags`    | `Tag[]`                                 | Currently selected tags      |
+| `searchTerm`      | `string`                                | Current search input value   |
+| `isOpen`          | `boolean`                               | Dropdown open state          |
+| `previewColor`    | `string`                                | Preview color for new tags   |
+| `selectTag`       | `(tag: Tag) => void`                    | Add tag to selection         |
+| `removeTag`       | `(tagId: string) => void`               | Remove tag from selection    |
+| `createTag`       | `(name: string, color: string) => void` | Create new tag               |
+| `deleteTag`       | `(tagId: string) => void`               | Delete existing tag          |
+| `updateTag`       | `(tagId: string, updates: Tag) => void` | Update tag properties        |
+| `setSearchTerm`   | `(term: string) => void`                | Update search input          |
+| `setPreviewColor` | `(color: string) => void`               | Update preview color         |
+| `setIsOpen`       | `(open: boolean) => void`               | Control dropdown state       |
+| `filteredTags`    | `Tag[]`                                 | Tags matching current search |
+| `isTagSelected`   | `(tagId: string) => boolean`            | Check if tag is selected     |
+| `maxTagLength`    | `number`                                | Maximum tag name length      |
+| `emptyMessage`    | `string`                                | Message for empty results    |
+| `createTagLabel`  | `string`                                | Label for create button      |
+| `manageTagsLabel` | `string`                                | Label for manage button      |
+
+</div>
+
+**Usage Example:**
+
+```tsx
+import { TagSelector, useTagSelectorContext } from '@illog/ui'
+
+function CompactTagBadge() {
+  const { selectedTags, removeTag } = useTagSelectorContext()
+
+  return (
+    <div style={{ display: 'flex', gap: 4 }}>
+      {selectedTags.map((tag) => (
+        <span
+          key={tag.id}
+          onClick={() => removeTag(tag.id)}
+          style={{ background: tag.color, padding: '2px 8px', cursor: 'pointer' }}
+        >
+          {tag.name} ×
+        </span>
+      ))}
+    </div>
+  )
+}
+
+export default () => (
+  <TagSelector.Root {...handlers}>
+    <TagSelector.Trigger>Select Tags</TagSelector.Trigger>
+    <TagSelector.Content>
+      <CompactTagBadge />
+      <TagSelector.Search />
+      <TagSelector.List />
+    </TagSelector.Content>
+  </TagSelector.Root>
+)
+```
+
+---
+
+## Stories
+
+<Stories />
