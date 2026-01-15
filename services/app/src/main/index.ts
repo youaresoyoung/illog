@@ -18,6 +18,7 @@ import dotenv from 'dotenv'
 import { ReflectionRepository } from './repository/reflectionRepository'
 import { ProjectRepository } from './repository/projectRepository'
 import { WeeklyReflectionRepository } from './repository/weeklyReflectionRepository'
+import { installExtension, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 
 dotenv.config()
 
@@ -43,6 +44,12 @@ function createWindow() {
 app.whenReady().then(() => {
   if (!process.env.GEMINI_API_KEY) {
     throw new Error('Missing GEMINI_API_KEY in environment variables')
+  }
+
+  if (isDev()) {
+    installExtension(REACT_DEVELOPER_TOOLS)
+      .then((ext) => console.log(`Added Extension:  ${ext.name}`))
+      .catch((err) => console.log('An error occurred: ', err))
   }
 
   const { db } = openDB()
