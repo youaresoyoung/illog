@@ -71,6 +71,7 @@ export const ProjectBadge = ({
     <Inline
       className={clsx([style.badgeRecipe({ color: project.color }), className])}
       maxWidth="100%"
+      overflow="hidden"
     >
       <Inline as="span" truncate="true">
         {project.name}

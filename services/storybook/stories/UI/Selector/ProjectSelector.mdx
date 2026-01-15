@@ -1,0 +1,406 @@
+import { Canvas, Meta, Controls, Primary, Stories } from '@storybook/blocks'
+import * as ProjectSelectorStories from './ProjectSelector.stories'
+
+<Meta of={ProjectSelectorStories} />
+
+# ProjectSelector
+
+A compound component for managing project selection with built-in search, creation, and CRUD operations.
+
+<Primary />
+
+## Features
+
+<ul
+  style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '12px',
+    marginBottom: '24px'
+  }}
+>
+  <li>Search and filter projects</li>
+  <li>Create projects inline</li>
+  <li>Update existing projects</li>
+  <li>Delete projects</li>
+  <li>Keyboard navigation</li>
+  <li>Click outside to close</li>
+  <li>Customizable trigger</li>
+  <li>TypeScript support</li>
+</ul>
+
+## Installation
+
+```bash
+# Already included in @illog/ui package
+import { ProjectSelector } from '@illog/ui'
+```
+
+## Anatomy
+
+Import and structure the compound component:
+
+```tsx
+import { ProjectSelector } from '@illog/ui'
+
+export default () => (
+  <ProjectSelector.Root
+    projects={projects}
+    selectedProject={selectedProject}
+    onSelectProject={handleSelectProject}
+    onClearProject={handleClearProject}
+    onCreateProject={handleCreateProject}
+    onDeleteProject={handleDeleteProject}
+    onUpdateProject={handleUpdateProject}
+  >
+    <ProjectSelector.Trigger>{/* Custom trigger button */}</ProjectSelector.Trigger>
+
+    <ProjectSelector.Content>
+      <ProjectSelector.Search />
+      <ProjectSelector.List />
+    </ProjectSelector.Content>
+  </ProjectSelector.Root>
+)
+```
+
+## API Reference
+
+### Root
+
+The root component that provides context and manages state.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop              | Type                                                                  | Required | Description                                         |
+| ----------------- | --------------------------------------------------------------------- | -------- | --------------------------------------------------- |
+| `projects`        | `ProjectType[]`                                                       | Yes      | All available projects                              |
+| `selectedProject` | `ProjectType \| null`                                                 | Yes      | Currently selected project                          |
+| `onSelectProject` | `(projectId: string) => Promise<void>`                                | Yes      | Called when a project is selected                   |
+| `onClearProject`  | `() => Promise<void>`                                                 | Yes      | Called when clearing the selected project           |
+| `onCreateProject` | `(data: Partial<OmittedProject>) => Promise<string>`                  | Yes      | Called when creating a new project                  |
+| `onDeleteProject` | `(projectId: string) => Promise<void>`                                | Yes      | Called when deleting a project                      |
+| `onUpdateProject` | `(projectId: string, data: Partial<OmittedProject>) => Promise<void>` | Yes      | Called when updating a project                      |
+| `maxNameLength`   | `number`                                                              | No       | Maximum characters for project names (default: 100) |
+| `children`        | `ReactNode`                                                           | Yes      | Must contain Trigger and Content                    |
+
+</div>
+
+**Type Definitions:**
+
+```tsx
+type ProjectType = {
+  id: string
+  name: string
+  color: ProjectColor
+  createdAt: Date
+  updatedAt: Date | null
+  deletedAt: Date | null
+}
+
+type OmittedProject = Omit<ProjectType, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+```
+
+### Trigger
+
+Opens and closes the project selector dropdown.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop       | Type        | Required | Description                                     |
+| ---------- | ----------- | -------- | ----------------------------------------------- |
+| `asChild`  | `boolean`   | No       | Merge props with child element (default: false) |
+| `children` | `ReactNode` | Yes      | Trigger button content                          |
+
+</div>
+
+**Data Attributes:**
+
+- `data-state`: "open" | "closed"
+
+### Content
+
+Container for the dropdown content with portal rendering.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop        | Type        | Required | Description                         |
+| ----------- | ----------- | -------- | ----------------------------------- |
+| `children`  | `ReactNode` | Yes      | Typically Search and List           |
+| `className` | `string`    | No       | CSS class for the content container |
+
+</div>
+
+### Search
+
+Input field for filtering and creating projects with selected project display.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop          | Type     | Required | Description                                      |
+| ------------- | -------- | -------- | ------------------------------------------------ |
+| `placeholder` | `string` | No       | Placeholder text (default: "Search projects...") |
+| `maxLength`   | `number` | No       | Maximum input length (default: 100)              |
+
+</div>
+
+### List
+
+Renders the filtered project list with management options.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop | Type | Required | Description |
+| ---- | ---- | -------- | ----------- |
+| -    | -    | -        | No props    |
+
+</div>
+
+## Examples
+
+### Custom Trigger with ProjectBadge
+
+Use `asChild` to render your own trigger element:
+
+```tsx
+<ProjectSelector.Root {...handlers}>
+  <ProjectSelector.Trigger asChild>
+    <div style={{ cursor: 'pointer' }}>
+      {selectedProject ? (
+        <ProjectBadge project={selectedProject} />
+      ) : (
+        <button>Select Project</button>
+      )}
+    </div>
+  </ProjectSelector.Trigger>
+  {/* ... */}
+</ProjectSelector.Root>
+```
+
+### With Custom Max Name Length
+
+```tsx
+<ProjectSelector.Root
+  projects={projects}
+  selectedProject={selectedProject}
+  maxNameLength={50}
+  {...handlers}
+>
+  {/* ... */}
+</ProjectSelector.Root>
+```
+
+### With Custom Search Placeholder
+
+```tsx
+<ProjectSelector.Content>
+  <ProjectSelector.Search placeholder="Find your project..." />
+  <Divider />
+  <ProjectSelector.List />
+</ProjectSelector.Content>
+```
+
+### Complete Example with All Handlers
+
+```tsx
+import { useState } from 'react'
+import { ProjectSelector, Divider } from '@illog/ui'
+
+export default function MyComponent() {
+  const [projects, setProjects] = useState<ProjectType[]>([])
+  const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null)
+
+  const handleSelectProject = async (projectId: string) => {
+    const project = projects.find((p) => p.id === projectId)
+    if (project) setSelectedProject(project)
+  }
+
+  const handleClearProject = async () => {
+    setSelectedProject(null)
+  }
+
+  const handleCreateProject = async (data: Partial<OmittedProject>) => {
+    const newProject = {
+      id: Date.now().toString(),
+      name: data.name!,
+      color: data.color!,
+      createdAt: new Date(),
+      updatedAt: null,
+      deletedAt: null
+    }
+    setProjects([...projects, newProject])
+    return newProject.id
+  }
+
+  const handleDeleteProject = async (projectId: string) => {
+    setProjects(projects.filter((p) => p.id !== projectId))
+  }
+
+  const handleUpdateProject = async (projectId: string, data: Partial<OmittedProject>) => {
+    setProjects(
+      projects.map((p) => (p.id === projectId ? { ...p, ...data, updatedAt: new Date() } : p))
+    )
+  }
+
+  return (
+    <ProjectSelector.Root
+      projects={projects}
+      selectedProject={selectedProject}
+      onSelectProject={handleSelectProject}
+      onClearProject={handleClearProject}
+      onCreateProject={handleCreateProject}
+      onDeleteProject={handleDeleteProject}
+      onUpdateProject={handleUpdateProject}
+    >
+      <ProjectSelector.Trigger asChild>
+        <button>{selectedProject?.name ?? 'Select Project'}</button>
+      </ProjectSelector.Trigger>
+
+      <ProjectSelector.Content>
+        <ProjectSelector.Search />
+        <Divider />
+        <ProjectSelector.List />
+      </ProjectSelector.Content>
+    </ProjectSelector.Root>
+  )
+}
+```
+
+## Accessibility
+
+### Keyboard Interactions
+
+<div style={{ marginBottom: '24px' }}>
+
+| Key                  | Action                                          |
+| -------------------- | ----------------------------------------------- |
+| `Enter`              | Select project / Create new project (in search) |
+| `Backspace`          | Clear selected project (when search is empty)   |
+| `Escape`             | Close dropdown                                  |
+| `Space` (on trigger) | Toggle dropdown                                 |
+| `Enter` (on trigger) | Toggle dropdown                                 |
+
+</div>
+
+### ARIA
+
+ProjectSelector implements proper ARIA attributes:
+
+- **Trigger**: `aria-expanded`, `aria-haspopup="listbox"`, `role="button"`
+- **Search**: Auto-focus when opened, proper input semantics
+- **Content**: `role="listbox"` for proper list semantics
+
+### Focus Management
+
+- Focus returns to trigger when dropdown closes
+- Search input auto-focuses when dropdown opens
+- Keyboard navigation works without mouse
+- Selected project displayed with remove button
+
+## Custom APIs
+
+### useProjectSelectorContext
+
+Access internal state and handlers from custom components:
+
+```tsx
+import { useProjectSelectorContext } from '@illog/ui'
+
+function CustomProjectList() {
+  const {
+    // State
+    isOpen,
+    searchTerm,
+    selectedProject,
+    filteredProjects,
+    canCreateNew,
+    previewColor,
+
+    // Refs
+    triggerRef,
+    contentRef,
+    inputRef,
+
+    // Handlers
+    setIsOpen,
+    setSearchTerm,
+    selectProject,
+    clearProject,
+    createProject,
+    deleteProject,
+    updateProject,
+    handleKeyDown
+  } = useProjectSelectorContext()
+
+  return (
+    <div>
+      {filteredProjects.map((project) => (
+        <button key={project.id} onClick={() => selectProject(project)}>
+          {project.name}
+        </button>
+      ))}
+    </div>
+  )
+}
+```
+
+**Context Values:**
+
+<div style={{ marginBottom: '24px' }}>
+
+| Property           | Type                                                                  | Description                        |
+| ------------------ | --------------------------------------------------------------------- | ---------------------------------- |
+| `isOpen`           | `boolean`                                                             | Dropdown open state                |
+| `searchTerm`       | `string`                                                              | Current search input value         |
+| `selectedProject`  | `ProjectType \| null`                                                 | Currently selected project         |
+| `filteredProjects` | `ProjectType[]`                                                       | Projects matching current search   |
+| `canCreateNew`     | `boolean`                                                             | Whether new project can be created |
+| `previewColor`     | `ProjectColor`                                                        | Preview color for new projects     |
+| `triggerRef`       | `RefObject<HTMLElement>`                                              | Ref to trigger element             |
+| `contentRef`       | `RefObject<HTMLDivElement>`                                           | Ref to content element             |
+| `inputRef`         | `RefObject<HTMLInputElement>`                                         | Ref to search input                |
+| `setIsOpen`        | `(open: boolean) => void`                                             | Control dropdown state             |
+| `setSearchTerm`    | `(term: string) => void`                                              | Update search input                |
+| `selectProject`    | `(project: ProjectType) => Promise<void>`                             | Select a project                   |
+| `clearProject`     | `() => Promise<void>`                                                 | Clear selected project             |
+| `createProject`    | `() => Promise<void>`                                                 | Create new project from search     |
+| `deleteProject`    | `(projectId: string) => Promise<void>`                                | Delete existing project            |
+| `updateProject`    | `(projectId: string, data: Partial<OmittedProject>) => Promise<void>` | Update project properties          |
+| `handleKeyDown`    | `(e: React.KeyboardEvent<HTMLInputElement>) => void`                  | Keyboard event handler             |
+
+</div>
+
+**Usage Example:**
+
+```tsx
+import { ProjectSelector, useProjectSelectorContext } from '@illog/ui'
+
+function CompactProjectDisplay() {
+  const { selectedProject, clearProject } = useProjectSelectorContext()
+
+  if (!selectedProject) return null
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <span style={{ color: selectedProject.color }}>● {selectedProject.name}</span>
+      <button onClick={() => clearProject()}>×</button>
+    </div>
+  )
+}
+
+export default () => (
+  <ProjectSelector.Root {...handlers}>
+    <ProjectSelector.Trigger>Select Project</ProjectSelector.Trigger>
+    <ProjectSelector.Content>
+      <CompactProjectDisplay />
+      <ProjectSelector.Search />
+      <ProjectSelector.List />
+    </ProjectSelector.Content>
+  </ProjectSelector.Root>
+)
+```
+
+---
+
+## Stories
+
+<Stories />
