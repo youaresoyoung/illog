@@ -1,6 +1,14 @@
-import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
-
-import { Inline, Stack, Tag, TagSelector, type TagType, type OmittedTag } from '@illog/ui'
+import { useMemo } from 'react'
+import {
+  Inline,
+  Stack,
+  Tag,
+  TagSelector,
+  Divider,
+  useTagSelectorContext,
+  type TagType,
+  type OmittedTag
+} from '@illog/ui'
 import {
   useAllTags,
   useCreateTag,
@@ -10,6 +18,36 @@ import {
 import { useAddTagToTask, useRemoveTagFromTask } from '../../hooks/queries/useTaskQueries'
 import type { TaskWithTags, CreateTagRequest, UpdateTagRequest } from '../../../../shared/types'
 
+const TagsTrigger = ({ selectedTags }: { selectedTags: TagType[] }) => {
+  const { removeTag } = useTagSelectorContext()
+
+  const handleRemoveTag = (tagId: string) => {
+    void removeTag(tagId)
+  }
+
+  return (
+    <Stack minW="0" overflow="hidden">
+      {selectedTags.length > 0 ? (
+        <Inline as="ul" role="list" gap="200" w="100%" wrap="wrap">
+          {selectedTags.map((tag) => (
+            <Inline minW="0" maxW="100%" key={tag.id}>
+              <Tag
+                tag={{ id: tag.id, name: tag.name, color: tag.color }}
+                removeFromTask={() => handleRemoveTag(tag.id)}
+              />
+            </Inline>
+          ))}
+        </Inline>
+      ) : (
+        <Tag
+          tag={{ id: 'Add Tag', name: 'Add Tag', color: 'gray' }}
+          addTagButtonVariant="default"
+        />
+      )}
+    </Stack>
+  )
+}
+
 export const TagSection = ({ task }: { task: TaskWithTags }) => {
   const { data: tags = [] } = useAllTags()
   const { mutateAsync: createTag } = useCreateTag()
@@ -18,17 +56,9 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
   const { mutateAsync: addTag } = useAddTagToTask()
   const { mutateAsync: removeTag } = useRemoveTagFromTask()
 
-  const tagsSectionRef = useRef<HTMLDivElement>(null)
+  const tagList = useMemo(() => tags as TagType[], [tags])
 
-  const [isOpen, setIsOpen] = useState(false)
-  const [selectorPosition, setSelectorPosition] = useState<{ top: number; left: number }>({
-    top: 0,
-    left: 0
-  })
-
-  const filteredTags = useMemo(() => tags as TagType[], [tags])
-
-  const syncedTaskTags = useMemo(
+  const selectedTags = useMemo(
     () =>
       task.tags
         .map((tag) => tags.find((it) => it.id === tag.id))
@@ -36,122 +66,50 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
     [task.tags, tags]
   )
 
-  const handleAddTagToTask = async (tagId: string) => {
-    try {
-      await addTag({ taskId: task.id, tagId })
-    } catch (error) {
-      console.error('Failed to add tag to task:', error)
-      throw error
-    }
+  const handleAddTag = async (tagId: string) => {
+    await addTag({ taskId: task.id, tagId })
   }
 
-  const handleTagsSectionClick = (e: MouseEvent<HTMLDivElement | HTMLButtonElement>) => {
-    e.stopPropagation()
-    if (!tagsSectionRef.current) return
-
-    updateSelectorPosition()
-    setIsOpen((prev) => !prev)
+  const handleRemoveTag = async (tagId: string) => {
+    await removeTag({ taskId: task.id, tagId })
   }
 
-  const updateSelectorPosition = () => {
-    if (!tagsSectionRef.current) return
-
-    const rect = tagsSectionRef.current.getBoundingClientRect()
-    setSelectorPosition({
-      top: rect.bottom + 8,
-      left: rect.left
-    })
-  }
-
-  // TODO: need to handle errors properly
-  const handleRemoveTagClick = async (tagId: string) => {
-    try {
-      await removeTag({ taskId: task.id, tagId })
-    } catch (error) {
-      console.error('Failed to remove tag from task:', error)
-      throw error
-    }
-  }
-
-  const handleCreateTag = async (tag: Partial<OmittedTag>) => {
-    try {
-      if (!tag.name) throw new Error('Tag name is required')
-      const newTag = await createTag({ name: tag.name, color: tag.color } as CreateTagRequest)
-      return newTag.id
-    } catch (error) {
-      console.error('Failed to create tag:', error)
-      throw error
-    }
+  const handleCreateTag = async (data: Partial<OmittedTag>) => {
+    if (!data.name) throw new Error('Tag name is required')
+    const newTag = await createTag({
+      name: data.name,
+      color: data.color
+    } as CreateTagRequest)
+    return newTag.id
   }
 
   const handleUpdateTag = async (tagId: string, data: Partial<OmittedTag>) => {
-    try {
-      await updateTag({ id: tagId, data: data as UpdateTagRequest })
-    } catch (error) {
-      console.error('Failed to update tag:', error)
-      throw error
-    }
+    await updateTag({ id: tagId, data: data as UpdateTagRequest })
   }
 
   const handleDeleteTag = async (tagId: string) => {
-    try {
-      await deleteTag(tagId)
-    } catch (error) {
-      console.error('Failed to delete tag:', error)
-      throw error
-    }
+    await deleteTag(tagId)
   }
 
-  useEffect(() => {
-    if (!isOpen) return
-
-    const handleScroll = () => updateSelectorPosition()
-    const handleResize = () => updateSelectorPosition()
-
-    window.addEventListener('scroll', handleScroll)
-    window.addEventListener('resize', handleResize)
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [isOpen])
-
   return (
-    <>
-      <Stack ref={tagsSectionRef} onClick={handleTagsSectionClick} minW="0" overflow="hidden">
-        {syncedTaskTags.length > 0 ? (
-          <Inline as="ul" role="list" gap="200" w="100%" wrap="wrap">
-            {syncedTaskTags.map((tag) => (
-              <Inline minW="0" maxW="100%" key={tag.id}>
-                <Tag
-                  tag={{ id: tag.id, name: tag.name, color: tag.color }}
-                  removeFromTask={handleRemoveTagClick}
-                />
-              </Inline>
-            ))}
-          </Inline>
-        ) : (
-          <Tag
-            tag={{ id: 'Add Tag', name: 'Add Tag', color: 'gray' }}
-            openTagSelector={handleTagsSectionClick}
-          />
-        )}
-      </Stack>
-      {isOpen && (
-        <TagSelector
-          tags={filteredTags}
-          defaultSelectedTags={syncedTaskTags}
-          placeholder="Search tags..."
-          position={selectorPosition}
-          addTagToTask={handleAddTagToTask}
-          removeTagFromTask={handleRemoveTagClick}
-          createTag={handleCreateTag}
-          deleteTag={handleDeleteTag}
-          updateTag={handleUpdateTag}
-          closeTagSelector={() => setIsOpen(false)}
-        />
-      )}
-    </>
+    <TagSelector.Root
+      tags={tagList}
+      selectedTags={selectedTags}
+      onAddTag={handleAddTag}
+      onRemoveTag={handleRemoveTag}
+      onCreateTag={handleCreateTag}
+      onDeleteTag={handleDeleteTag}
+      onUpdateTag={handleUpdateTag}
+    >
+      <TagSelector.Trigger asChild>
+        <TagsTrigger selectedTags={selectedTags} />
+      </TagSelector.Trigger>
+
+      <TagSelector.Content>
+        <TagSelector.Search placeholder="Search tags..." />
+        <Divider />
+        <TagSelector.List />
+      </TagSelector.Content>
+    </TagSelector.Root>
   )
 }
