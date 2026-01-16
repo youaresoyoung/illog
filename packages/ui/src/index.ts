@@ -16,8 +16,10 @@ export { Tag } from './components/Tag'
 export {
   TagSelector,
   ProjectSelector,
+  BasicSelector,
   useTagSelectorContext,
-  useProjectSelectorContext
+  useProjectSelectorContext,
+  useBasicSelectorContext
 } from './components/Selector'
 export { ProjectBadge } from './components/ProjectBadge'
 export { Divider } from './components/Divider'
