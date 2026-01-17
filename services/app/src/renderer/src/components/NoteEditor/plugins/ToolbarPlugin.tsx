@@ -13,7 +13,7 @@ type BlockType = keyof typeof blockTypeToBlockName
 
 export function ToolbarPlugin() {
   const [editor] = useLexicalComposerContext()
-  const updateToolbarState = useToolbarStore((state) => state.updateToolbarState)
+  const batchUpdateToolbarState = useToolbarStore((state) => state.batchUpdateToolbarState)
 
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
@@ -64,27 +64,19 @@ export function ToolbarPlugin() {
           }
         }
 
-        updateToolbarState('blockType', blockType)
-
-        const isBold = selection.hasFormat('bold')
-        const isItalic = selection.hasFormat('italic')
-        const isStrikethrough = selection.hasFormat('strikethrough')
-        const isUnderline = selection.hasFormat('underline')
-        const isSubscript = selection.hasFormat('subscript')
-        const isSuperscript = selection.hasFormat('superscript')
-
-        const isCode = selection.hasFormat('code')
-
-        updateToolbarState('isBold', isBold)
-        updateToolbarState('isCode', isCode)
-        updateToolbarState('isItalic', isItalic)
-        updateToolbarState('isStrikethrough', isStrikethrough)
-        updateToolbarState('isSubscript', isSubscript)
-        updateToolbarState('isSuperscript', isSuperscript)
-        updateToolbarState('isUnderline', isUnderline)
+        batchUpdateToolbarState({
+          blockType,
+          isBold: selection.hasFormat('bold'),
+          isCode: selection.hasFormat('code'),
+          isItalic: selection.hasFormat('italic'),
+          isStrikethrough: selection.hasFormat('strikethrough'),
+          isSubscript: selection.hasFormat('subscript'),
+          isSuperscript: selection.hasFormat('superscript'),
+          isUnderline: selection.hasFormat('underline')
+        })
       })
     })
-  }, [editor, updateToolbarState])
+  }, [editor, batchUpdateToolbarState])
 
   return null
 }

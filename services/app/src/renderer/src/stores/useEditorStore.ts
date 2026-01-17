@@ -45,6 +45,7 @@ type ToolbarStateValue<Key extends ToolbarStateKey> = ToolbarState[Key]
 
 export type ToolbarStore = ToolbarState & {
   updateToolbarState: <Key extends ToolbarStateKey>(key: Key, value: ToolbarStateValue<Key>) => void
+  batchUpdateToolbarState: (updates: Partial<ToolbarState>) => void
   resetToolbarState: () => void
 }
 
@@ -54,6 +55,10 @@ export const createToolbarStore = () => {
 
     updateToolbarState: (key, value) => {
       set(() => ({ [key]: value }) as Partial<ToolbarState>)
+    },
+
+    batchUpdateToolbarState: (updates) => {
+      set(updates)
     },
 
     resetToolbarState: () => {

@@ -10,7 +10,7 @@ import {
   formatQuote
 } from '../../../utils/note-toolbar'
 import { BasicSelector } from '@illog/ui'
-import { LexicalEditor } from 'lexical'
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 
 type BlockTypeKey = keyof typeof blockTypeToBlockName
 
@@ -29,7 +29,8 @@ const BLOCK_TYPE_OPTIONS: BlockTypeKey[] = [
   'code'
 ]
 
-export const BlockFormatDropDown = ({ editor }: { editor: LexicalEditor }) => {
+export const BlockFormatDropDown = () => {
+  const [editor] = useLexicalComposerContext()
   const blockType = useToolbarStore((state) => state.blockType)
 
   const handleBlockTypeChange = (newBlockType: string) => {

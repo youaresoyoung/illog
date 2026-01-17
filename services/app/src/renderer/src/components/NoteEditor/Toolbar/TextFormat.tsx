@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
-import { CommandPayloadType, FORMAT_TEXT_COMMAND, LexicalEditor } from 'lexical'
+import { useShallow } from 'zustand/react/shallow'
+import { CommandPayloadType, FORMAT_TEXT_COMMAND } from 'lexical'
 import { useToolbarStore } from '../../../context/ToolbarStoreContext'
-import { ToolbarStore } from '../../../stores/useEditorStore'
 import { Inline } from '@illog/ui'
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 
 type FormatType = CommandPayloadType<typeof FORMAT_TEXT_COMMAND>
 
@@ -27,19 +28,20 @@ const FormatButton = ({ type, iconName, isActive, onClick }: FormatButtonProps) 
   )
 }
 
-const formatStateSelector = (s: ToolbarStore) => ({
-  isBold: s.isBold,
-  isCode: s.isCode,
-  isItalic: s.isItalic,
-  isStrikethrough: s.isStrikethrough,
-  isSubscript: s.isSubscript,
-  isSuperscript: s.isSuperscript,
-  isUnderline: s.isUnderline
-})
-
-export const TextFormat = ({ editor }: { editor: LexicalEditor }) => {
+export const TextFormat = () => {
+  const [editor] = useLexicalComposerContext()
   const { isBold, isCode, isItalic, isStrikethrough, isSubscript, isSuperscript, isUnderline } =
-    useToolbarStore(formatStateSelector)
+    useToolbarStore(
+      useShallow((s) => ({
+        isBold: s.isBold,
+        isCode: s.isCode,
+        isItalic: s.isItalic,
+        isStrikethrough: s.isStrikethrough,
+        isSubscript: s.isSubscript,
+        isSuperscript: s.isSuperscript,
+        isUnderline: s.isUnderline
+      }))
+    )
 
   const handleFormat = useCallback(
     (formatType: FormatType) => {
