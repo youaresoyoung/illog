@@ -1,5 +1,14 @@
 import { sprinkles, Sprinkles } from '../core/sprinkles.css'
 
+export function omit<T extends Record<string, unknown>, K extends keyof T>(
+  obj: T,
+  keys: K[]
+): Omit<T, K> {
+  const result = { ...obj }
+  keys.forEach((key) => delete result[key])
+  return result
+}
+
 export function extractSprinkleProps<T extends Record<string, unknown>>(
   props: T
 ): [Partial<Sprinkles>, Omit<T, keyof Sprinkles>] {
