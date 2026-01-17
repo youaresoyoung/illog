@@ -66,11 +66,22 @@ export function ToolbarPlugin() {
 
         updateToolbarState('blockType', blockType)
 
-        // Detect text formatting (for future use)
-        // const isBold = selection.hasFormat('bold')
-        // const isItalic = selection.hasFormat('italic')
-        // updateToolbarState('isBold', isBold)
-        // updateToolbarState('isItalic', isItalic)
+        const isBold = selection.hasFormat('bold')
+        const isItalic = selection.hasFormat('italic')
+        const isStrikethrough = selection.hasFormat('strikethrough')
+        const isUnderline = selection.hasFormat('underline')
+        const isSubscript = selection.hasFormat('subscript')
+        const isSuperscript = selection.hasFormat('superscript')
+
+        const isCode = selection.hasFormat('code')
+
+        updateToolbarState('isBold', isBold)
+        updateToolbarState('isCode', isCode)
+        updateToolbarState('isItalic', isItalic)
+        updateToolbarState('isStrikethrough', isStrikethrough)
+        updateToolbarState('isSubscript', isSubscript)
+        updateToolbarState('isSuperscript', isSuperscript)
+        updateToolbarState('isUnderline', isUnderline)
       })
     })
   }, [editor, updateToolbarState])

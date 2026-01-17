@@ -1,12 +1,15 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 import { BlockFormatDropDown } from '../NoteEditor/Toolbar/BlockFormatDropDown'
+import { TextFormat } from '../NoteEditor/Toolbar/TextFormat'
+import { Inline } from '@illog/ui'
 
 export const NoteToolbar = () => {
   const [editor] = useLexicalComposerContext()
 
   return (
-    <div className="note-toolbar">
+    <Inline className="note-toolbar" gap="800">
       <BlockFormatDropDown editor={editor} />
-    </div>
+      <TextFormat editor={editor} />
+    </Inline>
   )
 }
