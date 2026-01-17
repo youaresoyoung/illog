@@ -3,6 +3,7 @@ import { BasicSelectorTriggerProps } from './types'
 import { useBasicSelectorContext } from './context'
 import clsx from 'clsx'
 import { trigger as triggerStyle } from './basicSelector.css'
+import { Icon } from '../../Icon'
 
 export const Trigger = ({ children, className, ariaLabel }: BasicSelectorTriggerProps) => {
   const { isOpened, onOpenChange, disabled, triggerRef } = useBasicSelectorContext()
@@ -44,6 +45,7 @@ export const Trigger = ({ children, className, ariaLabel }: BasicSelectorTrigger
       onKeyDown={handleKeyDown}
     >
       {children}
+      <Icon name="chevron_down" rotate={isOpened ? 180 : 0} />
     </button>
   )
 }

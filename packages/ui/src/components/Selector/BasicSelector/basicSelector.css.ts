@@ -13,7 +13,7 @@ export const trigger = style([
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: tokens.size.space[200],
-    padding: `${tokens.size.space[200]}px ${tokens.size.space[300]}px`,
+    padding: `${tokens.size.space[100]}px ${tokens.size.space[200]}px`,
     backgroundColor: backgroundColors.backgroundDefaultDefault,
     border: `${tokens.size.stroke.border}px solid ${borderColors.borderDefaultDefault}`,
     borderRadius: tokens.size.radius[200],
@@ -84,12 +84,13 @@ export const item = style([
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: tokens.size.space[200],
-    padding: `${tokens.size.space[200]}px ${tokens.size.space[300]}px`,
     borderRadius: tokens.size.radius[100],
     cursor: 'pointer',
     userSelect: 'none',
     outline: 'none',
     color: textColors.textDefaultDefault,
+    ...styles.text.singleLine.bodyBase,
+    padding: `${tokens.size.space[200]}px ${tokens.size.space[300]}px`,
 
     selectors: {
       '&:hover': {
