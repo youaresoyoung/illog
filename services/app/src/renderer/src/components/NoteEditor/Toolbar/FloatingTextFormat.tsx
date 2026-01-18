@@ -118,17 +118,15 @@ export const FloatingTextFormat = ({ anchorElement }: FloatingTextFormatProps) =
       <Box
         ref={floatingToolbarRef}
         position="absolute"
-        bg="backgroundBrandSecondary"
-        rounded="400"
+        bg="backgroundDefaultDefault"
+        rounded="100"
         p="100"
-        style={{
-          top: 0,
-          left: 0,
-          opacity: 0,
-          willChange: 'transform',
-          zIndex: 1000,
-          boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.3)'
-        }}
+        top={0}
+        left={0}
+        opacity={0}
+        willChange="transform"
+        z={1000}
+        boxShadow="200"
       >
         <TextFormat />
       </Box>

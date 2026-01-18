@@ -1,81 +1,25 @@
-import { useEffect, useRef } from 'react'
+import { useState, useMemo } from 'react'
 
-import { $createParagraphNode, $createTextNode, $getRoot, EditorState } from 'lexical'
 import { LexicalComposer } from '@lexical/react/LexicalComposer'
-import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin'
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
 import { ContentEditable } from '@lexical/react/LexicalContentEditable'
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin'
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary'
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
+import { ListPlugin } from '@lexical/react/LexicalListPlugin'
+import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin'
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin'
+import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin'
+import { TRANSFORMERS } from '@lexical/markdown'
 
 import { Stack, Text } from '@illog/ui'
 import { useAutoSaveNote } from '../../hooks/queries/useNoteQueries'
 import { TaskNote } from '../../types'
-
-type AutoSavePluginProps = {
-  taskId: string
-  saveNote: (data: { taskId: string; content: string; clientUpdatedAt: number }) => void
-}
-
-function AutoSavePlugin({ taskId, saveNote }: AutoSavePluginProps) {
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  const handleChange = (editorState: EditorState) => {
-    editorState.read(() => {
-      const root = $getRoot()
-      const textContent = root.getTextContent()
-
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-
-      timeoutRef.current = setTimeout(() => {
-        saveNote({
-          taskId,
-          content: textContent,
-          clientUpdatedAt: Date.now()
-        })
-      }, 1000)
-    })
-  }
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    }
-  }, [])
-
-  return <OnChangePlugin onChange={handleChange} />
-}
-
-type InitialContentPluginProps = {
-  content: string
-}
-
-function InitialContentPlugin({ content }: InitialContentPluginProps) {
-  const [editor] = useLexicalComposerContext()
-  const isInitialized = useRef(false)
-
-  useEffect(() => {
-    if (!isInitialized.current && content) {
-      editor.update(
-        () => {
-          const root = $getRoot()
-          root.clear()
-          const paragraph = $createParagraphNode()
-          const textNode = $createTextNode(content)
-          paragraph.append(textNode)
-          root.append(paragraph)
-        },
-        {
-          discrete: true
-        }
-      )
-      isInitialized.current = true
-    }
-  }, [editor, content])
-
-  return null
-}
+import { NoteToolbar } from './NoteToolbar'
+import { ToolbarStoreProvider } from '../../context/ToolbarStoreContext'
+import { AutoSavePlugin, InitialContentPlugin, ToolbarPlugin } from '../NoteEditor/plugins'
+import { createEditorConfig } from '../../constant/editor'
+import { validateUrl } from '../../utils/validation'
+import './textarea-section.css'
 
 type TextareaSectionProps = {
   taskId: string
@@ -84,11 +28,13 @@ type TextareaSectionProps = {
 
 export const TextareaSection = ({ taskId, note }: TextareaSectionProps) => {
   const { mutate: saveNote } = useAutoSaveNote()
+  const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null)
 
-  const initialConfig = {
-    namespace: 'NoteEditor',
-    onError: (error: Error) => {
-      console.error('Lexical Error:', error)
+  const initialConfig = useMemo(() => createEditorConfig(), [])
+
+  const handleAnchorRef = (element: HTMLDivElement) => {
+    if (element) {
+      setAnchorElement(element)
     }
   }
 
@@ -99,38 +45,48 @@ export const TextareaSection = ({ taskId, note }: TextareaSectionProps) => {
       borderStyle="solid"
       borderWidth="border"
       backgroundColor="backgroundDefaultDefault"
-      p="300"
-      minHeight="400px"
+      overflow="hidden"
     >
       <LexicalComposer initialConfig={initialConfig}>
-        <Stack position="relative">
-          <PlainTextPlugin
+        <ToolbarStoreProvider>
+          <NoteToolbar anchorElement={anchorElement} />
+          <ToolbarPlugin />
+        </ToolbarStoreProvider>
+
+        <Stack position="relative" p="300" minHeight="400px">
+          <RichTextPlugin
             contentEditable={
-              <ContentEditable
-                style={{
-                  minHeight: '360px'
-                }}
-                className="md"
-              />
+              <div ref={handleAnchorRef}>
+                <ContentEditable style={{ minHeight: '360px', outline: 'none' }} className="md" />
+              </div>
             }
-            placeholder={
-              <Text
-                textStyle="bodySmall"
-                color="textDisabledDefault"
-                position="absolute"
-                top="0.5em"
-                left="0"
-              >
-                Start typing your notes here...
-              </Text>
-            }
+            placeholder={<EditorPlaceholder />}
             ErrorBoundary={LexicalErrorBoundary}
           />
         </Stack>
+
         <HistoryPlugin />
+        <ListPlugin />
+        <CheckListPlugin />
+        <LinkPlugin validateUrl={validateUrl} />
+        <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
         <AutoSavePlugin taskId={taskId} saveNote={saveNote} />
         {note?.content && <InitialContentPlugin content={note.content} />}
       </LexicalComposer>
     </Stack>
+  )
+}
+
+function EditorPlaceholder() {
+  return (
+    <Text
+      textStyle="bodySmall"
+      color="textDisabledDefault"
+      position="absolute"
+      top="12px"
+      left="12px"
+    >
+      Start typing your notes here...
+    </Text>
   )
 }

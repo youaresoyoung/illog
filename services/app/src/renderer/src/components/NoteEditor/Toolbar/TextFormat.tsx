@@ -2,29 +2,34 @@ import { useCallback } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { CommandPayloadType, FORMAT_TEXT_COMMAND } from 'lexical'
 import { useToolbarStore } from '../../../context/ToolbarStoreContext'
-import { Inline } from '@illog/ui'
+import { Icon, IconNameOptions, Inline } from '@illog/ui'
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
 
 type FormatType = CommandPayloadType<typeof FORMAT_TEXT_COMMAND>
 
 interface FormatButtonProps {
   type: FormatType
-  iconName: string
+  iconName: (typeof IconNameOptions)[number]
   isActive: boolean
   onClick: () => void
 }
 
 const FormatButton = ({ type, iconName, isActive, onClick }: FormatButtonProps) => {
   return (
-    <button
+    <Inline
+      as="button"
       type="button"
       onClick={onClick}
       className={`format-button${isActive ? ' active' : ''}`}
       aria-label={`Format text as ${type}`}
       aria-pressed={isActive}
+      p="150"
+      rounded="200"
+      hoverBg="backgroundDefaultDefaultHover"
+      activeBg="backgroundDefaultDefaultHover"
     >
-      {iconName}
-    </button>
+      <Icon name={iconName}></Icon>
+    </Inline>
   )
 }
 
@@ -55,46 +60,46 @@ export const TextFormat = () => {
   }
 
   return (
-    <Inline gap="400">
+    <Inline gap="200">
       <FormatButton
         type="bold"
-        iconName="B"
+        iconName="bold"
         isActive={isBold}
         onClick={() => handleFormat('bold')}
       />
       <FormatButton
         type="code"
-        iconName="</>"
+        iconName="code"
         isActive={isCode}
         onClick={() => handleFormat('code')}
       />
       <FormatButton
         type="italic"
-        iconName="I"
+        iconName="italic"
         isActive={isItalic}
         onClick={() => handleFormat('italic')}
       />
       <FormatButton
         type="strikethrough"
-        iconName="S"
+        iconName="strikethrough"
         isActive={isStrikethrough}
         onClick={() => handleFormat('strikethrough')}
       />
       <FormatButton
         type="subscript"
-        iconName="X₂"
+        iconName="subscript"
         isActive={isSubscript}
         onClick={() => handleFormat('subscript')}
       />
       <FormatButton
         type="superscript"
-        iconName="X²"
+        iconName="superscript"
         isActive={isSuperscript}
         onClick={() => handleFormat('superscript')}
       />
       <FormatButton
         type="underline"
-        iconName="U"
+        iconName="underline"
         isActive={isUnderline}
         onClick={() => handleFormat('underline')}
       />
