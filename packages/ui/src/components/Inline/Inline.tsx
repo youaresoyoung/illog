@@ -4,31 +4,35 @@ import { extractSprinkleProps, omit } from '../../utils/util'
 import { sprinkles } from '../../core/sprinkles.css'
 import clsx from 'clsx'
 import { convertStylePropsToCSS, extractStyleProps } from '../../core/styleProps'
-import { assignInlineVars } from '@vanilla-extract/dynamic'
 import {
-  hoverBgVar,
-  hoverColorVar,
-  activeBgVar,
-  activeColorVar,
-  inlineInteractive
-} from './Inline.css'
-import { backgroundColors, textColors } from '../../core/tokens/generatedColors'
-
-const INTERACTION_PROPS = ['hoverBg', 'hoverColor', 'activeBg', 'activeColor', 'isActive'] as const
-
-const resolveBgColor = (value: string | undefined): string | undefined => {
-  if (!value) return undefined
-  return (backgroundColors as Record<string, string>)[value] ?? value
-}
-
-const resolveTextColor = (value: string | undefined): string | undefined => {
-  if (!value) return undefined
-  return (textColors as Record<string, string>)[value] ?? value
-}
+  INTERACTION_PROP_KEYS,
+  buildInteractionVars,
+  hasInteractionProps,
+  getInteractionDataAttrs
+} from '../../core/interactionProps'
+import { interactiveBase } from '../../core/interactionStyles.css'
 
 /**
  * Inline - A flexible container component that arranges its children in a horizontal line with customizable spacing, alignment, and wrapping options.
  *
+ * @example
+ * // Basic usage
+ * <Inline gap="8">
+ *   <Button>One</Button>
+ *   <Button>Two</Button>
+ * </Inline>
+ *
+ * @example
+ * // With interaction states
+ * <Inline
+ *   bg="backgroundBrandDefault"
+ *   _hover={{bg: "backgroundBrandDefaultHover", color: "textBrandDefault"}}
+ *   _active={{ bg: "backgroundBrandDefaultHover" }}
+ *   _disabled={{ opacity: 0.5 }}
+ *   isActive={isSelected}
+ * >
+ *   Interactive content
+ * </Inline>
  */
 export const Inline = <T extends ElementType = 'div'>(props: InlineProps<T>) => {
   const {
@@ -40,33 +44,34 @@ export const Inline = <T extends ElementType = 'div'>(props: InlineProps<T>) => 
     justify,
     wrap = 'nowrap',
     style,
-    hoverBg,
-    hoverColor,
-    activeBg,
-    activeColor,
-    isActive
+    _hover,
+    _active,
+    _focus,
+    _focusVisible,
+    _disabled,
+    isActive,
+    isDisabled
   } = props
 
   const [styleProps, withoutStyleProps] = extractStyleProps(props)
   const [sprinkleProps, restProps] = extractSprinkleProps(withoutStyleProps)
 
-  const cleanRestProps = omit(restProps, [...INTERACTION_PROPS])
+  const restPropsWithoutInteractionProps = omit(restProps, [...INTERACTION_PROP_KEYS])
 
-  const hasInteraction = hoverBg || hoverColor || activeBg || activeColor
+  const interactionProps = {
+    _hover,
+    _active,
+    _focus,
+    _focusVisible,
+    _disabled,
+    isActive,
+    isDisabled
+  }
+  const hasInteraction = hasInteractionProps(interactionProps)
 
-  const resolvedHoverBg = resolveBgColor(hoverBg)
-  const resolvedHoverColor = resolveTextColor(hoverColor)
-  const resolvedActiveBg = resolveBgColor(activeBg)
-  const resolvedActiveColor = resolveTextColor(activeColor)
+  const interactionVars = buildInteractionVars(interactionProps)
+  const dataAttrs = hasInteraction ? getInteractionDataAttrs(interactionProps) : {}
 
-  const interactionVars = hasInteraction
-    ? assignInlineVars({
-        ...(resolvedHoverBg && { [hoverBgVar]: resolvedHoverBg }),
-        ...(resolvedHoverColor && { [hoverColorVar]: resolvedHoverColor }),
-        ...(resolvedActiveBg && { [activeBgVar]: resolvedActiveBg }),
-        ...(resolvedActiveColor && { [activeColorVar]: resolvedActiveColor })
-      })
-    : {}
   const mergedStyle = {
     ...convertStylePropsToCSS(styleProps),
     ...interactionVars,
@@ -86,10 +91,10 @@ export const Inline = <T extends ElementType = 'div'>(props: InlineProps<T>) => 
   return createElement(
     as,
     {
-      ...cleanRestProps,
-      className: clsx([inlineSprinkles, hasInteraction && inlineInteractive, className]),
-      style: mergedStyle,
-      ...(hasInteraction && { 'data-active': isActive })
+      ...restPropsWithoutInteractionProps,
+      ...dataAttrs,
+      className: clsx([inlineSprinkles, hasInteraction && interactiveBase, className]),
+      style: mergedStyle
     },
     children
   )
