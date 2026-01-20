@@ -20,13 +20,14 @@ const FormatButton = ({ type, iconName, isActive, onClick }: FormatButtonProps) 
       as="button"
       type="button"
       onClick={onClick}
-      className={`format-button${isActive ? ' active' : ''}`}
+      className={`format-button`}
       aria-label={`Format text as ${type}`}
       aria-pressed={isActive}
       p="150"
       rounded="200"
-      hoverBg="backgroundDefaultDefaultHover"
-      activeBg="backgroundDefaultDefaultHover"
+      _hover={{ bg: 'backgroundDefaultDefaultHover' }}
+      _active={{ bg: 'backgroundDefaultDefaultHover' }}
+      isActive={isActive}
     >
       <Icon name={iconName}></Icon>
     </Inline>

@@ -21,12 +21,12 @@ import { createEditorConfig } from '../../constant/editor'
 import { validateUrl } from '../../utils/validation'
 import './textarea-section.css'
 
-type TextareaSectionProps = {
+type Props = {
   taskId: string
   note: TaskNote | null
 }
 
-export const TextareaSection = ({ taskId, note }: TextareaSectionProps) => {
+export const NoteEditorSection = ({ taskId, note }: Props) => {
   const { mutate: saveNote } = useAutoSaveNote()
   const [anchorElement, setAnchorElement] = useState<HTMLElement | null>(null)
 
@@ -57,7 +57,7 @@ export const TextareaSection = ({ taskId, note }: TextareaSectionProps) => {
           <RichTextPlugin
             contentEditable={
               <div ref={handleAnchorRef}>
-                <ContentEditable style={{ minHeight: '360px', outline: 'none' }} className="md" />
+                <ContentEditable className="editor" />
               </div>
             }
             placeholder={<EditorPlaceholder />}
@@ -83,7 +83,7 @@ function EditorPlaceholder() {
       textStyle="bodySmall"
       color="textDisabledDefault"
       position="absolute"
-      top="12px"
+      top="22px"
       left="12px"
     >
       Start typing your notes here...

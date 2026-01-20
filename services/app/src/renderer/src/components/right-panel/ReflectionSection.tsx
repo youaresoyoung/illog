@@ -38,12 +38,12 @@ function InitialContentPlugin({ content }: InitialContentPluginProps) {
   return null
 }
 
-type TextareaSectionProps = {
+type Props = {
   taskId: string
   noteContent?: string
 }
 
-export const ReflectionSection = ({ taskId, noteContent }: TextareaSectionProps) => {
+export const ReflectionSection = ({ taskId, noteContent }: Props) => {
   const { data: existingReflection } = useReflection(taskId)
   const { generateReflection, isStreaming, streamedContent, resetStream } = useReflectionStream()
   const [isDialogOpen, openDialog, closeDialog] = useDialog({ initialOpen: false })

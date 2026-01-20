@@ -5,7 +5,7 @@ import { TagSection } from '../tag/TagSection'
 import type { TaskNote } from '../../../../shared/types'
 
 import { useTaskNote } from '../../hooks/queries/useNoteQueries'
-import { TextareaSection } from '../right-panel/TextareaSection'
+import { NoteEditorSection } from '../right-panel/NoteEditorSection'
 import { ReflectionSection } from '../right-panel/ReflectionSection'
 import { MAX_TAG_LENGTH } from '../../../../shared/const'
 
@@ -116,7 +116,7 @@ export const RightPanel = ({ taskId }: Props) => {
         </Inline>
 
         <Stack gap="200">
-          <TextareaSection taskId={task.id} note={note} />
+          <NoteEditorSection taskId={task.id} note={note} />
         </Stack>
         <ReflectionSection taskId={task.id} noteContent={note?.content ?? undefined} />
       </Stack>
