@@ -1,6 +1,7 @@
 import { relations, sql } from 'drizzle-orm'
 import { sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
 import { tasks } from './task'
+import { randomUUID } from 'crypto'
 
 export const projectColorEnum = ['blue', 'green', 'yellow', 'purple', 'red', 'gray'] as const
 export type ProjectColor = (typeof projectColorEnum)[number]
@@ -8,7 +9,10 @@ export type ProjectColor = (typeof projectColorEnum)[number]
 export const projects = sqliteTable(
   'project',
   {
-    id: text('id').primaryKey(),
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => randomUUID())
+      .notNull(),
     name: text('name').notNull(),
     color: text('color', { enum: projectColorEnum }).notNull().default('blue'),
     createdAt: text('created_at')

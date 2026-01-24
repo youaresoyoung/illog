@@ -1,8 +1,10 @@
 import { index, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { relations, sql } from 'drizzle-orm'
 import { projects } from './project'
-import { taskNotes, taskReflections } from './note'
-import { taskTags } from './tag'
+import { taskNotes } from './note'
+import { taskTags } from './taskTag'
+import { randomUUID } from 'crypto'
+import { taskReflections } from './taskReflection'
 
 export const taskStatusEnum = ['todo', 'in_progress', 'done'] as const
 export type TaskStatus = (typeof taskStatusEnum)[number]
@@ -10,8 +12,12 @@ export type TaskStatus = (typeof taskStatusEnum)[number]
 export const tasks = sqliteTable(
   'task',
   {
-    id: text('id').primaryKey(),
-    title: text('title').notNull(),
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => randomUUID())
+      .notNull(),
+    title: text('title').notNull().default('Untitled'),
+    description: text('title'),
     status: text('status', { enum: taskStatusEnum }).notNull().default('todo'),
     projectId: text('project_id').references(() => projects.id, { onDelete: 'cascade' }),
     endTime: text('end_time'),

@@ -37,21 +37,22 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  const db = openDB()
-
-  const taskRepo = new TaskRepository(db)
-  registerTaskHandlers(taskRepo)
-
   if (!process.env.GEMINI_API_KEY) {
     throw new Error('Missing GEMINI_API_KEY in environment variables')
   }
+
+  const { db, sqlite } = openDB()
+
+  const taskRepo = new TaskRepository(db, sqlite)
+  registerTaskHandlers(taskRepo)
+
   const geminiService = new GeminiService(process.env.GEMINI_API_KEY)
-  const noteRepo = new NoteRepository(db)
-  const reflectionRepo = new ReflectionRepository(db)
+  const reflectionRepo = new ReflectionRepository(sqlite)
+  const noteRepo = new NoteRepository(sqlite)
   const noteService = new NoteService(noteRepo, reflectionRepo, geminiService)
   registerTaskNoteHandlers(noteRepo, noteService)
 
-  const tagRepo = new TagReposity(db)
+  const tagRepo = new TagReposity(sqlite)
   registerTagHandlers(tagRepo)
 
   const mainWindow = createWindow()

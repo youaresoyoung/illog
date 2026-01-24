@@ -1,250 +1,201 @@
-import { Database } from 'better-sqlite3'
+import { OmittedTask, TaskFilters, TaskWithTags } from '../types'
+import { and, count, desc, eq, getTableColumns, gte, isNull, like, lte, or, sql } from 'drizzle-orm'
+import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3'
+import { InsertTask, tasks, tags, taskTags, Tag, Task } from '../database/schema'
+import * as schema from '../database/schema'
+import Database from 'better-sqlite3'
 
-import { randomUUID } from 'crypto'
-import { OmittedTask, Task, TaskFilters, TaskWithTags } from '../types'
-
-// TODO: apply zod
 export class TaskRepository {
-  constructor(private db: Database) {}
+  constructor(
+    private db: BetterSQLite3Database<typeof schema>,
+    private sqlite: Database.Database
+  ) {}
 
-  create(task: Partial<OmittedTask>): TaskWithTags {
-    const id = randomUUID()
-    const now = new Date().toISOString()
+  async create(task: InsertTask): Promise<TaskWithTags> {
+    const [inserted] = this.db.insert(tasks).values(task).returning().all()
 
-    const { title = 'Untitled', status = 'todo', project_id = null } = task
-
-    const stmt = this.db
-      .prepare(`INSERT INTO task (id, title, status, project_id, start_at, end_at, created_at, updated_at, done_at, deleted_at)
-                VALUES (:id, :title, :status, :project_id, :start_at, :end_at, :created_at, :updated_at , :done_at, :deleted_at)`)
-
-    stmt.run({
-      id,
-      title,
-      status,
-      project_id,
-      start_at: now,
-      end_at: null,
-      created_at: now,
-      updated_at: now,
-      done_at: null,
-      deleted_at: null
-    })
-
-    return this.getWithTags(id)!
+    return { ...inserted, tags: [] }
   }
 
-  get(id: string): Task | null {
-    const stmt = this.db.prepare(`SELECT * FROM task WHERE id = :id AND deleted_at IS NULL`)
-    const task = stmt.get({ id }) as Task | undefined
-    return task ?? null
+  async get(id: string): Promise<Task> {
+    const task = this.db
+      .select()
+      .from(tasks)
+      .where(and(eq(tasks.id, id), isNull(tasks.deletedAt)))
+      .get()
+
+    if (!task) {
+      throw new Error('Task not found')
+    }
+
+    return task
   }
 
-  getWithTags(id: string): TaskWithTags | null {
-    const stmt = this.db.prepare(
-      `SELECT task.*,
-          COALESCE(
+  async getWithTags(id: string): Promise<TaskWithTags> {
+    const task = this.db
+      .select({
+        ...getTableColumns(tasks),
+        tags: sql`
+        COALESCE(
             json_group_array(
               json_object('id', tag.id, 'name', tag.name, 'color', tag.color)
             ) FILTER (WHERE tag.id IS NOT NULL), json('[]')
-          ) AS tags
-       FROM task
-       LEFT JOIN task_tag ON task_tag.task_id = task.id
-       LEFT JOIN tag ON tag.id = task_tag.tag_id AND tag.deleted_at IS NULL
-       WHERE task.id = :id AND task.deleted_at IS NULL
-       GROUP BY task.id`
-    )
-    const task = stmt.get({ id }) as TaskWithTags | undefined
-    if (task) {
-      task.tags = JSON.parse(task?.tags as unknown as string) || []
+          )`.as('tags')
+      })
+      .from(tasks)
+      .leftJoin(taskTags, eq(taskTags.taskId, tasks.id))
+      .leftJoin(tags, and(eq(tags.id, taskTags.tagId), isNull(tags.deletedAt)))
+      .where(and(eq(tasks.id, id), isNull(tasks.deletedAt)))
+      .get()
+
+    if (!task) {
+      throw new Error('Task not found')
     }
-    return task ?? null
+
+    return {
+      ...task,
+      tags: JSON.parse(task.tags as string) as Tag[]
+    }
   }
 
-  getTasks(filters?: TaskFilters): TaskWithTags[] {
-    const conditions: string[] = ['task.deleted_at IS NULL']
-    const params: Record<string, unknown> = {}
+  async getTasksWithTags(filters?: TaskFilters): Promise<TaskWithTags[]> {
+    const conditions = [isNull(tasks.deletedAt)]
 
     if (filters?.status) {
-      conditions.push('task.status = :status')
-      params.status = filters.status
+      conditions.push(eq(tasks.status, filters.status))
     }
-
     if (filters?.project_id) {
-      conditions.push('task.project_id = :project_id')
-      params.project_id = filters.project_id
+      conditions.push(eq(tasks.projectId, filters?.project_id))
     }
-
     if (filters?.date_from) {
       const dateFrom = filters?.time_zone
         ? new Date(filters.date_from).toISOString()
         : filters.date_from
-
-      conditions.push('task.created_at >= :date_from')
-      params.date_from = dateFrom
+      conditions.push(gte(tasks.createdAt, dateFrom))
     }
-
     if (filters?.date_to) {
       const dateTo = filters?.time_zone ? new Date(filters.date_to).toISOString() : filters.date_to
-
-      conditions.push('task.created_at <= :date_to')
-      params.date_to = dateTo
+      conditions.push(lte(tasks.createdAt, dateTo))
     }
-
     if (filters?.search) {
-      conditions.push('(task.title LIKE :search OR task.description LIKE :search)')
-      params.search = `%${filters.search}%`
+      const searchCondition = or(
+        like(tasks.title, `%${filters?.search}%`),
+        like(tasks.description, `%${filters?.search}%`)
+      )
+      if (searchCondition) {
+        conditions.push(searchCondition)
+      }
     }
 
-    let tagJoinCondition = ''
-    if (filters?.tag_ids && filters.tag_ids.length > 0) {
-      tagJoinCondition = `AND task_tag.tag_id IN (${filters.tag_ids.map((_, index) => `:tag_id_${index}`).join(', ')})`
-      filters.tag_ids.forEach((tagId, index) => {
-        params[`tag_id_${index}`] = tagId
-      })
-    }
-
-    const query = `SELECT task.*, COALESCE(
+    const results = this.db
+      .select({
+        ...getTableColumns(tasks),
+        tags: sql`
+        COALESCE(
             json_group_array(
               json_object('id', tag.id, 'name', tag.name, 'color', tag.color)
             ) FILTER (WHERE tag.id IS NOT NULL), json('[]')
-          ) AS tags
-       FROM task
-       LEFT JOIN task_tag ON task_tag.task_id = task.id ${tagJoinCondition}
-       LEFT JOIN tag ON tag.id = task_tag.tag_id AND tag.deleted_at IS NULL
-       WHERE ${conditions.join(' AND ')}
-       GROUP BY task.id
-       ORDER BY task.created_at DESC`
-
-    const stmt = this.db.prepare(query)
-    const tasks = stmt.all(params) as TaskWithTags[] | undefined
-
-    if (tasks) {
-      tasks.forEach((task) => {
-        task.tags = JSON.parse(task?.tags as unknown as string) || []
+          )`.as('tags')
       })
-    }
-    return tasks as TaskWithTags[]
+      .from(tasks)
+      .leftJoin(taskTags, eq(taskTags.taskId, tasks.id))
+      .leftJoin(tags, and(eq(tags.id, taskTags.tagId), isNull(tags.deletedAt)))
+      .where(and(...conditions))
+      .groupBy(tasks.id)
+      .orderBy(desc(tasks.createdAt))
+      .all()
+
+    return results.map((item) => ({ ...item, tags: JSON.parse(item?.tags as string) }))
   }
 
-  getAll(): TaskWithTags[] {
-    const date = new Date().toISOString().split('T')[0]
-
-    const stmt = this.db.prepare(
-      `SELECT task.*,
-          COALESCE(
-            json_group_array(
-              json_object('id', tag.id, 'name', tag.name, 'color', tag.color)
-            ) FILTER (WHERE tag.id IS NOT NULL), json('[]')
-          ) AS tags
-       FROM task
-       LEFT JOIN task_tag ON task_tag.task_id = task.id
-       LEFT JOIN tag ON tag.id = task_tag.tag_id AND tag.deleted_at IS NULL
-       WHERE substr(task.created_at, 1, 10) = :date AND task.deleted_at IS NULL
-       GROUP BY task.id
-       ORDER BY task.created_at ASC`
-    )
-    const tasks = stmt.all({ date }) as TaskWithTags[] | undefined
-    if (tasks) {
-      tasks.forEach((task) => {
-        task.tags = JSON.parse(task?.tags as unknown as string) || []
-      })
-    }
-    return tasks as TaskWithTags[]
-  }
-
-  update(id: string, contents: Partial<OmittedTask>): TaskWithTags {
+  async update(id: string, contents: Partial<OmittedTask>): Promise<TaskWithTags> {
     const now = new Date().toISOString()
-
-    const updates: string[] = []
-    const params: Record<string, unknown> = { id, updated_at: now }
+    const updateData: Record<string, unknown> = { updatedAt: now }
 
     if (contents.title !== undefined) {
-      updates.push('title = :title')
-      params.title = contents.title
+      updateData.title = contents.title
     }
     if (contents.description !== undefined) {
-      updates.push('description = :description')
-      params.description = contents.description
+      updateData.description = contents.description
     }
     if (contents.status !== undefined) {
-      updates.push('status = :status')
-      params.status = contents.status
+      updateData.status = contents.status
     }
-    if (contents.project_id !== undefined) {
-      updates.push('project_id = :project_id')
-      params.project_id = contents.project_id
+    if (contents.projectId !== undefined) {
+      updateData.projectId = contents.projectId
     }
-    if (contents.start_at !== undefined) {
-      updates.push('start_at = :start_at')
-      params.start_at = contents.start_at
+    if (contents.startAt !== undefined) {
+      updateData.startAt = contents.startAt
     }
-    if (contents.end_at !== undefined) {
-      updates.push('end_at = :end_at')
-      params.end_at = contents.end_at
+    if (contents.endAt !== undefined) {
+      updateData.endAt = contents.endAt
     }
 
-    updates.push('updated_at = :updated_at')
-
-    if (updates.length === 1) {
+    if (updateData.length === 1) {
       return this.getWithTags(id)!
     }
 
-    const query = `UPDATE task SET ${updates.join(', ')} WHERE id = :id AND deleted_at IS NULL`
-    const stmt = this.db.prepare(query)
-    const result = stmt.run(params)
+    const task = await this.db.update(tasks).set(updateData).where(eq(tasks.id, id))
 
-    if (result.changes === 0) {
+    if (task.changes === 0) {
       throw new Error('Task not found or no changes made')
     }
 
-    return this.getWithTags(id)!
+    return this.getWithTags(id)
   }
 
-  addTag(taskId: string, tagId: string) {
-    const { count } = this.db
-      .prepare(`SELECT COUNT(*) as count FROM task_tag WHERE task_id = :taskId`)
-      .get({ taskId }) as { count: number }
-    if (count >= 5) {
+  async addTag(taskId: string, tagId: string): Promise<TaskWithTags> {
+    const [result] = await this.db
+      .select({ count: count() })
+      .from(taskTags)
+      .where(eq(taskTags.taskId, taskId))
+
+    if (result.count >= 5) {
       throw new Error('A task can have a maximum of 5 tags')
     }
 
-    const exists = this.db
-      .prepare(`SELECT 1 FROM task_tag WHERE task_id = :taskId AND tag_id = :tagId`)
-      .get({ taskId, tagId })
-    if (exists) {
+    const exists = await this.db
+      .select({ one: taskTags.taskId })
+      .from(taskTags)
+      .where(and(eq(taskTags.taskId, taskId), eq(taskTags.tagId, tagId)))
+      .limit(1)
+
+    if (exists.length > 0) {
       throw new Error('Tag already associated with the task')
     }
 
     const now = new Date().toISOString()
-    const stmtAddTags = this.db.prepare(
-      `INSERT INTO task_tag (task_id, tag_id) VALUES (:taskId, :tagId)`
-    )
-    const stmtUpdate = this.db.prepare(`UPDATE task SET updated_at = :now WHERE id = :taskId`)
-    stmtAddTags.run({ taskId, tagId })
-    stmtUpdate.run({ taskId, now })
-    return this.getWithTags(taskId)!
+
+    await this.db.insert(taskTags).values({
+      taskId: taskId,
+      tagId: tagId
+    })
+    await this.db.update(tasks).set({ updatedAt: now }).where(eq(tasks.id, taskId))
+
+    return this.getWithTags(taskId)
   }
 
-  softDelete(id: string) {
+  async softDelete(id: string) {
     const now = new Date().toISOString()
 
-    const stmt = this.db.prepare(
-      `UPDATE task SET deleted_at = :now WHERE id = :id AND deleted_at IS NULL`
-    )
-    const row = stmt.run({ now, id })
+    const deletedTask = await this.db
+      .update(tasks)
+      .set({ deletedAt: now })
+      .where(and(eq(tasks.id, id), isNull(tasks.deletedAt)))
 
-    if (row.changes === 0) {
+    if (deletedTask.changes === 0) {
       throw new Error('Task not found')
     }
   }
 
-  removeTag(taskId: string, tagId: string) {
-    const stmtDeleteTag = this.db.prepare(
-      `DELETE FROM task_tag WHERE task_id = :taskId AND tag_id = :tagId`
-    )
-    const stmtUpdate = this.db.prepare(`UPDATE task SET updated_at = :now WHERE id = :taskId`)
-    stmtDeleteTag.run({ taskId, tagId })
-    stmtUpdate.run({ taskId, now: new Date().toISOString() })
+  async removeTag(taskId: string, tagId: string) {
+    const now = new Date().toISOString()
+
+    await this.db
+      .delete(taskTags)
+      .where(and(eq(taskTags.taskId, taskId), eq(taskTags.tagId, tagId)))
+    await this.db.update(tasks).set({ updatedAt: now }).where(eq(tasks.id, taskId))
+
     return this.getWithTags(taskId)!
   }
 }
