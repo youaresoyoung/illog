@@ -4,12 +4,15 @@
 
 .env
 .env.local
+.env.production
 .env.*.local
 
 **/dist/*
 dist
 **/out/*
 out
+**/build/*
+**/.vite/*
 
 
 node_modules
@@ -19,3 +22,5 @@ node_modules
 storybook-static
 
 .eslintcache
+
+.next

@@ -4,6 +4,10 @@ import { backgroundColors, borderColors, textColors } from '../../core/tokens/ge
 import { recipe } from '@vanilla-extract/recipes'
 
 export const containerBase = style({
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  bottom: 0,
   width: 256,
   borderRight: `1px solid ${borderColors.borderDefaultDefault}`
 })

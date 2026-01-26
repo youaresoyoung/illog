@@ -1,5 +1,5 @@
 import { TaskCard } from '../components/task/TaskCard'
-import { Button, Icon, Text } from '@illog/ui'
+import { Button, Icon, Stack, Text } from '@illog/ui'
 import { useTodayTasks, useCreateTask, useDeleteTask } from '../hooks/queries/useTaskQueries'
 import { useUIStore } from '../stores/useUIStore'
 import { ContentHeader } from '../components/layout/ContentHeader'
@@ -37,7 +37,7 @@ export const Today = memo(() => {
       />
 
       {tasks && tasks.length > 0 ? (
-        <ul style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <Stack gap="400" mt="400">
           {tasks.map((task) => (
             <TaskCard
               key={task.id}
@@ -46,7 +46,7 @@ export const Today = memo(() => {
               handleOpenNote={openTaskNote}
             />
           ))}
-        </ul>
+        </Stack>
       ) : (
         <p>No tasks for today</p>
       )}

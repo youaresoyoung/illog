@@ -1,3 +1,4 @@
+import { Inline, Stack } from '@illog/ui'
 import { ReactNode } from 'react'
 
 type Props = {
@@ -6,18 +7,23 @@ type Props = {
 
 export const MainContent = ({ children }: Props) => {
   return (
-    // TODO: change to Container component
-    <main
+    <Inline
+      as="main"
+      w="100%"
+      pt="1200"
+      pb="2400"
       style={{
-        minWidth: 592,
-        marginLeft: '256px',
-        display: 'flex',
-        flexDirection: 'column',
-        margin: '0 auto',
-        padding: '48px 0'
+        marginLeft: '256px'
       }}
     >
-      {children}
-    </main>
+      <Stack
+        minWidth={592}
+        style={{
+          margin: '0 auto'
+        }}
+      >
+        {children}
+      </Stack>
+    </Inline>
   )
 }
