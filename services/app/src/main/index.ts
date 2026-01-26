@@ -8,7 +8,8 @@ import {
   registerTaskNoteHandlers,
   registerTagHandlers,
   registerProjectHandlers,
-  registerWeeklyReflectionHandlers
+  registerWeeklyReflectionHandlers,
+  registerTaskTypeHandlers
 } from './ipc/ipcHandlers'
 import { NoteService } from './service/NoteService'
 import { NoteRepository } from './repository/noteRepository'
@@ -19,6 +20,7 @@ import { ReflectionRepository } from './repository/reflectionRepository'
 import { ProjectRepository } from './repository/projectRepository'
 import { WeeklyReflectionRepository } from './repository/weeklyReflectionRepository'
 import { installExtension, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
+import { TaskTypeRepository } from './repository/taskTypeRepository'
 
 dotenv.config()
 
@@ -71,6 +73,9 @@ app.whenReady().then(() => {
 
   const weeklyReflectionRepo = new WeeklyReflectionRepository(db)
   registerWeeklyReflectionHandlers(weeklyReflectionRepo)
+
+  const taskTypeRepo = new TaskTypeRepository(db)
+  registerTaskTypeHandlers(taskTypeRepo)
 
   const mainWindow = createWindow()
 

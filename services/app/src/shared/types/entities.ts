@@ -1,13 +1,5 @@
-/**
- * Entity 타입 정의
- * Drizzle 스키마에서 추론된 타입 + Composite 타입
- */
-
-// Drizzle 스키마에서 기본 Entity 타입 re-export
-// `export type`은 컴파일 시 제거되어 런타임 의존성 없음
 export type { Task, InsertTask, Tag, InsertTag, Project } from '../../main/database/schema'
 
-// Note/Reflection은 스키마에서 타입 추론
 import type { taskNotes, taskReflections, weeklyReflections } from '../../main/database/schema'
 export type TaskNote = typeof taskNotes.$inferSelect
 export type InsertTaskNote = typeof taskNotes.$inferInsert
@@ -16,19 +8,15 @@ export type InsertTaskReflection = typeof taskReflections.$inferInsert
 export type WeeklyReflection = typeof weeklyReflections.$inferSelect
 export type InsertWeeklyReflection = typeof weeklyReflections.$inferInsert
 
-// ============================================
-// Composite Types (관계 포함 타입)
-// ============================================
+import type { Tag, Task, Project, TaskType, TaskSubtype } from '../../main/database/schema'
 
-import type { Tag, Task, Project } from '../../main/database/schema'
-
-/** 태스크 + 연결된 태그 목록 + 프로젝트 */
 export interface TaskWithTags extends Task {
   tags: Pick<Tag, 'id' | 'name' | 'color'>[]
   project: Pick<Project, 'id' | 'name' | 'color'> | null
+  taskType: Pick<TaskType, 'id' | 'name' | 'color'> | null
+  taskSubtype: Pick<TaskSubtype, 'id' | 'name'> | null
 }
 
-/** 태스크 + 태그 + 노트 + 리플렉션 (상세 조회용) */
 export interface TaskWithDetails extends TaskWithTags {
   note: TaskNote | null
   reflection: TaskReflection | null

@@ -14,6 +14,13 @@ import type {
   UpdateProjectRequest,
   UpdateWeeklyReflectionRequest
 } from '../../shared/types'
+import { TaskTypeRepository } from '../repository/taskTypeRepository'
+import {
+  CreateTaskSubtypeRequest,
+  CreateTaskTypeRequest,
+  UpdateTaskSubtypeRequest,
+  UpdateTaskTypeRequest
+} from '../../shared/types/taskTypeDto'
 
 // TODO: add proper error handling wrapper
 
@@ -80,4 +87,26 @@ export function registerWeeklyReflectionHandlers(repo: WeeklyReflectionRepositor
     'weeklyReflection.upsert',
     (_, weekId: string, data: UpdateWeeklyReflectionRequest) => repo.upsert(weekId, data)
   )
+}
+
+export function registerTaskTypeHandlers(repo: TaskTypeRepository) {
+  ipcMain.handle('taskType.create', (_, data: CreateTaskTypeRequest) => repo.create(data))
+  ipcMain.handle('taskType.get', (_, id: string) => repo.get(id))
+  ipcMain.handle('taskType.getAll', () => repo.getAll())
+  ipcMain.handle('taskType.getAllWithSubtypes', () => repo.getAllWithSubtypes())
+  ipcMain.handle('taskType.update', (_, id: string, data: UpdateTaskTypeRequest) =>
+    repo.update(id, data)
+  )
+  ipcMain.handle('taskType.softDelete', (_, id: string) => repo.softDelete(id))
+
+  // Task subtype handlers
+  ipcMain.handle('taskSubtype.getAllByTypeId', (_, typeId: string) => repo.getSubtypes(typeId))
+  ipcMain.handle('taskSubtype.get', (_, id: string) => repo.getSubtype(id))
+  ipcMain.handle('taskSubtype.create', (_, data: CreateTaskSubtypeRequest) =>
+    repo.createSubtype(data)
+  )
+  ipcMain.handle('taskSubtype.update', (_, id: string, data: UpdateTaskSubtypeRequest) =>
+    repo.updateSubtype(id, data)
+  )
+  ipcMain.handle('taskSubtype.softDelete', (_, id: string) => repo.softDeleteSubtype(id))
 }

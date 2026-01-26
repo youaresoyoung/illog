@@ -15,6 +15,13 @@
       "when": 1769481533797,
       "tag": "0001_chief_archangel",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1770428878965,
+      "tag": "0002_swift_blue_blade",
+      "breakpoints": true
     }
   ]
 }

@@ -4,6 +4,7 @@ import { join } from 'path'
 import { drizzle } from 'drizzle-orm/better-sqlite3'
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
 import * as schema from './database/schema'
+import { seedDefaultTaskTypes } from './database/seed'
 
 export function openDB() {
   if (!process.env.DB_FILE_NAME) {
@@ -15,6 +16,7 @@ export function openDB() {
   const db = drizzle(sqlite, { schema })
 
   migrate(db, { migrationsFolder: join(__dirname, './database/migrations') })
+  seedDefaultTaskTypes(db)
 
   return { db }
 }

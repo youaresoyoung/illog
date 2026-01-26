@@ -6,7 +6,11 @@ import type {
   UpdateTagRequest,
   CreateProjectRequest,
   UpdateProjectRequest,
-  UpdateWeeklyReflectionRequest
+  UpdateWeeklyReflectionRequest,
+  CreateTaskTypeRequest,
+  UpdateTaskTypeRequest,
+  CreateTaskSubtypeRequest,
+  UpdateTaskSubtypeRequest
 } from '../shared/types'
 
 const api = {
@@ -59,6 +63,23 @@ const api = {
     get: (weekId: string) => ipcRenderer.invoke('weeklyReflection.get', weekId),
     upsert: (weekId: string, data: UpdateWeeklyReflectionRequest) =>
       ipcRenderer.invoke('weeklyReflection.upsert', weekId, data)
+  },
+  taskType: {
+    getAll: () => ipcRenderer.invoke('taskType.getAll'),
+    getAllWithSubtypes: () => ipcRenderer.invoke('taskType.getAllWithSubtypes'),
+    get: (id: string) => ipcRenderer.invoke('taskType.get', id),
+    create: (data: CreateTaskTypeRequest) => ipcRenderer.invoke('taskType.create', data),
+    update: (id: string, data: UpdateTaskTypeRequest) =>
+      ipcRenderer.invoke('taskType.update', id, data),
+    softDelete: (id: string) => ipcRenderer.invoke('taskType.softDelete', id)
+  },
+  taskSubtype: {
+    getAllByTypeId: (typeId: string) => ipcRenderer.invoke('taskSubtype.getAllByTypeId', typeId),
+    get: (id: string) => ipcRenderer.invoke('taskSubtype.get', id),
+    create: (data: CreateTaskSubtypeRequest) => ipcRenderer.invoke('taskSubtype.create', data),
+    update: (id: string, data: UpdateTaskSubtypeRequest) =>
+      ipcRenderer.invoke('taskSubtype.update', id, data),
+    softDelete: (id: string) => ipcRenderer.invoke('taskSubtype.softDelete', id)
   }
 }
 
