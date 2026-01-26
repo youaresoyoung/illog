@@ -1,5 +1,5 @@
 import { ReactNode, MouseEvent } from 'react'
-import { useProjectSelectorContext } from './context'
+import { useBadgeSelectorContext } from './context'
 
 type TriggerProps = {
   children: ReactNode
@@ -7,7 +7,7 @@ type TriggerProps = {
 }
 
 export const Trigger = ({ children, asChild }: TriggerProps) => {
-  const { isOpen, setIsOpen, triggerRef } = useProjectSelectorContext()
+  const { isOpen, setIsOpen, triggerRef } = useBadgeSelectorContext()
 
   const handleClick = (e: MouseEvent) => {
     e.stopPropagation()

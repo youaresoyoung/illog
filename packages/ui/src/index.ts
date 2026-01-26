@@ -15,13 +15,13 @@ export { Input } from './components/Input'
 export { Tag } from './components/Tag'
 export {
   TagSelector,
-  ProjectSelector,
+  BadgeSelector,
   BasicSelector,
   useTagSelectorContext,
-  useProjectSelectorContext,
+  useBadgeSelectorContext,
   useBasicSelectorContext
 } from './components/Selector'
-export { ProjectBadge } from './components/ProjectBadge'
+export { Badge } from './components/Badge'
 export { Divider } from './components/Divider'
 export { Portal } from './components/Portal'
 export { TimePicker } from './components/TimePicker'
@@ -30,12 +30,7 @@ export { Overlay } from './components/Overlay'
 
 // Types
 export type { TagType, OmittedTag, TagColor } from './components/Tag/types'
-export type {
-  ProjectType,
-  OmittedProject,
-  ProjectColor,
-  ProjectBadgeProps
-} from './components/ProjectBadge/types'
+export type { BadgeItem, OmittedBadgeItem, BadgeColor, BadgeProps } from './components/Badge/types'
 export type { IconName } from './components/Icon/types'
 export type { ItemRenderProps, MatchStrategy } from './components/Navigation'
 export { IconNameOptions } from './components/Icon/types'

@@ -1,9 +1,9 @@
 import { MouseEvent } from 'react'
 import { Icon } from '../Icon'
 import clsx from 'clsx'
-import * as style from './projectBadge.css'
+import * as style from './badge.css'
 import { textColors } from '../../core/tokens/generatedColors'
-import { ProjectBadgeProps } from './types'
+import { BadgeProps } from './types'
 import { Inline } from '../Inline'
 
 function capitalize(string: string) {
@@ -14,14 +14,14 @@ const getIconColor = (color: string) => {
   return `textTag${capitalize(color) as Capitalize<typeof color>}` as keyof typeof textColors
 }
 
-export const ProjectBadge = ({
-  project,
+export const Badge = ({
+  item,
   addButtonVariant,
   isOpenedSelector,
   className,
-  openProjectSelector,
+  openSelector,
   onRemove
-}: ProjectBadgeProps) => {
+}: BadgeProps) => {
   if (addButtonVariant) {
     return (
       <button
@@ -30,9 +30,9 @@ export const ProjectBadge = ({
           style.addButtonRecipe({ variant: addButtonVariant }),
           className
         ])}
-        onClick={(e: MouseEvent<HTMLButtonElement>) => openProjectSelector?.(e)}
+        onClick={(e: MouseEvent<HTMLButtonElement>) => openSelector?.(e)}
       >
-        <span>{project.name}</span>
+        <span>{item.name}</span>
         <Icon
           size="extraSmall"
           name="chevron_down"
@@ -46,11 +46,11 @@ export const ProjectBadge = ({
   if (onRemove) {
     return (
       <Inline
-        className={clsx([style.badgeRecipe({ color: project.color }), className])}
+        className={clsx([style.badgeRecipe({ color: item.color }), className])}
         maxWidth="100%"
       >
         <Inline as="span" truncate="true">
-          {project.name}
+          {item.name}
         </Inline>
         <button
           type="button"
@@ -59,9 +59,9 @@ export const ProjectBadge = ({
             onRemove()
           }}
           className={style.removeButton}
-          aria-label={`Remove ${project.name}`}
+          aria-label={`Remove ${item.name}`}
         >
-          <Icon size="extraSmall" name="cancel" color={getIconColor(project.color)} />
+          <Icon size="extraSmall" name="cancel" color={getIconColor(item.color)} />
         </button>
       </Inline>
     )
@@ -69,17 +69,17 @@ export const ProjectBadge = ({
 
   return (
     <Inline
-      className={clsx([style.badgeRecipe({ color: project.color }), className])}
+      className={clsx([style.badgeRecipe({ color: item.color }), className])}
       maxWidth="100%"
       overflow="hidden"
     >
       <Inline as="span" truncate="true">
-        {project.name}
+        {item.name}
       </Inline>
       <Icon
         size="extraSmall"
         name="chevron_down"
-        color={getIconColor(project.color)}
+        color={getIconColor(item.color)}
         rotate={isOpenedSelector ? 180 : 0}
       />
     </Inline>

@@ -4,7 +4,7 @@ import { Content } from './Content'
 import { Search } from './Search'
 import { List } from './List'
 
-export const ProjectSelector = {
+export const BadgeSelector = {
   Root,
   Trigger,
   Content,
@@ -12,5 +12,5 @@ export const ProjectSelector = {
   List
 }
 
-export { useProjectSelectorContext } from './context'
-export type { ProjectSelectorContextValue } from './context'
+export { useBadgeSelectorContext } from './context'
+export type { BadgeSelectorContextValue } from './context'

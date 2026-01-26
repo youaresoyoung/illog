@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import {
   Stack,
-  ProjectBadge,
-  ProjectSelector,
+  Badge,
+  BadgeSelector,
   Divider,
-  useProjectSelectorContext,
-  type ProjectType,
-  type OmittedProject
+  useBadgeSelectorContext,
+  type BadgeItem,
+  type OmittedBadgeItem
 } from '@illog/ui'
 import {
   useAllProjects,
@@ -21,16 +21,16 @@ import type {
   UpdateProjectRequest
 } from '../../../../shared/types'
 
-const ProjectBadgeTrigger = ({ project }: { project: ProjectType | null }) => {
-  const { isOpen } = useProjectSelectorContext()
+const ProjectBadgeTrigger = ({ project }: { project: BadgeItem | null }) => {
+  const { isOpen } = useBadgeSelectorContext()
 
   return (
     <Stack minW="0" overflow="hidden">
       {project ? (
-        <ProjectBadge project={project} isOpenedSelector={isOpen} />
+        <Badge item={project} isOpenedSelector={isOpen} />
       ) : (
-        <ProjectBadge
-          project={{ name: 'Add Project', color: 'gray' }}
+        <Badge
+          item={{ name: 'Add Project', color: 'gray' }}
           isOpenedSelector={isOpen}
           addButtonVariant={'default'}
         />
@@ -47,15 +47,15 @@ export const ProjectSection = ({ task }: { task: TaskWithTags }) => {
   const { mutateAsync: setProject } = useSetProjectToTask()
   const { mutateAsync: clearProject } = useClearProjectFromTask()
 
-  const projectList = useMemo(() => projects as ProjectType[], [projects])
+  const projectList = useMemo(() => projects as BadgeItem[], [projects])
 
   const selectedProject = useMemo(() => {
     if (!task.project) return null
     const found = projects.find((p) => p.id === task.project?.id)
     if (found) {
-      return found as ProjectType
+      return found as BadgeItem
     }
-    return task.project as ProjectType
+    return task.project as BadgeItem
   }, [task.project, projects])
 
   const handleSelectProject = async (projectId: string) => {
@@ -66,7 +66,7 @@ export const ProjectSection = ({ task }: { task: TaskWithTags }) => {
     await clearProject(task.id)
   }
 
-  const handleCreateProject = async (data: Partial<OmittedProject>) => {
+  const handleCreateProject = async (data: Partial<OmittedBadgeItem>) => {
     if (!data.name) throw new Error('Project name is required')
     const newProject = await createProject({
       name: data.name,
@@ -75,7 +75,7 @@ export const ProjectSection = ({ task }: { task: TaskWithTags }) => {
     return newProject.id
   }
 
-  const handleUpdateProject = async (projectId: string, data: Partial<OmittedProject>) => {
+  const handleUpdateProject = async (projectId: string, data: Partial<OmittedBadgeItem>) => {
     await updateProject({ id: projectId, data: data as UpdateProjectRequest })
   }
 
@@ -84,24 +84,24 @@ export const ProjectSection = ({ task }: { task: TaskWithTags }) => {
   }
 
   return (
-    <ProjectSelector.Root
-      projects={projectList}
-      selectedProject={selectedProject}
-      onSelectProject={handleSelectProject}
-      onClearProject={handleClearProject}
-      onCreateProject={handleCreateProject}
-      onDeleteProject={handleDeleteProject}
-      onUpdateProject={handleUpdateProject}
+    <BadgeSelector.Root
+      items={projectList}
+      selectedItem={selectedProject}
+      onSelectItem={handleSelectProject}
+      onClearItem={handleClearProject}
+      onCreateItem={handleCreateProject}
+      onDeleteItem={handleDeleteProject}
+      onUpdateItem={handleUpdateProject}
     >
-      <ProjectSelector.Trigger asChild>
+      <BadgeSelector.Trigger asChild>
         <ProjectBadgeTrigger project={selectedProject} />
-      </ProjectSelector.Trigger>
+      </BadgeSelector.Trigger>
 
-      <ProjectSelector.Content>
-        <ProjectSelector.Search placeholder="Search projects..." />
+      <BadgeSelector.Content>
+        <BadgeSelector.Search placeholder="Search projects..." />
         <Divider />
-        <ProjectSelector.List />
-      </ProjectSelector.Content>
-    </ProjectSelector.Root>
+        <BadgeSelector.List />
+      </BadgeSelector.Content>
+    </BadgeSelector.Root>
   )
 }

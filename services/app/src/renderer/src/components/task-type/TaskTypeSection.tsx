@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import {
   Stack,
-  ProjectBadge,
-  ProjectSelector,
+  Badge,
+  BadgeSelector,
   Divider,
-  useProjectSelectorContext,
-  type ProjectType,
-  type OmittedProject
+  useBadgeSelectorContext,
+  type BadgeItem,
+  type OmittedBadgeItem
 } from '@illog/ui'
 import {
   useAllTaskTypesWithSubtypes,
@@ -30,16 +30,16 @@ import {
   useDeleteTaskSubtype
 } from '../../hooks/queries/useTaskSubtypeQueries'
 
-const TaskTypeBadgeTrigger = ({ taskType }: { taskType: ProjectType | null }) => {
-  const { isOpen } = useProjectSelectorContext()
+const TaskTypeBadgeTrigger = ({ taskType }: { taskType: BadgeItem | null }) => {
+  const { isOpen } = useBadgeSelectorContext()
 
   return (
     <Stack minW="0" overflow="hidden">
       {taskType ? (
-        <ProjectBadge project={taskType} isOpenedSelector={isOpen} />
+        <Badge item={taskType} isOpenedSelector={isOpen} />
       ) : (
-        <ProjectBadge
-          project={{ name: 'Add Type', color: 'gray' }}
+        <Badge
+          item={{ name: 'Add Type', color: 'gray' }}
           isOpenedSelector={isOpen}
           addButtonVariant={'default'}
         />
@@ -49,18 +49,15 @@ const TaskTypeBadgeTrigger = ({ taskType }: { taskType: ProjectType | null }) =>
 }
 
 const TaskSubtypeBadgeTrigger = ({ taskSubtype }: { taskSubtype: { name: string } | null }) => {
-  const { isOpen } = useProjectSelectorContext()
+  const { isOpen } = useBadgeSelectorContext()
 
   return (
     <Stack minW="0" overflow="hidden">
       {taskSubtype ? (
-        <ProjectBadge
-          project={{ name: taskSubtype.name, color: 'gray' }}
-          isOpenedSelector={isOpen}
-        />
+        <Badge item={{ name: taskSubtype.name, color: 'gray' }} isOpenedSelector={isOpen} />
       ) : (
-        <ProjectBadge
-          project={{ name: 'Add Subtype', color: 'gray' }}
+        <Badge
+          item={{ name: 'Add Subtype', color: 'gray' }}
           isOpenedSelector={isOpen}
           addButtonVariant={'default'}
         />
@@ -87,7 +84,7 @@ export const TaskTypeSection = ({ task }: { task: TaskWithTags }) => {
         id: t.id,
         name: t.name,
         color: t.color
-      })) as ProjectType[],
+      })) as BadgeItem[],
     [taskTypesWithSubtypes]
   )
 
@@ -95,9 +92,9 @@ export const TaskTypeSection = ({ task }: { task: TaskWithTags }) => {
     if (!task.taskType) return null
     const found = taskTypesWithSubtypes.find((t) => t.id === task.taskType?.id)
     if (found) {
-      return { id: found.id, name: found.name, color: found.color } as ProjectType
+      return { id: found.id, name: found.name, color: found.color } as BadgeItem
     }
-    return task.taskType as ProjectType
+    return task.taskType as BadgeItem
   }, [task.taskType, taskTypesWithSubtypes])
 
   const selectedTaskSubtype = useMemo(() => {
@@ -126,7 +123,7 @@ export const TaskTypeSection = ({ task }: { task: TaskWithTags }) => {
     await clearTaskType(task.id)
   }
 
-  const handleCreateTaskType = async (data: Partial<OmittedProject>) => {
+  const handleCreateTaskType = async (data: Partial<OmittedBadgeItem>) => {
     if (!data.name) throw new Error('Task type name is required')
     const newTaskType = await createTaskType({
       name: data.name,
@@ -135,7 +132,7 @@ export const TaskTypeSection = ({ task }: { task: TaskWithTags }) => {
     return newTaskType.id
   }
 
-  const handleUpdateTaskType = async (taskTypeId: string, data: Partial<OmittedProject>) => {
+  const handleUpdateTaskType = async (taskTypeId: string, data: Partial<OmittedBadgeItem>) => {
     await updateTaskType({ id: taskTypeId, data: data as UpdateTaskTypeRequest })
   }
 
@@ -152,7 +149,7 @@ export const TaskTypeSection = ({ task }: { task: TaskWithTags }) => {
     await setTaskType({ taskId: task.id, taskTypeId: task.taskType.id })
   }
 
-  const handleCreateTaskSubtype = async (data: Partial<OmittedProject>) => {
+  const handleCreateTaskSubtype = async (data: Partial<OmittedBadgeItem>) => {
     if (!data.name || !task.taskType) throw new Error('Subtype name and task type are required')
     const newSubtype = await createTaskSubtype({
       taskTypeId: task.taskType.id,
@@ -161,7 +158,7 @@ export const TaskTypeSection = ({ task }: { task: TaskWithTags }) => {
     return newSubtype.id
   }
 
-  const handleUpdateTaskSubtype = async (subtypeId: string, data: Partial<OmittedProject>) => {
+  const handleUpdateTaskSubtype = async (subtypeId: string, data: Partial<OmittedBadgeItem>) => {
     if (!data.name || !task.taskType) throw new Error('Subtype name and task type are required')
     await updateTaskSubtype({
       id: subtypeId,
@@ -176,54 +173,54 @@ export const TaskTypeSection = ({ task }: { task: TaskWithTags }) => {
 
   return (
     <>
-      <ProjectSelector.Root
-        projects={taskTypeList}
-        selectedProject={selectedTaskType}
-        onSelectProject={handleSelectTaskType}
-        onClearProject={handleClearTaskType}
-        onCreateProject={handleCreateTaskType}
-        onDeleteProject={handleDeleteTaskType}
-        onUpdateProject={handleUpdateTaskType}
+      <BadgeSelector.Root
+        items={taskTypeList}
+        selectedItem={selectedTaskType}
+        onSelectItem={handleSelectTaskType}
+        onClearItem={handleClearTaskType}
+        onCreateItem={handleCreateTaskType}
+        onDeleteItem={handleDeleteTaskType}
+        onUpdateItem={handleUpdateTaskType}
       >
-        <ProjectSelector.Trigger asChild>
+        <BadgeSelector.Trigger asChild>
           <TaskTypeBadgeTrigger taskType={selectedTaskType} />
-        </ProjectSelector.Trigger>
+        </BadgeSelector.Trigger>
 
-        <ProjectSelector.Content>
-          <ProjectSelector.Search placeholder="Search task types..." />
+        <BadgeSelector.Content>
+          <BadgeSelector.Search placeholder="Search task types..." />
           <Divider />
-          <ProjectSelector.List />
-        </ProjectSelector.Content>
-      </ProjectSelector.Root>
+          <BadgeSelector.List />
+        </BadgeSelector.Content>
+      </BadgeSelector.Root>
 
       {task.taskType && (
-        <ProjectSelector.Root
-          projects={subtypeList}
-          selectedProject={
+        <BadgeSelector.Root
+          items={subtypeList}
+          selectedItem={
             selectedTaskSubtype
               ? ({
                   id: selectedTaskSubtype.id,
                   name: selectedTaskSubtype.name,
                   color: 'gray'
-                } as ProjectType)
+                } as BadgeItem)
               : null
           }
-          onSelectProject={handleSelectTaskSubtype}
-          onClearProject={handleClearTaskSubtype}
-          onCreateProject={handleCreateTaskSubtype}
-          onDeleteProject={handleDeleteTaskSubtype}
-          onUpdateProject={handleUpdateTaskSubtype}
+          onSelectItem={handleSelectTaskSubtype}
+          onClearItem={handleClearTaskSubtype}
+          onCreateItem={handleCreateTaskSubtype}
+          onDeleteItem={handleDeleteTaskSubtype}
+          onUpdateItem={handleUpdateTaskSubtype}
         >
-          <ProjectSelector.Trigger asChild>
+          <BadgeSelector.Trigger asChild>
             <TaskSubtypeBadgeTrigger taskSubtype={selectedTaskSubtype} />
-          </ProjectSelector.Trigger>
+          </BadgeSelector.Trigger>
 
-          <ProjectSelector.Content>
-            <ProjectSelector.Search placeholder="Search subtypes..." />
+          <BadgeSelector.Content>
+            <BadgeSelector.Search placeholder="Search subtypes..." />
             <Divider />
-            <ProjectSelector.List />
-          </ProjectSelector.Content>
-        </ProjectSelector.Root>
+            <BadgeSelector.List />
+          </BadgeSelector.Content>
+        </BadgeSelector.Root>
       )}
     </>
   )

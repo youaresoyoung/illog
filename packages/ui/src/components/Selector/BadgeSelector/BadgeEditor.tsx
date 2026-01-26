@@ -3,7 +3,7 @@ import * as style from '../editor.css'
 import { backgroundColors } from 'packages/ui/src/core/tokens/generatedColors'
 import { Divider } from '../../Divider'
 import { Icon } from '../../Icon'
-import { ProjectType, OmittedProject, ProjectColor } from '../../ProjectBadge'
+import { BadgeItem, OmittedBadgeItem, BadgeColor } from '../../Badge'
 
 const COLORS = [
   { name: 'Blue', value: 'blue', preview: backgroundColors.backgroundTagBlue },
@@ -15,45 +15,45 @@ const COLORS = [
 ]
 
 type Props = {
-  project: ProjectType
-  onDelete: (projectId: string) => Promise<void>
-  onChange: (projectId: string, contents: Partial<OmittedProject>) => Promise<void>
+  item: BadgeItem
+  onDelete: (itemId: string) => Promise<void>
+  onChange: (itemId: string, contents: Partial<OmittedBadgeItem>) => Promise<void>
   onCloseEditor: () => void
 }
 
-export const ProjectEditor = ({ project, onDelete, onChange, onCloseEditor }: Props) => {
-  const [currentProject, setCurrentProject] = useState({
-    ...project
+export const BadgeEditor = ({ item, onDelete, onChange, onCloseEditor }: Props) => {
+  const [currentItem, setCurrentItem] = useState({
+    ...item
   })
 
   const handleNameChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentProject((prev) => ({ ...prev, name: e.target.value }))
-    onChange(currentProject.id, { name: e.target.value, color: currentProject.color })
+    setCurrentItem((prev) => ({ ...prev, name: e.target.value }))
+    onChange(currentItem.id, { name: e.target.value, color: currentItem.color })
   }
 
-  const handleColorChange = async (value: ProjectColor) => {
-    setCurrentProject((prev) => ({ ...prev, color: value }))
-    onChange(currentProject.id, { name: currentProject.name, color: value })
+  const handleColorChange = async (value: BadgeColor) => {
+    setCurrentItem((prev) => ({ ...prev, color: value }))
+    onChange(currentItem.id, { name: currentItem.name, color: value })
   }
 
   const handleDelete = async () => {
-    onDelete(currentProject.id)
+    onDelete(currentItem.id)
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      onChange(currentProject.id, { name: currentProject.name, color: currentProject.color })
+      onChange(currentItem.id, { name: currentItem.name, color: currentItem.color })
       onCloseEditor()
     }
   }
 
   return (
-    <div className={style.editorContainer} data-project-editor-root>
+    <div className={style.editorContainer} data-badge-editor-root>
       <input
         className={style.nameInput}
-        value={currentProject.name}
+        value={currentItem.name}
         onChange={handleNameChange}
-        placeholder="Project Name"
+        placeholder="Name"
         onKeyDown={handleKeyDown}
       />
       <div className={style.deleteRow}>
@@ -68,7 +68,7 @@ export const ProjectEditor = ({ project, onDelete, onChange, onCloseEditor }: Pr
           <div
             key={c.value}
             className={style.colorItem}
-            onClick={() => handleColorChange(c.value as ProjectColor)}
+            onClick={() => handleColorChange(c.value as BadgeColor)}
           >
             <span className={style.colorPreview} style={{ background: c.preview }} />
             <span className={style.colorName}>{c.name}</span>

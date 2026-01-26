@@ -2,40 +2,40 @@ import * as style from '../selector.css'
 import { RefObject, useState, useRef, useCallback, useEffect, memo } from 'react'
 import { Icon } from '../../Icon'
 import { Portal } from '../../Portal'
-import { ProjectType, ProjectColor, OmittedProject, ProjectBadge } from '../../ProjectBadge'
-import { ProjectEditor } from './ProjectEditor'
+import { BadgeItem, BadgeColor, OmittedBadgeItem, Badge } from '../../Badge'
+import { BadgeEditor } from './BadgeEditor'
 
 type Props = {
-  projects: ProjectType[]
+  items: BadgeItem[]
   searchTerm: string
   canCreateNew: boolean
-  previewColor: ProjectColor
-  onSelect: (project: ProjectType) => Promise<void>
+  previewColor: BadgeColor
+  onSelect: (item: BadgeItem) => Promise<void>
   onCreate: () => Promise<void>
-  onDeleteProject: (projectId: string) => Promise<void>
-  onUpdateProject: (projectId: string, contents: Partial<OmittedProject>) => Promise<void>
+  onDeleteItem: (itemId: string) => Promise<void>
+  onUpdateItem: (itemId: string, contents: Partial<OmittedBadgeItem>) => Promise<void>
   portalContainerRef?: RefObject<Element | DocumentFragment | null>
 }
 
-const ProjectListBase = ({
-  projects,
+const BadgeListBase = ({
+  items,
   searchTerm,
   canCreateNew,
   previewColor,
   onSelect,
   onCreate,
-  onDeleteProject,
-  onUpdateProject,
+  onDeleteItem,
+  onUpdateItem,
   portalContainerRef
 }: Props) => {
-  const [editingProjectId, setEditingProjectId] = useState<string | null>(null)
+  const [editingItemId, setEditingItemId] = useState<string | null>(null)
   const [editorPosition, setEditorPosition] = useState<{ left: number; top: number } | null>(null)
   const moreBtnRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({})
   const editorRef = useRef<HTMLDivElement | null>(null)
 
-  const updateSelectorPosition = useCallback((projectId: string | null) => {
-    if (!projectId) return
-    const btn = moreBtnRefs.current[projectId]
+  const updateSelectorPosition = useCallback((itemId: string | null) => {
+    if (!itemId) return
+    const btn = moreBtnRefs.current[itemId]
     if (!btn) return
     const rect = btn.getBoundingClientRect()
     setEditorPosition({
@@ -44,21 +44,21 @@ const ProjectListBase = ({
     })
   }, [])
 
-  const handleMoreClick = (projectId: string) => {
-    setEditingProjectId(projectId)
+  const handleMoreClick = (itemId: string) => {
+    setEditingItemId(itemId)
   }
 
   const handleCloseEditor = () => {
-    setEditingProjectId(null)
+    setEditingItemId(null)
     setEditorPosition(null)
   }
 
   useEffect(() => {
-    if (!editingProjectId) return
-    updateSelectorPosition(editingProjectId)
+    if (!editingItemId) return
+    updateSelectorPosition(editingItemId)
 
-    const handleScroll = () => updateSelectorPosition(editingProjectId)
-    const handleResize = () => updateSelectorPosition(editingProjectId)
+    const handleScroll = () => updateSelectorPosition(editingItemId)
+    const handleResize = () => updateSelectorPosition(editingItemId)
 
     window.addEventListener('scroll', handleScroll)
     window.addEventListener('resize', handleResize)
@@ -67,17 +67,17 @@ const ProjectListBase = ({
       window.removeEventListener('scroll', handleScroll)
       window.removeEventListener('resize', handleResize)
     }
-  }, [editingProjectId, updateSelectorPosition])
+  }, [editingItemId, updateSelectorPosition])
 
   useEffect(() => {
-    if (!editingProjectId) return
+    if (!editingItemId) return
 
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node
       if (
         editorRef.current &&
         !editorRef.current.contains(target) &&
-        !moreBtnRefs.current[editingProjectId]?.contains(target)
+        !moreBtnRefs.current[editingItemId]?.contains(target)
       ) {
         handleCloseEditor()
       }
@@ -87,40 +87,38 @@ const ProjectListBase = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [editingProjectId])
+  }, [editingItemId])
 
   return (
     <div className={style.tagListContainer}>
-      <p className={style.tagListDescription}>Select project or create one</p>
+      <p className={style.tagListDescription}>Select an option or create one</p>
       {canCreateNew ? (
         <button type="button" onClick={onCreate} className={style.createNewTagButton}>
           Create{' '}
-          <ProjectBadge
-            project={{ id: 'preview', name: searchTerm || 'new project', color: previewColor }}
-          />
+          <Badge item={{ id: 'preview', name: searchTerm || 'new item', color: previewColor }} />
         </button>
       ) : (
         <ul className={style.tagList}>
           {/* eslint-disable-next-line react-hooks/refs */}
-          {projects.map((project) => (
-            <li className={style.tagItem} key={project.id} onClick={() => onSelect(project)}>
-              <ProjectBadge project={project} />
+          {items.map((item) => (
+            <li className={style.tagItem} key={item.id} onClick={() => onSelect(item)}>
+              <Badge item={item} />
               <button
                 className={style.moreButton}
                 type="button"
                 tabIndex={-1}
-                aria-label="edit project"
+                aria-label="edit item"
                 ref={(el) => {
-                  moreBtnRefs.current[project.id] = el
+                  moreBtnRefs.current[item.id] = el
                 }}
                 onClick={(e) => {
                   e.stopPropagation()
-                  handleMoreClick(project.id)
+                  handleMoreClick(item.id)
                 }}
               >
                 <Icon name="more" size="large" />
               </button>
-              {editingProjectId === project.id && editorPosition && (
+              {editingItemId === item.id && editorPosition && (
                 <Portal container={portalContainerRef?.current ?? undefined}>
                   <div
                     ref={editorRef}
@@ -134,10 +132,10 @@ const ProjectListBase = ({
                       zIndex: 9999
                     }}
                   >
-                    <ProjectEditor
-                      project={project}
-                      onDelete={onDeleteProject}
-                      onChange={onUpdateProject}
+                    <BadgeEditor
+                      item={item}
+                      onDelete={onDeleteItem}
+                      onChange={onUpdateItem}
                       onCloseEditor={handleCloseEditor}
                     />
                   </div>
@@ -151,5 +149,5 @@ const ProjectListBase = ({
   )
 }
 
-export const ProjectList = memo(ProjectListBase)
-ProjectList.displayName = 'ProjectList'
+export const BadgeList = memo(BadgeListBase)
+BadgeList.displayName = 'BadgeList'

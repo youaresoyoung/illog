@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { useProjectSelectorContext } from './context'
+import { useBadgeSelectorContext } from './context'
 import * as style from '../selector.css'
 import clsx from 'clsx'
 
@@ -10,7 +10,7 @@ type ContentProps = {
 }
 
 export const Content = ({ children, className }: ContentProps) => {
-  const { isOpen, contentRef, triggerRef } = useProjectSelectorContext()
+  const { isOpen, contentRef, triggerRef } = useBadgeSelectorContext()
   const [position, setPosition] = useState({ top: 0, left: 0 })
 
   useEffect(() => {
