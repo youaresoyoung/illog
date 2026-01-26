@@ -2,6 +2,8 @@ import type {
   Task,
   Tag,
   Project,
+  TaskType,
+  TaskSubtype,
   TaskWithTags,
   TaskNote,
   TaskReflection,
@@ -10,7 +12,13 @@ import type {
   CreateTagRequest,
   UpdateTagRequest,
   CreateProjectRequest,
-  UpdateProjectRequest
+  UpdateProjectRequest,
+  WeeklyReflectionResponse,
+  TaskTypeWithSubtypesDto,
+  CreateTaskTypeRequest,
+  UpdateTaskTypeRequest,
+  CreateTaskSubtypeRequest,
+  UpdateTaskSubtypeRequest
 } from './src/shared/types'
 
 interface RendererAPI {
@@ -52,6 +60,25 @@ interface RendererAPI {
     get: (id: string) => Promise<Project | null>
     getAll: () => Promise<Project[]>
     update: (id: string, data: UpdateProjectRequest) => Promise<Project>
+    softDelete: (id: string) => Promise<void>
+  }
+  weeklyReflection: {
+    get: (weekId: string) => Promise<WeeklyReflectionResponse | null>
+    upsert: (weekId: string, content: string) => Promise<WeeklyReflectionResponse>
+  }
+  taskType: {
+    getAll: () => Promise<TaskType[]>
+    getAllWithSubtypes: () => Promise<TaskTypeWithSubtypesDto[]>
+    get: (id: string) => Promise<TaskType | null>
+    create: (data: CreateTaskTypeRequest) => Promise<TaskType>
+    update: (id: string, data: UpdateTaskTypeRequest) => Promise<TaskType>
+    softDelete: (id: string) => Promise<void>
+  }
+  taskSubtype: {
+    get: (id: string) => Promise<TaskSubtype | null>
+    getAllByTypeId: (typeId: string) => Promise<TaskSubtype[]>
+    create: (data: CreateTaskSubtypeRequest) => Promise<TaskSubtype>
+    update: (id: string, data: UpdateTaskSubtypeRequest) => Promise<TaskSubtype>
     softDelete: (id: string) => Promise<void>
   }
 }

@@ -26,5 +26,15 @@ export const queryKeys = {
   weeklyReflections: {
     all: ['weeklyReflections'] as const,
     byWeekId: (weekId: string) => [...queryKeys.weeklyReflections.all, 'week', weekId] as const
+  },
+  taskTypes: {
+    all: ['taskTypes'] as const,
+    detail: (id: string) => [...queryKeys.taskTypes.all, 'detail', id] as const,
+    withSubtypes: () => [...queryKeys.taskTypes.all, 'withSubtypes'] as const
+  },
+  taskSubtypes: {
+    all: ['taskSubtypes'] as const,
+    byTypeId: (typeId: string) => [...queryKeys.taskSubtypes.all, 'byTypeId', typeId] as const,
+    detail: (id: string) => [...queryKeys.taskSubtypes.all, 'detail', id] as const
   }
 }

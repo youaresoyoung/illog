@@ -5,7 +5,8 @@ import type {
   Project,
   TaskFilterParams,
   TaskWithTags,
-  UpdateTaskRequest
+  UpdateTaskRequest,
+  TaskTypeWithSubtypesDto
 } from '../../../../shared/types'
 
 export const useTodayTasks = () => {
@@ -255,6 +256,142 @@ export const useClearProjectFromTask = () => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) =>
           task.id === taskId ? { ...task, projectId: null, project: null } : task
+        )
+      )
+
+      return { previousTasks }
+    },
+    onSuccess: (updatedTask) => {
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+        old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+      )
+      queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(queryKeys.tasks.today(), context.previousTasks)
+      }
+    }
+  })
+}
+
+export const useSetTaskTypeToTask = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ taskId, taskTypeId }: { taskId: string; taskTypeId: string }) =>
+      window.api.task.update(taskId, { taskTypeId, taskSubtypeId: null }),
+    onMutate: async ({ taskId, taskTypeId }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
+
+      const previousTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
+      const allTaskTypes = queryClient.getQueryData<TaskTypeWithSubtypesDto[]>(
+        queryKeys.taskTypes.withSubtypes()
+      )
+      const taskTypeToSet = allTaskTypes?.find((t) => t.id === taskTypeId)
+
+      if (taskTypeToSet) {
+        queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+          old?.map((task) =>
+            task.id === taskId
+              ? {
+                  ...task,
+                  taskTypeId,
+                  taskType: {
+                    id: taskTypeToSet.id,
+                    name: taskTypeToSet.name,
+                    color: taskTypeToSet.color
+                  },
+                  taskSubtypeId: null,
+                  taskSubtype: null
+                }
+              : task
+          )
+        )
+      }
+
+      return { previousTasks }
+    },
+    onSuccess: (updatedTask) => {
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+        old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+      )
+      queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(queryKeys.tasks.today(), context.previousTasks)
+      }
+    }
+  })
+}
+
+export const useSetTaskSubtypeToTask = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ taskId, taskSubtypeId }: { taskId: string; taskSubtypeId: string }) =>
+      window.api.task.update(taskId, { taskSubtypeId }),
+    onMutate: async ({ taskId, taskSubtypeId }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
+
+      const previousTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
+      const allTaskTypes = queryClient.getQueryData<TaskTypeWithSubtypesDto[]>(
+        queryKeys.taskTypes.withSubtypes()
+      )
+      const taskSubtypeToSet = allTaskTypes
+        ?.flatMap((t) => t.subtypes || [])
+        .find((s) => s.id === taskSubtypeId)
+
+      if (taskSubtypeToSet) {
+        queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+          old?.map((task) =>
+            task.id === taskId
+              ? {
+                  ...task,
+                  taskSubtypeId,
+                  taskSubtype: {
+                    id: taskSubtypeToSet.id,
+                    name: taskSubtypeToSet.name
+                  }
+                }
+              : task
+          )
+        )
+      }
+
+      return { previousTasks }
+    },
+    onSuccess: (updatedTask) => {
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+        old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+      )
+      queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousTasks) {
+        queryClient.setQueryData(queryKeys.tasks.today(), context.previousTasks)
+      }
+    }
+  })
+}
+
+export const useClearTaskTypeFromTask = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (taskId: string) =>
+      window.api.task.update(taskId, { taskTypeId: null, taskSubtypeId: null }),
+    onMutate: async (taskId) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
+
+      const previousTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
+
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
+        old?.map((task) =>
+          task.id === taskId
+            ? { ...task, taskTypeId: null, taskType: null, taskSubtypeId: null, taskSubtype: null }
+            : task
         )
       )
 

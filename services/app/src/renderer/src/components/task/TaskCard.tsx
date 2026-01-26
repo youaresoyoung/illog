@@ -1,8 +1,10 @@
 import { TagSection } from '../tag/TagSection'
 import { ProjectSection } from '../project/ProjectSection'
+import { TaskTypeSection } from '../task-type/TaskTypeSection'
 import { Card, Inline, Input, useAutoSaveInput } from '@illog/ui'
 import { useUpdateTask } from '../../hooks/queries/useTaskQueries'
 import type { TaskWithTags } from '../../../../shared/types'
+import { MouseEvent } from 'react'
 
 type Props = {
   task: TaskWithTags
@@ -28,10 +30,15 @@ export const TaskCard = ({ task, handleOpenNote }: Props) => {
     handleOpenNote(task.id)
   }
 
+  const handleStopPropagation = (e: MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+  }
+
   return (
     <Card onClick={handleClickCard} maxWidth="100%">
-      <Inline>
+      <Inline onClick={handleStopPropagation} gap="200">
         <ProjectSection task={task} />
+        <TaskTypeSection task={task} />
       </Inline>
       <div>
         <Input
@@ -52,8 +59,9 @@ export const TaskCard = ({ task, handleOpenNote }: Props) => {
         />
       </div>
       {/* <button onClick={() => handleDeleteTask(task.id)}>Delete</button> */}
-
-      <TagSection task={task} />
+      <div onClick={handleStopPropagation}>
+        <TagSection task={task} />
+      </div>
     </Card>
   )
 }

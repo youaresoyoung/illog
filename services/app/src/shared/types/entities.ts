@@ -1,4 +1,12 @@
-export type { Task, InsertTask, Tag, InsertTag, Project } from '../../main/database/schema'
+export type {
+  Task,
+  InsertTask,
+  Tag,
+  InsertTag,
+  Project,
+  TaskType,
+  TaskSubtype
+} from '../../main/database/schema'
 
 import type { taskNotes, taskReflections, weeklyReflections } from '../../main/database/schema'
 export type TaskNote = typeof taskNotes.$inferSelect
