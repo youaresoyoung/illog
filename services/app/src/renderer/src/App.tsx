@@ -2,9 +2,9 @@ import { createHashRouter, RouterProvider } from 'react-router'
 import { Layout } from './components/layout/Layout'
 import { Today } from './pages/Today'
 import { ThisWeek } from './pages/ThisWeek'
-import { Reflection } from './pages/Reflection'
 import { ThemeProvider } from './context/ThemeContext'
 import { QueryProvider } from './providers/QueryProvider'
+import { History } from './pages/History'
 
 const router = createHashRouter([
   {
@@ -19,10 +19,15 @@ const router = createHashRouter([
         path: 'this-week',
         element: <ThisWeek />
       },
+      // // NOTE: History page is temporarily show up until the reflection page is ready, as they will be merged into one page eventually
       {
-        path: 'reflection',
-        element: <Reflection />
+        path: 'history',
+        element: <History />
       }
+      // {
+      //   path: 'reflection',
+      //   element: <Reflection />
+      // }
     ]
   }
 ])

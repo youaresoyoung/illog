@@ -33,6 +33,13 @@ export const useTasksByFilters = (filters: TaskFilterParams) => {
   })
 }
 
+export const useAllTasks = () => {
+  return useQuery({
+    queryKey: queryKeys.tasks.all,
+    queryFn: () => window.api.task.getTasksWithTags()
+  })
+}
+
 export const useCreateTask = () => {
   const queryClient = useQueryClient()
 
