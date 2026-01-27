@@ -27,6 +27,7 @@ export { Portal } from './components/Portal'
 export { TimePicker } from './components/TimePicker'
 export { Dialog } from './components/Dialog'
 export { Overlay } from './components/Overlay'
+export { ContextMenu, useContextMenuContext } from './components/ContextMenu'
 
 // Types
 export type { TagType, OmittedTag, TagColor } from './components/Tag/types'
@@ -44,6 +45,12 @@ export type { CenterProps } from './components/Center/types'
 export type { ButtonProps } from './components/Button/types'
 export type { TextProps } from './components/Typography/types'
 export type { OverlayProps, OverlayAnimation } from './components/Overlay/types'
+export type {
+  ContextMenuContextValue,
+  ContextMenuRootProps,
+  ContextMenuContentProps,
+  ContextMenuItemProps
+} from './components/ContextMenu'
 
 // Hooks
 export { useNavigationListContext } from './context'
