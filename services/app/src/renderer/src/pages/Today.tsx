@@ -1,6 +1,6 @@
 import { TaskCard } from '../components/task/TaskCard'
 import { Button, Icon, Stack, Text } from '@illog/ui'
-import { useTodayTasks, useCreateTask, useDeleteTask } from '../hooks/queries/useTaskQueries'
+import { useTodayTasks, useCreateTask } from '../hooks/queries/useTaskQueries'
 import { useUIStore } from '../stores/useUIStore'
 import { ContentHeader } from '../components/layout/ContentHeader'
 import { memo } from 'react'
@@ -8,7 +8,6 @@ import { memo } from 'react'
 export const Today = memo(() => {
   const { data: tasks, isLoading, error } = useTodayTasks()
   const { mutate: createTask } = useCreateTask()
-  const { mutate: deleteTask } = useDeleteTask()
   const openTaskNote = useUIStore((s) => s.openTaskNote)
 
   const handleAddLogClick = () => {
@@ -39,12 +38,7 @@ export const Today = memo(() => {
       {tasks && tasks.length > 0 ? (
         <Stack gap="400" mt="400">
           {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              handleDeleteTask={deleteTask}
-              handleOpenNote={openTaskNote}
-            />
+            <TaskCard key={task.id} task={task} handleOpenNote={openTaskNote} />
           ))}
         </Stack>
       ) : (
