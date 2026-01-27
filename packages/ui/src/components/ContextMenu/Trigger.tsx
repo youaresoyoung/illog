@@ -13,6 +13,15 @@ export const Trigger = ({
   const handleContextMenu = useCallback(
     (e: MouseEvent) => {
       if (isDisabled) return
+
+      const activeElement = document.activeElement
+      if (
+        activeElement instanceof HTMLInputElement ||
+        activeElement instanceof HTMLTextAreaElement
+      ) {
+        return
+      }
+
       e.preventDefault()
       onPointerPositionChange({ x: e.clientX, y: e.clientY })
       onOpenChange(true)

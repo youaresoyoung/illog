@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { MouseEvent, useCallback } from 'react'
 import { ContextMenuItemProps } from './types'
 import { useContextMenuContext } from './context/context'
 import { item as itemStyle } from './contextMenu.css'
@@ -14,11 +14,15 @@ export const Item = ({
 }: ContextMenuItemProps) => {
   const { onClose } = useContextMenuContext()
 
-  const handleClick = useCallback(() => {
-    if (isDisabled) return
-    onSelect?.()
-    onClose()
-  }, [isDisabled, onSelect, onClose])
+  const handleClick = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      if (isDisabled) return
+      onSelect?.()
+      onClose()
+    },
+    [isDisabled, onSelect, onClose]
+  )
 
   return (
     <div
