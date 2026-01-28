@@ -1,4 +1,4 @@
-import { blue, brand, gray, green, red, white, yellow } from './primitive'
+import { blue, brand, gray, green, purple, red, white, yellow } from './primitive'
 
 export const background = {
   default: {
@@ -27,12 +27,12 @@ export const background = {
     tertiaryHover: brand[800]
   },
   tag: {
-    blue: white[1000],
-    green: white[1000],
-    yellow: gray[900],
-    purple: white[1000],
-    red: white[1000],
-    gray: gray[900]
+    blue: blue[400],
+    green: green[400],
+    yellow: yellow[400],
+    purple: purple[400],
+    red: red[400],
+    gray: gray[400]
   },
   state: {
     done: blue[400],
@@ -68,12 +68,12 @@ export const text = {
     onBrandTertiary: brand[100]
   },
   tag: {
-    blue: white[1000],
-    green: white[1000],
-    yellow: gray[900],
-    purple: white[1000],
-    red: white[100],
-    gray: white[1000]
+    blue: blue[600],
+    green: green[600],
+    yellow: yellow[600],
+    purple: purple[600],
+    red: red[600],
+    gray: gray[600]
   }
 }
 
