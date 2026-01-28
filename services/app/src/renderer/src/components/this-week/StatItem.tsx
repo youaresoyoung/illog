@@ -5,16 +5,9 @@ type Props = {
   label: string
 }
 
-export const StatCard = ({ value, label }: Props) => {
+export const StatItem = ({ value, label }: Props) => {
   return (
-    <Stack
-      gap="100"
-      px="600"
-      py="400"
-      backgroundColor="backgroundDefaultSecondary"
-      borderRadius="200"
-      align="center"
-    >
+    <Stack gap="200" px="600" borderRadius="200" align="center">
       <Text textStyle="heading" color="textDefaultDefault">
         {value}
       </Text>

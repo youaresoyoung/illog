@@ -1,5 +1,5 @@
 import { Inline } from '@illog/ui'
-import { StatCard } from './StatCard'
+import { StatItem } from './StatItem'
 import type { TaskWithTags } from '../../../../shared/types'
 import { calculateWeeklyStats, formatHoursDecimal } from '../../utils/thisWeekStats'
 
@@ -11,11 +11,18 @@ export const StatsSummary = ({ tasks }: Props) => {
   const stats = calculateWeeklyStats(tasks)
 
   return (
-    <Inline gap="400" wrap="wrap">
-      <StatCard value={stats.completedCount} label="Tasks Completed" />
-      <StatCard value={formatHoursDecimal(stats.totalMinutes)} label="Total Time Logged" />
-      <StatCard value={stats.uniqueTagCount} label="Different Labels" />
-      <StatCard value={stats.avgTasksPerDay.toFixed(1)} label="Avg Tasks/Day" />
+    <Inline
+      gap="400"
+      bg="backgroundDefaultDefault"
+      px="400"
+      py="800"
+      borderRadius="200"
+      justify="space-evenly"
+    >
+      <StatItem value={stats.completedCount} label="Tasks Completed" />
+      <StatItem value={formatHoursDecimal(stats.totalMinutes)} label="Total Time Logged" />
+      <StatItem value={stats.uniqueProjectCount} label="Projects" />
+      <StatItem value={stats.avgTasksPerDay.toFixed(1)} label="Avg Tasks/Day" />
     </Inline>
   )
 }
