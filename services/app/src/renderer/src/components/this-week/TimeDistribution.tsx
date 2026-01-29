@@ -1,25 +1,19 @@
-import { Inline, Stack, Text } from '@illog/ui'
+import { Box, Inline, Stack, Text } from '@illog/ui'
 import { DonutChart } from './DonutChart'
-import type { TaskWithTags } from '../../../../shared/types'
-import { calculateCategoryStats } from '../../utils/thisWeekStats'
-
-const TAG_COLORS: Record<string, string> = {
-  blue: '#3b82f6',
-  green: '#22c55e',
-  yellow: '#eab308',
-  purple: '#a855f7',
-  red: '#ef4444',
-  gray: '#6b7280'
-}
+import { formatHoursDecimal } from '../../utils/this-week-stats'
+import { DONUT_BACKGROUND_COLORS, DONUT_BORDER_COLORS } from '../../constant/color'
+import { ChartSegment } from '../../utils/category-analytics'
 
 type Props = {
-  tasks: TaskWithTags[]
+  segments: ChartSegment[]
+  isLeaf: boolean
+  onSegmentClick: (segment: ChartSegment) => void
 }
 
-export const TimeDistribution = ({ tasks }: Props) => {
-  const categories = calculateCategoryStats(tasks)
+export const TimeDistribution = ({ segments, isLeaf, onSegmentClick }: Props) => {
+  const isClickable = !isLeaf
 
-  if (categories.length === 0) {
+  if (segments.length === 0) {
     return (
       <Stack gap="400">
         <Text textStyle="bodyStrong" color="textDefaultDefault">
@@ -31,32 +25,44 @@ export const TimeDistribution = ({ tasks }: Props) => {
       </Stack>
     )
   }
-
   return (
     <Stack gap="400">
       <Text textStyle="bodyStrong" color="textDefaultDefault">
         Time Distribution
       </Text>
-      <Inline gap="600" align="center">
-        <DonutChart categories={categories} />
-        <Stack gap="200">
-          {categories.map((category) => (
-            <Inline key={category.tagId} gap="200" align="center">
-              <div
+      <Stack gap="600" align="center" bg="backgroundDefaultDefault" rounded="200" px="400" py="800">
+        <DonutChart segments={segments} />
+        <Inline gap="200" wrap="wrap" justify="center">
+          {segments.map((segment) => (
+            <Inline
+              maxWidth={240}
+              key={segment.id}
+              gap="200"
+              align="center"
+              style={{ cursor: isClickable ? 'pointer' : 'default' }}
+              onClick={isClickable ? () => onSegmentClick(segment) : undefined}
+              overflow="hidden"
+            >
+              {/* TODO: Create Dot UI component */}
+              <Box
+                flexShrink={0}
+                w="12px"
+                h="12px"
+                rounded="full"
                 style={{
-                  width: 12,
-                  height: 12,
-                  borderRadius: '50%',
-                  backgroundColor: TAG_COLORS[category.tagColor] || TAG_COLORS.gray
+                  backgroundColor:
+                    DONUT_BACKGROUND_COLORS[segment.color] || DONUT_BACKGROUND_COLORS.gray,
+                  border: `1px solid ${DONUT_BORDER_COLORS[segment.color] || DONUT_BORDER_COLORS.gray}`
                 }}
               />
-              <Text textStyle="caption" color="textDefaultSecondary">
-                {category.tagName}
+              <Text textStyle="caption" color="textDefaultSecondary" truncate="true">
+                {segment.name} ({formatHoursDecimal(segment.totalMinutes)},{' '}
+                {segment.percentage.toFixed(0)}%)
               </Text>
             </Inline>
           ))}
-        </Stack>
-      </Inline>
+        </Inline>
+      </Stack>
     </Stack>
   )
 }
