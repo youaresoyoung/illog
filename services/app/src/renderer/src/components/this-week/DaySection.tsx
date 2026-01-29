@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Button, Inline, Stack, Text } from '@illog/ui'
 import { DayTaskItem } from './DayTaskItem'
-import type { DayTasks } from '../../utils/thisWeekStats'
-import { formatDuration } from '../../utils/thisWeekStats'
+import type { DayTasks } from '../../utils/this-week-stats'
+import { formatDuration } from '../../utils/this-week-stats'
 
 const INITIAL_VISIBLE_COUNT = 3
 

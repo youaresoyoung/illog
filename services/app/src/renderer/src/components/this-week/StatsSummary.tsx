@@ -1,7 +1,7 @@
 import { Inline } from '@illog/ui'
 import { StatItem } from './StatItem'
 import type { TaskWithTags } from '../../../../shared/types'
-import { calculateWeeklyStats, formatHoursDecimal } from '../../utils/thisWeekStats'
+import { calculateWeeklyStats, formatHoursDecimal } from '../../utils/this-week-stats'
 
 type Props = {
   tasks: TaskWithTags[]

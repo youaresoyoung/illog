@@ -3,7 +3,7 @@ import { startOfWeek } from 'date-fns'
 import { Stack, Text } from '@illog/ui'
 import { DaySection } from './DaySection'
 import type { TaskWithTags } from '../../../../shared/types'
-import { groupTasksByDay } from '../../utils/thisWeekStats'
+import { groupTasksByDay } from '../../utils/this-week-stats'
 
 type Props = {
   tasks: TaskWithTags[]
