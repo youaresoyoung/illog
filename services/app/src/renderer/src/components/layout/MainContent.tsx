@@ -13,12 +13,14 @@ export const MainContent = ({ children }: Props) => {
       pt="1200"
       pb="2400"
       style={{
-        marginLeft: '256px'
+        marginLeft: '256px',
+        overflowX: 'auto'
       }}
     >
       <Stack
-        minWidth={592}
+        width={960}
         style={{
+          // TODO: update stack component applying margin 0 auto
           margin: '0 auto'
         }}
       >
