@@ -10,7 +10,17 @@ export const badgeBase = style({
   gap: tokens.size.space[100],
   borderRadius: tokens.size.radius[100],
   ...styles.text.singleLine.caption,
-  padding: tokens.size.space[200]
+  padding: tokens.size.space[200],
+  maxWidth: '100%',
+  minWidth: 0,
+  overflow: 'hidden'
+})
+
+export const badgeText = style({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  minWidth: 0
 })
 
 export const removeButton = style({

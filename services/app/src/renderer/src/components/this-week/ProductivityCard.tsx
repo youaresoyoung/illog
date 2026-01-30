@@ -1,7 +1,6 @@
-import { Box, Inline, Stack, Text } from '@illog/ui'
+import { Badge, Inline, Stack, Text } from '@illog/ui'
 import type { ChartSegment } from '../../utils/category-analytics'
 import { formatHoursDecimal } from '../../utils/this-week-stats'
-import { DONUT_BACKGROUND_COLORS, DONUT_BORDER_COLORS } from '../../constant/color'
 
 type Props = {
   segment: ChartSegment
@@ -23,21 +22,9 @@ export const ProductivityCard = ({ segment, onClick, isClickable = true }: Props
       onClick={isClickable ? onClick : undefined}
     >
       <Inline gap="200" align="center">
-        <Box
-          flexShrink={0}
-          w={'12px'}
-          h={'12px'}
-          rounded="full"
-          style={{
-            backgroundColor: DONUT_BACKGROUND_COLORS[segment.color] || DONUT_BACKGROUND_COLORS.gray,
-            border: `1px solid ${DONUT_BORDER_COLORS[segment.color] || DONUT_BORDER_COLORS.gray}`
-          }}
-        />
         <Inline overflow="hidden" align="center" gap="200">
-          <Text textStyle="bodyStrong" color="textDefaultDefault" flex="1" truncate="true">
-            {segment.name}
-          </Text>
-          <Text textStyle="caption" color="textDefaultTertiary">
+          <Badge item={segment} withoutIcon={true} />
+          <Text textStyle="caption" color="textDefaultTertiary" whiteSpace="nowrap" flexShrink={0}>
             {segment.taskCount} tasks
           </Text>
         </Inline>

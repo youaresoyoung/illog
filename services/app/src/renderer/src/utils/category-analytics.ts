@@ -1,10 +1,11 @@
+import { BadgeColor } from '@illog/ui'
 import type { TaskWithTags } from '../../../shared/types'
 import { getTaskDurationMinutes } from './this-week-stats'
 
 export type ChartSegment = {
   id: string
   name: string
-  color: string
+  color: BadgeColor
   taskCount: number
   totalMinutes: number
   percentage: number
@@ -36,11 +37,11 @@ function aggregateToSegments(
   tasks: TaskWithTags[],
   getKey: (task: TaskWithTags) => string,
   getName: (task: TaskWithTags) => string,
-  getColor: (task: TaskWithTags) => string
+  getColor: (task: TaskWithTags) => BadgeColor
 ): ChartSegment[] {
   const map = new Map<
     string,
-    { id: string; name: string; color: string; taskCount: number; totalMinutes: number }
+    { id: string; name: string; color: BadgeColor; taskCount: number; totalMinutes: number }
   >()
 
   let grandTotal = 0
@@ -159,8 +160,34 @@ export function getLevelLabel(filter: AnalyticsFilter): string {
     return 'By Subtype'
   }
 
-  if (!selectedCategory) return 'By Sub Type'
+  if (!selectedCategory) return 'By Subtype'
   return 'By Project'
+}
+
+export function getCategoryLabel(filter: AnalyticsFilter): string {
+  const { viewMode, selectedCategory } = filter
+
+  if (!selectedCategory) return ''
+
+  if (viewMode === 'project') return 'Project'
+  if (viewMode === 'taskType') return 'Task Type'
+  return 'Subtype'
+}
+
+export function getSubcategoryLabel(filter: AnalyticsFilter): string {
+  const { viewMode, selectedCategory, selectedSubcategory } = filter
+
+  if (!selectedSubcategory) return ''
+
+  if (viewMode === 'project') {
+    return selectedCategory ? 'Task Type' : ''
+  }
+
+  if (viewMode === 'taskType') {
+    return selectedCategory ? 'Project' : ''
+  }
+
+  return ''
 }
 
 export function getBreadcrumbRoot(viewMode: ViewMode): string {

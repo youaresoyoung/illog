@@ -18,6 +18,7 @@ export const Badge = ({
   item,
   addButtonVariant,
   isOpenedSelector,
+  withoutIcon,
   className,
   openSelector,
   onRemove
@@ -32,7 +33,7 @@ export const Badge = ({
         ])}
         onClick={(e: MouseEvent<HTMLButtonElement>) => openSelector?.(e)}
       >
-        <span>{item.name}</span>
+        <span className={style.badgeText}>{item.name}</span>
         <Icon
           size="extraSmall"
           name="chevron_down"
@@ -46,7 +47,7 @@ export const Badge = ({
   if (onRemove) {
     return (
       <Inline
-        className={clsx([style.badgeRecipe({ color: item.color }), className])}
+        className={clsx([style.badgeRecipe({ color: item.color ?? 'gray' }), className])}
         maxWidth="100%"
       >
         <Inline as="span" truncate="true">
@@ -61,7 +62,7 @@ export const Badge = ({
           className={style.removeButton}
           aria-label={`Remove ${item.name}`}
         >
-          <Icon size="extraSmall" name="cancel" color={getIconColor(item.color)} />
+          <Icon size="extraSmall" name="cancel" color={getIconColor(item.color ?? 'gray')} />
         </button>
       </Inline>
     )
@@ -69,19 +70,21 @@ export const Badge = ({
 
   return (
     <Inline
-      className={clsx([style.badgeRecipe({ color: item.color }), className])}
+      className={clsx([style.badgeRecipe({ color: item.color ?? 'gray' }), className])}
       maxWidth="100%"
       overflow="hidden"
     >
       <Inline as="span" truncate="true">
         {item.name}
       </Inline>
-      <Icon
-        size="extraSmall"
-        name="chevron_down"
-        color={getIconColor(item.color)}
-        rotate={isOpenedSelector ? 180 : 0}
-      />
+      {!withoutIcon && (
+        <Icon
+          size="extraSmall"
+          name="chevron_down"
+          color={getIconColor(item.color ?? 'gray')}
+          rotate={isOpenedSelector ? 180 : 0}
+        />
+      )}
     </Inline>
   )
 }
