@@ -229,7 +229,7 @@ export class TaskRepository {
     }
 
     if (contents.startTime !== undefined) {
-      updateData.startTime = contents.startTime ? new Date(contents.startTime) : null
+      updateData.startTime = contents.startTime ? new Date(contents.startTime) : undefined
     }
     if (contents.endTime !== undefined) {
       updateData.endTime = contents.endTime ? new Date(contents.endTime) : null

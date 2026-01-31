@@ -37,6 +37,8 @@ export const tasks = sqliteTable(
     doneAt: integer('done_at', { mode: 'timestamp' }),
     deletedAt: integer('deleted_at', { mode: 'timestamp' }),
     startTime: integer('started_at', { mode: 'timestamp' })
+      .notNull()
+      .default(sql`(unixepoch())`)
   },
   (table) => ({
     statusIdx: index('task_status_idx').on(table.status),
