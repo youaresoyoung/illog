@@ -45,7 +45,7 @@ export function formatHoursDecimal(minutes: number): string {
   return `${hours.toFixed(1)}h`
 }
 
-export function calculateWeeklyStats(tasks: TaskWithTags[]): WeeklyStats {
+export function calculateWeeklyStats(tasks: TaskWithTags[], weekStart?: Date): WeeklyStats {
   const completedCount = tasks.filter((t) => t.doneAt !== null).length
 
   const totalMinutes = tasks.reduce((sum, task) => sum + getTaskDurationMinutes(task), 0)
@@ -53,7 +53,20 @@ export function calculateWeeklyStats(tasks: TaskWithTags[]): WeeklyStats {
   const uniqueProjects = new Set(tasks.map((t) => t.project?.id).filter(Boolean))
   const uniqueProjectCount = uniqueProjects.size
 
-  const avgTasksPerDay = completedCount / 7
+  let daysInWeek = 7
+  if (weekStart) {
+    const now = new Date()
+    const weekEnd = new Date(weekStart)
+    weekEnd.setDate(weekEnd.getDate() + 6)
+
+    if (now < weekEnd) {
+      // NOTE: Current or future week: count elapsed days (at least 1)
+      const elapsed = Math.floor((now.getTime() - weekStart.getTime()) / (1000 * 60 * 60 * 24)) + 1
+      daysInWeek = Math.min(Math.max(elapsed, 1), 7)
+    }
+  }
+
+  const avgTasksPerDay = completedCount / daysInWeek
 
   return {
     completedCount,

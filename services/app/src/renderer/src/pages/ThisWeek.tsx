@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { format } from 'date-fns'
-import { Inline, Stack, Text } from '@illog/ui'
+import { Inline, Stack, Text, Icon, Button } from '@illog/ui'
 import { ContentHeader } from '../components/layout/ContentHeader'
 import {
   StatsSummary,
@@ -11,16 +11,12 @@ import {
   DailyBreakdown
 } from '../components/this-week'
 import { useTasksByFilters } from '../hooks/queries'
-import { useThisWeekParams } from '../hooks/useThisWeekParams'
-import {
-  getFilteredTasks,
-  getStatsForFilterLevel,
-  getLevelLabel
-} from '../utils/category-analytics'
+import { useWeeklyParams } from '../hooks/useWeeklyParams'
+import { getStatsForFilterLevel, getLevelLabel } from '../utils/category-analytics'
 import { useAnalyticsFilter } from '../hooks/useAnalyticsFilter'
 
 export const ThisWeek = () => {
-  const { startTime, endTime } = useThisWeekParams()
+  const { startTime, endTime, goToPreviousWeek, goToNextWeek, isCurrentWeek } = useWeeklyParams()
 
   const { data: tasks = [], isLoading } = useTasksByFilters({
     startTime,
@@ -28,12 +24,15 @@ export const ThisWeek = () => {
   })
 
   // const weekId = getWeekId(new Date())
-  const { filter, isLeaf, setViewMode, goBackToDrill1, resetDrill, handleSegmentClick } =
+  const { filter, isLeaf, setViewMode, goBackToCategory, resetCategory, handleSegmentClick } =
     useAnalyticsFilter()
 
   const segments = useMemo(() => getStatsForFilterLevel(tasks, filter), [tasks, filter])
-  const filteredTasks = useMemo(() => getFilteredTasks(tasks, filter), [tasks, filter])
   const levelLabel = useMemo(() => getLevelLabel(filter), [filter])
+
+  useEffect(() => {
+    resetCategory()
+  }, [startTime, resetCategory])
 
   const startDate = new Date(startTime)
   const endDate = new Date(endTime)
@@ -42,7 +41,7 @@ export const ThisWeek = () => {
   if (isLoading) {
     return (
       <>
-        <ContentHeader title="This Week's Summary" />
+        <ContentHeader title="Weekly Summary" />
         <Text>Loading...</Text>
       </>
     )
@@ -51,20 +50,39 @@ export const ThisWeek = () => {
   return (
     <Stack gap="800">
       <Stack gap="100">
-        <ContentHeader title="This Week's Summary" />
+        <ContentHeader
+          title="Weekly Summary"
+          button={
+            <Inline gap="200" align="center">
+              <Button variant="secondary" onClick={goToPreviousWeek} ariaLabel="Previous week">
+                <Icon name="chevron_down" size="small" rotate={90} />
+                Prev
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={goToNextWeek}
+                isDisabled={isCurrentWeek}
+                ariaLabel="Next week"
+              >
+                Next
+                <Icon name="chevron_down" size="small" rotate={-90} />
+              </Button>
+            </Inline>
+          }
+        />
         <Text textStyle="bodyBase" color="textDefaultTertiary">
           {dateRangeLabel}
         </Text>
       </Stack>
 
-      <StatsSummary tasks={tasks} />
+      <StatsSummary tasks={tasks} weekStart={startTime} />
 
       <ViewModeSelector activeMode={filter.viewMode} onSelect={setViewMode} />
 
       <AnalyticsFilterBar
         filter={filter}
-        onResetDrill={resetDrill}
-        onGoBackToDrill1={goBackToDrill1}
+        onResetCategory={resetCategory}
+        onGoBackToCategory={goBackToCategory}
       />
 
       <Inline gap="600">
@@ -85,7 +103,7 @@ export const ThisWeek = () => {
         </Stack>
       </Inline>
 
-      <DailyBreakdown tasks={filteredTasks} />
+      <DailyBreakdown tasks={tasks} weekStart={startTime} />
 
       {/* <WeeklyReflection weekId={weekId} /> */}
     </Stack>

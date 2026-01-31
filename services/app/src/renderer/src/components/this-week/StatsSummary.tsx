@@ -5,10 +5,11 @@ import { calculateWeeklyStats, formatHoursDecimal } from '../../utils/this-week-
 
 type Props = {
   tasks: TaskWithTags[]
+  weekStart?: string
 }
 
-export const StatsSummary = ({ tasks }: Props) => {
-  const stats = calculateWeeklyStats(tasks)
+export const StatsSummary = ({ tasks, weekStart }: Props) => {
+  const stats = calculateWeeklyStats(tasks, weekStart ? new Date(weekStart) : undefined)
 
   return (
     <Inline

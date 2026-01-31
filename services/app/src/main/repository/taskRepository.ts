@@ -108,10 +108,22 @@ export class TaskRepository {
       conditions.push(eq(tasks.projectId, filters?.projectId))
     }
     if (filters?.startTime) {
-      conditions.push(gte(tasks.createdAt, new Date(filters.startTime)))
+      // NOTE: The time filter logic is designed to include tasks that overlap with the specified time range.
+      // This means:
+      // - Tasks that start before the filter's startTime but end after it will be included (overlapping tasks).
+      // - Tasks that start after the filter's startTime will also be included, regardless of their end time.
+
+      const filterStart = new Date(filters.startTime)
+      conditions.push(
+        or(
+          gte(tasks.endTime, filterStart),
+          and(isNull(tasks.endTime), gte(tasks.startTime, filterStart))
+        )!
+      )
     }
     if (filters?.endTime) {
-      conditions.push(lte(tasks.createdAt, new Date(filters.endTime)))
+      const filterEnd = new Date(filters.endTime)
+      conditions.push(lte(tasks.startTime, filterEnd))
     }
     if (filters?.search) {
       const searchCondition = or(

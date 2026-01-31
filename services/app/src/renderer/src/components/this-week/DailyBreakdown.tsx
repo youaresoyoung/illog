@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { startOfWeek } from 'date-fns'
 import { Stack, Text } from '@illog/ui'
 import { DaySection } from './DaySection'
 import type { TaskWithTags } from '../../../../shared/types'
@@ -7,13 +6,13 @@ import { groupTasksByDay } from '../../utils/this-week-stats'
 
 type Props = {
   tasks: TaskWithTags[]
+  weekStart: string
 }
 
-export const DailyBreakdown = ({ tasks }: Props) => {
+export const DailyBreakdown = ({ tasks, weekStart }: Props) => {
   const days = useMemo(() => {
-    const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 })
-    return groupTasksByDay(tasks, weekStart)
-  }, [tasks])
+    return groupTasksByDay(tasks, new Date(weekStart))
+  }, [tasks, weekStart])
 
   const daysWithTasks = days.filter((day) => day.tasks.length > 0)
 
@@ -24,7 +23,7 @@ export const DailyBreakdown = ({ tasks }: Props) => {
           Daily Breakdown
         </Text>
         <Text textStyle="bodyBase" color="textDefaultTertiary">
-          No tasks logged this week
+          No tasks logged for this week
         </Text>
       </Stack>
     )

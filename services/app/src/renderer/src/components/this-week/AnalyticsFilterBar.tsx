@@ -8,11 +8,11 @@ import {
 
 type Props = {
   filter: AnalyticsFilter
-  onResetDrill: () => void
-  onGoBackToDrill1: () => void
+  onResetCategory: () => void
+  onGoBackToCategory: () => void
 }
 
-export const AnalyticsFilterBar = ({ filter, onResetDrill, onGoBackToDrill1 }: Props) => {
+export const AnalyticsFilterBar = ({ filter, onResetCategory, onGoBackToCategory }: Props) => {
   if (!filter.selectedCategory) return null
 
   const rootLabel = getBreadcrumbRoot(filter.viewMode)
@@ -27,7 +27,7 @@ export const AnalyticsFilterBar = ({ filter, onResetDrill, onGoBackToDrill1 }: P
         color="textBrandDefault"
         whiteSpace="nowrap"
         flexShrink={0}
-        onClick={onResetDrill}
+        onClick={onResetCategory}
       >
         {rootLabel}
       </Text>
@@ -44,7 +44,7 @@ export const AnalyticsFilterBar = ({ filter, onResetDrill, onGoBackToDrill1 }: P
             flexShrink={0}
             maxWidth={'40%'}
             truncate="true"
-            onClick={onGoBackToDrill1}
+            onClick={onGoBackToCategory}
           >
             {categoryLabel}: {filter.selectedCategory.name}
           </Text>

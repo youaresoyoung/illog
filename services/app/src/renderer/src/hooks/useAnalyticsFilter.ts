@@ -16,19 +16,19 @@ export function useAnalyticsFilter() {
     setFilter({ viewMode, selectedCategory: null, selectedSubcategory: null })
   }, [])
 
-  const selectDrill1 = useCallback((id: string | '__etc__', name: string) => {
+  const selectCategory = useCallback((id: string | '__etc__', name: string) => {
     setFilter((prev) => ({ ...prev, selectedCategory: { id, name }, selectedSubcategory: null }))
   }, [])
 
-  const selectDrill2 = useCallback((id: string | '__etc__', name: string) => {
+  const selectSubCategory = useCallback((id: string | '__etc__', name: string) => {
     setFilter((prev) => ({ ...prev, selectedSubcategory: { id, name } }))
   }, [])
 
-  const goBackToDrill1 = useCallback(() => {
+  const goBackToCategory = useCallback(() => {
     setFilter((prev) => ({ ...prev, selectedSubcategory: null }))
   }, [])
 
-  const resetDrill = useCallback(() => {
+  const resetCategory = useCallback(() => {
     setFilter((prev) => ({ ...prev, selectedCategory: null, selectedSubcategory: null }))
   }, [])
 
@@ -39,22 +39,22 @@ export function useAnalyticsFilter() {
       if (isLeafLevel(filter)) return
       const id = segment.id === ETC_SEGMENT_ID ? ETC_FILTER_ID : segment.id
       if (!filter.selectedCategory) {
-        selectDrill1(id, segment.name)
+        selectCategory(id, segment.name)
       } else {
-        selectDrill2(id, segment.name)
+        selectSubCategory(id, segment.name)
       }
     },
-    [filter, selectDrill1, selectDrill2]
+    [filter, selectCategory, selectSubCategory]
   )
 
   return {
     filter,
     isLeaf,
     setViewMode,
-    selectDrill1,
-    selectDrill2,
-    goBackToDrill1,
-    resetDrill,
+    selectCategory,
+    selectSubCategory,
+    goBackToCategory,
+    resetCategory,
     handleSegmentClick
   }
 }
