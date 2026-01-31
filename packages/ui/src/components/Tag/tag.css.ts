@@ -9,7 +9,8 @@ export const tagBase = style({
   alignSelf: 'flex-start',
   borderRadius: tokens.size.radius[100],
   ...styles.text.singleLine.caption,
-  padding: `${tokens.size.space[150]}px ${tokens.size.space[300]}px`
+  padding: `${tokens.size.space[150]}px ${tokens.size.space[300]}px`,
+  overflow: 'hidden'
 })
 
 export const tagRemoveButton = style({

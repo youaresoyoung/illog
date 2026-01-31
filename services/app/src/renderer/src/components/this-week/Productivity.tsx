@@ -25,7 +25,7 @@ export const Productivity = ({ segments, title, isLeaf, onSegmentClick }: Props)
 
   return (
     <Stack gap="400">
-      <Text textStyle="bodyStrong" color="textDefaultDefault">
+      <Text textStyle="bodyStrong" color="textDefaultDefault" truncate="true">
         {title}
       </Text>
       <Inline gap="400" wrap="wrap">

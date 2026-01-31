@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
-import { Button, Icon, Inline, Stack, Text, Input, useDebouncedCallback } from '@illog/ui'
+import { Box, Button, Icon, Inline, Stack, Text, Input, useDebouncedCallback } from '@illog/ui'
 import {
   useWeeklyReflection,
   useUpdateWeeklyReflection
@@ -117,23 +117,30 @@ export const WeeklyReflection = ({ weekId }: Props) => {
         </Text>
         <Stack gap="200">
           {accomplishments.map((item) => (
-            <Inline key={item.id} gap="200" align="center">
+            <Inline key={item.id} gap="200" align="center" overflow="hidden">
               <input
                 type="checkbox"
                 checked={item.completed}
                 onChange={() => handleToggleAccomplishment(item.id)}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', flexShrink: 0 }}
               />
               <Text
                 textStyle="bodyBase"
                 color={item.completed ? 'textDefaultTertiary' : 'textDefaultDefault'}
-                style={{ textDecoration: item.completed ? 'line-through' : 'none', flex: 1 }}
+                style={{
+                  textDecoration: item.completed ? 'line-through' : 'none',
+                  flex: 1,
+                  minWidth: 0
+                }}
+                lineClamp="2"
               >
                 {item.text}
               </Text>
-              <Button variant="secondary" onClick={() => handleRemoveAccomplishment(item.id)}>
-                <Icon name="cancel" size="small" />
-              </Button>
+              <Box flexShrink={0}>
+                <Button variant="secondary" onClick={() => handleRemoveAccomplishment(item.id)}>
+                  <Icon name="cancel" size="small" />
+                </Button>
+              </Box>
             </Inline>
           ))}
           <Inline gap="200">
@@ -157,16 +164,23 @@ export const WeeklyReflection = ({ weekId }: Props) => {
         </Text>
         <Stack gap="200">
           {improvements.map((item, index) => (
-            <Inline key={index} gap="200" align="center">
-              <Text textStyle="caption" color="textDangerDefault">
+            <Inline key={index} gap="200" align="center" overflow="hidden">
+              <Text textStyle="caption" color="textDangerDefault" style={{ flexShrink: 0 }}>
                 !
               </Text>
-              <Text textStyle="bodyBase" color="textDefaultDefault" style={{ flex: 1 }}>
+              <Text
+                textStyle="bodyBase"
+                color="textDefaultDefault"
+                style={{ flex: 1, minWidth: 0 }}
+                lineClamp="2"
+              >
                 {item}
               </Text>
-              <Button variant="secondary" onClick={() => handleRemoveImprovement(index)}>
-                <Icon name="cancel" size="small" />
-              </Button>
+              <Box flexShrink={0}>
+                <Button variant="secondary" onClick={() => handleRemoveImprovement(index)}>
+                  <Icon name="cancel" size="small" />
+                </Button>
+              </Box>
             </Inline>
           ))}
           <Inline gap="200">

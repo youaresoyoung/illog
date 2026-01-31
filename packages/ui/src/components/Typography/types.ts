@@ -13,7 +13,9 @@ type TextOwnProps = {
   align?: CSSProperties['textAlign']
   className?: string
   style?: CSSProperties
-} & Omit<Sprinkles, keyof StyleProps> &
+  truncate?: 'true'
+  lineClamp?: '1' | '2' | '3'
+} & Omit<Sprinkles, keyof StyleProps | 'truncate' | 'lineClamp'> &
   StyleProps
 
 export type TextProps<T extends React.ElementType> = TextOwnProps &

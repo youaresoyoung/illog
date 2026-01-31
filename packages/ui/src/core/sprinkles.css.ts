@@ -232,6 +232,29 @@ const compositionProperties = defineProperties({
         whiteSpace: 'nowrap',
         minWidth: 0
       }
+    },
+    lineClamp: {
+      '1': {
+        display: '-webkit-box',
+        WebkitLineClamp: 1,
+        WebkitBoxOrient: 'vertical' as const,
+        overflow: 'hidden',
+        minWidth: 0
+      },
+      '2': {
+        display: '-webkit-box',
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: 'vertical' as const,
+        overflow: 'hidden',
+        minWidth: 0
+      },
+      '3': {
+        display: '-webkit-box',
+        WebkitLineClamp: 3,
+        WebkitBoxOrient: 'vertical' as const,
+        overflow: 'hidden',
+        minWidth: 0
+      }
     }
   }
 })

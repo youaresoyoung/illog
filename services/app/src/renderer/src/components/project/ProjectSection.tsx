@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import {
-  Stack,
   Badge,
   BadgeSelector,
   Divider,
   useBadgeSelectorContext,
   type BadgeItem,
-  type OmittedBadgeItem
+  type OmittedBadgeItem,
+  Stack
 } from '@illog/ui'
 import {
   useAllProjects,
@@ -25,7 +25,7 @@ const ProjectBadgeTrigger = ({ project }: { project: BadgeItem | null }) => {
   const { isOpen } = useBadgeSelectorContext()
 
   return (
-    <Stack minW="0" overflow="hidden">
+    <Stack>
       {project ? (
         <Badge item={project} isOpenedSelector={isOpen} />
       ) : (

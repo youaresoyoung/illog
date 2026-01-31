@@ -8,11 +8,17 @@ type Props = {
 
 export const ContentHeader = ({ title, button }: Props) => {
   return (
-    <Box display="flex" justifyContent="space-between" alignItems="center">
-      <Text as="h2" textStyle="subheading">
+    <Box
+      display="flex"
+      justifyContent="space-between"
+      alignItems="center"
+      gap="400"
+      overflow="hidden"
+    >
+      <Text as="h2" textStyle="subheading" truncate="true" flex="1">
         {title}
       </Text>
-      {button}
+      {button && <Box flexShrink={0}>{button}</Box>}
     </Box>
   )
 }

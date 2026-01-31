@@ -4,6 +4,7 @@ import { backgroundColors, borderColors } from '../../core/tokens/generatedColor
 
 export const cardBase = style({
   width: '100%',
+  overflow: 'hidden',
   border: `${tokens.size.stroke.border}px solid ${backgroundColors.backgroundDefaultDefault}`,
 
   selectors: {

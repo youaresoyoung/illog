@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import {
-  Stack,
   Badge,
   BadgeSelector,
   Divider,
   useBadgeSelectorContext,
   type BadgeItem,
-  type OmittedBadgeItem
+  type OmittedBadgeItem,
+  Stack
 } from '@illog/ui'
 import {
   useAllTaskTypesWithSubtypes,
@@ -34,7 +34,7 @@ const TaskTypeBadgeTrigger = ({ taskType }: { taskType: BadgeItem | null }) => {
   const { isOpen } = useBadgeSelectorContext()
 
   return (
-    <Stack minW="0" overflow="hidden">
+    <Stack>
       {taskType ? (
         <Badge item={taskType} isOpenedSelector={isOpen} />
       ) : (
@@ -52,7 +52,7 @@ const TaskSubtypeBadgeTrigger = ({ taskSubtype }: { taskSubtype: { name: string 
   const { isOpen } = useBadgeSelectorContext()
 
   return (
-    <Stack minW="0" overflow="hidden">
+    <Stack>
       {taskSubtype ? (
         <Badge item={{ name: taskSubtype.name, color: 'gray' }} isOpenedSelector={isOpen} />
       ) : (
