@@ -10,7 +10,8 @@ import type {
   CreateTaskTypeRequest,
   UpdateTaskTypeRequest,
   CreateTaskSubtypeRequest,
-  UpdateTaskSubtypeRequest
+  UpdateTaskSubtypeRequest,
+  UpdateCrashReportSettingsRequest
 } from '../shared/types'
 
 const api = {
@@ -80,6 +81,15 @@ const api = {
     update: (id: string, data: UpdateTaskSubtypeRequest) =>
       ipcRenderer.invoke('taskSubtype.update', id, data),
     softDelete: (id: string) => ipcRenderer.invoke('taskSubtype.softDelete', id)
+  },
+  crashReport: {
+    getSettings: () => ipcRenderer.invoke('crashReport.getSettings'),
+    updateSettings: (data: UpdateCrashReportSettingsRequest) =>
+      ipcRenderer.invoke('crashReport.updateSettings', data),
+    sendReport: (error: { message: string; stack?: string }) =>
+      ipcRenderer.invoke('crashReport.sendReport', error),
+    isOnboardingCompleted: () => ipcRenderer.invoke('crashReport.isOnboardingCompleted'),
+    completeOnboarding: () => ipcRenderer.invoke('crashReport.completeOnboarding')
   }
 }
 
