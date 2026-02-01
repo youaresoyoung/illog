@@ -36,5 +36,10 @@ export const queryKeys = {
     all: ['taskSubtypes'] as const,
     byTypeId: (typeId: string) => [...queryKeys.taskSubtypes.all, 'byTypeId', typeId] as const,
     detail: (id: string) => [...queryKeys.taskSubtypes.all, 'detail', id] as const
+  },
+  crashReport: {
+    all: ['crashReport'] as const,
+    settings: () => [...queryKeys.crashReport.all, 'settings'] as const,
+    onboarding: () => [...queryKeys.crashReport.all, 'onboarding'] as const
   }
 }
