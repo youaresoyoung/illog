@@ -9,7 +9,8 @@ import {
   registerTagHandlers,
   registerProjectHandlers,
   registerWeeklyReflectionHandlers,
-  registerTaskTypeHandlers
+  registerTaskTypeHandlers,
+  registerCrashReportHandlers
 } from './ipc/ipcHandlers'
 import { NoteService } from './service/NoteService'
 import { NoteRepository } from './repository/noteRepository'
@@ -21,8 +22,14 @@ import { ProjectRepository } from './repository/projectRepository'
 import { WeeklyReflectionRepository } from './repository/weeklyReflectionRepository'
 import { installExtension, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import { TaskTypeRepository } from './repository/taskTypeRepository'
+import { CrashReportRepository } from './repository/crashReportRepository'
+import { CrashReportService, initSentryEarly } from './service/CrashReportService'
 
 dotenv.config()
+
+initSentryEarly()
+
+let crashReportServiceInstance: CrashReportService | null = null
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -55,6 +62,12 @@ app.whenReady().then(() => {
   }
 
   const { db } = openDB()
+
+  const crashReportRepo = new CrashReportRepository(db)
+  const crashReportService = new CrashReportService(crashReportRepo)
+  crashReportService.applySettings()
+  registerCrashReportHandlers(crashReportService)
+  crashReportServiceInstance = crashReportService
 
   const taskRepo = new TaskRepository(db)
   registerTaskHandlers(taskRepo)
@@ -91,4 +104,10 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
+})
+
+app.on('before-quit', async () => {
+  if (crashReportServiceInstance) {
+    await crashReportServiceInstance.shutdown()
+  }
 })

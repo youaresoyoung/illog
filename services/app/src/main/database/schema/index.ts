@@ -16,6 +16,7 @@ export * from './taskReflection'
 export * from './weeklyReflection'
 export * from './taskType'
 export * from './taskSubtype'
+export * from './appSettings'
 
 export type Task = typeof tasks.$inferSelect
 export type InsertTask = typeof tasks.$inferInsert

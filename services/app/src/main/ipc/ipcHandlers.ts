@@ -12,7 +12,8 @@ import type {
   UpdateTagRequest,
   CreateProjectRequest,
   UpdateProjectRequest,
-  UpdateWeeklyReflectionRequest
+  UpdateWeeklyReflectionRequest,
+  UpdateCrashReportSettingsRequest
 } from '../../shared/types'
 import { TaskTypeRepository } from '../repository/taskTypeRepository'
 import {
@@ -21,6 +22,7 @@ import {
   UpdateTaskSubtypeRequest,
   UpdateTaskTypeRequest
 } from '../../shared/types/taskTypeDto'
+import { CrashReportService } from '../service/CrashReportService'
 
 // TODO: add proper error handling wrapper
 
@@ -109,4 +111,18 @@ export function registerTaskTypeHandlers(repo: TaskTypeRepository) {
     repo.updateSubtype(id, data)
   )
   ipcMain.handle('taskSubtype.softDelete', (_, id: string) => repo.softDeleteSubtype(id))
+}
+
+export function registerCrashReportHandlers(crashReportService: CrashReportService) {
+  ipcMain.handle('crashReport.getSettings', () => crashReportService.getSettings())
+  ipcMain.handle('crashReport.updateSettings', (_, data: UpdateCrashReportSettingsRequest) =>
+    crashReportService.updateSettings(data.enabled)
+  )
+  ipcMain.handle('crashReport.sendReport', (_, error: { message: string; stack?: string }) => {
+    crashReportService.sendCrashReport(error)
+  })
+  ipcMain.handle('crashReport.isOnboardingCompleted', () =>
+    crashReportService.isOnboardingCompleted()
+  )
+  ipcMain.handle('crashReport.completeOnboarding', () => crashReportService.completeOnboarding())
 }

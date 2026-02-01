@@ -18,7 +18,9 @@ import type {
   CreateTaskTypeRequest,
   UpdateTaskTypeRequest,
   CreateTaskSubtypeRequest,
-  UpdateTaskSubtypeRequest
+  UpdateTaskSubtypeRequest,
+  CrashReportSettings,
+  UpdateCrashReportSettingsRequest
 } from './src/shared/types'
 
 interface RendererAPI {
@@ -80,6 +82,13 @@ interface RendererAPI {
     create: (data: CreateTaskSubtypeRequest) => Promise<TaskSubtype>
     update: (id: string, data: UpdateTaskSubtypeRequest) => Promise<TaskSubtype>
     softDelete: (id: string) => Promise<void>
+  }
+  crashReport: {
+    getSettings: () => Promise<CrashReportSettings>
+    updateSettings: (data: UpdateCrashReportSettingsRequest) => Promise<CrashReportSettings>
+    sendReport: (error: { message: string; stack?: string }) => Promise<void>
+    isOnboardingCompleted: () => Promise<boolean>
+    completeOnboarding: () => Promise<void>
   }
 }
 
