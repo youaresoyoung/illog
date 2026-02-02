@@ -38,5 +38,11 @@ export default defineConfig({
   preload: {
     plugins: [externalizeDepsPlugin()]
   },
-  renderer: {}
+  renderer: {
+    server: {
+      port: parseInt(process.env.DEV_PORT!),
+      host: process.env.DEV_HOST,
+      strictPort: true
+    }
+  }
 })

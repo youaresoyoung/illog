@@ -1,6 +1,5 @@
-import { app, BrowserWindow, nativeTheme } from 'electron'
+import { app, BrowserWindow } from 'electron'
 import { openDB } from './db'
-import { join } from 'path'
 import { TaskRepository } from './repository/taskRepository'
 import { isDev } from '../utils/utils'
 import {
@@ -24,31 +23,14 @@ import { installExtension, REACT_DEVELOPER_TOOLS } from 'electron-devtools-insta
 import { TaskTypeRepository } from './repository/taskTypeRepository'
 import { CrashReportRepository } from './repository/crashReportRepository'
 import { CrashReportService, initSentryEarly } from './service/CrashReportService'
+import { createWindow } from './window'
 
 dotenv.config()
 
 initSentryEarly()
 
 let crashReportServiceInstance: CrashReportService | null = null
-
-function createWindow() {
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      sandbox: true,
-      preload: join(__dirname, '../preload/index.js')
-    }
-  })
-
-  if (isDev()) {
-    mainWindow.loadURL('http://localhost:5173')
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-  }
-
-  return mainWindow
-}
+let mainWindow: BrowserWindow | null = null
 
 app.whenReady().then(() => {
   if (!process.env.GEMINI_API_KEY) {
@@ -90,15 +72,33 @@ app.whenReady().then(() => {
   const taskTypeRepo = new TaskTypeRepository(db)
   registerTaskTypeHandlers(taskTypeRepo)
 
-  const mainWindow = createWindow()
+  mainWindow = createWindow()
 
-  nativeTheme.on('updated', () => {
-    const isDark = nativeTheme.shouldUseDarkColors
-    mainWindow.webContents.send('theme.changed', isDark)
+  // TODO: need to consider theme change handling (dark mode, light mode, system mode)
+  // nativeTheme.on('updated', () => {
+  //   const isDark = nativeTheme.shouldUseDarkColors
+  //   mainWindow.webContents.send('theme.changed', isDark)
+  // })
+
+  mainWindow.on('ready-to-show', () => {
+    mainWindow?.show()
   })
 
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
+
+  // NOTE: For macOS, re-create a window in the app when the dock icon is clicked and there are no other windows open.
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      mainWindow = createWindow()
+      mainWindow.on('ready-to-show', () => {
+        mainWindow?.show()
+      })
+      mainWindow.on('closed', () => {
+        mainWindow = null
+      })
+    }
   })
 })
 

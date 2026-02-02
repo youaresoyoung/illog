@@ -35,7 +35,8 @@
     "electron": "^39.2.7",
     "electron-builder": "^26.0.12",
     "electron-devtools-installer": "^4.0.0",
-    "electron-vite": "^5.0.0"
+    "electron-vite": "^5.0.0",
+    "electron-window-state": "^5.0.3"
   },
   "dependencies": {
     "@blackglory/better-sqlite3-migrations": "^0.1.20",
