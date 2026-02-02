@@ -45,7 +45,6 @@ export const DialogRoot = ({
         p="400"
         rounded="200"
         width="360px"
-        maxHeight="480px"
         flexDirection="column"
         gap="400"
         ref={dialogRef}

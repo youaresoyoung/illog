@@ -5,6 +5,11 @@ import { ThisWeek } from './pages/ThisWeek'
 import { ThemeProvider } from './context/ThemeContext'
 import { QueryProvider } from './providers/QueryProvider'
 import { History } from './pages/History'
+import { CrashReportDialog } from './components/CrashReportDialog'
+import { CrashErrorBoundary } from './components/CrashErrorBoundary'
+import { SettingsDialog } from './components/SettingsDialog'
+import { useOnboardingStatus, useCompleteOnboarding } from './hooks/queries'
+import { useGlobalErrorHandler } from './hooks/useGlobalErrorHandler'
 
 const router = createHashRouter([
   {
@@ -32,13 +37,31 @@ const router = createHashRouter([
   }
 ])
 
+function AppContent() {
+  const { data: isOnboardingCompleted } = useOnboardingStatus()
+  const { mutate: completeOnboarding } = useCompleteOnboarding()
+  const needsOnboarding = isOnboardingCompleted === false
+
+  useGlobalErrorHandler()
+
+  return (
+    <>
+      <RouterProvider router={router} />
+      <CrashReportDialog />
+      <SettingsDialog isOpen={needsOnboarding} onClose={() => completeOnboarding()} isOnboarding />
+    </>
+  )
+}
+
 function App(): React.JSX.Element {
   return (
-    <QueryProvider>
-      <ThemeProvider>
-        <RouterProvider router={router} />
-      </ThemeProvider>
-    </QueryProvider>
+    <CrashErrorBoundary>
+      <QueryProvider>
+        <ThemeProvider>
+          <AppContent />
+        </ThemeProvider>
+      </QueryProvider>
+    </CrashErrorBoundary>
   )
 }
 
