@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron'
-import { isDev } from '../../utils/utils'
 import { join } from 'path'
 import windowStateKeeper from 'electron-window-state'
+import { config, isDev } from '../../config/env'
 
 export function createWindow() {
   const mainWindowState = windowStateKeeper({
@@ -32,8 +32,8 @@ export function createWindow() {
   let retryCount = 0
   const MAX_RETRIES = 3
 
-  if (isDev()) {
-    win.loadURL(process.env.DEV_URL!)
+  if (isDev) {
+    win.loadURL(config.devURL)
 
     win.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
       console.log(`Load failed: ${errorDescription} (${errorCode})`)
@@ -41,7 +41,7 @@ export function createWindow() {
       if (retryCount < MAX_RETRIES && !win.isDestroyed()) {
         retryCount++
         setTimeout(() => {
-          win.loadURL(process.env.DEV_URL!)
+          win.loadURL(config.devURL)
         }, 500 * retryCount)
       }
     })

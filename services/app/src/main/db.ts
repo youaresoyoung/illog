@@ -5,13 +5,10 @@ import { drizzle } from 'drizzle-orm/better-sqlite3'
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator'
 import * as schema from './database/schema'
 import { seedDefaultTaskTypes } from './database/seed'
+import { config } from '../config/env'
 
 export function openDB() {
-  if (!process.env.DB_FILE_NAME) {
-    throw Error('DB_FILE_NAME is not defined in environment variables')
-  }
-
-  const dbPath = join(app.getPath('userData'), process.env.DB_FILE_NAME)
+  const dbPath = join(app.getPath('userData'), config.dbFileName)
   const sqlite = new Database(dbPath)
   const db = drizzle(sqlite, { schema })
 

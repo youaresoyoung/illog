@@ -1,7 +1,6 @@
 import { app, BrowserWindow } from 'electron'
 import { openDB } from './db'
 import { TaskRepository } from './repository/taskRepository'
-import { isDev } from '../utils/utils'
 import {
   registerTaskHandlers,
   registerTaskNoteHandlers,
@@ -15,7 +14,6 @@ import { NoteService } from './service/NoteService'
 import { NoteRepository } from './repository/noteRepository'
 import { TagRepository } from './repository/tagRepository'
 import { GeminiService } from './service/GeminiService'
-import dotenv from 'dotenv'
 import { ReflectionRepository } from './repository/reflectionRepository'
 import { ProjectRepository } from './repository/projectRepository'
 import { WeeklyReflectionRepository } from './repository/weeklyReflectionRepository'
@@ -24,8 +22,7 @@ import { TaskTypeRepository } from './repository/taskTypeRepository'
 import { CrashReportRepository } from './repository/crashReportRepository'
 import { CrashReportService, initSentryEarly } from './service/CrashReportService'
 import { createWindow } from './window'
-
-dotenv.config()
+import { isDev } from '../config/env'
 
 initSentryEarly()
 
@@ -37,7 +34,7 @@ app.whenReady().then(() => {
     throw new Error('Missing GEMINI_API_KEY in environment variables')
   }
 
-  if (isDev()) {
+  if (isDev) {
     installExtension(REACT_DEVELOPER_TOOLS)
       .then((ext) => console.log(`Added Extension:  ${ext.name}`))
       .catch((err) => console.log('An error occurred: ', err))

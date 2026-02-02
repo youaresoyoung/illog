@@ -1,9 +1,9 @@
 import { readFileSync } from 'fs'
 import { join } from 'path'
-import { isDev } from '../../utils/utils'
 import { app } from 'electron'
+import { isDev } from '../../config/env'
 
-const migrationsPath = isDev()
+const migrationsPath = isDev
   ? join(app.getAppPath(), 'src/main/database/migrations')
   : join(process.resourcesPath, 'migrations')
 

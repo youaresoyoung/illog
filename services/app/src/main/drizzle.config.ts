@@ -1,16 +1,12 @@
-import { config } from 'dotenv'
 import { defineConfig } from 'drizzle-kit'
-import { isDev } from '../utils/utils'
-import { resolve } from 'path'
-
-config({ path: resolve(__dirname, '../../.env') })
+import { config, isDev } from '../config/env'
 
 export default defineConfig({
   dialect: 'sqlite',
   schema: './database/schema/index.ts',
   out: './database/migrations',
   dbCredentials: {
-    url: process.env.DB_FILE_PATH!
+    url: config.dbFilePath
   },
   verbose: !!isDev,
   strict: !isDev

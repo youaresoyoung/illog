@@ -2,10 +2,10 @@ import * as Sentry from '@sentry/electron/main'
 import { app } from 'electron'
 import { CrashReportRepository } from '../repository/crashReportRepository'
 import type { CrashReportSettings } from '../../shared/types'
-import { isDev } from '../../utils/utils'
+import { config, isDev } from '../../config/env'
 
-const SENTRY_DSN = process.env.SENTRY_DSN || ''
-const SENTRY_DEV_DSN = process.env.SENTRY_DEV_DSN || ''
+const SENTRY_DSN = config.sentryDSN
+const SENTRY_DEV_DSN = config.sentryDevDSN
 
 /**
  * opt-in flag
@@ -17,8 +17,8 @@ let sentryEnabled = false
 
 export function initSentryEarly(): void {
   Sentry.init({
-    dsn: isDev() ? SENTRY_DEV_DSN : SENTRY_DSN,
-    environment: isDev() ? 'development' : 'production',
+    dsn: isDev ? SENTRY_DEV_DSN : SENTRY_DSN,
+    environment: isDev ? 'development' : 'production',
 
     // PII(Personally Identifiable Information) collection OFF
     sendDefaultPii: false,
@@ -116,8 +116,6 @@ export class CrashReportService {
    * Called after app ready + DB connection.
    */
   applySettings(): void {
-    if (isDev()) return
-
     const settings = this.repo.getSettings()
     sentryEnabled = settings.enabled
 
@@ -144,7 +142,7 @@ export class CrashReportService {
     const settings = this.repo.updateEnabled(enabled)
     sentryEnabled = enabled
 
-    if (enabled && !isDev()) {
+    if (enabled) {
       Sentry.setTag('release', `${app.getName()}@${app.getVersion()}`)
       Sentry.setUser({ id: settings.anonymousId })
     }
