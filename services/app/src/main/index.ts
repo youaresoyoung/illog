@@ -23,6 +23,7 @@ import { CrashReportRepository } from './repository/crashReportRepository'
 import { CrashReportService, initSentryEarly } from './service/CrashReportService'
 import { createWindow } from './window'
 import { isDev } from '../config/env'
+import { buildMenu } from './menu'
 
 initSentryEarly()
 
@@ -69,6 +70,7 @@ app.whenReady().then(() => {
   const taskTypeRepo = new TaskTypeRepository(db)
   registerTaskTypeHandlers(taskTypeRepo)
 
+  buildMenu()
   mainWindow = createWindow()
 
   // TODO: need to consider theme change handling (dark mode, light mode, system mode)
