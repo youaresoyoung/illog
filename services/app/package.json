@@ -9,6 +9,7 @@
     "build:win": "pnpm run build && electron-builder --win",
     "build:mac": "pnpm run build && electron-builder --mac",
     "build:linux": "pnpm run build && electron-builder --linux",
+    "icons:generate": "npx tsx scripts/generate-icons.ts",
     "preview": "electron-vite preview",
     "rebuild": "electron-rebuild -f -w better-sqlite3",
     "rebuild:node": "npm rebuild better-sqlite3",
@@ -36,7 +37,8 @@
     "electron-builder": "^26.0.12",
     "electron-devtools-installer": "^4.0.0",
     "electron-vite": "^5.0.0",
-    "electron-window-state": "^5.0.3"
+    "electron-window-state": "^5.0.3",
+    "sharp": "^0.34.5"
   },
   "dependencies": {
     "@blackglory/better-sqlite3-migrations": "^0.1.20",

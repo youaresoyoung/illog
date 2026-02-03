@@ -11,16 +11,20 @@ files:
 extraResources:
   - from: src/main/database/migrations
     to: migrations
+  - from: src/main/assets/icons
+    to: assets/icons
 asarUnpack:
   - resources/**
 win:
   executableName: illog
+  icon: src/main/assets/icons/win32/app.ico
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
 mac:
+  icon: src/main/assets/icons/darwin/app.icns
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:
     - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
@@ -36,6 +40,7 @@ linux:
     - deb
   maintainer: electronjs.org
   category: Utility
+  icon: src/main/assets/icons/linux
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
