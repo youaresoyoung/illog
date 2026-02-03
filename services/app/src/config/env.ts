@@ -130,7 +130,9 @@ export const config = {
   dbFileName: getRequiredEnv('DB_FILE_NAME'),
 
   sentryDSN: getRequiredEnv('SENTRY_DSN'),
-  sentryDevDSN: getRequiredEnv('SENTRY_DEV_DSN')
+  sentryDevDSN: getRequiredEnv('SENTRY_DEV_DSN'),
+
+  geminiApiKey: getRequiredEnv('GEMINI_API_KEY')
 }
 
 export type AppConfig = typeof config
