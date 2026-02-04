@@ -10,6 +10,7 @@ import { createAppTray } from './tray/appTray'
 import { resolveIconPath } from './utils/icon'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
+import { setupCSP } from './security/csp'
 
 initSentryEarly()
 
@@ -34,7 +35,7 @@ app.whenReady().then(() => {
   const { db } = openDB()
 
   crashReportServiceInstance = registerHandlers(db)
-
+  setupCSP()
   buildMenu()
 
   const appIconPath = resolveIconPath(__dirname, 'app')
