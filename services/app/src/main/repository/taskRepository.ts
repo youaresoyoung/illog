@@ -197,6 +197,9 @@ export class TaskRepository {
       if (contents.status === 'done') {
         updateData.doneAt = new Date()
       }
+      if (contents.status !== 'done') {
+        updateData.doneAt = null
+      }
     }
     if (contents.projectId !== undefined) {
       updateData.projectId = contents.projectId

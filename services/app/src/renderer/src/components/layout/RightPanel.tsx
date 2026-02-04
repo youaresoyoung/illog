@@ -9,6 +9,7 @@ import { NoteEditorSection } from '../right-panel/NoteEditorSection'
 import { ReflectionSection } from '../right-panel/ReflectionSection'
 import { ProjectAndTaskTypeSection } from '../right-panel/ProjectAndTaskTypeSection'
 import { TimeSection } from '../right-panel/TimeSection'
+import { Status } from '../status/Status'
 
 type Props = {
   taskId: string
@@ -62,14 +63,19 @@ export const RightPanel = ({ taskId }: Props) => {
         backgroundColor="backgroundDefaultDefault"
         gap="1200"
       >
-        <Stack>
+        <Stack gap="400">
+          <Inline maxWidth={120} gap="200">
+            <Status task={task} />
+          </Inline>
           <ProjectAndTaskTypeSection task={task} />
-          <Input value={title} onChange={handleTitleChange} placeholder="Log title..." />
-          <Input
-            value={description}
-            onChange={handleDescriptionChange}
-            placeholder="description..."
-          />
+          <Stack>
+            <Input value={title} onChange={handleTitleChange} placeholder="Log title..." />
+            <Input
+              value={description}
+              onChange={handleDescriptionChange}
+              placeholder="description..."
+            />
+          </Stack>
           <Text textStyle="caption" mt="100">
             Last edited at {task.updatedAt ? new Date(task.updatedAt).toLocaleString() : 'N/A'}
           </Text>
