@@ -1,13 +1,14 @@
 import { useEffect, useRef } from 'react'
 import { useTaskById, useUpdateTask } from '../../hooks/queries'
-import { Inline, Input, Stack, Text, TimePicker, useAutoSaveInput } from '@illog/ui'
+import { Inline, Input, Stack, Text, useAutoSaveInput } from '@illog/ui'
 import { TagSection } from '../tag/TagSection'
 import type { TaskNote } from '../../../../shared/types'
 
 import { useTaskNote } from '../../hooks/queries/useNoteQueries'
 import { NoteEditorSection } from '../right-panel/NoteEditorSection'
 import { ReflectionSection } from '../right-panel/ReflectionSection'
-import { MAX_TAG_LENGTH } from '../../../../shared/const'
+import { ProjectAndTaskTypeSection } from '../right-panel/ProjectAndTaskTypeSection'
+import { TimeSection } from '../right-panel/TimeSection'
 
 type Props = {
   taskId: string
@@ -34,18 +35,6 @@ export const RightPanel = ({ taskId }: Props) => {
     },
     1000
   )
-
-  const handleDateTimeChange = (value: { start: string | null; end: string | null }) => {
-    if (!task) return
-
-    updateTask({
-      id: task.id,
-      data: {
-        startTime: value.start,
-        endTime: value.end
-      }
-    })
-  }
 
   useEffect(() => {
     if (scrollContainerRef.current) {
@@ -74,6 +63,7 @@ export const RightPanel = ({ taskId }: Props) => {
         gap="1200"
       >
         <Stack>
+          <ProjectAndTaskTypeSection task={task} />
           <Input value={title} onChange={handleTitleChange} placeholder="Log title..." />
           <Input
             value={description}
@@ -86,32 +76,10 @@ export const RightPanel = ({ taskId }: Props) => {
         </Stack>
         <Inline gap="1200">
           <Stack gap="400" flex="1" minWidth="0" overflow="hidden">
-            <Inline>
-              <Text textStyle="bodyStrong">Tags</Text>
-              <Text textStyle="captionStrong" color="textDefaultTertiary" px="300" py="100">
-                {task.tags.length}/{MAX_TAG_LENGTH} used
-              </Text>
-            </Inline>
             <TagSection task={task} />
           </Stack>
           <Stack flex="1" gap="400">
-            <Text textStyle="bodyStrong">Time</Text>
-            <Stack>
-              <TimePicker
-                value={{
-                  start: task.startTime ? task.startTime.toISOString() : null,
-                  end: task.endTime ? task.endTime.toISOString() : null
-                }}
-                onChange={handleDateTimeChange}
-              >
-                <TimePicker.Range>
-                  <TimePicker.Input field="start" placeholder="Start time" />
-                  <TimePicker.Separator />
-                  <TimePicker.Input field="end" placeholder="End time" />
-                </TimePicker.Range>
-                <TimePicker.Summary showTime={false} />
-              </TimePicker>
-            </Stack>
+            <TimeSection task={task} />
           </Stack>
         </Inline>
 

@@ -7,7 +7,8 @@ import {
   Divider,
   useTagSelectorContext,
   type TagType,
-  type OmittedTag
+  type OmittedTag,
+  Text
 } from '@illog/ui'
 import {
   useAllTags,
@@ -17,6 +18,7 @@ import {
 } from '../../hooks/queries/useTagQueries'
 import { useAddTagToTask, useRemoveTagFromTask } from '../../hooks/queries/useTaskQueries'
 import type { TaskWithTags, CreateTagRequest, UpdateTagRequest } from '../../../../shared/types'
+import { MAX_TAG_LENGTH } from '../../../../shared/const/index'
 
 const TagsTrigger = ({ selectedTags }: { selectedTags: TagType[] }) => {
   const { removeTag } = useTagSelectorContext()
@@ -92,24 +94,32 @@ export const TagSection = ({ task }: { task: TaskWithTags }) => {
   }
 
   return (
-    <TagSelector.Root
-      tags={tagList}
-      selectedTags={selectedTags}
-      onAddTag={handleAddTag}
-      onRemoveTag={handleRemoveTag}
-      onCreateTag={handleCreateTag}
-      onDeleteTag={handleDeleteTag}
-      onUpdateTag={handleUpdateTag}
-    >
-      <TagSelector.Trigger asChild>
-        <TagsTrigger selectedTags={selectedTags} />
-      </TagSelector.Trigger>
+    <>
+      <Inline>
+        <Text textStyle="bodyStrong">Tags</Text>
+        <Text textStyle="captionStrong" color="textDefaultTertiary" px="300" py="100">
+          {task.tags.length}/{MAX_TAG_LENGTH} used
+        </Text>
+      </Inline>
+      <TagSelector.Root
+        tags={tagList}
+        selectedTags={selectedTags}
+        onAddTag={handleAddTag}
+        onRemoveTag={handleRemoveTag}
+        onCreateTag={handleCreateTag}
+        onDeleteTag={handleDeleteTag}
+        onUpdateTag={handleUpdateTag}
+      >
+        <TagSelector.Trigger asChild>
+          <TagsTrigger selectedTags={selectedTags} />
+        </TagSelector.Trigger>
 
-      <TagSelector.Content>
-        <TagSelector.Search placeholder="Search tags..." />
-        <Divider />
-        <TagSelector.List />
-      </TagSelector.Content>
-    </TagSelector.Root>
+        <TagSelector.Content>
+          <TagSelector.Search placeholder="Search tags..." />
+          <Divider />
+          <TagSelector.List />
+        </TagSelector.Content>
+      </TagSelector.Root>
+    </>
   )
 }
