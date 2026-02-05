@@ -13,7 +13,8 @@ import type {
   CreateProjectRequest,
   UpdateProjectRequest,
   UpdateWeeklyReflectionRequest,
-  UpdateCrashReportSettingsRequest
+  UpdateCrashReportSettingsRequest,
+  FeatureId
 } from '../../shared/types'
 import { TaskTypeRepository } from '../repository/taskTypeRepository'
 import {
@@ -23,6 +24,7 @@ import {
   UpdateTaskTypeRequest
 } from '../../shared/types/taskTypeDto'
 import { CrashReportService } from '../service/CrashReportService'
+import { UserService } from '../service/UserService'
 
 // TODO: add proper error handling wrapper
 
@@ -125,4 +127,11 @@ export function registerCrashReportHandlers(crashReportService: CrashReportServi
     crashReportService.isOnboardingCompleted()
   )
   ipcMain.handle('crashReport.completeOnboarding', () => crashReportService.completeOnboarding())
+}
+
+export function registerUserHandlers(userService: UserService) {
+  ipcMain.handle('user.getPlanInfo', () => userService.getUserPlanInfo())
+  ipcMain.handle('user.isFeatureEnabled', (_, featureId: FeatureId) =>
+    userService.isFeatureEnabled(featureId)
+  )
 }

@@ -7,7 +7,8 @@ import {
   registerTagHandlers,
   registerProjectHandlers,
   registerWeeklyReflectionHandlers,
-  registerTaskTypeHandlers
+  registerTaskTypeHandlers,
+  registerUserHandlers
 } from '../ipc/ipcHandlers'
 import {
   CrashReportRepository,
@@ -23,6 +24,7 @@ import { CrashReportService } from '../service/CrashReportService'
 import { GeminiService } from '../service/GeminiService'
 import { NoteService } from '../service/NoteService'
 import { config } from '../../config/env'
+import { UserService } from '../service/UserService'
 
 export function registerHandlers(db: BetterSQLite3Database<typeof schema>): CrashReportService {
   const crashReportRepo = new CrashReportRepository(db)
@@ -50,6 +52,9 @@ export function registerHandlers(db: BetterSQLite3Database<typeof schema>): Cras
 
   const taskTypeRepo = new TaskTypeRepository(db)
   registerTaskTypeHandlers(taskTypeRepo)
+
+  const userService = new UserService()
+  registerUserHandlers(userService)
 
   return crashReportService
 }

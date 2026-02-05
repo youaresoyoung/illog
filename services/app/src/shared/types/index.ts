@@ -17,3 +17,6 @@ export * from './noteDto'
 export * from './weeklyReflectionDto'
 export * from './taskTypeDto'
 export * from './crashReportDto'
+
+// Plan & Feature types
+export * from './plan'

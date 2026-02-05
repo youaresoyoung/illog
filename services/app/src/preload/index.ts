@@ -11,7 +11,8 @@ import type {
   UpdateTaskTypeRequest,
   CreateTaskSubtypeRequest,
   UpdateTaskSubtypeRequest,
-  UpdateCrashReportSettingsRequest
+  UpdateCrashReportSettingsRequest,
+  FeatureId
 } from '../shared/types'
 
 const api = {
@@ -90,6 +91,11 @@ const api = {
       ipcRenderer.invoke('crashReport.sendReport', error),
     isOnboardingCompleted: () => ipcRenderer.invoke('crashReport.isOnboardingCompleted'),
     completeOnboarding: () => ipcRenderer.invoke('crashReport.completeOnboarding')
+  },
+  user: {
+    getPlanInfo: () => ipcRenderer.invoke('user.getPlanInfo'),
+    isFeatureEnabled: (featureId: FeatureId) =>
+      ipcRenderer.invoke('user.isFeatureEnabled', featureId)
   }
 }
 
