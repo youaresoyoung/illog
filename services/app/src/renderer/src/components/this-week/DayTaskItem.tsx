@@ -7,6 +7,7 @@ type Props = {
   task: TaskWithTags
 }
 
+// TODO: Remove after MVP
 export const DayTaskItem = ({ task }: Props) => {
   const duration = getTaskDurationMinutes(task)
   const completedTime = task.doneAt ? format(new Date(task.doneAt), 'h:mm a') : null
