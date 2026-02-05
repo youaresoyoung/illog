@@ -16,7 +16,7 @@ export const TimePickerSummary = ({
   }
 
   return (
-    <Box className={className}>
+    <Box className={className} mt="200">
       {showTime && startDate && formatTime(startDate)}{' '}
       {showDate && !isSameDay && startDate && (
         <Text as="span" textStyle="singleLineCaption" color="textBrandTertiary">

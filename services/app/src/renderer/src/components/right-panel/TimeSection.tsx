@@ -1,8 +1,10 @@
 import { Stack, Text, TimePicker } from '@illog/ui'
 import { TaskWithTags } from '../../types'
 import { useUpdateTask } from '../../hooks/queries'
+import { formatDuration, getTaskDurationMinutes } from '../../utils/this-week-stats'
 
 export const TimeSection = ({ task }: { task: TaskWithTags }) => {
+  const duration = getTaskDurationMinutes(task)
   const { mutate: updateTask } = useUpdateTask()
 
   const handleDateTimeChange = (value: { start: string | null; end: string | null }) => {
@@ -32,6 +34,9 @@ export const TimeSection = ({ task }: { task: TaskWithTags }) => {
             <TimePicker.Input field="start" placeholder="Start time" />
             <TimePicker.Separator />
             <TimePicker.Input field="end" placeholder="End time" />
+            <Text textStyle="bodyStrong" color="textDefaultSecondary" whiteSpace="nowrap">
+              {formatDuration(duration)}
+            </Text>
           </TimePicker.Range>
           <TimePicker.Summary showTime={false} />
         </TimePicker>

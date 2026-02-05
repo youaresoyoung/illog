@@ -16,6 +16,7 @@ import { useDeleteTask, useUpdateTask } from '../../hooks/queries/useTaskQueries
 import type { TaskWithTags } from '../../../../shared/types'
 import type { MouseEvent } from 'react'
 import { Status } from '../status/Status'
+import { Time } from '../time/time'
 
 const INTERACTIVE_SELECTORS =
   'a, input, select, textarea, button, label, ' +
@@ -60,8 +61,11 @@ export const TaskCard = ({ task, handleOpenNote }: Props) => {
         <ContextMenu.Root>
           <ContextMenu.Trigger>
             <Stack gap="400">
-              <Inline maxWidth={120} gap="200">
-                <Status task={task} />
+              <Inline gap="200" justify="space-between">
+                <Inline maxWidth={120}>
+                  <Status task={task} />
+                </Inline>
+                <Time task={task} />
               </Inline>
               <Inline gap="200">
                 <ProjectSection task={task} />
