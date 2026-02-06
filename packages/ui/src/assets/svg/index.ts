@@ -10,6 +10,7 @@ import clock from './ic_clock_24.svg'
 import code from './ic_code_24.svg'
 import folder from './ic_folder_24.svg'
 import italic from './ic_italic_24.svg'
+import list from './ic_list_24.svg'
 import menu from './ic_menu_24.svg'
 import more from './ic_more_24.svg'
 import plus from './ic_plus_24.svg'
@@ -32,6 +33,7 @@ export default {
   code,
   folder,
   italic,
+  list,
   menu,
   more,
   plus,

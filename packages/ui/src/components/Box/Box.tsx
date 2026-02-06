@@ -8,7 +8,8 @@ import {
   INTERACTION_PROP_KEYS,
   buildInteractionVars,
   hasInteractionProps,
-  getInteractionDataAttrs
+  getInteractionDataAttrs,
+  resolveBaseStyles
 } from '../../core/interactionProps'
 import { interactiveBase } from '../../core/interactionStyles.css'
 
@@ -60,7 +61,8 @@ export const Box = <T extends ElementType>(props: BoxProps<T>) => {
     isDisabled
   }
   const hasInteraction = hasInteractionProps(interactionProps)
-  const interactionVars = buildInteractionVars(interactionProps)
+  const baseStyles = hasInteraction ? resolveBaseStyles(sprinkleProps, styleProps) : undefined
+  const interactionVars = buildInteractionVars(interactionProps, baseStyles)
   const dataAttrs = hasInteraction ? getInteractionDataAttrs(interactionProps) : {}
 
   const mergedStyle = {

@@ -41,7 +41,7 @@ const spacingProperties = defineProperties({
 
 const colorProperties = defineProperties({
   properties: {
-    backgroundColor: backgroundColors,
+    backgroundColor: { ...backgroundColors, transparent: 'transparent' },
     color: textColors,
     borderColor: borderColors
   },

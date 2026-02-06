@@ -28,6 +28,8 @@ export { TimePicker } from './components/TimePicker'
 export { Dialog } from './components/Dialog'
 export { Overlay } from './components/Overlay'
 export { ContextMenu, useContextMenuContext } from './components/ContextMenu'
+export { ToggleMenu } from './components/ToggleMenu'
+export { Calendar } from './components/Calendar'
 
 // Types
 export type { TagType, OmittedTag, TagColor } from './components/Tag/types'
@@ -51,6 +53,27 @@ export type {
   ContextMenuContentProps,
   ContextMenuItemProps
 } from './components/ContextMenu'
+export type {
+  ToggleGroupItem,
+  ToggleGroupProps,
+  ToggleItemProps
+} from './components/ToggleMenu/types'
+export type {
+  TimeGridProps,
+  TimeCellProps,
+  TimeCellColor,
+  DayColumnHeader,
+  DayColumnHeadersProps
+} from './components/Calendar/types'
+export type { BackgroundColorToken, TextColorToken } from './core/interactionProps'
+export {
+  useCurrentTime,
+  formatHour,
+  formatTimeLabel,
+  getMinutesFromMidnight,
+  DEFAULT_HOUR_HEIGHT,
+  DEFAULT_GUTTER_WIDTH
+} from './components/Calendar'
 
 // Hooks
 export { useNavigationListContext } from './context'

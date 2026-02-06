@@ -11,6 +11,7 @@ export type IconName =
   | 'code'
   | 'folder'
   | 'italic'
+  | 'list'
   | 'menu'
   | 'more'
   | 'plus'
@@ -33,6 +34,7 @@ export const IconNameOptions: IconName[] = [
   'code',
   'folder',
   'italic',
+  'list',
   'menu',
   'more',
   'plus',
