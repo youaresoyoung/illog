@@ -20,7 +20,9 @@ import type {
   CreateTaskSubtypeRequest,
   UpdateTaskSubtypeRequest,
   CrashReportSettings,
-  UpdateCrashReportSettingsRequest
+  UpdateCrashReportSettingsRequest,
+  UserPlanInfo,
+  FeatureId
 } from './src/shared/types'
 
 interface RendererAPI {
@@ -89,6 +91,10 @@ interface RendererAPI {
     sendReport: (error: { message: string; stack?: string }) => Promise<void>
     isOnboardingCompleted: () => Promise<boolean>
     completeOnboarding: () => Promise<void>
+  }
+  user: {
+    getPlanInfo: () => Promise<UserPlanInfo>
+    isFeatureEnabled: (featureId: FeatureId) => Promise<boolean>
   }
 }
 

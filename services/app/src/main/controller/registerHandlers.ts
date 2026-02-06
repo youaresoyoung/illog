@@ -35,10 +35,13 @@ export function registerHandlers(db: BetterSQLite3Database<typeof schema>): Cras
   const taskRepo = new TaskRepository(db)
   registerTaskHandlers(taskRepo)
 
+  const userService = new UserService()
+  registerUserHandlers(userService)
+
   const geminiService = new GeminiService(config.geminiApiKey)
   const reflectionRepo = new ReflectionRepository(db)
   const noteRepo = new NoteRepository(db)
-  const noteService = new NoteService(noteRepo, reflectionRepo, geminiService)
+  const noteService = new NoteService(noteRepo, reflectionRepo, geminiService, userService)
   registerTaskNoteHandlers(noteRepo, noteService)
 
   const tagRepo = new TagRepository(db)
@@ -52,9 +55,6 @@ export function registerHandlers(db: BetterSQLite3Database<typeof schema>): Cras
 
   const taskTypeRepo = new TaskTypeRepository(db)
   registerTaskTypeHandlers(taskTypeRepo)
-
-  const userService = new UserService()
-  registerUserHandlers(userService)
 
   return crashReportService
 }

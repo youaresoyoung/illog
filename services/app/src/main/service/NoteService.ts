@@ -3,6 +3,7 @@ import type { TaskNote, TaskReflection } from '../../shared/types'
 import { NoteRepository } from '../repository/noteRepository'
 import { GeminiService } from './GeminiService'
 import { ReflectionRepository } from '../repository/reflectionRepository'
+import { UserService } from './UserService'
 
 type AutoSaveResult =
   | { savedAt: number; conflict: true }
@@ -14,7 +15,8 @@ export class NoteService {
   constructor(
     private repo: NoteRepository,
     private reflectionRepo: ReflectionRepository,
-    private geminiService: GeminiService
+    private geminiService: GeminiService,
+    private userService: UserService
   ) {}
 
   autoSave(taskId: string, content: string, clientUpdatedAt: number) {
@@ -37,6 +39,10 @@ export class NoteService {
     taskId: string,
     text: string
   ): AsyncGenerator<{ chunk: string; done: boolean }, void> {
+    if (!this.userService.isFeatureEnabled('ai.reflection')) {
+      throw new Error('AI Reflection feature is not available in your current plan')
+    }
+
     let fullContent = ''
     const noteHash = createHash('sha256').update(text).digest('hex')
 

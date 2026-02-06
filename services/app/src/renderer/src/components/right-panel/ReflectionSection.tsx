@@ -13,6 +13,7 @@ import { $convertFromMarkdownString, TRANSFORMERS } from '@lexical/markdown'
 
 import { Button, Dialog, Stack, Text, useDialog } from '@illog/ui'
 import { useReflection, useReflectionStream } from '../../hooks/queries/useNoteQueries'
+import { useFeatureFlag } from '../../hooks/useFeatureFlag'
 
 type InitialContentPluginProps = {
   content: string
@@ -44,6 +45,7 @@ type Props = {
 }
 
 export const ReflectionSection = ({ taskId, noteContent }: Props) => {
+  const { enabled: aiReflectionEnabled, requiredPlan } = useFeatureFlag('ai.reflection')
   const { data: existingReflection } = useReflection(taskId)
   const { generateReflection, isStreaming, streamedContent, resetStream } = useReflectionStream()
   const [isDialogOpen, openDialog, closeDialog] = useDialog({ initialOpen: false })
@@ -85,9 +87,13 @@ export const ReflectionSection = ({ taskId, noteContent }: Props) => {
           variant="primary"
           size="md"
           onClick={handleReflectNote}
-          isDisabled={isStreaming || !noteContent}
+          isDisabled={!aiReflectionEnabled || isStreaming || !noteContent}
         >
-          {isStreaming ? 'Generating...' : 'Ask AI Reflection'}
+          {isStreaming
+            ? 'Generating...'
+            : !aiReflectionEnabled
+              ? `AI Reflection (${requiredPlan?.toUpperCase()} plan required)`
+              : 'Ask AI Reflection'}
         </Button>
         <Stack
           borderRadius="200"

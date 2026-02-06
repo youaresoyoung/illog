@@ -41,5 +41,9 @@ export const queryKeys = {
     all: ['crashReport'] as const,
     settings: () => [...queryKeys.crashReport.all, 'settings'] as const,
     onboarding: () => [...queryKeys.crashReport.all, 'onboarding'] as const
+  },
+  user: {
+    all: ['user'] as const,
+    planInfo: () => [...queryKeys.user.all, 'planInfo'] as const
   }
 }
