@@ -14,6 +14,7 @@ export type InteractionStyleProps = {
   borderColor?: BorderColorToken | (string & {})
   opacity?: number | string
   boxShadow?: BoxShadowToken | (string & {})
+  filter?: string
 }
 
 export type InteractionProps = {
@@ -72,11 +73,24 @@ function resolveStateStyles(styles: InteractionStyleProps | undefined) {
     color: resolveTextColor(styles.color),
     borderColor: resolveBorderColor(styles.borderColor),
     opacity: resolveOpacity(styles.opacity),
-    boxShadow: resolveBoxShadow(styles.boxShadow)
+    boxShadow: resolveBoxShadow(styles.boxShadow),
+    filter: styles.filter
   }
 }
 
-export function buildInteractionVars(props: InteractionProps): Record<string, string> {
+export type BaseStyleValues = {
+  bg?: string
+  color?: string
+  borderColor?: string
+  opacity?: string
+  boxShadow?: string
+  filter?: string
+}
+
+export function buildInteractionVars(
+  props: InteractionProps,
+  baseStyles?: BaseStyleValues
+): Record<string, string> {
   const vars: Record<string, string> = {}
 
   const states: InteractionState[] = ['_hover', '_active', '_focus', '_focusVisible', '_disabled']
@@ -88,11 +102,24 @@ export function buildInteractionVars(props: InteractionProps): Record<string, st
     const resolved = resolveStateStyles(stateProps)
     const stateVars = interactionVars[state]
 
-    if (resolved.bg) vars[stateVars.bg] = resolved.bg
-    if (resolved.color) vars[stateVars.color] = resolved.color
-    if (resolved.borderColor) vars[stateVars.borderColor] = resolved.borderColor
-    if (resolved.opacity) vars[stateVars.opacity] = resolved.opacity
-    if (resolved.boxShadow) vars[stateVars.boxShadow] = resolved.boxShadow
+    // For each property in this state, set the CSS variable.
+    // If a property is NOT set in this state but HAS a base value,
+    // fill the variable with the base value so the hover selector
+    // doesn't reset it to initial (due to higher specificity).
+    const base = baseStyles ?? {}
+
+    vars[stateVars.bg] = resolved.bg || base.bg || ''
+    vars[stateVars.color] = resolved.color || base.color || ''
+    vars[stateVars.borderColor] = resolved.borderColor || base.borderColor || ''
+    vars[stateVars.opacity] = resolved.opacity || base.opacity || ''
+    vars[stateVars.boxShadow] = resolved.boxShadow || base.boxShadow || ''
+    vars[stateVars.filter] = resolved.filter || base.filter || ''
+  }
+
+  // Remove empty entries — CSS variables with empty string values are still "set"
+  // but produce invalid property values, which is what we want to avoid.
+  for (const key of Object.keys(vars)) {
+    if (!vars[key]) delete vars[key]
   }
 
   return Object.keys(vars).length > 0 ? assignInlineVars(vars) : {}
@@ -117,4 +144,42 @@ export function getInteractionDataAttrs(
   }
 
   return attrs
+}
+
+/**
+ * Resolve current base CSS values from sprinkle and style props.
+ * Used to fill in CSS variables for interaction states that don't
+ * explicitly set a property, preventing the hover selector from
+ * resetting it to `initial` due to higher specificity.
+ */
+export function resolveBaseStyles(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sprinkleProps: Record<string, any>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  styleProps?: Record<string, any>
+): BaseStyleValues {
+  const base: BaseStyleValues = {}
+
+  // Resolve bg from sprinkle props (bg is shorthand for backgroundColor)
+  const bgToken = sprinkleProps.bg ?? sprinkleProps.backgroundColor
+  if (bgToken) {
+    base.bg = resolveBgColor(String(bgToken)) ?? undefined
+  }
+
+  const colorToken = sprinkleProps.color
+  if (colorToken) {
+    base.color = resolveTextColor(String(colorToken)) ?? undefined
+  }
+
+  const borderColorToken = sprinkleProps.borderColor
+  if (borderColorToken) {
+    base.borderColor = resolveBorderColor(String(borderColorToken)) ?? undefined
+  }
+
+  // Also check inline style props for opacity
+  if (styleProps?.opacity !== undefined) {
+    base.opacity = String(styleProps.opacity)
+  }
+
+  return base
 }
