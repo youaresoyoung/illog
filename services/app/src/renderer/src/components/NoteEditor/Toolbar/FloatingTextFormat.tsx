@@ -125,7 +125,7 @@ export const FloatingTextFormat = ({ anchorElement }: FloatingTextFormatProps) =
         left={0}
         opacity={0}
         willChange="transform"
-        z={1000}
+        zIndex={1000}
         boxShadow="200"
       >
         <TextFormat />

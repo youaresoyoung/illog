@@ -1,11 +1,16 @@
 import { TaskCard } from '../components/task/TaskCard'
-import { Button, Icon, Stack, Text } from '@illog/ui'
+import { Button, Icon, Stack, Text, ToggleMenu } from '@illog/ui'
 import { useTodayTasks, useCreateTask } from '../hooks/queries/useTaskQueries'
 import { useUIStore } from '../stores/useUIStore'
 import { ContentHeader } from '../components/layout/ContentHeader'
-import { memo } from 'react'
+import { memo, useState } from 'react'
+import { CalendarView } from '../components/calendar/CalendarView'
+import { TASK_VIEW_ITEMS } from '../constant/nav'
+import { TaskViewMode } from '../types/nav'
 
 export const Today = memo(() => {
+  const [viewMode, setViewMode] = useState<TaskViewMode>('card')
+
   const { data: tasks, isLoading, error } = useTodayTasks()
   const { mutate: createTask } = useCreateTask()
   const openTaskNote = useUIStore((s) => s.openTaskNote)
@@ -27,6 +32,19 @@ export const Today = memo(() => {
     <>
       <ContentHeader
         title="Today's Log"
+        actions={
+          <ToggleMenu.Group>
+            {TASK_VIEW_ITEMS.map((item, index) => (
+              <ToggleMenu.Item
+                key={item.value}
+                item={item}
+                index={index}
+                value={viewMode}
+                onChange={(v) => setViewMode(v as TaskViewMode)}
+              />
+            ))}
+          </ToggleMenu.Group>
+        }
         button={
           <Button variant="primary" onClick={handleAddLogClick}>
             <Icon name="plus" size="small" color="iconBrandOnBrand" />
@@ -35,14 +53,18 @@ export const Today = memo(() => {
         }
       />
 
-      {tasks && tasks.length > 0 ? (
-        <Stack gap="400" mt="400">
-          {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} handleOpenNote={openTaskNote} />
-          ))}
-        </Stack>
+      {viewMode === 'card' ? (
+        tasks && tasks.length > 0 ? (
+          <Stack gap="400" mt="400">
+            {tasks.map((task) => (
+              <TaskCard key={task.id} task={task} handleOpenNote={openTaskNote} />
+            ))}
+          </Stack>
+        ) : (
+          <p>No tasks for today</p>
+        )
       ) : (
-        <p>No tasks for today</p>
+        <CalendarView tasks={tasks ?? []} onTaskClick={openTaskNote} />
       )}
     </>
   )

@@ -1,3 +1,6 @@
+import { ToggleGroupItem } from '@illog/ui'
+import { TaskViewMode } from '../types/nav'
+
 export const PAGE_LIST = [
   { id: 'today', iconName: 'calendar_today', label: 'Today', to: '/' },
   { id: 'this-week', iconName: 'calendar_week', label: 'This Week', to: '/this-week' },
@@ -7,3 +10,8 @@ export const PAGE_LIST = [
 ] as const
 
 export type PageId = (typeof PAGE_LIST)[number]['id']
+
+export const TASK_VIEW_ITEMS: ToggleGroupItem<TaskViewMode>[] = [
+  { value: 'card', icon: 'list', ariaLabel: 'Card view' },
+  { value: 'calendar', icon: 'calendar_today', ariaLabel: 'Calendar view' }
+]

@@ -1,6 +1,6 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { format } from 'date-fns'
-import { Inline, Stack, Text, Icon, Button } from '@illog/ui'
+import { Inline, Stack, Text, Icon, Button, ToggleMenu } from '@illog/ui'
 import { ContentHeader } from '../components/layout/ContentHeader'
 import {
   StatsSummary,
@@ -14,18 +14,29 @@ import { useTasksByFilters } from '../hooks/queries'
 import { useWeeklyParams } from '../hooks/useWeeklyParams'
 import { getStatsForFilterLevel, getLevelLabel } from '../utils/category-analytics'
 import { useAnalyticsFilter } from '../hooks/useAnalyticsFilter'
+import { useUIStore } from '../stores/useUIStore'
+import { TaskViewMode } from '../types/nav'
+import { WeeklyCalendarView } from '../components/calendar/WeeklyCalendarView'
+import { TASK_VIEW_ITEMS } from '../constant/nav'
 
 export const ThisWeek = () => {
+  const [viewMode, setViewMode] = useState<TaskViewMode>('card')
+  const openTaskNote = useUIStore((s) => s.openTaskNote)
   const { startTime, endTime, goToPreviousWeek, goToNextWeek, isCurrentWeek } = useWeeklyParams()
-
   const { data: tasks = [], isLoading } = useTasksByFilters({
     startTime,
     endTime
   })
 
   // const weekId = getWeekId(new Date())
-  const { filter, isLeaf, setViewMode, goBackToCategory, resetCategory, handleSegmentClick } =
-    useAnalyticsFilter()
+  const {
+    filter,
+    isLeaf,
+    setViewMode: setAnalyticsViewMode,
+    goBackToCategory,
+    resetCategory,
+    handleSegmentClick
+  } = useAnalyticsFilter()
 
   const segments = useMemo(() => getStatsForFilterLevel(tasks, filter), [tasks, filter])
   const levelLabel = useMemo(() => getLevelLabel(filter), [filter])
@@ -52,6 +63,19 @@ export const ThisWeek = () => {
       <Stack gap="100">
         <ContentHeader
           title="Weekly Summary"
+          actions={
+            <ToggleMenu.Group>
+              {TASK_VIEW_ITEMS.map((item, index) => (
+                <ToggleMenu.Item
+                  key={item.value}
+                  item={item}
+                  index={index}
+                  value={viewMode}
+                  onChange={(v) => setViewMode(v as TaskViewMode)}
+                />
+              ))}
+            </ToggleMenu.Group>
+          }
           button={
             <Inline gap="200" align="center">
               <Button variant="secondary" onClick={goToPreviousWeek} ariaLabel="Previous week">
@@ -75,35 +99,41 @@ export const ThisWeek = () => {
         </Text>
       </Stack>
 
-      <StatsSummary tasks={tasks} weekStart={startTime} />
+      {viewMode === 'calendar' ? (
+        <WeeklyCalendarView tasks={tasks} weekStart={startTime} onTaskClick={openTaskNote} />
+      ) : (
+        <>
+          <StatsSummary tasks={tasks} weekStart={startTime} />
 
-      <ViewModeSelector activeMode={filter.viewMode} onSelect={setViewMode} />
+          <ViewModeSelector activeMode={filter.viewMode} onSelect={setAnalyticsViewMode} />
 
-      <AnalyticsFilterBar
-        filter={filter}
-        onResetCategory={resetCategory}
-        onGoBackToCategory={goBackToCategory}
-      />
-
-      <Inline gap="600">
-        <Stack flex="1">
-          <Productivity
-            segments={segments}
-            title={levelLabel}
-            isLeaf={isLeaf}
-            onSegmentClick={handleSegmentClick}
+          <AnalyticsFilterBar
+            filter={filter}
+            onResetCategory={resetCategory}
+            onGoBackToCategory={goBackToCategory}
           />
-        </Stack>
-        <Stack maxWidth={320} width={320}>
-          <TimeDistribution
-            segments={segments}
-            isLeaf={isLeaf}
-            onSegmentClick={handleSegmentClick}
-          />
-        </Stack>
-      </Inline>
 
-      <DailyBreakdown tasks={tasks} weekStart={startTime} />
+          <Inline gap="600">
+            <Stack flex="1">
+              <Productivity
+                segments={segments}
+                title={levelLabel}
+                isLeaf={isLeaf}
+                onSegmentClick={handleSegmentClick}
+              />
+            </Stack>
+            <Stack maxWidth={320} width={320}>
+              <TimeDistribution
+                segments={segments}
+                isLeaf={isLeaf}
+                onSegmentClick={handleSegmentClick}
+              />
+            </Stack>
+          </Inline>
+
+          <DailyBreakdown tasks={tasks} weekStart={startTime} />
+        </>
+      )}
 
       {/* <WeeklyReflection weekId={weekId} /> */}
     </Stack>
