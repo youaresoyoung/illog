@@ -1,5 +1,6 @@
 import { Component, ReactNode } from 'react'
 import { useCrashReportStore } from '../stores/useCrashReportStore'
+import { Button, Stack, Text } from '@illog/ui'
 
 interface Props {
   children: ReactNode
@@ -31,9 +32,23 @@ export class CrashErrorBoundary extends Component<Props, State> {
     })
   }
 
+  handleReload = () => {
+    window.location.reload()
+  }
+
   render(): ReactNode {
     if (this.state.hasError) {
-      return null
+      return (
+        <Stack height="100vh" gap="400" p="1200" textAlign="center">
+          <Text textStyle="bodyBase">Something went wrong</Text>
+          <Text textStyle="bodyBase" color="textDefaultSecondary">
+            An unexpected error occurred. Please reload the app to continue.
+          </Text>
+          <Button onClick={this.handleReload} variant="primary">
+            Reload App
+          </Button>
+        </Stack>
+      )
     }
     return this.props.children
   }

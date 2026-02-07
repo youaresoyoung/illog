@@ -12,6 +12,7 @@ import {
 } from '../components/this-week'
 import { useTasksByFilters } from '../hooks/queries'
 import { useWeeklyParams } from '../hooks/useWeeklyParams'
+import { QueryErrorState } from '../components/QueryState'
 import { getStatsForFilterLevel, getLevelLabel } from '../utils/category-analytics'
 import { useAnalyticsFilter } from '../hooks/useAnalyticsFilter'
 import { useUIStore } from '../stores/useUIStore'
@@ -23,7 +24,13 @@ export const ThisWeek = () => {
   const [viewMode, setViewMode] = useState<TaskViewMode>('card')
   const openTaskNote = useUIStore((s) => s.openTaskNote)
   const { startTime, endTime, goToPreviousWeek, goToNextWeek, isCurrentWeek } = useWeeklyParams()
-  const { data: tasks = [], isLoading } = useTasksByFilters({
+
+  const {
+    data: tasks = [],
+    isLoading,
+    error,
+    refetch
+  } = useTasksByFilters({
     startTime,
     endTime
   })
@@ -51,9 +58,18 @@ export const ThisWeek = () => {
 
   if (isLoading) {
     return (
-      <>
+      <div aria-busy="true">
         <ContentHeader title="Weekly Summary" />
         <Text>Loading...</Text>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <>
+        <ContentHeader title="Weekly Summary" />
+        <QueryErrorState error={error} onRetry={() => refetch()} />
       </>
     )
   }

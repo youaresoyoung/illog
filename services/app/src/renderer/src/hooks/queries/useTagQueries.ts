@@ -25,6 +25,7 @@ export const useCreateTag = () => {
       const newTag = await window.api.tag.create(tag)
       return newTag
     },
+    meta: { errorMessage: 'Failed to create tag', successMessage: 'Tag created' },
     onSuccess: (newTag) => {
       queryClient.setQueryData<Tag[]>(queryKeys.tags.all, (old) => {
         if (!old) return [newTag]
@@ -39,8 +40,8 @@ export const useCreateTag = () => {
 
       queryClient.setQueryData(queryKeys.tags.detail(newTag.id), newTag)
     },
-    onError: (error) => {
-      console.error('Tag creation failed:', error)
+    onError: () => {
+      // Global MutationCache onError handles toast display
     }
   })
 }
@@ -53,6 +54,7 @@ export const useUpdateTag = () => {
       const updatedTag = await window.api.tag.update(id, data)
       return updatedTag
     },
+    meta: { errorMessage: 'Failed to update tag' },
     onMutate: async ({ id, data }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tags.all })
 
@@ -75,7 +77,6 @@ export const useUpdateTag = () => {
       if (context?.previousTags) {
         queryClient.setQueryData(queryKeys.tags.all, context.previousTags)
       }
-      console.error('Tag update failed:', _err)
     }
   })
 }
@@ -85,6 +86,7 @@ export const useDeleteTag = () => {
 
   return useMutation({
     mutationFn: (id: string) => window.api.tag.softDelete(id),
+    meta: { errorMessage: 'Failed to delete tag', successMessage: 'Tag deleted' },
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tags.all })
 

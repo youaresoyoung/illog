@@ -25,6 +25,7 @@ export const useCreateTaskSubtype = () => {
     mutationFn: async (subtype: CreateTaskSubtypeRequest) => {
       return await window.api.taskSubtype.create(subtype)
     },
+    meta: { errorMessage: 'Failed to create subtype', successMessage: 'Subtype created' },
     onSuccess: (newSubtype) => {
       queryClient.setQueryData<TaskSubtype[]>(
         queryKeys.taskSubtypes.byTypeId(newSubtype.taskTypeId),
@@ -39,8 +40,7 @@ export const useCreateTaskSubtype = () => {
       )
 
       queryClient.invalidateQueries({ queryKey: queryKeys.taskTypes.withSubtypes() })
-    },
-    onError: () => {}
+    }
   })
 }
 
@@ -58,6 +58,7 @@ export const useUpdateTaskSubtype = () => {
     }) => {
       return await window.api.taskSubtype.update(id, data)
     },
+    meta: { errorMessage: 'Failed to update subtype' },
     onMutate: async ({ id, taskTypeId, data }) => {
       await queryClient.cancelQueries({
         queryKey: queryKeys.taskSubtypes.byTypeId(taskTypeId)
@@ -106,6 +107,7 @@ export const useDeleteTaskSubtype = () => {
     mutationFn: async (id: string) => {
       return await window.api.taskSubtype.softDelete(id)
     },
+    meta: { errorMessage: 'Failed to delete subtype', successMessage: 'Subtype deleted' },
     onSuccess: (_data, id) => {
       queryClient.setQueriesData<TaskSubtype[]>(
         { queryKey: queryKeys.taskSubtypes.byTypeId('') },
@@ -116,7 +118,6 @@ export const useDeleteTaskSubtype = () => {
       )
 
       queryClient.invalidateQueries({ queryKey: queryKeys.taskTypes.withSubtypes() })
-    },
-    onError: () => {}
+    }
   })
 }

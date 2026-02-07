@@ -2,6 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { TaskNote } from '../../types'
 import { queryKeys } from './queryKeys'
 import { useCallback, useState } from 'react'
+import { getUserMessage } from '../../../../shared/errors'
+import { useToastStore } from '../../stores/useToastStore'
 
 export const useTaskNote = (taskId: string | undefined) => {
   return useQuery({
@@ -27,6 +29,7 @@ export const useAutoSaveNote = () => {
       content: string
       clientUpdatedAt: number
     }) => window.api.note.autoSave(taskId, content, clientUpdatedAt),
+    meta: { errorMessage: 'Note failed to save' },
     onSuccess: (result, { taskId }) => {
       if (result?.note) {
         queryClient.setQueryData<TaskNote>(queryKeys.notes.byTaskId(taskId), result.note)
@@ -65,7 +68,10 @@ export const useReflectionStream = () => {
           }
         })
       } catch (error) {
-        console.error('Error generating reflection stream:', error)
+        // Manual toast: reflectionNoteStream is not a react-query mutation,
+        // so the global MutationCache.onError handler does not apply here.
+        const message = getUserMessage(error)
+        useToastStore.getState().addToast({ type: 'error', message })
         setIsStreaming(false)
       }
 

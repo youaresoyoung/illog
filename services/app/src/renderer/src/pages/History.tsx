@@ -2,18 +2,22 @@ import { Stack, Text } from '@illog/ui'
 import { useAllTasks } from '../hooks/queries'
 import { useUIStore } from '../stores/useUIStore'
 import { TaskCard } from '../components/task/TaskCard'
+import { QueryErrorState } from '../components/QueryState'
 
 export const History = () => {
-  const { data: tasks, isLoading, error } = useAllTasks()
+  const { data: tasks, isLoading, error, refetch } = useAllTasks()
   const openTaskNote = useUIStore((s) => s.openTaskNote)
 
-  // TODO: handle loading and error states
   if (isLoading) {
-    return <Text>Loading tasks...</Text>
+    return (
+      <Text role="status" aria-busy="true">
+        Loading tasks...
+      </Text>
+    )
   }
 
   if (error) {
-    return <Text>Error loading tasks: {error.message}</Text>
+    return <QueryErrorState error={error} onRetry={() => refetch()} />
   }
 
   return (

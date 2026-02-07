@@ -8,7 +8,8 @@ import {
   registerProjectHandlers,
   registerWeeklyReflectionHandlers,
   registerTaskTypeHandlers,
-  registerUserHandlers
+  registerUserHandlers,
+  setCrashReportService
 } from '../ipc/ipcHandlers'
 import {
   CrashReportRepository,
@@ -30,6 +31,7 @@ export function registerHandlers(db: BetterSQLite3Database<typeof schema>): Cras
   const crashReportRepo = new CrashReportRepository(db)
   const crashReportService = new CrashReportService(crashReportRepo)
   crashReportService.applySettings()
+  setCrashReportService(crashReportService)
   registerCrashReportHandlers(crashReportService)
 
   const taskRepo = new TaskRepository(db)

@@ -12,8 +12,15 @@ import type {
 export const useTodayTasks = () => {
   return useQuery({
     queryKey: queryKeys.tasks.today(),
-    queryFn: () =>
-      window.api.task.getTasksWithTags({ startTime: new Date().toISOString().split('T')[0] })
+    queryFn: () => {
+      const now = new Date()
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999)
+      return window.api.task.getTasksWithTags({
+        startTime: startOfDay.toISOString(),
+        endTime: endOfDay.toISOString()
+      })
+    }
   })
 }
 
@@ -45,6 +52,7 @@ export const useCreateTask = () => {
 
   return useMutation({
     mutationFn: () => window.api.task.create(),
+    meta: { errorMessage: 'Failed to create log' },
     onSuccess: (newTask) => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old ? [newTask, ...old] : [newTask]
@@ -62,6 +70,7 @@ export const useUpdateTask = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateTaskRequest }) =>
       window.api.task.update(id, data),
+    meta: { errorMessage: 'Failed to save changes' },
     onMutate: async ({ id, data }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
@@ -126,6 +135,7 @@ export const useDeleteTask = () => {
 
   return useMutation({
     mutationFn: (id: string) => window.api.task.softDelete(id),
+    meta: { errorMessage: 'Failed to delete log', successMessage: 'Log deleted' },
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
@@ -163,6 +173,7 @@ export const useAddTagToTask = () => {
   return useMutation({
     mutationFn: ({ taskId, tagId }: { taskId: string; tagId: string }) =>
       window.api.task.addTag(taskId, tagId),
+    meta: { errorMessage: 'Failed to add tag' },
     onMutate: async ({ taskId, tagId }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
@@ -217,6 +228,7 @@ export const useRemoveTagFromTask = () => {
   return useMutation({
     mutationFn: ({ taskId, tagId }: { taskId: string; tagId: string }) =>
       window.api.task.removeTag(taskId, tagId),
+    meta: { errorMessage: 'Failed to remove tag' },
     onMutate: async ({ taskId, tagId }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
@@ -264,6 +276,7 @@ export const useSetProjectToTask = () => {
   return useMutation({
     mutationFn: ({ taskId, projectId }: { taskId: string; projectId: string }) =>
       window.api.task.update(taskId, { projectId }),
+    meta: { errorMessage: 'Failed to set project' },
     onMutate: async ({ taskId, projectId }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
@@ -320,6 +333,7 @@ export const useClearProjectFromTask = () => {
 
   return useMutation({
     mutationFn: (taskId: string) => window.api.task.update(taskId, { projectId: null }),
+    meta: { errorMessage: 'Failed to remove project' },
     onMutate: async (taskId) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
@@ -361,6 +375,7 @@ export const useSetTaskTypeToTask = () => {
   return useMutation({
     mutationFn: ({ taskId, taskTypeId }: { taskId: string; taskTypeId: string }) =>
       window.api.task.update(taskId, { taskTypeId, taskSubtypeId: null }),
+    meta: { errorMessage: 'Failed to set task type' },
     onMutate: async ({ taskId, taskTypeId }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
@@ -422,6 +437,7 @@ export const useSetTaskSubtypeToTask = () => {
   return useMutation({
     mutationFn: ({ taskId, taskSubtypeId }: { taskId: string; taskSubtypeId: string }) =>
       window.api.task.update(taskId, { taskSubtypeId }),
+    meta: { errorMessage: 'Failed to set task subtype' },
     onMutate: async ({ taskId, taskSubtypeId }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
@@ -482,6 +498,7 @@ export const useClearTaskTypeFromTask = () => {
   return useMutation({
     mutationFn: (taskId: string) =>
       window.api.task.update(taskId, { taskTypeId: null, taskSubtypeId: null }),
+    meta: { errorMessage: 'Failed to remove task type' },
     onMutate: async (taskId) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })

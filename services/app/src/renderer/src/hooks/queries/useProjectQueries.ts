@@ -25,6 +25,7 @@ export const useCreateProject = () => {
       const newProject = await window.api.project.create(project)
       return newProject
     },
+    meta: { errorMessage: 'Failed to create project', successMessage: 'Project created' },
     onSuccess: (newProject) => {
       queryClient.setQueryData<Project[]>(queryKeys.projects.all, (old) => {
         if (!old) return [newProject]
@@ -39,8 +40,8 @@ export const useCreateProject = () => {
 
       queryClient.setQueryData(queryKeys.projects.detail(newProject.id), newProject)
     },
-    onError: (error) => {
-      console.error('Project creation failed:', error)
+    onError: () => {
+      // Global MutationCache onError handles toast display
     }
   })
 }
@@ -53,6 +54,7 @@ export const useUpdateProject = () => {
       const updatedProject = await window.api.project.update(id, data)
       return updatedProject
     },
+    meta: { errorMessage: 'Failed to update project' },
     onMutate: async ({ id, data }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.projects.all })
 
@@ -75,7 +77,6 @@ export const useUpdateProject = () => {
       if (context?.previousProjects) {
         queryClient.setQueryData(queryKeys.projects.all, context.previousProjects)
       }
-      console.error('Project update failed:', _err)
     }
   })
 }
@@ -85,6 +86,7 @@ export const useDeleteProject = () => {
 
   return useMutation({
     mutationFn: (id: string) => window.api.project.softDelete(id),
+    meta: { errorMessage: 'Failed to delete project', successMessage: 'Project deleted' },
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.projects.all })
 

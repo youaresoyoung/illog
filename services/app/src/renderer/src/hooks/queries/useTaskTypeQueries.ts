@@ -31,6 +31,7 @@ export const useCreateTaskType = () => {
     mutationFn: async (taskType: CreateTaskTypeRequest) => {
       return await window.api.taskType.create(taskType)
     },
+    meta: { errorMessage: 'Failed to create task type', successMessage: 'Task type created' },
     onSuccess: (newTaskType) => {
       queryClient.setQueryData<TaskType[]>(queryKeys.taskTypes.all, (old) => {
         if (!old) return [newTaskType]
@@ -42,8 +43,7 @@ export const useCreateTaskType = () => {
       })
 
       queryClient.invalidateQueries({ queryKey: queryKeys.taskTypes.withSubtypes() })
-    },
-    onError: () => {}
+    }
   })
 }
 
@@ -54,6 +54,7 @@ export const useUpdateTaskType = () => {
     mutationFn: async ({ id, data }: { id: string; data: UpdateTaskTypeRequest }) => {
       return await window.api.taskType.update(id, data)
     },
+    meta: { errorMessage: 'Failed to update task type' },
     onMutate: async ({ id, data }: { id: string; data: UpdateTaskTypeRequest }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.taskTypes.all })
 
@@ -89,6 +90,7 @@ export const useDeleteTaskType = () => {
     mutationFn: async (id: string) => {
       return await window.api.taskType.softDelete(id)
     },
+    meta: { errorMessage: 'Failed to delete task type', successMessage: 'Task type deleted' },
     onSuccess: (_data, id) => {
       queryClient.setQueryData<TaskType[]>(queryKeys.taskTypes.all, (old) => {
         if (!old) return []
@@ -96,7 +98,6 @@ export const useDeleteTaskType = () => {
       })
 
       queryClient.invalidateQueries({ queryKey: queryKeys.taskTypes.withSubtypes() })
-    },
-    onError: () => {}
+    }
   })
 }

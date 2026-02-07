@@ -7,11 +7,12 @@ import { memo, useState } from 'react'
 import { CalendarView } from '../components/calendar/CalendarView'
 import { TASK_VIEW_ITEMS } from '../constant/nav'
 import { TaskViewMode } from '../types/nav'
+import { QueryErrorState } from '../components/QueryState'
 
 export const Today = memo(() => {
   const [viewMode, setViewMode] = useState<TaskViewMode>('card')
 
-  const { data: tasks, isLoading, error } = useTodayTasks()
+  const { data: tasks, isLoading, error, refetch } = useTodayTasks()
   const { mutate: createTask } = useCreateTask()
   const openTaskNote = useUIStore((s) => s.openTaskNote)
 
@@ -19,13 +20,16 @@ export const Today = memo(() => {
     createTask()
   }
 
-  // TODO: handle loading and error states
   if (isLoading) {
-    return <Text>Loading tasks...</Text>
+    return (
+      <Text role="status" aria-busy="true">
+        Loading tasks...
+      </Text>
+    )
   }
 
   if (error) {
-    return <Text>Error loading tasks: {error.message}</Text>
+    return <QueryErrorState error={error} onRetry={() => refetch()} />
   }
 
   return (

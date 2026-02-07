@@ -15,74 +15,98 @@ import type {
   FeatureId
 } from '../shared/types'
 
+const APP_ERROR_DELIMITER = '__APP_ERROR__'
+
+async function safeInvoke(channel: string, ...args: unknown[]) {
+  try {
+    return await ipcRenderer.invoke(channel, ...args)
+  } catch (error) {
+    if (error instanceof Error) {
+      const idx = error.message.indexOf(APP_ERROR_DELIMITER)
+      if (idx !== -1) {
+        try {
+          const parsed = JSON.parse(error.message.slice(idx + APP_ERROR_DELIMITER.length))
+          if (parsed?.__appError) {
+            const appError = new Error(parsed.message) as Error & { code: string }
+            appError.code = parsed.code
+            appError.name = 'AppError'
+            throw appError
+          }
+        } catch (parseError) {
+          if (parseError instanceof Error && parseError.name === 'AppError') throw parseError
+        }
+      }
+    }
+    throw error
+  }
+}
+
 const api = {
   task: {
-    create: () => ipcRenderer.invoke('task.create'),
-    get: (id: string) => ipcRenderer.invoke('task.get', id),
-    getWithTags: (id: string) => ipcRenderer.invoke('task.getWithTags', id),
-    getTasksWithTags: (filters?: TaskFilterParams) =>
-      ipcRenderer.invoke('task.getTasksWithTags', filters),
-    update: (id: string, data: UpdateTaskRequest) => ipcRenderer.invoke('task.update', id, data),
-    addTag: (taskId: string, tagId: string) => ipcRenderer.invoke('task.addTag', taskId, tagId),
-    softDelete: (id: string) => ipcRenderer.invoke('task.softDelete', id),
-    removeTag: (taskId: string, tagId: string) =>
-      ipcRenderer.invoke('task.removeTag', taskId, tagId)
+    create: () => safeInvoke('task.create'),
+    get: (id: string) => safeInvoke('task.get', id),
+    getWithTags: (id: string) => safeInvoke('task.getWithTags', id),
+    getTasksWithTags: (filters?: TaskFilterParams) => safeInvoke('task.getTasksWithTags', filters),
+    update: (id: string, data: UpdateTaskRequest) => safeInvoke('task.update', id, data),
+    addTag: (taskId: string, tagId: string) => safeInvoke('task.addTag', taskId, tagId),
+    softDelete: (id: string) => safeInvoke('task.softDelete', id),
+    removeTag: (taskId: string, tagId: string) => safeInvoke('task.removeTag', taskId, tagId)
   },
   note: {
-    findByTaskId: (taskId: string) => ipcRenderer.invoke('note.findByTaskId', taskId),
+    findByTaskId: (taskId: string) => safeInvoke('note.findByTaskId', taskId),
     autoSave: (taskId: string, content: string, clientUpdatedAt: number) =>
-      ipcRenderer.invoke('note.autoSave', taskId, content, clientUpdatedAt),
+      safeInvoke('note.autoSave', taskId, content, clientUpdatedAt),
     reflectionNoteStream: (
       taskId: string,
       text: string,
       callback: (data: { chunk: string; done: boolean }) => void
     ) => {
+      ipcRenderer.removeAllListeners('note.reflectionNoteStreamChunk')
       ipcRenderer.on('note.reflectionNoteStreamChunk', (_event, data) => {
         callback(data)
       })
-      return ipcRenderer.invoke('note.reflectionNoteStream', taskId, text)
+      return safeInvoke('note.reflectionNoteStream', taskId, text)
     },
-    removeReflectionListener: () => ipcRenderer.invoke('note.removeReflectionListener'),
-    getReflection: (taskId: string) => ipcRenderer.invoke('note.getReflection', taskId),
-    deleteReflection: (taskId: string) => ipcRenderer.invoke('note.deleteReflection', taskId)
+    removeReflectionListener: () => safeInvoke('note.removeReflectionListener'),
+    getReflection: (taskId: string) => safeInvoke('note.getReflection', taskId),
+    deleteReflection: (taskId: string) => safeInvoke('note.deleteReflection', taskId)
   },
   tag: {
-    create: (data: CreateTagRequest) => ipcRenderer.invoke('tag.create', data),
-    get: (id: string) => ipcRenderer.invoke('tag.get', id),
-    getAll: () => ipcRenderer.invoke('tag.getAll'),
-    update: (id: string, data: UpdateTagRequest) => ipcRenderer.invoke('tag.update', id, data),
-    softDelete: (id: string) => ipcRenderer.invoke('tag.softDelete', id)
+    create: (data: CreateTagRequest) => safeInvoke('tag.create', data),
+    get: (id: string) => safeInvoke('tag.get', id),
+    getAll: () => safeInvoke('tag.getAll'),
+    update: (id: string, data: UpdateTagRequest) => safeInvoke('tag.update', id, data),
+    softDelete: (id: string) => safeInvoke('tag.softDelete', id)
   },
   project: {
-    create: (data: CreateProjectRequest) => ipcRenderer.invoke('project.create', data),
-    get: (id: string) => ipcRenderer.invoke('project.get', id),
-    getAll: () => ipcRenderer.invoke('project.getAll'),
-    update: (id: string, data: UpdateProjectRequest) =>
-      ipcRenderer.invoke('project.update', id, data),
-    softDelete: (id: string) => ipcRenderer.invoke('project.softDelete', id)
+    create: (data: CreateProjectRequest) => safeInvoke('project.create', data),
+    get: (id: string) => safeInvoke('project.get', id),
+    getAll: () => safeInvoke('project.getAll'),
+    update: (id: string, data: UpdateProjectRequest) => safeInvoke('project.update', id, data),
+    softDelete: (id: string) => safeInvoke('project.softDelete', id)
   },
   weeklyReflection: {
-    get: (weekId: string) => ipcRenderer.invoke('weeklyReflection.get', weekId),
+    get: (weekId: string) => safeInvoke('weeklyReflection.get', weekId),
     upsert: (weekId: string, data: UpdateWeeklyReflectionRequest) =>
-      ipcRenderer.invoke('weeklyReflection.upsert', weekId, data)
+      safeInvoke('weeklyReflection.upsert', weekId, data)
   },
   taskType: {
-    getAll: () => ipcRenderer.invoke('taskType.getAll'),
-    getAllWithSubtypes: () => ipcRenderer.invoke('taskType.getAllWithSubtypes'),
-    get: (id: string) => ipcRenderer.invoke('taskType.get', id),
-    create: (data: CreateTaskTypeRequest) => ipcRenderer.invoke('taskType.create', data),
-    update: (id: string, data: UpdateTaskTypeRequest) =>
-      ipcRenderer.invoke('taskType.update', id, data),
-    softDelete: (id: string) => ipcRenderer.invoke('taskType.softDelete', id)
+    getAll: () => safeInvoke('taskType.getAll'),
+    getAllWithSubtypes: () => safeInvoke('taskType.getAllWithSubtypes'),
+    get: (id: string) => safeInvoke('taskType.get', id),
+    create: (data: CreateTaskTypeRequest) => safeInvoke('taskType.create', data),
+    update: (id: string, data: UpdateTaskTypeRequest) => safeInvoke('taskType.update', id, data),
+    softDelete: (id: string) => safeInvoke('taskType.softDelete', id)
   },
   taskSubtype: {
-    getAllByTypeId: (typeId: string) => ipcRenderer.invoke('taskSubtype.getAllByTypeId', typeId),
-    get: (id: string) => ipcRenderer.invoke('taskSubtype.get', id),
-    create: (data: CreateTaskSubtypeRequest) => ipcRenderer.invoke('taskSubtype.create', data),
+    getAllByTypeId: (typeId: string) => safeInvoke('taskSubtype.getAllByTypeId', typeId),
+    get: (id: string) => safeInvoke('taskSubtype.get', id),
+    create: (data: CreateTaskSubtypeRequest) => safeInvoke('taskSubtype.create', data),
     update: (id: string, data: UpdateTaskSubtypeRequest) =>
-      ipcRenderer.invoke('taskSubtype.update', id, data),
-    softDelete: (id: string) => ipcRenderer.invoke('taskSubtype.softDelete', id)
+      safeInvoke('taskSubtype.update', id, data),
+    softDelete: (id: string) => safeInvoke('taskSubtype.softDelete', id)
   },
+  // crashReport uses raw ipcRenderer.invoke intentionally to avoid circular error reporting
   crashReport: {
     getSettings: () => ipcRenderer.invoke('crashReport.getSettings'),
     updateSettings: (data: UpdateCrashReportSettingsRequest) =>
@@ -93,9 +117,8 @@ const api = {
     completeOnboarding: () => ipcRenderer.invoke('crashReport.completeOnboarding')
   },
   user: {
-    getPlanInfo: () => ipcRenderer.invoke('user.getPlanInfo'),
-    isFeatureEnabled: (featureId: FeatureId) =>
-      ipcRenderer.invoke('user.isFeatureEnabled', featureId)
+    getPlanInfo: () => safeInvoke('user.getPlanInfo'),
+    isFeatureEnabled: (featureId: FeatureId) => safeInvoke('user.isFeatureEnabled', featureId)
   }
 }
 

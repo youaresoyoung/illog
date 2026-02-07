@@ -108,11 +108,10 @@ export class TaskRepository {
       conditions.push(eq(tasks.projectId, filters?.projectId))
     }
     if (filters?.startTime) {
-      // NOTE: The time filter logic is designed to include tasks that overlap with the specified time range.
-      // This means:
-      // - Tasks that start before the filter's startTime but end after it will be included (overlapping tasks).
-      // - Tasks that start after the filter's startTime will also be included, regardless of their end time.
-
+      // NOTE: Filter includes tasks that overlap with [startTime, endTime] range.
+      // - Tasks whose endTime >= filterStart (task extends into the range)
+      // - Tasks with no endTime whose startTime >= filterStart
+      // Expects ISO 8601 string (e.g. "2026-02-10T15:00:00.000Z") from the client.
       const filterStart = new Date(filters.startTime)
       conditions.push(
         or(
@@ -122,6 +121,7 @@ export class TaskRepository {
       )
     }
     if (filters?.endTime) {
+      // Tasks whose startTime <= filterEnd (task starts before the range ends)
       const filterEnd = new Date(filters.endTime)
       conditions.push(lte(tasks.startTime, filterEnd))
     }

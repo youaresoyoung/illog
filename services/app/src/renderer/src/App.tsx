@@ -8,6 +8,7 @@ import { History } from './pages/History'
 import { CrashReportDialog } from './components/CrashReportDialog'
 import { CrashErrorBoundary } from './components/CrashErrorBoundary'
 import { SettingsDialog } from './components/SettingsDialog'
+import { ToastContainer } from './components/Toast/ToastContainer'
 import { useOnboardingStatus, useCompleteOnboarding } from './hooks/queries'
 import { useGlobalErrorHandler } from './hooks/useGlobalErrorHandler'
 
@@ -48,6 +49,7 @@ function AppContent() {
     <>
       <RouterProvider router={router} />
       <CrashReportDialog />
+      <ToastContainer />
       <SettingsDialog isOpen={needsOnboarding} onClose={() => completeOnboarding()} isOnboarding />
     </>
   )

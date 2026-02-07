@@ -19,6 +19,7 @@ export const useUpdateWeeklyReflection = () => {
   return useMutation({
     mutationFn: ({ weekId, data }: { weekId: string; data: UpdateWeeklyReflectionRequest }) =>
       window.api.weeklyReflection.upsert(weekId, data),
+    meta: { errorMessage: 'Failed to save weekly reflection' },
     onMutate: async ({ weekId, data }) => {
       await queryClient.cancelQueries({
         queryKey: queryKeys.weeklyReflections.byWeekId(weekId)
