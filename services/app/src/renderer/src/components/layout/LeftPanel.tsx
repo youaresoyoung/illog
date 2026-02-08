@@ -1,7 +1,8 @@
-import { Navigation, Text, Icon, Stack, Inline } from '@illog/ui'
+import { Navigation, Icon, Stack, Inline, Box } from '@illog/ui'
 import { memo, useState } from 'react'
 import { PAGE_LIST } from '../../constant/nav'
 import { SettingsDialog } from '../SettingsDialog'
+import logo from '../../assets/images/logo@x2.png'
 
 export const LeftPanel = memo(() => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
@@ -9,9 +10,7 @@ export const LeftPanel = memo(() => {
   return (
     <Navigation.Container>
       <Inline justify="space-between" align="center">
-        <Text as="h1" textStyle="heading">
-          illog
-        </Text>
+        <Box as="img" src={logo} alt="illog logo" width={159} height={64} />
         <Stack
           as="button"
           onClick={() => setIsSettingsOpen(true)}
