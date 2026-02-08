@@ -65,7 +65,14 @@ export const Today = memo(() => {
             ))}
           </Stack>
         ) : (
-          <p>No tasks for today</p>
+          <Stack gap="400" mt="2400" align="center">
+            <Text textStyle="bodyBase" color="textDefaultTertiary" mt="400">
+              No tasks for today.
+            </Text>
+            <Text textStyle="bodyBase" color="textDefaultTertiary">
+              Let&apos;s add some logs to track your progress and reflect on your day!
+            </Text>
+          </Stack>
         )
       ) : (
         <CalendarView tasks={tasks ?? []} onTaskClick={openTaskNote} />

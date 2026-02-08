@@ -3,6 +3,7 @@ import { useAllTasks } from '../hooks/queries'
 import { useUIStore } from '../stores/useUIStore'
 import { TaskCard } from '../components/task/TaskCard'
 import { QueryErrorState } from '../components/QueryState'
+import { ContentHeader } from '../components/layout/ContentHeader'
 
 export const History = () => {
   const { data: tasks, isLoading, error, refetch } = useAllTasks()
@@ -22,6 +23,7 @@ export const History = () => {
 
   return (
     <>
+      <ContentHeader title="History" />
       {tasks && tasks.length > 0 ? (
         <Stack gap="400" mt="400">
           {tasks.map((task) => (
@@ -29,7 +31,11 @@ export const History = () => {
           ))}
         </Stack>
       ) : (
-        <p>No tasks for today</p>
+        <Stack gap="400" mt="2400" align="center">
+          <Text textStyle="bodyBase" color="textDefaultTertiary" mt="400">
+            No tasks found in history
+          </Text>
+        </Stack>
       )}
     </>
   )

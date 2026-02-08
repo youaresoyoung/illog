@@ -9,6 +9,7 @@ import { ListPlugin } from '@lexical/react/LexicalListPlugin'
 import { CheckListPlugin } from '@lexical/react/LexicalCheckListPlugin'
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin'
 import { MarkdownShortcutPlugin } from '@lexical/react/LexicalMarkdownShortcutPlugin'
+import { TabIndentationPlugin } from '@lexical/react/LexicalTabIndentationPlugin'
 import { TRANSFORMERS } from '@lexical/markdown'
 
 import { Stack, Text } from '@illog/ui'
@@ -68,6 +69,7 @@ export const NoteEditorSection = ({ taskId, note }: Props) => {
         <HistoryPlugin />
         <ListPlugin />
         <CheckListPlugin />
+        <TabIndentationPlugin />
         <LinkPlugin validateUrl={validateUrl} />
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
         <AutoSavePlugin taskId={taskId} saveNote={saveNote} />

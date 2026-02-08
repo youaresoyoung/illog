@@ -48,12 +48,16 @@
   list-style-type: none;
 }
 
+.editor__nested-listitem::marker {
+  content: '';
+}
+
 .editor__list-ol {
   margin: 0.5em 0;
   padding-left: 1em;
 }
 
-.editor__list-ol .editor__listitem {
+.editor__list-ol .editor__listItem {
   list-style: decimal;
 }
 
@@ -62,11 +66,17 @@
   padding-left: 1em;
 }
 
-.editor__listitem {
-  margin: 0.25em 0;
+.editor__list-ul:not(.editor__checklist) > .editor__listItem:not(.editor__nested-listitem)::marker {
+  content: '- ';
 }
 
-.editor__listItem::marker {
+.editor__checklist {
+  list-style: none;
+  padding-left: 0;
+}
+
+.editor__listItem {
+  margin: 0.25em 0;
 }
 
 .editor__listItem-checked,
@@ -80,12 +90,27 @@
   outline: none;
 }
 
+.editor__nested-listitem.editor__listItem-unchecked,
+.editor__nested-listitem.editor__listItem-checked {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.editor__nested-listitem.editor__listItem-unchecked::before,
+.editor__nested-listitem.editor__listItem-checked::before,
+.editor__nested-listitem.editor__listItem-unchecked::after,
+.editor__nested-listitem.editor__listItem-checked::after {
+  content: none;
+}
+
 .editor__listItem-checked {
   text-decoration: line-through;
 }
 
-.editor__listItem-unchecked:before,
-.editor__listItem-checked:before {
+.editor__listItem-unchecked:not(.editor__nested-listitem):before,
+.editor__listItem-checked:not(.editor__nested-listitem):before {
   content: '';
   position: absolute;
   display: block;
