@@ -1,11 +1,9 @@
 import dotenv from 'dotenv'
 import { existsSync, readFileSync } from 'fs'
 import { dirname, join, resolve } from 'path'
-import { fileURLToPath } from 'url'
 
-const moduleFullPath = fileURLToPath(import.meta.url)
-const moduleDirname = dirname(moduleFullPath)
-const isPackaged = moduleFullPath.includes('app.asar')
+const moduleDirname = __dirname ?? process.cwd()
+const isPackaged = (__filename ?? '').includes('app.asar')
 
 export const isDev = !isPackaged && process.env.NODE_ENV !== 'production'
 
@@ -36,6 +34,7 @@ const computeSearchRoots = (): string[] => {
 const ENV_FILES = [
   `.env.${process.env.NODE_ENV}.local`,
   `.env.${process.env.NODE_ENV}`,
+  '.env.production',
   '.env.local',
   '.env'
 ]
@@ -90,7 +89,7 @@ const fileEnv = loadEnvFiles()
 
 if (isDev) {
   try {
-    const result = dotenv.config({ path: resolve(process.cwd(), '.env.development.local') })
+    const result = dotenv.config({ path: resolve(process.cwd(), '.env.local') })
     if (result.parsed) {
       Object.assign(fileEnv, result.parsed)
     }
@@ -130,9 +129,7 @@ export const config = {
   dbFileName: getRequiredEnv('DB_FILE_NAME'),
 
   sentryDSN: getRequiredEnv('SENTRY_DSN'),
-  sentryDevDSN: getRequiredEnv('SENTRY_DEV_DSN'),
-
-  geminiApiKey: getRequiredEnv('GEMINI_API_KEY')
+  sentryDevDSN: getRequiredEnv('SENTRY_DEV_DSN')
 }
 
 export type AppConfig = typeof config

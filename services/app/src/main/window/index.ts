@@ -1,8 +1,11 @@
 import { app, BrowserWindow } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
 import windowStateKeeper from 'electron-window-state'
-import { config, isDev } from '../../config/env'
 import { resolveIconPath } from '../utils/icon'
+
+// Forge's Vite plugin injects these global variables
+declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string | undefined
+declare const MAIN_WINDOW_VITE_NAME: string
 
 export function createWindow(baseDirname: string): BrowserWindow {
   const mainWindowState = windowStateKeeper({
@@ -22,7 +25,7 @@ export function createWindow(baseDirname: string): BrowserWindow {
     icon: resolveIconPath(baseDirname, 'app'),
     webPreferences: {
       sandbox: false, // Need to set it to false to use contextBridge in preload
-      preload: join(baseDirname, '../preload/index.js'), // Set a secure preload script path
+      preload: path.join(__dirname, 'preload.js'), // Forge Vite plugin compiles preload alongside main
       contextIsolation: true, // Complete isolation between renderer and node.js (CSP level enhancement)
       nodeIntegration: false // Direct use of node.js API in renderer is prohibited
     }
@@ -30,11 +33,11 @@ export function createWindow(baseDirname: string): BrowserWindow {
 
   mainWindowState.manage(win)
 
-  let retryCount = 0
-  const MAX_RETRIES = 3
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    let retryCount = 0
+    const MAX_RETRIES = 3
 
-  if (isDev) {
-    win.loadURL(config.devURL)
+    win.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
 
     win.webContents.on('did-fail-load', (event, errorCode, errorDescription) => {
       console.log(`Load failed: ${errorDescription} (${errorCode})`)
@@ -42,14 +45,14 @@ export function createWindow(baseDirname: string): BrowserWindow {
       if (retryCount < MAX_RETRIES && !win.isDestroyed()) {
         retryCount++
         setTimeout(() => {
-          win.loadURL(config.devURL)
+          win.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL!)
         }, 500 * retryCount)
       }
     })
 
     win.webContents.openDevTools({ mode: 'detach' })
   } else {
-    win.loadFile(join(__dirname, '../renderer/index.html'))
+    win.loadFile(join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`))
   }
   return win
 }

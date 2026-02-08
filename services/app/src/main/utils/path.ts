@@ -10,7 +10,7 @@ export function getAssetPath(baseDirname: string, ...segments: string[]) {
     return path.join(process.resourcesPath, 'assets', ...segments)
   }
 
-  // In dev mode, __dirname points to 'out/main' (electron-vite build output).
+  // In dev mode, __dirname points to '.vite/build' (Forge Vite plugin output).
   // Assets live in 'src/main/assets', so resolve from app root.
   const appRoot = path.resolve(baseDirname, '..', '..')
   return path.join(appRoot, 'src', 'main', 'assets', ...segments)
