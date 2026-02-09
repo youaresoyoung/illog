@@ -205,8 +205,8 @@ importers:
         specifier: ^0.45.1
         version: 0.45.1(@types/better-sqlite3@7.6.13)(better-sqlite3@12.5.0)(pg@8.16.3)
       lexical:
-        specifier: ^0.38.2
-        version: 0.38.2
+        specifier: ^0.40.0
+        version: 0.40.0
       natural:
         specifier: ^8.1.0
         version: 8.1.0(socks@2.8.7)
@@ -4145,6 +4145,9 @@ packages:
 
   lexical@0.39.0:
     resolution: {integrity: sha512-lpLv7MEJH5QDujEDlYqettL3ATVtNYjqyimzqgrm0RvCm3AO9WXSdsgTxuN7IAZRu88xkxCDeYubeUf4mNZVdg==}
+
+  lexical@0.40.0:
+    resolution: {integrity: sha512-wNvd/AY13h/QJYvx565M/FSdRjy0l99W5/MFA2x+mbK3KnKa5BifZbHZ1J4/YssCkdyZhSlLwFkyDaYi7l2Dsw==}
 
   lib0@0.2.117:
     resolution: {integrity: sha512-DeXj9X5xDCjgKLU/7RR+/HQEVzuuEUiwldwOGsHK/sfAfELGWEyTcf0x+uOvCvK3O2zPmZePXWL85vtia6GyZw==}
@@ -10418,6 +10421,8 @@ snapshots:
   lexical@0.38.2: {}
 
   lexical@0.39.0: {}
+
+  lexical@0.40.0: {}
 
   lib0@0.2.117:
     dependencies:
