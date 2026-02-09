@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@blackglory/better-sqlite3-migrations": "^0.1.20",
-    "@google/genai": "^1.33.0",
+    "@google/genai": "^1.40.0",
     "@lexical/code": "^0.38.2",
     "@lexical/link": "^0.38.2",
     "@lexical/list": "^0.38.2",
