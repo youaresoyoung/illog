@@ -39,7 +39,7 @@
     "@blackglory/better-sqlite3-migrations": "^0.1.20",
     "@google/genai": "^1.33.0",
     "@lexical/code": "^0.38.2",
-    "@lexical/link": "^0.38.2",
+    "@lexical/link": "^0.40.0",
     "@lexical/list": "^0.38.2",
     "@lexical/markdown": "^0.38.2",
     "@lexical/react": "^0.39.0",
