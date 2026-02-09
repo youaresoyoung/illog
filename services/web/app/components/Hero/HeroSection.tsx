@@ -1,20 +1,14 @@
-'use client'
-
 import styles from './HeroSection.module.css'
 import ImageToday from '@/app/assets/illog/images/hero.png'
 import Image from 'next/image'
 import { DownloadButtons } from '../common/DownloadButtons'
-import { usePlatform } from '@/app/hooks/usePlatform'
-import { MobileNotice } from '../common/MobileNotice'
 
 export function HeroSection() {
-  const { isMobile } = usePlatform()
-
   return (
     <section className={styles.container}>
       <h1 className={styles.title}>A tool to never let a day slip by.</h1>
 
-      {isMobile ? <MobileNotice /> : <DownloadButtons size="md" />}
+      <DownloadButtons size="md" />
 
       <div className={styles.card}>
         <p className={styles.cardText}>

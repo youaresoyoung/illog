@@ -3,6 +3,8 @@
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
+  min-height: 48px;
+  align-items: center;
 }
 
 /* Sizes */
@@ -65,24 +67,33 @@
   cursor: not-allowed;
 }
 
-/* Skeleton loader */
 .skeleton {
   display: block;
-  width: 240px;
-  height: 48px;
+  width: 280px;
+  height: 46px;
   background: #f0f0f0;
   border-radius: 12px;
   animation: pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 @media (max-width: 768px) {
   .buttonLg {
     padding: 12px 24px;
     font-size: 14px;
+  }
+
+  .skeleton {
+    width: 240px;
+    height: 42px;
   }
 }

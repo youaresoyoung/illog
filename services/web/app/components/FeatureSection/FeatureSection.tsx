@@ -45,6 +45,7 @@ export function FeatureSection() {
             muted
             loop
             playsInline
+            preload="none"
             aria-label="AI Reflection feature demonstration showing automatic weekly summary generation"
           />
         </div>

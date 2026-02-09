@@ -2,6 +2,7 @@
 
 import { usePlatform } from '@/app/hooks/usePlatform'
 import styles from './DownloadButtons.module.css'
+import { MobileNotice } from './MobileNotice'
 
 const DOWNLOAD_LINKS = {
   'mac-arm': { label: 'Download for Mac (Apple Silicon)', href: '/api/download/mac-arm' },
@@ -26,8 +27,7 @@ export function DownloadButtons({ size = 'md', isShowAll = false }: Props) {
     )
   }
 
-  // Mobile - already handled by mobileNotice in parent
-  if (isMobile) return null
+  if (isMobile) return <MobileNotice />
 
   const buttonClass = size === 'lg' ? styles.buttonLg : styles.buttonMd
 

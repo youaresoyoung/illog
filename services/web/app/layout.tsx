@@ -6,7 +6,8 @@ import './globals.css'
 
 const geistSans = Google_Sans({
   variable: '--font-geist-sans',
-  subsets: ['latin']
+  subsets: ['latin'],
+  display: 'swap'
 })
 
 export const viewport: Viewport = {
