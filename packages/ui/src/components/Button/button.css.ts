@@ -23,7 +23,7 @@ export const buttonRecipe = recipe({
     size: {
       sm: {},
       md: { padding: tokens.size.space[300], height: '2.5rem' },
-      lg: {}
+      lg: { padding: tokens.size.space[400], height: '3rem' }
     },
     variant: {
       primary: {

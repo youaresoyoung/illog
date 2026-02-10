@@ -9,11 +9,12 @@ const DOWNLOAD_LINKS = {
   windows: { label: 'Windows (Coming Soon)', href: '#download', disabled: true }
 } as const
 
-interface DownloadButtonsProps {
+type Props = {
   size?: 'md' | 'lg'
+  isShowAll?: boolean
 }
 
-export function DownloadButtons({ size = 'md' }: DownloadButtonsProps) {
+export function DownloadButtons({ size = 'md', isShowAll = false }: Props) {
   const { platform, isMobile } = usePlatform()
 
   // SSR / loading state
@@ -29,6 +30,28 @@ export function DownloadButtons({ size = 'md' }: DownloadButtonsProps) {
   if (isMobile) return null
 
   const buttonClass = size === 'lg' ? styles.buttonLg : styles.buttonMd
+
+  if (isShowAll) {
+    return (
+      <div className={styles.buttons}>
+        <a
+          href={DOWNLOAD_LINKS['mac-arm'].href}
+          className={`${styles.buttonPrimary} ${buttonClass}`}
+        >
+          {DOWNLOAD_LINKS['mac-arm'].label}
+        </a>
+        <a
+          href={DOWNLOAD_LINKS['mac-intel'].href}
+          className={`${styles.buttonPrimary} ${buttonClass}`}
+        >
+          {DOWNLOAD_LINKS['mac-intel'].label}
+        </a>
+        <button className={`${styles.buttonDisabled} ${buttonClass}`} disabled>
+          {DOWNLOAD_LINKS.windows.label}
+        </button>
+      </div>
+    )
+  }
 
   if (platform === 'windows') {
     return (
