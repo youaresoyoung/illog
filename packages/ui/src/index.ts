@@ -27,6 +27,10 @@ export { Portal } from './components/Portal'
 export { TimePicker } from './components/TimePicker'
 export { Dialog } from './components/Dialog'
 export { Overlay } from './components/Overlay'
+export { DonutChart } from './components/DonutChart'
+export { HorizontalBar } from './components/HorizontalBar'
+export { TimeDistribution } from './components/TimeDistribution'
+export { SortableTable } from './components/SortableTable'
 export { ContextMenu, useContextMenuContext } from './components/ContextMenu'
 export { ToggleMenu } from './components/ToggleMenu'
 export { Calendar } from './components/Calendar'
@@ -39,6 +43,19 @@ export type { IconName } from './components/Icon/types'
 export type { ItemRenderProps, MatchStrategy } from './components/Navigation'
 export { IconNameOptions } from './components/Icon/types'
 export type { TimePickerValue, TimePickerProps } from './components/TimePicker'
+export type { DonutChartProps, DonutChartSegment } from './components/DonutChart'
+export type { HorizontalBarProps } from './components/HorizontalBar'
+export type {
+  TimeDistributionProps,
+  TimeDistributionLegendContext,
+  TimeDistributionRenderItemParams
+} from './components/TimeDistribution'
+export type {
+  SortableTableProps,
+  SortableTableColumn,
+  SortDirection,
+  SortState
+} from './components/SortableTable'
 export type { Sprinkles } from './core/sprinkles.css'
 export type { StyleProps } from './core/styleProps'
 export type { BoxProps } from './components/Box/types'
