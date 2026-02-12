@@ -44,7 +44,7 @@ export const TaskCard = ({ task, handleOpenNote }: Props) => {
     1000
   )
 
-  const handleClickCard = (e: MouseEvent<HTMLDivElement>) => {
+  const handleClickCard = (e: MouseEvent<HTMLElement>) => {
     const target = e.target as HTMLElement
     if (target.closest(INTERACTIVE_SELECTORS)) return
     handleOpenNote(task.id)
