@@ -46,5 +46,12 @@
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.7",
     "npm-check-updates": "^19.2.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "macos-alias",
+      "fs-xattr"
+    ]
   }
 }

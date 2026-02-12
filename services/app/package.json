@@ -72,12 +72,5 @@
     "sharp": "^0.34.5",
     "string-similarity": "^4.0.4",
     "zustand": "^5.0.9"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "electron",
-      "macos-alias",
-      "fs-xattr"
-    ]
   }
 }
