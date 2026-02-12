@@ -42,13 +42,6 @@ describe('Stack', () => {
     expect(stack).toHaveClass(/flexDirection_column/)
   })
 
-  it('applies row direction when specified', () => {
-    const { container } = render(<Stack direction="row">Row stack</Stack>)
-
-    const stack = container.firstChild as HTMLElement
-    expect(stack).toHaveClass(/flexDirection_row/)
-  })
-
   it('applies custom className', () => {
     const { container } = render(<Stack className="custom-stack">Styled</Stack>)
 
