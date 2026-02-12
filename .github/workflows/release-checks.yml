@@ -4,13 +4,9 @@ on:
   push:
     branches:
       - 'release/*'
-      - 'release/v*'
-      - 'release/v[0-9]*'
   pull_request:
     branches:
       - 'release/*'
-      - 'release/v*'
-      - 'release/v[0-9]*'
 
 concurrency:
   group: release-${{ github.ref }}
@@ -32,13 +28,11 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '23.10.0'
+          node-version: '22'
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -49,6 +43,9 @@ jobs:
 
       - name: Type check
         run: pnpm typecheck
+
+      - name: Build packages
+        run: pnpm build:packages
 
       - name: Build renderer
         run: pnpm build:renderer
@@ -69,13 +66,11 @@ jobs:
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '23.10.0'
+          node-version: '22'
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -88,7 +83,7 @@ jobs:
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD || 'temporary_password' }}
         run: |
           set -e
-          echo "🔐 Setting up Apple code signing..."
+          echo "Setting up Apple code signing..."
 
           # Create temporary keychain
           KEYCHAIN_NAME="build-$(uuidgen).keychain-db"
@@ -121,31 +116,35 @@ jobs:
           echo "KEYCHAIN_NAME=$KEYCHAIN_NAME" >> $GITHUB_ENV
           echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> $GITHUB_ENV
 
-          echo "✅ Certificate imported successfully"
+          echo "Certificate imported successfully"
+
+      - name: Build packages
+        run: pnpm build:packages
 
       - name: Build and Package
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        working-directory: services/app
         run: |
-          echo "📦 Building and packaging..."
+          echo "Building and packaging..."
           pnpm package
 
       - name: Cleanup Keychain
         if: always() && env.KEYCHAIN_PATH != ''
         run: |
-          echo "🧹 Cleaning up keychain..."
+          echo "Cleaning up keychain..."
           security lock-keychain "$KEYCHAIN_PATH" || true
           security list-keychains -d user -s $(security list-keychains -d user | sed s/\"//g | grep -v "$KEYCHAIN_NAME") || true
           security delete-keychain "$KEYCHAIN_PATH" || true
-          echo "✅ Cleanup completed"
+          echo "Cleanup completed"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release-build-${{ github.sha }}
-          path: out/
+          path: services/app/out/
           retention-days: 14
 
   release-summary:
@@ -161,19 +160,19 @@ jobs:
 
       - name: Generate summary
         run: |
-          echo "## 🎉 Release Branch Checks" >> $GITHUB_STEP_SUMMARY
+          echo "## Release Branch Checks" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          echo "### 📊 Build Status" >> $GITHUB_STEP_SUMMARY
-          echo "- Validation: ${{ needs.release-validation.result == 'success' && '✅' || '❌' }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Build & Sign: ${{ needs.build-and-sign.result == 'success' && '✅' || '❌' }}" >> $GITHUB_STEP_SUMMARY
+          echo "### Build Status" >> $GITHUB_STEP_SUMMARY
+          echo "- Validation: ${{ needs.release-validation.result == 'success' && 'Pass' || 'Fail' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Build & Sign: ${{ needs.build-and-sign.result == 'success' && 'Pass' || 'Fail' }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          echo "### 📦 Artifacts" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Signed macOS build available" >> $GITHUB_STEP_SUMMARY
-          echo "- ⏭️ Notarization will be done on main branch" >> $GITHUB_STEP_SUMMARY
+          echo "### Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "- Signed macOS build available" >> $GITHUB_STEP_SUMMARY
+          echo "- Notarization will be done on main branch" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          echo "### 🚀 Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
           echo "- Test the release build thoroughly" >> $GITHUB_STEP_SUMMARY
           echo "- Merge to main when ready for production" >> $GITHUB_STEP_SUMMARY

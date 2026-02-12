@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get_version.outputs.version }}
-      is_prerelease: $is_prerelease
+      is_prerelease: ${{ steps.get_version.outputs.is_prerelease }}
     env:
       AWS_CLOUDFRONT_DOMAIN: ${{ secrets.AWS_CLOUDFRONT_DOMAIN }}
     steps:
@@ -33,8 +33,6 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == refs/tags/* ]]; then
             VERSION="${{ github.ref_name }}"
-          elif [[ -n "${{ github.event.inputs.version }}" ]]; then
-            VERSION="${{ github.event.inputs.version }}"
           else
             VERSION=$(node -p "require('./package.json').version")
           fi
@@ -48,18 +46,15 @@ jobs:
             echo "is_prerelease=false" >> $GITHUB_OUTPUT
           fi
 
-          echo "📦 Version: $VERSION"
-          echo "🏷️ Prerelease: ${{ steps.get_version.outputs.is_prerelease }}"
+          echo "Version: $VERSION"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '23.10.0'
+          node-version: '22'
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -70,6 +65,9 @@ jobs:
 
       - name: Type check
         run: pnpm typecheck
+
+      - name: Build packages
+        run: pnpm build:packages
 
       - name: Build renderer
         run: pnpm build:renderer
@@ -84,25 +82,17 @@ jobs:
       fail-fast: false
     env:
       AWS_CLOUDFRONT_DOMAIN: ${{ secrets.AWS_CLOUDFRONT_DOMAIN }}
-      APPLE_ID: ${{ secrets.APPLE_ID }}
-      APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
-      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_DEFAULT_REGION: 'us-east-2'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '23.10.0'
+          node-version: '22'
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -116,7 +106,7 @@ jobs:
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD || 'temporary_password' }}
         run: |
           set -e
-          echo "🔐 Setting up Apple code signing..."
+          echo "Setting up Apple code signing..."
 
           # Create temporary keychain
           KEYCHAIN_NAME="build-$(uuidgen).keychain-db"
@@ -149,47 +139,58 @@ jobs:
           echo "KEYCHAIN_NAME=$KEYCHAIN_NAME" >> $GITHUB_ENV
           echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> $GITHUB_ENV
 
-          echo "✅ Certificate imported successfully"
+          echo "Certificate imported successfully"
+
+      - name: Build packages
+        run: pnpm build:packages
 
       - name: Build and Publish to S3
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-2'
+        working-directory: services/app
         run: |
-          echo "📦 Building, signing, notarizing and publishing to S3..."
-          pnpm build:renderer
+          echo "Building, signing, notarizing and publishing to S3..."
 
           # Build for arm64
-          echo "🔨 Building for arm64..."
+          echo "Building for arm64..."
           pnpm exec electron-forge publish --arch=arm64
 
           # Build for x64
-          echo "🔨 Building for x64..."
+          echo "Building for x64..."
           pnpm exec electron-forge publish --arch=x64
 
-          # Verify S3 upload
-          echo "🔍 Verifying S3 upload..."
-          aws s3 ls s3://illog/updates/darwin/ --recursive --region us-east-2
+          echo "Successfully published to S3"
 
-          echo "✅ Successfully published to S3"
+      - name: Verify S3 upload
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-2'
+        run: |
+          echo "Verifying S3 upload..."
+          aws s3 ls s3://illog/updates/darwin/ --recursive --region us-east-2
 
       - name: Cleanup Keychain (macOS)
         if: always() && runner.os == 'macOS' && env.KEYCHAIN_PATH != ''
         run: |
-          echo "🧹 Cleaning up keychain..."
+          echo "Cleaning up keychain..."
           security lock-keychain "$KEYCHAIN_PATH" || true
           security list-keychains -d user -s $(security list-keychains -d user | sed s/\"//g | grep -v "$KEYCHAIN_NAME") || true
           security delete-keychain "$KEYCHAIN_PATH" || true
-          echo "✅ Cleanup completed"
+          echo "Cleanup completed"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release-${{ runner.os }}-${{ needs.validate.outputs.version }}
           path: |
-            out/make/**/*.dmg
-            out/make/**/*.zip
-            out/make/**/*.exe
-            out/make/**/*.deb
-            out/make/**/*.rpm
-            out/make/**/*.AppImage
+            services/app/out/make/**/*.dmg
+            services/app/out/make/**/*.zip
           retention-days: 30
 
   create-github-release:
@@ -229,7 +230,7 @@ jobs:
           } >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: ${{ needs.validate.outputs.version }}
           tag_name: ${{ needs.validate.outputs.version }}
@@ -238,7 +239,7 @@ jobs:
 
             ---
 
-            ## 📦 Installation
+            ## Installation
 
             ### macOS
             - Download the `.dmg` file
@@ -248,7 +249,7 @@ jobs:
             ### Known Issues
             Please check the [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for known issues.
 
-            ## 🔗 Links
+            ## Links
             - [Documentation](https://github.com/${{ github.repository }})
             - [Report Issues](https://github.com/${{ github.repository }}/issues)
           prerelease: ${{ needs.validate.outputs.is_prerelease == 'true' }}
@@ -256,10 +257,6 @@ jobs:
           files: |
             artifacts/**/*.dmg
             artifacts/**/*.zip
-            artifacts/**/*.exe
-            artifacts/**/*.deb
-            artifacts/**/*.rpm
-            artifacts/**/*.AppImage
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -272,26 +269,26 @@ jobs:
     steps:
       - name: Generate summary
         run: |
-          echo "## 🚀 Release Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## Release Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📊 Status" >> $GITHUB_STEP_SUMMARY
+          echo "### Status" >> $GITHUB_STEP_SUMMARY
           echo "- Version: **${{ needs.validate.outputs.version }}**" >> $GITHUB_STEP_SUMMARY
           echo "- Prerelease: **${{ needs.validate.outputs.is_prerelease }}**" >> $GITHUB_STEP_SUMMARY
-          echo "- Validation: ${{ needs.validate.result == 'success' && '✅' || '❌' }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Build & Sign & Notarize: ${{ needs.build-sign-notarize.result == 'success' && '✅' || '❌' }}" >> $GITHUB_STEP_SUMMARY
-          echo "- GitHub Release: ${{ needs.create-github-release.result == 'success' && '✅' || (needs.create-github-release.result == 'skipped' && '⏭️ Skipped' || '❌') }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Validation: ${{ needs.validate.result == 'success' && 'Pass' || 'Fail' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Build & Sign & Notarize: ${{ needs.build-sign-notarize.result == 'success' && 'Pass' || 'Fail' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- GitHub Release: ${{ needs.create-github-release.result == 'success' && 'Pass' || (needs.create-github-release.result == 'skipped' && 'Skipped' || 'Fail') }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 📦 Deployment" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Binaries uploaded to S3" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Available via CloudFront CDN" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Auto-update manifest updated" >> $GITHUB_STEP_SUMMARY
+          echo "### Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "- Binaries uploaded to S3" >> $GITHUB_STEP_SUMMARY
+          echo "- Available via CloudFront CDN" >> $GITHUB_STEP_SUMMARY
+          echo "- Auto-update manifest updated" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### 🔗 CDN URLs" >> $GITHUB_STEP_SUMMARY
+          echo "### CDN URLs" >> $GITHUB_STEP_SUMMARY
           echo "- macOS (arm64): \`https://${{ secrets.AWS_CLOUDFRONT_DOMAIN }}/updates/darwin/arm64/\`" >> $GITHUB_STEP_SUMMARY
           echo "- macOS (x64): \`https://${{ secrets.AWS_CLOUDFRONT_DOMAIN }}/updates/darwin/x64/\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [[ "${{ needs.create-github-release.result }}" == "success" ]]; then
-            echo "### 🎉 GitHub Release Created" >> $GITHUB_STEP_SUMMARY
+            echo "### GitHub Release Created" >> $GITHUB_STEP_SUMMARY
             echo "Visit: https://github.com/${{ github.repository }}/releases/tag/${{ needs.validate.outputs.version }}" >> $GITHUB_STEP_SUMMARY
           fi
