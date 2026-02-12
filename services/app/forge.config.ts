@@ -192,7 +192,11 @@ const config: ForgeConfig = {
         schemes: ['illog']
       }
     ],
-    extraResource: ['./src/main/assets', './.env.production'],
+    extraResource: [
+      './src/main/assets',
+      // .env.production is optional - created from secrets in CI
+      ...(fs.existsSync(path.resolve(__dirname, '.env.production')) ? ['./.env.production'] : [])
+    ],
     osxSign: process.env.APPLE_ID
       ? {
           optionsForFile: () => {

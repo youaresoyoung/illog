@@ -121,6 +121,16 @@ jobs:
       - name: Build packages
         run: pnpm build:packages
 
+      - name: Create production env file
+        working-directory: services/app
+        run: |
+          printf '%s\n' \
+            "DB_FILE_NAME=illog.db" \
+            "DB_FILE_PATH=./illog.db" \
+            "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" \
+            "CLOUDFRONT_DOMAIN=${{ secrets.AWS_CLOUDFRONT_DOMAIN }}" \
+            > .env.production
+
       - name: Build and Package
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
