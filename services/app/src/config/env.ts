@@ -105,7 +105,8 @@ const getEnvValue = (key: string): string | undefined => {
 const getRequiredEnv = (key: string): string => {
   const value = getEnvValue(key)
   if (!value) {
-    throw new Error(`Missing required environment variable: ${key}`)
+    console.warn(`[env] Missing required environment variable: ${key}`)
+    return ''
   }
   return value.trim()
 }
@@ -131,7 +132,7 @@ export const config = {
   sentryDSN: getRequiredEnv('SENTRY_DSN'),
   sentryDevDSN: getRequiredEnv('SENTRY_DEV_DSN'),
 
-  geminiApiKey: getRequiredEnv('GEMINI_API_KEY'),
+  geminiApiKey: '', // getRequiredEnv('GEMINI_API_KEY'),
 
   cloudfrontDomain: getRequiredEnv('CLOUDFRONT_DOMAIN')
 }

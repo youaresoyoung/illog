@@ -2,12 +2,23 @@ import { GoogleGenAI } from '@google/genai'
 import { TextRankService } from './TextRankService'
 
 export class GeminiService {
-  private genAI: GoogleGenAI
+  private genAI: GoogleGenAI | null = null
+  private apiKey: string
   private textRankService: TextRankService
 
   constructor(apiKey: string) {
-    this.genAI = new GoogleGenAI({ apiKey })
+    this.apiKey = apiKey
     this.textRankService = new TextRankService()
+  }
+
+  private getClient(): GoogleGenAI {
+    if (!this.genAI) {
+      if (!this.apiKey) {
+        throw new Error('Gemini API key is not configured')
+      }
+      this.genAI = new GoogleGenAI({ apiKey: this.apiKey })
+    }
+    return this.genAI
   }
 
   async *reflectionNoteStream(text: string): AsyncGenerator<string, void> {
@@ -15,15 +26,12 @@ export class GeminiService {
       throw new Error('Invalid input text')
     }
 
-    if (!this.genAI) {
-      throw new Error('GeminiService not initialized')
-    }
-
     if (!process.env.PROMPT || !process.env.MODEL_NAME) {
       throw new Error('Missing environment variables: PROMPT or MODEL_NAME')
     }
 
     try {
+      const client = this.getClient()
       const textRankResult = this.textRankService.extractKeySentences(text)
       const preprocessedText = textRankResult.processedText
       const systemPrompt = process.env.PROMPT
@@ -31,7 +39,7 @@ export class GeminiService {
       const userNote = process.env.PROMPT.replace('{text}', preprocessedText)
       const fullPrompt = `${systemPrompt}\n\n${userNote}`
 
-      const res = await this.genAI.models.generateContentStream({
+      const res = await client.models.generateContentStream({
         model: process.env.MODEL_NAME,
         contents: fullPrompt,
         config: {

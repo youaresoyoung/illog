@@ -47,6 +47,7 @@ function resolvePackagerIcon(): string {
 
 const entitlementsRoot = path.resolve(process.cwd(), 'entitlements')
 const appEntitlementsPath = path.join(entitlementsRoot, 'app.entitlements.plist')
+const childEntitlementsPath = path.join(entitlementsRoot, 'app.child.entitlements.plist')
 
 // const sensitiveIgnorePatterns = [
 //   /(^|\/)\.env(\..+)?$/i,
@@ -183,7 +184,29 @@ const config: ForgeConfig = {
           done(err as Error)
           return
         }
-        done()
+
+        // afterCopy는 Forge의 @electron/rebuild 단계 이후에 실행됨.
+        // 따라서 여기서 복사된 네이티브 모듈을 타겟 Electron 버전 + 아키텍처에 맞게 리빌드해야 함.
+        // 이 없으면 CI에서 빌드한 .node 바이너리가 누락되거나 잘못된 ABI로 패키징됨.
+        import('@electron/rebuild')
+          .then(({ rebuild }) =>
+            rebuild({
+              buildPath,
+              electronVersion,
+              arch,
+              onlyModules: ['better-sqlite3']
+            })
+          )
+          .then(() => {
+            console.log(
+              `Rebuilt better-sqlite3 for Electron ${electronVersion} (${platform}/${arch})`
+            )
+            done()
+          })
+          .catch((err: Error) => {
+            console.error('Failed to rebuild native modules:', err)
+            done(err)
+          })
       }
     ],
     protocols: [
@@ -199,8 +222,15 @@ const config: ForgeConfig = {
     ],
     osxSign: process.env.APPLE_ID
       ? {
-          optionsForFile: () => {
-            return { entitlements: appEntitlementsPath }
+          identity: 'Developer ID Application',
+          optionsForFile: (filePath: string) => {
+            const isMainBinary =
+              filePath.endsWith('.app') ||
+              filePath.endsWith('illog') ||
+              (!filePath.includes('Helper') && !filePath.includes('helper'))
+            return {
+              entitlements: isMainBinary ? appEntitlementsPath : childEntitlementsPath
+            }
           }
         }
       : undefined,
@@ -219,7 +249,7 @@ const config: ForgeConfig = {
     {
       name: '@electron-forge/maker-dmg',
       config: {
-        title: 'illog Installer',
+        title: 'illog-installer',
         format: 'ULFO',
         icon: path.resolve('src/main/assets/icons/darwin/app.icns')
       }
