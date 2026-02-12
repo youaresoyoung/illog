@@ -16,7 +16,7 @@ import { useDeleteTask, useUpdateTask } from '../../hooks/queries/useTaskQueries
 import type { TaskWithTags } from '../../../../shared/types'
 import type { MouseEvent } from 'react'
 import { Status } from '../status/Status'
-import { Time } from '../time/time'
+import { Time } from '../time/Time'
 
 const INTERACTIVE_SELECTORS =
   'a, input, select, textarea, button, label, ' +

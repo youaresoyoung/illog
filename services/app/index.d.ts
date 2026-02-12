@@ -68,7 +68,10 @@ interface RendererAPI {
   }
   weeklyReflection: {
     get: (weekId: string) => Promise<WeeklyReflectionResponse | null>
-    upsert: (weekId: string, content: string) => Promise<WeeklyReflectionResponse>
+    upsert: (
+      weekId: string,
+      data: UpdateWeeklyReflectionRequest
+    ) => Promise<WeeklyReflectionResponse>
   }
   taskType: {
     getAll: () => Promise<TaskType[]>
