@@ -20,7 +20,7 @@ export const SettingsDialog = ({ isOpen, onClose, isOnboarding = false }: Settin
   if (!isOpen) return null
 
   return (
-    <Dialog isOpen={isOpen} onClose={onClose} ariaLabel={isOnboarding ? '환영합니다' : '설정'}>
+    <Dialog isOpen={isOpen} onClose={onClose} ariaLabel={isOnboarding ? 'Welcome' : 'Settings'}>
       <Dialog.Title>{isOnboarding ? 'Welcome to illog' : 'Settings'}</Dialog.Title>
       <Dialog.Content>
         <Stack gap="400">

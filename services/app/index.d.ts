@@ -96,6 +96,17 @@ interface RendererAPI {
     getPlanInfo: () => Promise<UserPlanInfo>
     isFeatureEnabled: (featureId: FeatureId) => Promise<boolean>
   }
+  events: {
+    onDeepLink: (cb: (url: string) => void) => () => void
+    onUpdateAvailable: (cb: () => void) => () => void
+    onUpdateDownloaded: (
+      cb: (info: { releaseNotes?: string; releaseName?: string }) => void
+    ) => () => void
+  }
+  updater: {
+    quitAndInstall: () => Promise<void>
+    simulateUpdate?: () => Promise<void>
+  }
 }
 
 interface ThemeAPI {

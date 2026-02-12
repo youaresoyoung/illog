@@ -119,6 +119,61 @@ const api = {
   user: {
     getPlanInfo: () => safeInvoke('user.getPlanInfo'),
     isFeatureEnabled: (featureId: FeatureId) => safeInvoke('user.isFeatureEnabled', featureId)
+  },
+  events: {
+    onDeepLink: (cb: (url: string) => void): (() => void) => {
+      if (typeof cb !== 'function') {
+        return () => {}
+      }
+      const listener = (_event: Electron.IpcRendererEvent, url: string) => {
+        try {
+          cb(url)
+        } catch (e) {
+          console.warn('[preload] deep-link cb failed', e)
+        }
+      }
+      ipcRenderer.on('deep-link', listener)
+      return () => ipcRenderer.removeListener('deep-link', listener)
+    },
+    onUpdateAvailable: (cb: () => void): (() => void) => {
+      if (typeof cb !== 'function') {
+        return () => {}
+      }
+      const listener = () => {
+        try {
+          cb()
+        } catch (e) {
+          console.warn('[preload] update-available cb failed', e)
+        }
+      }
+      ipcRenderer.on('update-available', listener)
+      return () => ipcRenderer.removeListener('update-available', listener)
+    },
+    onUpdateDownloaded: (
+      cb: (info: { releaseNotes?: string; releaseName?: string }) => void
+    ): (() => void) => {
+      if (typeof cb !== 'function') {
+        return () => {}
+      }
+      const listener = (
+        _event: Electron.IpcRendererEvent,
+        info: { releaseNotes?: string; releaseName?: string }
+      ) => {
+        try {
+          cb(info)
+        } catch (e) {
+          console.warn('[preload] update-downloaded cb failed', e)
+        }
+      }
+      ipcRenderer.on('update-downloaded', listener)
+      return () => ipcRenderer.removeListener('update-downloaded', listener)
+    }
+  },
+  updater: {
+    quitAndInstall: (): Promise<void> => ipcRenderer.invoke('updater:quitAndInstall'),
+    ...(process.env.NODE_ENV === 'development'
+      ? { simulateUpdate: (): Promise<void> => ipcRenderer.invoke('updater:simulateUpdate') }
+      : {})
   }
 }
 

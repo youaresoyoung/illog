@@ -3,12 +3,14 @@ import { openDB } from './db'
 import { installExtension, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import { CrashReportService, initSentryEarly } from './service/CrashReportService'
 import { createWindow } from './window'
-import { isDev } from '../config/env'
+import { config, isDev } from '../config/env'
 import { buildMenu } from './menu'
 import { registerHandlers } from './controller/registerHandlers'
 import { createAppTray } from './tray/appTray'
 import { resolveIconPath } from './utils/icon'
 import { setupCSP } from './security/csp'
+import { AppUpdater } from './updater/autoUpdater'
+import { registerUpdaterHandler } from './ipc/ipcHandlers'
 
 // Handle Squirrel events on Windows (install, update, uninstall)
 if (process.platform === 'win32') {
@@ -20,6 +22,7 @@ initSentryEarly()
 
 let crashReportServiceInstance: CrashReportService | null = null
 let mainWindow: BrowserWindow | null = null
+let appUpdater: AppUpdater | null = null
 
 app
   .whenReady()
@@ -50,6 +53,26 @@ app
     }
 
     mainWindow = createWindow(__dirname)
+
+    if (config.cloudfrontDomain || isDev) {
+      appUpdater = new AppUpdater({
+        feedURL: config.cloudfrontDomain
+          ? `https://${config.cloudfrontDomain}/updates/${process.platform}/${process.arch}`
+          : '',
+        mainWindow
+      })
+      registerUpdaterHandler({
+        quitAndInstall: () => appUpdater?.quitAndInstall(),
+        simulateUpdate: () => appUpdater?.simulateUpdate()
+      })
+
+      if (!isDev) {
+        mainWindow.once('ready-to-show', () => {
+          appUpdater?.checkForUpdates()
+        })
+      }
+    }
+
     mainWindow.on('ready-to-show', () => {
       mainWindow?.show()
     })

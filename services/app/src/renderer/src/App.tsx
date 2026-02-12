@@ -11,6 +11,7 @@ import { SettingsDialog } from './components/SettingsDialog'
 import { ToastContainer } from './components/Toast/ToastContainer'
 import { useOnboardingStatus, useCompleteOnboarding } from './hooks/queries'
 import { useGlobalErrorHandler } from './hooks/useGlobalErrorHandler'
+import { UpdateDialog } from './components/dialog/UpdateDialog'
 
 const router = createHashRouter([
   {
@@ -50,6 +51,7 @@ function AppContent() {
       <RouterProvider router={router} />
       <CrashReportDialog />
       <ToastContainer />
+      <UpdateDialog />
       <SettingsDialog isOpen={needsOnboarding} onClose={() => completeOnboarding()} isOnboarding />
     </>
   )

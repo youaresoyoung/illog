@@ -27,6 +27,7 @@ import {
 import { CrashReportService } from '../service/CrashReportService'
 import { UserService } from '../service/UserService'
 import { serializeError } from '../../shared/errors'
+import log from 'electron-log'
 
 let crashReportServiceRef: CrashReportService | null = null
 
@@ -150,4 +151,21 @@ export function registerUserHandlers(userService: UserService) {
   safeHandle('user.isFeatureEnabled', (_, featureId: FeatureId) =>
     userService.isFeatureEnabled(featureId)
   )
+}
+
+export function registerUpdaterHandler(updater: {
+  quitAndInstall: () => void
+  simulateUpdate?: (mainWindow: import('electron').BrowserWindow | null) => void
+}) {
+  ipcMain.handle('updater:quitAndInstall', () => {
+    updater.quitAndInstall()
+  })
+
+  // NOTE: Development only - Simulate an update for testing purposes
+  if (process.env.NODE_ENV === 'development' && updater.simulateUpdate) {
+    ipcMain.handle('updater:simulateUpdate', () => {
+      log.info('Simulating update for testing')
+      updater.simulateUpdate?.(null)
+    })
+  }
 }

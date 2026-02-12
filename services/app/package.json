@@ -1,6 +1,6 @@
 {
   "name": "illog",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A descktop application for managing and organizing your notes, tasks, and projects in a simple and efficient way.",
   "main": ".vite/build/main.js",
   "scripts": {
@@ -61,15 +61,23 @@
     "drizzle-orm": "^0.45.1",
     "electron": "^39.2.7",
     "electron-devtools-installer": "^4.0.0",
+    "electron-log": "^5.4.3",
     "electron-window-state": "^5.0.3",
     "lexical": "^0.39.0",
     "natural": "^8.1.0",
+    "prismjs": "^1.30.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "prismjs": "^1.30.0",
     "react-router": "^7.10.1",
     "sharp": "^0.34.5",
     "string-similarity": "^4.0.4",
     "zustand": "^5.0.9"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "macos-alias",
+      "fs-xattr"
+    ]
   }
 }
