@@ -69,8 +69,7 @@ const ignoreSensitiveResources = (filePath: string): boolean => {
   if (
     normalized.startsWith('/.vite') ||
     normalized === '/package.json' ||
-    normalized === '/.env.production' ||
-    normalized === '/.env'
+    normalized === '/.env.production'
   ) {
     return false // 포함
   }
@@ -137,7 +136,6 @@ const config: ForgeConfig = {
             }
 
             fs.cpSync(src, dest, { recursive: true })
-            console.log(`${'  '.repeat(depth)}Copied module: ${modName}`)
 
             // 하위 dependencies 재귀 복사
             const modPkgPath = path.join(src, 'package.json')
