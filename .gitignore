@@ -4,13 +4,23 @@
 
 .env
 .env.local
+.env.production
 .env.*.local
 
 **/dist/*
 dist
+**/out/*
+out
+**/build/*
+**/.vite/*
+
 
 node_modules
-pnpm-lock.yaml
-package-lock.json
 
 .vscode/
+*storybook.log
+storybook-static
+
+.eslintcache
+
+.next

@@ -1,3 +1,3 @@
 export const stroke = {
-  border: 1,
-};
+  border: 1
+}

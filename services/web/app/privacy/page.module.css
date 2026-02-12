@@ -1,0 +1,168 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav {
+  padding: 20px 40px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  text-decoration: none;
+}
+
+.article {
+  flex: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 64px 24px 96px;
+  width: 100%;
+}
+
+.header {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.lastUpdated {
+  font-size: 14px;
+  color: #999;
+}
+
+.section {
+  margin-bottom: 40px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+  letter-spacing: -0.3px;
+}
+
+.paragraph {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #4a4a4a;
+  margin-bottom: 12px;
+}
+
+.infoCard {
+  background: #f8faf8;
+  border: 1px solid #e6ede6;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin: 16px 0;
+}
+
+.infoCardAlt {
+  background: #faf8f8;
+  border: 1px solid #ede6e6;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin: 16px 0;
+}
+
+.infoCardTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.list li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4a4a4a;
+  padding-left: 20px;
+  position: relative;
+}
+
+.list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c0c0c0;
+}
+
+.link {
+  color: #1a1a1a;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.link:hover {
+  color: #555;
+}
+
+.footer {
+  padding: 32px 24px;
+  text-align: center;
+  font-size: 13px;
+  color: #b3b3b3;
+  border-top: 1px solid #f0f0f0;
+}
+
+@media (max-width: 768px) {
+  .nav {
+    padding: 16px 20px;
+  }
+
+  .article {
+    padding: 40px 20px 64px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+  }
+
+  .sectionTitle {
+    font-size: 18px;
+  }
+
+  .paragraph {
+    font-size: 14px;
+  }
+
+  .infoCard,
+  .infoCardAlt {
+    padding: 20px;
+  }
+
+  .list li {
+    font-size: 13px;
+  }
+}
