@@ -23,4 +23,7 @@ storybook-static
 
 .eslintcache
 
+.nx/cache
+.nx/workspace-data
+
 .next

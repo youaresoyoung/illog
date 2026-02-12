@@ -61,16 +61,16 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run linting
-        run: pnpm lint
+        run: pnpm nx run-many -t lint --parallel=3
 
       - name: Build packages
-        run: pnpm build:packages
+        run: pnpm nx run-many -t build --projects='packages/*'
 
       - name: Type check
-        run: pnpm typecheck
+        run: pnpm nx run-many -t typecheck --parallel=3
 
       - name: Build renderer
-        run: pnpm build:renderer
+        run: pnpm nx run illog-app:build
 
   build-sign-notarize:
     name: Build, Sign & Notarize
@@ -161,7 +161,7 @@ jobs:
           echo "OK: Found Developer ID Application certificate"
 
       - name: Build packages
-        run: pnpm build:packages
+        run: pnpm nx run-many -t build --projects='packages/*'
 
       - name: Create production env file
         working-directory: services/app

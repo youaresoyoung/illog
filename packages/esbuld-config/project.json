@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "illog-esbuild-config",
+  "projectType": "library",
+  "root": "packages/esbuld-config",
+  "sourceRoot": "packages/esbuld-config"
+}
