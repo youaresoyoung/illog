@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css'
-import { tokens } from 'packages/themes/dist'
+import { tokens } from '@illog/themes'
 import { backgroundColors, borderColors } from '../../core/tokens/generatedColors'
 
 export const cardBase = style({

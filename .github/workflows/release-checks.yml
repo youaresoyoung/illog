@@ -41,11 +41,11 @@ jobs:
       - name: Run linting
         run: pnpm lint
 
-      - name: Type check
-        run: pnpm typecheck
-
       - name: Build packages
         run: pnpm build:packages
+
+      - name: Type check
+        run: pnpm typecheck
 
       - name: Build renderer
         run: pnpm build:renderer

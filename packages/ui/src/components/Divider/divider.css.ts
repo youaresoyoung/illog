@@ -1,6 +1,6 @@
 import { style } from '@vanilla-extract/css'
 import { borderColors } from '../../core/tokens/generatedColors'
-import { tokens } from 'packages/themes/dist'
+import { tokens } from '@illog/themes'
 import { recipe } from '@vanilla-extract/recipes'
 
 export const dividerBase = style({

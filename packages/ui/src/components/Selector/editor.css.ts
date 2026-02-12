@@ -1,7 +1,7 @@
 import { styles } from '@illog/themes'
 import { style } from '@vanilla-extract/css'
 import { backgroundColors, borderColors, textColors } from '../../core/tokens/generatedColors'
-import { tokens } from 'packages/themes/dist'
+import { tokens } from '@illog/themes'
 import { sprinkles } from '../../core/sprinkles.css'
 
 export const editorContainer = style([

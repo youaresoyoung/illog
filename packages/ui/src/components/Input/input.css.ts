@@ -1,7 +1,7 @@
 import { style } from '@vanilla-extract/css'
 import { sprinkles } from '../../core/sprinkles.css'
 import { recipe } from '@vanilla-extract/recipes'
-import { styles, tokens } from 'packages/themes/dist'
+import { styles, tokens } from '@illog/themes'
 import { backgroundColors, borderColors, textColors } from '../../core/tokens/generatedColors'
 
 export const inputWrapper = style([

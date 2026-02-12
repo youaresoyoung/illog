@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css'
-import { tokens } from 'packages/themes/dist'
+import { tokens } from '@illog/themes'
 import { backgroundColors, borderColors, textColors } from '../../core/tokens/generatedColors'
 import { recipe } from '@vanilla-extract/recipes'
 
