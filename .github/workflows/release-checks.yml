@@ -131,15 +131,39 @@ jobs:
             "CLOUDFRONT_DOMAIN=${{ secrets.AWS_CLOUDFRONT_DOMAIN }}" \
             > .env.production
 
-      - name: Build and Package
+      - name: Build and Package arm64
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         working-directory: services/app
         run: |
-          echo "Building and packaging..."
-          pnpm package
+          echo "Building arm64..."
+          pnpm exec electron-forge make --platform=darwin --arch=arm64
+
+      - name: Preserve arm64 artifacts
+        working-directory: services/app
+        run: |
+          mkdir -p out/make-backup
+          cp -r out/make/* out/make-backup/ 2>/dev/null || true
+
+      - name: Build and Package x64
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        working-directory: services/app
+        run: |
+          echo "Building x64..."
+          pnpm exec electron-forge make --platform=darwin --arch=x64
+
+      - name: Restore arm64 artifacts
+        working-directory: services/app
+        run: |
+          cp -r out/make-backup/* out/make/ 2>/dev/null || true
+          rm -rf out/make-backup
+          echo "Final artifacts:"
+          find out/make -name "*.dmg" -o -name "*.zip" | head -20
 
       - name: Cleanup Keychain
         if: always() && env.KEYCHAIN_PATH != ''

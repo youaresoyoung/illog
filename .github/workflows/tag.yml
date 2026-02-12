@@ -154,7 +154,7 @@ jobs:
             "CLOUDFRONT_DOMAIN=${{ secrets.AWS_CLOUDFRONT_DOMAIN }}" \
             > .env.production
 
-      - name: Build and Publish to S3
+      - name: Build and Publish arm64 to S3
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
@@ -164,17 +164,38 @@ jobs:
           AWS_DEFAULT_REGION: 'us-east-2'
         working-directory: services/app
         run: |
-          echo "Building, signing, notarizing and publishing to S3..."
+          echo "Building, signing, notarizing and publishing arm64 to S3..."
+          pnpm exec electron-forge publish --platform=darwin --arch=arm64
+          echo "arm64 build completed"
 
-          # Build for arm64
-          echo "Building for arm64..."
-          pnpm exec electron-forge publish --arch=arm64
+      - name: Preserve arm64 artifacts
+        working-directory: services/app
+        run: |
+          mkdir -p out/make-backup
+          cp -r out/make/* out/make-backup/ 2>/dev/null || true
+          ls -la out/make-backup/ || echo "No backup created"
 
-          # Build for x64
-          echo "Building for x64..."
-          pnpm exec electron-forge publish --arch=x64
+      - name: Build and Publish x64 to S3
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-2'
+        working-directory: services/app
+        run: |
+          echo "Building, signing, notarizing and publishing x64 to S3..."
+          pnpm exec electron-forge publish --platform=darwin --arch=x64
+          echo "x64 build completed"
 
-          echo "Successfully published to S3"
+      - name: Restore arm64 artifacts
+        working-directory: services/app
+        run: |
+          cp -r out/make-backup/* out/make/ 2>/dev/null || true
+          rm -rf out/make-backup
+          echo "Final artifacts:"
+          find out/make -name "*.dmg" -o -name "*.zip" | head -20
 
       - name: Verify S3 upload
         env:
