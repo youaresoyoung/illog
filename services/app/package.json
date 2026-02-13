@@ -1,6 +1,6 @@
 {
   "name": "illog",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "A descktop application for managing and organizing your notes, tasks, and projects in a simple and efficient way.",
   "main": ".vite/build/main.js",
   "scripts": {
