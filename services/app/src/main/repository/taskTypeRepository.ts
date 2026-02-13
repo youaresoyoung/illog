@@ -216,6 +216,9 @@ export class TaskTypeRepository {
     if (data.name !== undefined) {
       updateData.name = normalizeName(data.name)
     }
+    if (data.color !== undefined) {
+      updateData.color = data.color
+    }
 
     const updated = this.db
       .update(taskSubtypes)

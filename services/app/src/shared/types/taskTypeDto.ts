@@ -1,5 +1,6 @@
 import { TaskSubtype, TaskType } from '../../main/database/schema'
 import { TaskTypeColor } from './../../main/database/schema/taskType'
+import { TaskSubtypeColor } from './../../main/database/schema/taskSubtype'
 
 export interface CreateTaskTypeRequest {
   name: string
@@ -18,6 +19,7 @@ export interface CreateTaskSubtypeRequest {
 
 export interface UpdateTaskSubtypeRequest {
   name?: string
+  color?: TaskSubtypeColor
 }
 
 export type TaskTypeDto = TaskType

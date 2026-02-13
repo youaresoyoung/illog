@@ -22,7 +22,7 @@ export interface TaskWithTags extends Task {
   tags: Pick<Tag, 'id' | 'name' | 'color'>[]
   project: Pick<Project, 'id' | 'name' | 'color'> | null
   taskType: Pick<TaskType, 'id' | 'name' | 'color'> | null
-  taskSubtype: Pick<TaskSubtype, 'id' | 'name'> | null
+  taskSubtype: Pick<TaskSubtype, 'id' | 'name' | 'color'> | null
 }
 
 export interface TaskWithDetails extends TaskWithTags {

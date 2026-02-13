@@ -97,7 +97,7 @@ function groupBySubtype(tasks: TaskWithTags[]): ChartSegment[] {
     tasks,
     (t) => t.taskSubtype?.id ?? ETC_SEGMENT_ID,
     (t) => t.taskSubtype?.name ?? ETC_SEGMENT_ID,
-    () => 'gray'
+    (t) => t.taskSubtype?.color ?? 'gray'
   )
 }
 

@@ -63,7 +63,7 @@ export class TaskRepository {
         END`.as('taskType'),
         taskSubtype: sql`
         CASE WHEN task_subtype.id IS NOT NULL
-          THEN json_object('id', task_subtype.id, 'name', task_subtype.name)
+          THEN json_object('id', task_subtype.id, 'name', task_subtype.name, 'color', task_subtype.color)
           ELSE NULL
         END`.as('taskSubtype')
       })
@@ -93,7 +93,7 @@ export class TaskRepository {
         ? (JSON.parse(task.taskType as string) as Pick<TaskType, 'id' | 'name' | 'color'>)
         : null,
       taskSubtype: task.taskSubtype
-        ? (JSON.parse(task.taskSubtype as string) as Pick<TaskSubtype, 'id' | 'name'>)
+        ? (JSON.parse(task.taskSubtype as string) as Pick<TaskSubtype, 'id' | 'name' | 'color'>)
         : null
     }
   }
@@ -156,7 +156,7 @@ export class TaskRepository {
         END`.as('taskType'),
         taskSubtype: sql`
         CASE WHEN task_subtype.id IS NOT NULL
-          THEN json_object('id', task_subtype.id, 'name', task_subtype.name)
+          THEN json_object('id', task_subtype.id, 'name', task_subtype.name, 'color', task_subtype.color)
           ELSE NULL
         END`.as('taskSubtype')
       })
