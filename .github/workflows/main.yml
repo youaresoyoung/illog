@@ -144,6 +144,8 @@ jobs:
             "DB_FILE_PATH=./illog.db" \
             "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" \
             "CLOUDFRONT_DOMAIN=${{ secrets.AWS_CLOUDFRONT_DOMAIN }}" \
+            "UMAMI_HOST=${{ secrets.UMAMI_HOST }}" \
+            "UMAMI_WEBSITE_ID=${{ secrets.UMAMI_WEBSITE_ID }}" \
             > .env.production
 
       - name: Build and Package (arm64)

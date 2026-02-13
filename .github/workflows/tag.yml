@@ -172,6 +172,8 @@ jobs:
             "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" \
             "SENTRY_DEV_DSN=${{ secrets.SENTRY_DEV_DSN }}" \
             "CLOUDFRONT_DOMAIN=${{ secrets.AWS_CLOUDFRONT_DOMAIN }}" \
+            "UMAMI_HOST=${{ secrets.UMAMI_HOST }}" \
+            "UMAMI_WEBSITE_ID=${{ secrets.UMAMI_WEBSITE_ID }}" \
             > .env.production
 
       - name: Build and Publish arm64 to S3
