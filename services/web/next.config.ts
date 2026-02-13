@@ -2,6 +2,7 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   transpilePackages: [
+    '@illog/analytics',
     '@illog/themes',
     '@illog/ui',
     '@illog/ui/index.css',

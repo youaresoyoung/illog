@@ -26,6 +26,7 @@ import {
 } from '../../shared/types/taskTypeDto'
 import { CrashReportService } from '../service/CrashReportService'
 import { UserService } from '../service/UserService'
+import { AnalyticsService } from '../service/AnalyticsService'
 import { serializeError } from '../../shared/errors'
 import log from 'electron-log'
 
@@ -132,10 +133,18 @@ export function registerTaskTypeHandlers(repo: TaskTypeRepository) {
 }
 
 // Uses raw ipcMain.handle intentionally to avoid circular error reporting
-export function registerCrashReportHandlers(crashReportService: CrashReportService) {
+export function registerCrashReportHandlers(
+  crashReportService: CrashReportService,
+  onSettingsChanged?: () => void
+) {
   ipcMain.handle('crashReport.getSettings', () => crashReportService.getSettings())
-  ipcMain.handle('crashReport.updateSettings', (_, data: UpdateCrashReportSettingsRequest) =>
-    crashReportService.updateSettings(data.enabled)
+  ipcMain.handle(
+    'crashReport.updateSettings',
+    async (_, data: UpdateCrashReportSettingsRequest) => {
+      const result = await crashReportService.updateSettings(data.enabled)
+      onSettingsChanged?.()
+      return result
+    }
   )
   ipcMain.handle('crashReport.sendReport', (_, error: { message: string; stack?: string }) => {
     crashReportService.sendCrashReport(error)
@@ -151,6 +160,18 @@ export function registerUserHandlers(userService: UserService) {
   safeHandle('user.isFeatureEnabled', (_, featureId: FeatureId) =>
     userService.isFeatureEnabled(featureId)
   )
+}
+
+export function registerAnalyticsHandlers(analyticsService: AnalyticsService) {
+  safeHandle(
+    'analytics.track',
+    (_, eventName: string, data?: Record<string, string | number | boolean>) => {
+      analyticsService.track(eventName, data)
+    }
+  )
+  safeHandle('analytics.pageView', (_, url: string, title?: string) => {
+    analyticsService.pageView(url, title)
+  })
 }
 
 export function registerUpdaterHandler(updater: {

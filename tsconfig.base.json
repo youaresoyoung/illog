@@ -9,6 +9,6 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {},
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
   }
 }

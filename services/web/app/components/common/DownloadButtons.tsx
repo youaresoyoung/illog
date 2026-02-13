@@ -1,6 +1,8 @@
 'use client'
 
 import { usePlatform } from '@/app/hooks/usePlatform'
+import { useUmami } from '@/app/hooks/useUmami'
+import { DOWNLOAD_CLICKED } from '@illog/analytics'
 import styles from './DownloadButtons.module.css'
 import { MobileNotice } from './MobileNotice'
 
@@ -17,6 +19,11 @@ type Props = {
 
 export function DownloadButtons({ size = 'md', isShowAll = false }: Props) {
   const { platform, isMobile } = usePlatform()
+  const { track } = useUmami()
+
+  const handleDownloadClick = (downloadPlatform: string) => {
+    track(DOWNLOAD_CLICKED, { platform: downloadPlatform })
+  }
 
   // SSR / loading state
   if (platform === null) {
@@ -37,12 +44,14 @@ export function DownloadButtons({ size = 'md', isShowAll = false }: Props) {
         <a
           href={DOWNLOAD_LINKS['mac-arm'].href}
           className={`${styles.buttonPrimary} ${buttonClass}`}
+          onClick={() => handleDownloadClick('mac-arm')}
         >
           {DOWNLOAD_LINKS['mac-arm'].label}
         </a>
         <a
           href={DOWNLOAD_LINKS['mac-intel'].href}
           className={`${styles.buttonPrimary} ${buttonClass}`}
+          onClick={() => handleDownloadClick('mac-intel')}
         >
           {DOWNLOAD_LINKS['mac-intel'].label}
         </a>
@@ -69,6 +78,7 @@ export function DownloadButtons({ size = 'md', isShowAll = false }: Props) {
         <a
           href={DOWNLOAD_LINKS['mac-arm'].href}
           className={`${styles.buttonPrimary} ${buttonClass}`}
+          onClick={() => handleDownloadClick('mac-arm')}
         >
           {DOWNLOAD_LINKS['mac-arm'].label}
         </a>
@@ -82,6 +92,7 @@ export function DownloadButtons({ size = 'md', isShowAll = false }: Props) {
         <a
           href={DOWNLOAD_LINKS['mac-intel'].href}
           className={`${styles.buttonPrimary} ${buttonClass}`}
+          onClick={() => handleDownloadClick('mac-intel')}
         >
           {DOWNLOAD_LINKS['mac-intel'].label}
         </a>
@@ -96,6 +107,7 @@ export function DownloadButtons({ size = 'md', isShowAll = false }: Props) {
         <a
           href={DOWNLOAD_LINKS['mac-arm'].href}
           className={`${styles.buttonPrimary} ${buttonClass}`}
+          onClick={() => handleDownloadClick('mac-arm')}
         >
           {DOWNLOAD_LINKS['mac-arm'].label}
         </a>
@@ -118,6 +130,7 @@ export function DownloadButtons({ size = 'md', isShowAll = false }: Props) {
       <a
         href={DOWNLOAD_LINKS['mac-intel'].href}
         className={`${styles.buttonSecondary} ${buttonClass}`}
+        onClick={() => handleDownloadClick('mac-intel')}
       >
         {DOWNLOAD_LINKS['mac-intel'].label}
       </a>
