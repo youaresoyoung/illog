@@ -1,0 +1,28 @@
+{
+  "name": "@illog/analytics",
+  "version": "0.1.0",
+  "description": "Shared analytics utilities for illog (Umami)",
+  "main": "./dist/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "pnpm run build:tsc && pnpm run build:esbuild",
+    "build:tsc": "tsc -p tsconfig.build.json",
+    "build:esbuild": "tsx build.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.3",
+  "dependencies": {
+    "@illog/esbuild-config": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
+  }
+}
