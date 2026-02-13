@@ -38,6 +38,7 @@
     "@electron/fuses": "^1.8.0",
     "@electron/rebuild": "^4.0.2",
     "@google/genai": "^1.33.0",
+    "@illog/analytics": "workspace:*",
     "@illog/themes": "workspace:*",
     "@illog/ui": "workspace:*",
     "@lexical/code": "^0.39.0",

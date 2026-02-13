@@ -1,6 +1,7 @@
 import type { CreateProjectRequest, Project, UpdateProjectRequest } from '../../../../shared/types'
 import { queryKeys } from './queryKeys'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { PROJECT_CREATED, PROJECT_DELETED } from '@illog/analytics'
 
 export const useAllProjects = () => {
   return useQuery({
@@ -39,6 +40,7 @@ export const useCreateProject = () => {
       })
 
       queryClient.setQueryData(queryKeys.projects.detail(newProject.id), newProject)
+      window.api?.analytics?.track(PROJECT_CREATED)
     },
     onError: () => {
       // Global MutationCache onError handles toast display
@@ -102,6 +104,9 @@ export const useDeleteProject = () => {
       if (context?.previousProjects) {
         queryClient.setQueryData(queryKeys.projects.all, context.previousProjects)
       }
+    },
+    onSuccess: () => {
+      window.api?.analytics?.track(PROJECT_DELETED)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.projects.all })

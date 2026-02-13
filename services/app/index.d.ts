@@ -99,6 +99,10 @@ interface RendererAPI {
     getPlanInfo: () => Promise<UserPlanInfo>
     isFeatureEnabled: (featureId: FeatureId) => Promise<boolean>
   }
+  analytics: {
+    track: (eventName: string, data?: Record<string, string | number | boolean>) => Promise<void>
+    pageView: (url: string, title?: string) => Promise<void>
+  }
   events: {
     onDeepLink: (cb: (url: string) => void) => () => void
     onUpdateAvailable: (cb: () => void) => () => void

@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "illog-themes",
+  "projectType": "library",
+  "root": "packages/themes",
+  "sourceRoot": "packages/themes/src",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "packages/themes", "command": "pnpm build" },
+      "outputs": ["{projectRoot}/dist"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "packages/themes", "command": "pnpm exec eslint --cache ." }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "packages/themes", "command": "pnpm exec tsc --noEmit" }
+    }
+  }
+}

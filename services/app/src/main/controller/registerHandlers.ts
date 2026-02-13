@@ -9,6 +9,7 @@ import {
   registerWeeklyReflectionHandlers,
   registerTaskTypeHandlers,
   registerUserHandlers,
+  registerAnalyticsHandlers,
   setCrashReportService
 } from '../ipc/ipcHandlers'
 import {
@@ -26,13 +27,29 @@ import { GeminiService } from '../service/GeminiService'
 import { NoteService } from '../service/NoteService'
 import { config } from '../../config/env'
 import { UserService } from '../service/UserService'
+import { AnalyticsService } from '../service/AnalyticsService'
 
-export function registerHandlers(db: BetterSQLite3Database<typeof schema>): CrashReportService {
+export interface RegisterHandlersResult {
+  crashReportService: CrashReportService
+  analyticsService: AnalyticsService
+}
+
+export function registerHandlers(db: BetterSQLite3Database<typeof schema>): RegisterHandlersResult {
   const crashReportRepo = new CrashReportRepository(db)
   const crashReportService = new CrashReportService(crashReportRepo)
   crashReportService.applySettings()
   setCrashReportService(crashReportService)
-  registerCrashReportHandlers(crashReportService)
+
+  const analyticsService = new AnalyticsService(crashReportService, {
+    host: config.umamiHost,
+    websiteId: config.umamiWebsiteId
+  })
+
+  // Pass callback so analytics syncs when crash report opt-in changes
+  registerCrashReportHandlers(crashReportService, () => {
+    analyticsService.applySettings()
+  })
+  registerAnalyticsHandlers(analyticsService)
 
   const taskRepo = new TaskRepository(db)
   registerTaskHandlers(taskRepo)
@@ -58,5 +75,5 @@ export function registerHandlers(db: BetterSQLite3Database<typeof schema>): Cras
   const taskTypeRepo = new TaskTypeRepository(db)
   registerTaskTypeHandlers(taskTypeRepo)
 
-  return crashReportService
+  return { crashReportService, analyticsService }
 }

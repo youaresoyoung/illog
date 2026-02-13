@@ -10,6 +10,7 @@ import { TaskViewMode } from '../types/nav'
 import { QueryErrorState } from '../components/QueryState'
 
 export const Today = memo(() => {
+  // usePageView('today') TODO: track page view
   const [viewMode, setViewMode] = useState<TaskViewMode>('card')
 
   const { data: tasks, isLoading, error, refetch } = useTodayTasks()

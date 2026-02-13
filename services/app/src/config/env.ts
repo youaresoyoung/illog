@@ -134,7 +134,10 @@ export const config = {
 
   geminiApiKey: '', // getRequiredEnv('GEMINI_API_KEY'),
 
-  cloudfrontDomain: getRequiredEnv('CLOUDFRONT_DOMAIN')
+  cloudfrontDomain: getRequiredEnv('CLOUDFRONT_DOMAIN'),
+
+  umamiHost: getOptionalEnv('UMAMI_HOST', 'https://cloud.umami.is'),
+  umamiWebsiteId: getOptionalEnv('UMAMI_WEBSITE_ID', '')
 }
 
 export type AppConfig = typeof config

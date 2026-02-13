@@ -1,6 +1,7 @@
 import type { CreateTagRequest, Tag, UpdateTagRequest } from '../../../../shared/types'
 import { queryKeys } from './queryKeys'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { TAG_CREATED, TAG_DELETED } from '@illog/analytics'
 
 export const useAllTags = () => {
   return useQuery({
@@ -39,6 +40,7 @@ export const useCreateTag = () => {
       })
 
       queryClient.setQueryData(queryKeys.tags.detail(newTag.id), newTag)
+      window.api?.analytics?.track(TAG_CREATED)
     },
     onError: () => {
       // Global MutationCache onError handles toast display
@@ -102,6 +104,9 @@ export const useDeleteTag = () => {
       if (context?.previousTags) {
         queryClient.setQueryData(queryKeys.tags.all, context.previousTags)
       }
+    },
+    onSuccess: () => {
+      window.api?.analytics?.track(TAG_DELETED)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.tags.all })

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from './queryKeys'
 import { CreateTaskTypeRequest, UpdateTaskTypeRequest, TaskType } from '../../types'
+import { TASK_TYPE_CREATED } from '@illog/analytics'
 
 export const useAllTaskTypes = () => {
   return useQuery({
@@ -43,6 +44,7 @@ export const useCreateTaskType = () => {
       })
 
       queryClient.invalidateQueries({ queryKey: queryKeys.taskTypes.withSubtypes() })
+      window.api?.analytics?.track(TASK_TYPE_CREATED)
     }
   })
 }
