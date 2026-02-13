@@ -1,5 +1,7 @@
+import { useEffect } from 'react'
 import { Dialog, Button, Text, Stack, Box, Divider } from '@illog/ui'
 import { useCrashReportSettings, useUpdateCrashReportSettings } from '../hooks/queries'
+import { SETTINGS_OPENED, CRASH_REPORT_TOGGLED } from '@illog/analytics'
 
 type SettingsDialogProps = {
   isOpen: boolean
@@ -11,9 +13,16 @@ export const SettingsDialog = ({ isOpen, onClose, isOnboarding = false }: Settin
   const { data: settings, isLoading } = useCrashReportSettings()
   const { mutate: updateEnabled } = useUpdateCrashReportSettings()
 
+  useEffect(() => {
+    if (isOpen) {
+      window.api?.analytics?.track(SETTINGS_OPENED)
+    }
+  }, [isOpen])
+
   const handleToggle = () => {
     if (settings) {
       updateEnabled(!settings.enabled)
+      window.api?.analytics?.track(CRASH_REPORT_TOGGLED, { enabled: !settings.enabled })
     }
   }
 

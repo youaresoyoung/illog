@@ -2,6 +2,7 @@ import { app, BrowserWindow, nativeImage } from 'electron'
 import { openDB } from './db'
 import { installExtension, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import { CrashReportService, initSentryEarly } from './service/CrashReportService'
+import type { AnalyticsService } from './service/AnalyticsService'
 import { createWindow } from './window'
 import { config, isDev } from '../config/env'
 import { buildMenu } from './menu'
@@ -11,6 +12,7 @@ import { resolveIconPath } from './utils/icon'
 import { setupCSP } from './security/csp'
 import { AppUpdater } from './updater/autoUpdater'
 import { registerUpdaterHandler } from './ipc/ipcHandlers'
+import { APP_LAUNCHED } from '@illog/analytics'
 
 // Handle Squirrel events on Windows (install, update, uninstall)
 if (process.platform === 'win32') {
@@ -21,6 +23,7 @@ if (process.platform === 'win32') {
 initSentryEarly()
 
 let crashReportServiceInstance: CrashReportService | null = null
+let analyticsServiceInstance: AnalyticsService | null = null
 let mainWindow: BrowserWindow | null = null
 let appUpdater: AppUpdater | null = null
 
@@ -40,7 +43,16 @@ app
 
     const { db } = openDB()
 
-    crashReportServiceInstance = registerHandlers(db)
+    const { crashReportService, analyticsService } = registerHandlers(db)
+    crashReportServiceInstance = crashReportService
+    analyticsServiceInstance = analyticsService
+
+    analyticsService.track(APP_LAUNCHED, {
+      version: app.getVersion(),
+      platform: process.platform,
+      arch: process.arch
+    })
+
     setupCSP()
     buildMenu()
 
@@ -105,6 +117,9 @@ app.on('window-all-closed', () => {
 })
 
 app.on('before-quit', async () => {
+  if (analyticsServiceInstance) {
+    await analyticsServiceInstance.shutdown()
+  }
   if (crashReportServiceInstance) {
     await crashReportServiceInstance.shutdown()
   }

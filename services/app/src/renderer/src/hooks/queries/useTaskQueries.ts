@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { queryKeys } from './queryKeys'
+import { TASK_CREATED } from '@illog/analytics'
 import type {
   Tag,
   Project,
@@ -60,6 +61,7 @@ export const useCreateTask = () => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
         old ? [newTask, ...old] : [newTask]
       )
+      window.api?.analytics?.track(TASK_CREATED)
     }
   })
 }

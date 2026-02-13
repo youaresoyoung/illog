@@ -21,6 +21,7 @@ import { WeeklyCalendarView } from '../components/calendar/WeeklyCalendarView'
 import { TASK_VIEW_ITEMS } from '../constant/nav'
 
 export const ThisWeek = () => {
+  // usePageView('this-week') TODO: track page view
   const [viewMode, setViewMode] = useState<TaskViewMode>('card')
   const openTaskNote = useUIStore((s) => s.openTaskNote)
   const { startTime, endTime, goToPreviousWeek, goToNextWeek, isCurrentWeek } = useWeeklyParams()

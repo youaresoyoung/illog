@@ -120,6 +120,11 @@ const api = {
     getPlanInfo: () => safeInvoke('user.getPlanInfo'),
     isFeatureEnabled: (featureId: FeatureId) => safeInvoke('user.isFeatureEnabled', featureId)
   },
+  analytics: {
+    track: (eventName: string, data?: Record<string, string | number | boolean>) =>
+      safeInvoke('analytics.track', eventName, data),
+    pageView: (url: string, title?: string) => safeInvoke('analytics.pageView', url, title)
+  },
   events: {
     onDeepLink: (cb: (url: string) => void): (() => void) => {
       if (typeof cb !== 'function') {

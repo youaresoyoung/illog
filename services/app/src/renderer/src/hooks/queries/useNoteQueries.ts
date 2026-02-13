@@ -4,6 +4,7 @@ import { queryKeys } from './queryKeys'
 import { useCallback, useState } from 'react'
 import { getUserMessage } from '../../../../shared/errors'
 import { useToastStore } from '../../stores/useToastStore'
+import { REFLECTION_GENERATED } from '@illog/analytics'
 
 export const useTaskNote = (taskId: string | undefined) => {
   return useQuery({
@@ -63,6 +64,7 @@ export const useReflectionStream = () => {
           if (data.done) {
             setIsStreaming(false)
             queryClient.invalidateQueries({ queryKey: queryKeys.reflections.byTaskId(taskId) })
+            window.api?.analytics?.track(REFLECTION_GENERATED)
           } else {
             setStreamedContent((prev) => prev + data.chunk)
           }

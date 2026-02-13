@@ -6,6 +6,7 @@ import { QueryErrorState } from '../components/QueryState'
 import { ContentHeader } from '../components/layout/ContentHeader'
 
 export const History = () => {
+  // usePageView('history') TODO: track page view
   const { data: tasks, isLoading, error, refetch } = useAllTasks()
   const openTaskNote = useUIStore((s) => s.openTaskNote)
 
