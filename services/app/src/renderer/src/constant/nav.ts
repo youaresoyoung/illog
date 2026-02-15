@@ -5,7 +5,8 @@ export const PAGE_LIST = [
   { id: 'today', iconName: 'calendar_today', label: 'Today', to: '/' },
   { id: 'this-week', iconName: 'calendar_week', label: 'This Week', to: '/this-week' },
   // NOTE: History page is temporarily show up until the reflection page is ready, as they will be merged into one page eventually
-  { id: 'history', iconName: 'clock', label: 'History', to: '/history' }
+  { id: 'history', iconName: 'clock', label: 'History', to: '/history' },
+  { id: 'projects', iconName: 'folder', label: 'Projects', to: '/projects' }
   // { id: 'reflection', iconName: 'plus', label: 'Reflection', to: '/reflection' }
 ] as const
 
