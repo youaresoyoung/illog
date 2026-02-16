@@ -65,8 +65,8 @@ const ignoreSensitiveResources = (filePath: string): boolean => {
   if (!filePath) return false
   const normalized = filePath.replace(/\\/g, '/')
 
-  // .vite 폴더(Vite 번들 출력)와 package.json, .env 파일만 포함, 나머지 모두 제외
-  // node_modules는 Vite가 이미 번들에 포함시켰으므로 불필요
+  // .vite 출력물과 런타임 설정 파일만 포함하고 나머지는 제외
+  // 런타임 node_modules는 afterCopy에서 workspace 루트 기준으로 복사
   if (
     normalized.startsWith('/.vite') ||
     normalized === '/package.json' ||
@@ -95,79 +95,60 @@ const config: ForgeConfig = {
         done: (err?: Error) => void
       ) => {
         try {
-          // pnpm 워크스페이스에서 호이스팅된 모듈을 빌드 경로로 복사
-          // - 네이티브 모듈: Vite가 번들링할 수 없음
-          // - 순환 참조 모듈: 번들링 시 Maximum call stack size exceeded 발생
-          const externalModules = [
-            'better-sqlite3',
-            '@google/genai',
-            'natural',
-            'string-similarity'
-          ]
+          // services/app/package.json의 dependencies 트리만 runtime node_modules에 복사
+          const appPackageJsonPath = path.resolve(__dirname, 'package.json')
+          const appPackageJson = JSON.parse(fs.readFileSync(appPackageJsonPath, 'utf-8')) as {
+            dependencies?: Record<string, string>
+          }
+          const runtimeDeps = Object.keys(appPackageJson.dependencies ?? {})
           const rootNodeModules = path.resolve(__dirname, '..', '..', 'node_modules')
           const destNodeModules = path.join(buildPath, 'node_modules')
 
-          // natural 패키지의 불필요한 의존성 (DB adapters, 서버 등) 제외
-          const skipModules = new Set([
-            'mongoose',
-            'mongodb',
-            'pg',
-            'redis',
-            'memjs',
-            'http-server',
-            'bson',
-            'kareem',
-            'mpath',
-            'mquery',
-            'sift'
-          ])
+          if (runtimeDeps.length === 0) {
+            throw new Error(
+              'No runtime dependencies found in services/app/package.json dependencies.'
+            )
+          }
 
-          // 모듈과 하위 의존성 트리를 재귀적으로 복사
+          fs.mkdirSync(destNodeModules, { recursive: true })
           const copied = new Set<string>()
-          function copyModuleTree(modName: string, depth = 0) {
-            if (copied.has(modName) || skipModules.has(modName)) return
-            copied.add(modName)
+          const copyModuleTree = (moduleName: string) => {
+            if (copied.has(moduleName)) return
+            copied.add(moduleName)
 
-            const src = path.join(rootNodeModules, modName)
-            const dest = path.join(destNodeModules, modName)
+            const srcModulePath = path.join(rootNodeModules, moduleName)
+            const destModulePath = path.join(destNodeModules, moduleName)
 
-            if (!fs.existsSync(src)) {
-              console.warn(`${'  '.repeat(depth)}Warning: module not found: ${modName}`)
-              return
+            if (!fs.existsSync(srcModulePath)) {
+              throw new Error(
+                `Missing module "${moduleName}" in workspace node_modules (${srcModulePath}). Run "pnpm install" before packaging.`
+              )
             }
 
-            fs.cpSync(src, dest, { recursive: true })
+            fs.cpSync(srcModulePath, destModulePath, { recursive: true, force: true })
 
-            // 하위 dependencies 재귀 복사
-            const modPkgPath = path.join(src, 'package.json')
-            if (fs.existsSync(modPkgPath)) {
-              const modPkg = JSON.parse(fs.readFileSync(modPkgPath, 'utf-8'))
-              for (const dep of Object.keys(modPkg.dependencies || {})) {
-                copyModuleTree(dep, depth + 1)
-              }
+            const dependencyPackageJsonPath = path.join(srcModulePath, 'package.json')
+            if (!fs.existsSync(dependencyPackageJsonPath)) return
+
+            const dependencyPackageJson = JSON.parse(
+              fs.readFileSync(dependencyPackageJsonPath, 'utf-8')
+            ) as {
+              dependencies?: Record<string, string>
+              optionalDependencies?: Record<string, string>
+            }
+
+            for (const childDep of Object.keys(dependencyPackageJson.dependencies ?? {})) {
+              copyModuleTree(childDep)
+            }
+            for (const optionalDep of Object.keys(
+              dependencyPackageJson.optionalDependencies ?? {}
+            )) {
+              copyModuleTree(optionalDep)
             }
           }
 
-          for (const mod of externalModules) {
-            copyModuleTree(mod)
-          }
-
-          // natural 패키지가 require()하는 storage 관련 모듈의 스텁 생성
-          // 실제로 사용하지 않지만 require() 실패를 방지
-          for (const stubMod of skipModules) {
-            const stubDir = path.join(destNodeModules, stubMod)
-            if (!fs.existsSync(stubDir)) {
-              fs.mkdirSync(stubDir, { recursive: true })
-              fs.writeFileSync(
-                path.join(stubDir, 'package.json'),
-                JSON.stringify({ name: stubMod, version: '0.0.0', main: 'index.js' })
-              )
-              fs.writeFileSync(
-                path.join(stubDir, 'index.js'),
-                `module.exports = new Proxy({}, { get: () => { throw new Error('${stubMod} is not available in packaged app'); } });`
-              )
-              console.log(`Created stub module: ${stubMod}`)
-            }
+          for (const runtimeDep of runtimeDeps) {
+            copyModuleTree(runtimeDep)
           }
 
           // 프로덕션 환경변수 파일을 빌드 경로에 복사
