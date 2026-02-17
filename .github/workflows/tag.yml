@@ -15,62 +15,11 @@ permissions:
 
 jobs:
   validate:
-    name: Validate Release
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.get_version.outputs.version }}
-      is_prerelease: ${{ steps.get_version.outputs.is_prerelease }}
-    env:
+    uses: ./.github/workflows/reusable-validate.yml
+    with:
+      extract-version: true
+    secrets:
       AWS_CLOUDFRONT_DOMAIN: ${{ secrets.AWS_CLOUDFRONT_DOMAIN }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Get version
-        id: get_version
-        run: |
-          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
-            VERSION="${{ github.ref_name }}"
-          else
-            VERSION=$(node -p "require('./package.json').version")
-          fi
-
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-          # Check if it's a prerelease (contains alpha, beta, rc, etc.)
-          if [[ "$VERSION" =~ (alpha|beta|rc) ]]; then
-            echo "is_prerelease=true" >> $GITHUB_OUTPUT
-          else
-            echo "is_prerelease=false" >> $GITHUB_OUTPUT
-          fi
-
-          echo "Version: $VERSION"
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run linting
-        run: pnpm nx run-many -t lint --parallel=3
-
-      - name: Build packages
-        run: pnpm nx run-many -t build --projects='packages/*'
-
-      - name: Type check
-        run: pnpm nx run-many -t typecheck --parallel=3
-
-      - name: Build renderer
-        run: pnpm nx run illog-app:build
 
   build-sign-notarize:
     name: Build, Sign & Notarize
@@ -82,17 +31,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Setup Node.js & pnpm
+        uses: ./.github/actions/setup-node-pnpm
 
       - name: Setup Apple Code Signing (macOS)
         if: runner.os == 'macOS'

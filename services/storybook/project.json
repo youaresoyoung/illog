@@ -4,11 +4,20 @@
   "projectType": "application",
   "root": "services/storybook",
   "sourceRoot": "services/storybook",
+  "implicitDependencies": ["illog-ui", "illog-themes"],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
       "options": { "cwd": "services/storybook", "command": "pnpm build-storybook" },
       "outputs": ["{projectRoot}/storybook-static"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "services/storybook", "command": "pnpm exec eslint --cache ." }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "services/storybook", "command": "pnpm exec tsc --noEmit" }
     },
     "dev": {
       "executor": "nx:run-commands",

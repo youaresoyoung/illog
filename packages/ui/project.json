@@ -4,6 +4,7 @@
   "projectType": "library",
   "root": "packages/ui",
   "sourceRoot": "packages/ui/src",
+  "implicitDependencies": ["illog-themes"],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
