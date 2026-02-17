@@ -16,7 +16,7 @@ export const ContentHeader = ({ title, actions, button }: Props) => {
       gap="400"
       overflow="hidden"
     >
-      <Text as="h2" textStyle="subheading" truncate="true" flex="1">
+      <Text as="h2" textStyle="heading" truncate="true" flex="1">
         {title}
       </Text>
       <Inline gap="200" align="center" flexShrink={0}>

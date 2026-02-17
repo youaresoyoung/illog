@@ -172,9 +172,33 @@ importers:
 
   services/app:
     dependencies:
+      '@google/genai':
+        specifier: ^1.33.0
+        version: 1.41.0
+      '@sentry/electron':
+        specifier: ^7.7.1
+        version: 7.7.1
       better-sqlite3:
         specifier: ^12.6.2
         version: 12.6.2
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.2.4
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(@opentelemetry/api@1.9.0)(@types/better-sqlite3@7.6.13)(@types/pg@8.15.6)(better-sqlite3@12.6.2)(pg@8.18.0)
+      electron-log:
+        specifier: ^5.4.3
+        version: 5.4.3
+      electron-window-state:
+        specifier: ^5.0.3
+        version: 5.0.3
+      natural:
+        specifier: ^8.1.0
+        version: 8.1.0(socks@2.8.7)
+      string-similarity:
+        specifier: ^4.0.4
+        version: 4.0.4
     devDependencies:
       '@electron-forge/cli':
         specifier: ^7.8.0
@@ -212,9 +236,6 @@ importers:
       '@electron/rebuild':
         specifier: ^4.0.2
         version: 4.0.3
-      '@google/genai':
-        specifier: ^1.33.0
-        version: 1.41.0
       '@illog/analytics':
         specifier: workspace:*
         version: link:../../packages/analytics
@@ -242,9 +263,6 @@ importers:
       '@lexical/rich-text':
         specifier: ^0.39.0
         version: 0.39.0
-      '@sentry/electron':
-        specifier: ^7.7.1
-        version: 7.7.1
       '@tanstack/react-query':
         specifier: ^5.90.11
         version: 5.90.21(react@19.2.4)
@@ -272,33 +290,18 @@ importers:
       date-fns-tz:
         specifier: ^3.2.0
         version: 3.2.0(date-fns@4.1.0)
-      dotenv:
-        specifier: ^17.2.3
-        version: 17.2.4
       drizzle-kit:
         specifier: ^0.31.8
         version: 0.31.9
-      drizzle-orm:
-        specifier: ^0.45.1
-        version: 0.45.1(@opentelemetry/api@1.9.0)(@types/better-sqlite3@7.6.13)(@types/pg@8.15.6)(better-sqlite3@12.6.2)(pg@8.18.0)
       electron:
         specifier: ^39.2.7
         version: 39.5.2
       electron-devtools-installer:
         specifier: ^4.0.0
         version: 4.0.0
-      electron-log:
-        specifier: ^5.4.3
-        version: 5.4.3
-      electron-window-state:
-        specifier: ^5.0.3
-        version: 5.0.3
       lexical:
         specifier: ^0.39.0
         version: 0.39.0
-      natural:
-        specifier: ^8.1.0
-        version: 8.1.0(socks@2.8.7)
       prismjs:
         specifier: ^1.30.0
         version: 1.30.0
@@ -314,9 +317,6 @@ importers:
       sharp:
         specifier: ^0.34.5
         version: 0.34.5
-      string-similarity:
-        specifier: ^4.0.4
-        version: 4.0.4
       zustand:
         specifier: ^5.0.9
         version: 5.0.11(@types/react@19.2.14)(react@19.2.4)(use-sync-external-store@1.6.0(react@19.2.4))

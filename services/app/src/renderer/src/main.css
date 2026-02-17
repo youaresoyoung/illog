@@ -12,45 +12,6 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-/* .note-toolbar {
-  display: flex;
-  gap: 2px;
-  padding: 8px;
-  border-bottom: 1px solid var(--color-border-default-default);
-  flex-wrap: wrap;
+tbody tr:last-child td {
+  border-bottom: none !important;
 }
-
-.note-toolbar-divider {
-  width: 1px;
-  background-color: var(--color-border-default-default);
-  margin: 0 6px;
-}
-
-.note-toolbar button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 4px;
-  background: transparent;
-  cursor: pointer;
-  color: var(--color-text-default-secondary);
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.note-toolbar button:hover {
-  background-color: var(--color-background-default-tertiary);
-}
-
-.note-toolbar button.active {
-  background-color: var(--color-background-default-tertiary);
-  color: var(--color-text-default-default);
-}
-
-.note-toolbar button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-} */

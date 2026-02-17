@@ -6,7 +6,8 @@ import {
   useBadgeSelectorContext,
   type BadgeItem,
   type OmittedBadgeItem,
-  Stack
+  Stack,
+  BadgeColor
 } from '@illog/ui'
 import {
   useAllTaskTypesWithSubtypes,
@@ -48,13 +49,20 @@ const TaskTypeBadgeTrigger = ({ taskType }: { taskType: BadgeItem | null }) => {
   )
 }
 
-const TaskSubtypeBadgeTrigger = ({ taskSubtype }: { taskSubtype: { name: string } | null }) => {
+const TaskSubtypeBadgeTrigger = ({
+  taskSubtype
+}: {
+  taskSubtype: { name: string; color?: BadgeColor } | null
+}) => {
   const { isOpen } = useBadgeSelectorContext()
 
   return (
     <Stack>
       {taskSubtype ? (
-        <Badge item={{ name: taskSubtype.name, color: 'gray' }} isOpenedSelector={isOpen} />
+        <Badge
+          item={{ name: taskSubtype.name, color: taskSubtype.color ?? 'gray' }}
+          isOpenedSelector={isOpen}
+        />
       ) : (
         <Badge
           item={{ name: 'Add Subtype', color: 'gray' }}
@@ -99,7 +107,11 @@ export const TaskTypeSection = ({ task }: { task: TaskWithTags }) => {
 
   const selectedTaskSubtype = useMemo(() => {
     if (!task.taskSubtype) return null
-    return { id: task.taskSubtype.id, name: task.taskSubtype.name }
+    return {
+      id: task.taskSubtype.id,
+      name: task.taskSubtype.name,
+      color: task.taskSubtype.color ?? 'gray'
+    }
   }, [task.taskSubtype])
 
   const subtypeList = useMemo(() => {
@@ -110,7 +122,7 @@ export const TaskTypeSection = ({ task }: { task: TaskWithTags }) => {
       taskType.subtypes?.map((s) => ({
         id: s.id,
         name: s.name,
-        color: 'gray' as const
+        color: s.color
       })) || []
     )
   }, [task.taskType, taskTypesWithSubtypes])
@@ -159,11 +171,11 @@ export const TaskTypeSection = ({ task }: { task: TaskWithTags }) => {
   }
 
   const handleUpdateTaskSubtype = async (subtypeId: string, data: Partial<OmittedBadgeItem>) => {
-    if (!data.name || !task.taskType) throw new Error('Subtype name and task type are required')
+    if (!task.taskType) throw new Error('Task type is required')
     await updateTaskSubtype({
       id: subtypeId,
       taskTypeId: task.taskType.id,
-      data: { name: data.name }
+      data: { name: data.name, color: data.color }
     })
   }
 
@@ -201,7 +213,7 @@ export const TaskTypeSection = ({ task }: { task: TaskWithTags }) => {
               ? ({
                   id: selectedTaskSubtype.id,
                   name: selectedTaskSubtype.name,
-                  color: 'gray'
+                  color: selectedTaskSubtype.color as BadgeColor
                 } as BadgeItem)
               : null
           }

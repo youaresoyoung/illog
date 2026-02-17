@@ -5,6 +5,7 @@ import { ThisWeek } from './pages/ThisWeek'
 import { ThemeProvider } from './context/ThemeContext'
 import { QueryProvider } from './providers/QueryProvider'
 import { History } from './pages/History'
+import { Projects } from './pages/Projects'
 import { CrashReportDialog } from './components/CrashReportDialog'
 import { CrashErrorBoundary } from './components/CrashErrorBoundary'
 import { SettingsDialog } from './components/SettingsDialog'
@@ -30,6 +31,10 @@ const router = createHashRouter([
       {
         path: 'history',
         element: <History />
+      },
+      {
+        path: 'projects',
+        element: <Projects />
       }
       // {
       //   path: 'reflection',

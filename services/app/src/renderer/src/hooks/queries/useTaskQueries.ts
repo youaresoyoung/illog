@@ -37,7 +37,7 @@ export const useTasksByFilters = (filters: TaskFilterParams) => {
   return useQuery({
     queryKey: queryKeys.tasks.filtered(filters),
     queryFn: () => window.api.task.getTasksWithTags(filters),
-    enabled: !!filters
+    enabled: !!filters.projectId
   })
 }
 
@@ -124,10 +124,8 @@ export const useUpdateTask = () => {
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
     },
-    onSettled: (_data, _error, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.today() })
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all })
-      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.detail(variables.id) })
     }
   })
 }
@@ -163,7 +161,6 @@ export const useDeleteTask = () => {
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.today() })
       queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all })
     }
   })
@@ -461,7 +458,8 @@ export const useSetTaskSubtypeToTask = () => {
                 taskSubtypeId,
                 taskSubtype: {
                   id: taskSubtypeToSet.id,
-                  name: taskSubtypeToSet.name
+                  name: taskSubtypeToSet.name,
+                  color: taskSubtypeToSet.color ?? 'gray'
                 }
               }
             : task
