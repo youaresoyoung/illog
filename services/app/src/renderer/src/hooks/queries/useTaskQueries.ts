@@ -37,13 +37,19 @@ export const useTasksByFilters = (filters: TaskFilterParams) => {
   return useQuery({
     queryKey: queryKeys.tasks.filtered(filters),
     queryFn: () => window.api.task.getTasksWithTags(filters),
-    enabled: !!filters.projectId
+    enabled: !!(
+      filters.projectId ||
+      filters.startTime ||
+      filters.endTime ||
+      filters.status ||
+      filters.search
+    )
   })
 }
 
 export const useAllTasks = () => {
   return useQuery({
-    queryKey: queryKeys.tasks.all,
+    queryKey: queryKeys.tasks.list(),
     queryFn: () => window.api.task.getTasksWithTags()
   })
 }
@@ -58,7 +64,7 @@ export const useCreateTask = () => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old ? [newTask, ...old] : [newTask]
       )
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
         old ? [newTask, ...old] : [newTask]
       )
       window.api?.analytics?.track(TASK_CREATED)
@@ -75,11 +81,11 @@ export const useUpdateTask = () => {
     meta: { errorMessage: 'Failed to save changes' },
     onMutate: async ({ id, data }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
-      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.list() })
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.detail(id) })
 
       const previousTodayTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
-      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.all)
+      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.list())
       const previousTask = queryClient.getQueryData<TaskWithTags>(queryKeys.tasks.detail(id))
 
       const safeUpdate: Partial<TaskWithTags> = {}
@@ -92,7 +98,7 @@ export const useUpdateTask = () => {
         old?.map((task) => (task.id === id ? { ...task, ...safeUpdate } : task))
       )
 
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
         old?.map((task) => (task.id === id ? { ...task, ...safeUpdate } : task))
       )
 
@@ -107,7 +113,7 @@ export const useUpdateTask = () => {
         queryClient.setQueryData(queryKeys.tasks.today(), context.previousTodayTasks)
       }
       if (context?.previousAllTasks) {
-        queryClient.setQueryData(queryKeys.tasks.all, context.previousAllTasks)
+        queryClient.setQueryData(queryKeys.tasks.list(), context.previousAllTasks)
       }
       if (context?.previousTask && context?.id) {
         queryClient.setQueryData(queryKeys.tasks.detail(context.id), context.previousTask)
@@ -120,12 +126,13 @@ export const useUpdateTask = () => {
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
 
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.list() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.today() })
     }
   })
 }
@@ -138,15 +145,15 @@ export const useDeleteTask = () => {
     meta: { errorMessage: 'Failed to delete log', successMessage: 'Log deleted' },
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
-      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.list() })
 
       const previousTodayTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
-      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.all)
+      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.list())
 
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.filter((task) => task.id !== id)
       )
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
         old?.filter((task) => task.id !== id)
       )
 
@@ -157,11 +164,12 @@ export const useDeleteTask = () => {
         queryClient.setQueryData(queryKeys.tasks.today(), context.previousTodayTasks)
       }
       if (context?.previousAllTasks) {
-        queryClient.setQueryData(queryKeys.tasks.all, context.previousAllTasks)
+        queryClient.setQueryData(queryKeys.tasks.list(), context.previousAllTasks)
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all })
+      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.list() })
+      queryClient.invalidateQueries({ queryKey: queryKeys.tasks.today() })
     }
   })
 }
@@ -175,10 +183,10 @@ export const useAddTagToTask = () => {
     meta: { errorMessage: 'Failed to add tag' },
     onMutate: async ({ taskId, tagId }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
-      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.list() })
 
       const previousTodayTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
-      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.all)
+      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.list())
       const allTags = queryClient.getQueryData<Tag[]>(queryKeys.tags.all)
       const tagToAdd = allTags?.find((t) => t.id === tagId)
 
@@ -190,7 +198,7 @@ export const useAddTagToTask = () => {
               : task
           )
         )
-        queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+        queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
           old?.map((task) =>
             task.id === taskId && !task.tags.some((t) => t.id === tagId)
               ? { ...task, tags: [...task.tags, tagToAdd] }
@@ -205,7 +213,7 @@ export const useAddTagToTask = () => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
       queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
@@ -215,7 +223,7 @@ export const useAddTagToTask = () => {
         queryClient.setQueryData(queryKeys.tasks.today(), context.previousTodayTasks)
       }
       if (context?.previousAllTasks) {
-        queryClient.setQueryData(queryKeys.tasks.all, context.previousAllTasks)
+        queryClient.setQueryData(queryKeys.tasks.list(), context.previousAllTasks)
       }
     }
   })
@@ -230,10 +238,10 @@ export const useRemoveTagFromTask = () => {
     meta: { errorMessage: 'Failed to remove tag' },
     onMutate: async ({ taskId, tagId }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
-      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.list() })
 
       const previousTodayTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
-      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.all)
+      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.list())
 
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) =>
@@ -241,7 +249,7 @@ export const useRemoveTagFromTask = () => {
         )
       )
 
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
         old?.map((task) =>
           task.id === taskId ? { ...task, tags: task.tags.filter((tag) => tag.id !== tagId) } : task
         )
@@ -253,7 +261,7 @@ export const useRemoveTagFromTask = () => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
       queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
@@ -263,7 +271,7 @@ export const useRemoveTagFromTask = () => {
         queryClient.setQueryData(queryKeys.tasks.today(), context.previousTodayTasks)
       }
       if (context?.previousAllTasks) {
-        queryClient.setQueryData(queryKeys.tasks.all, context.previousAllTasks)
+        queryClient.setQueryData(queryKeys.tasks.list(), context.previousAllTasks)
       }
     }
   })
@@ -278,10 +286,10 @@ export const useSetProjectToTask = () => {
     meta: { errorMessage: 'Failed to set project' },
     onMutate: async ({ taskId, projectId }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
-      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.list() })
 
       const previousTodayTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
-      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.all)
+      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.list())
       const allProjects = queryClient.getQueryData<Project[]>(queryKeys.projects.all)
       const projectToSet = allProjects?.find((p) => p.id === projectId)
 
@@ -302,7 +310,9 @@ export const useSetProjectToTask = () => {
         queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
           old?.map(updateFn)
         )
-        queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) => old?.map(updateFn))
+        queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
+          old?.map(updateFn)
+        )
       }
 
       return { previousTodayTasks, previousAllTasks }
@@ -311,7 +321,7 @@ export const useSetProjectToTask = () => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
       queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
@@ -321,7 +331,7 @@ export const useSetProjectToTask = () => {
         queryClient.setQueryData(queryKeys.tasks.today(), context.previousTodayTasks)
       }
       if (context?.previousAllTasks) {
-        queryClient.setQueryData(queryKeys.tasks.all, context.previousAllTasks)
+        queryClient.setQueryData(queryKeys.tasks.list(), context.previousAllTasks)
       }
     }
   })
@@ -335,16 +345,16 @@ export const useClearProjectFromTask = () => {
     meta: { errorMessage: 'Failed to remove project' },
     onMutate: async (taskId) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
-      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.list() })
 
       const previousTodayTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
-      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.all)
+      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.list())
 
       const updateFn = (task: TaskWithTags) =>
         task.id === taskId ? { ...task, projectId: null, project: null } : task
 
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) => old?.map(updateFn))
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) => old?.map(updateFn))
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) => old?.map(updateFn))
 
       return { previousTodayTasks, previousAllTasks }
     },
@@ -352,7 +362,7 @@ export const useClearProjectFromTask = () => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
       queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
@@ -362,7 +372,7 @@ export const useClearProjectFromTask = () => {
         queryClient.setQueryData(queryKeys.tasks.today(), context.previousTodayTasks)
       }
       if (context?.previousAllTasks) {
-        queryClient.setQueryData(queryKeys.tasks.all, context.previousAllTasks)
+        queryClient.setQueryData(queryKeys.tasks.list(), context.previousAllTasks)
       }
     }
   })
@@ -377,10 +387,10 @@ export const useSetTaskTypeToTask = () => {
     meta: { errorMessage: 'Failed to set task type' },
     onMutate: async ({ taskId, taskTypeId }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
-      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.list() })
 
       const previousTodayTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
-      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.all)
+      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.list())
       const allTaskTypes = queryClient.getQueryData<TaskTypeWithSubtypesDto[]>(
         queryKeys.taskTypes.withSubtypes()
       )
@@ -405,7 +415,9 @@ export const useSetTaskTypeToTask = () => {
         queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
           old?.map(updateFn)
         )
-        queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) => old?.map(updateFn))
+        queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
+          old?.map(updateFn)
+        )
       }
 
       return { previousTodayTasks, previousAllTasks }
@@ -414,7 +426,7 @@ export const useSetTaskTypeToTask = () => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
       queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
@@ -424,7 +436,7 @@ export const useSetTaskTypeToTask = () => {
         queryClient.setQueryData(queryKeys.tasks.today(), context.previousTodayTasks)
       }
       if (context?.previousAllTasks) {
-        queryClient.setQueryData(queryKeys.tasks.all, context.previousAllTasks)
+        queryClient.setQueryData(queryKeys.tasks.list(), context.previousAllTasks)
       }
     }
   })
@@ -439,10 +451,10 @@ export const useSetTaskSubtypeToTask = () => {
     meta: { errorMessage: 'Failed to set task subtype' },
     onMutate: async ({ taskId, taskSubtypeId }) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
-      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.list() })
 
       const previousTodayTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
-      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.all)
+      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.list())
       const allTaskTypes = queryClient.getQueryData<TaskTypeWithSubtypesDto[]>(
         queryKeys.taskTypes.withSubtypes()
       )
@@ -467,7 +479,9 @@ export const useSetTaskSubtypeToTask = () => {
         queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
           old?.map(updateFn)
         )
-        queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) => old?.map(updateFn))
+        queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
+          old?.map(updateFn)
+        )
       }
 
       return { previousTodayTasks, previousAllTasks }
@@ -476,7 +490,7 @@ export const useSetTaskSubtypeToTask = () => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
       queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
@@ -486,7 +500,7 @@ export const useSetTaskSubtypeToTask = () => {
         queryClient.setQueryData(queryKeys.tasks.today(), context.previousTodayTasks)
       }
       if (context?.previousAllTasks) {
-        queryClient.setQueryData(queryKeys.tasks.all, context.previousAllTasks)
+        queryClient.setQueryData(queryKeys.tasks.list(), context.previousAllTasks)
       }
     }
   })
@@ -501,10 +515,10 @@ export const useClearTaskTypeFromTask = () => {
     meta: { errorMessage: 'Failed to remove task type' },
     onMutate: async (taskId) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.tasks.today() })
-      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.all })
+      await queryClient.cancelQueries({ queryKey: queryKeys.tasks.list() })
 
       const previousTodayTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.today())
-      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.all)
+      const previousAllTasks = queryClient.getQueryData<TaskWithTags[]>(queryKeys.tasks.list())
 
       const updateFn = (task: TaskWithTags) =>
         task.id === taskId
@@ -512,7 +526,7 @@ export const useClearTaskTypeFromTask = () => {
           : task
 
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) => old?.map(updateFn))
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) => old?.map(updateFn))
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) => old?.map(updateFn))
 
       return { previousTodayTasks, previousAllTasks }
     },
@@ -520,7 +534,7 @@ export const useClearTaskTypeFromTask = () => {
       queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.today(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
-      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.all, (old) =>
+      queryClient.setQueryData<TaskWithTags[]>(queryKeys.tasks.list(), (old) =>
         old?.map((task) => (task.id === updatedTask.id ? updatedTask : task))
       )
       queryClient.setQueryData(queryKeys.tasks.detail(updatedTask.id), updatedTask)
@@ -530,7 +544,7 @@ export const useClearTaskTypeFromTask = () => {
         queryClient.setQueryData(queryKeys.tasks.today(), context.previousTodayTasks)
       }
       if (context?.previousAllTasks) {
-        queryClient.setQueryData(queryKeys.tasks.all, context.previousAllTasks)
+        queryClient.setQueryData(queryKeys.tasks.list(), context.previousAllTasks)
       }
     }
   })

@@ -3,6 +3,7 @@ import type { TaskFilterParams } from '../../../../shared/types'
 export const queryKeys = {
   tasks: {
     all: ['tasks'] as const,
+    list: () => [...queryKeys.tasks.all, 'list'] as const,
     today: () => [...queryKeys.tasks.all, 'today'] as const,
     detail: (id: string) => [...queryKeys.tasks.all, 'detail', id] as const,
     filtered: (filters: TaskFilterParams) => [...queryKeys.tasks.all, 'filtered', filters] as const
