@@ -1,0 +1,44 @@
+{
+  "name": "@illog/vscode-extension",
+  "displayName": "illog Design Tokens",
+  "description": "Design token preview for illog - color swatches, spacing values, and more",
+  "version": "0.1.0",
+  "publisher": "illog",
+  "private": true,
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "illog Design Tokens",
+      "properties": {
+        "illogTokens.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable design token previews"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --sourcemap",
+    "build:watch": "pnpm build --watch",
+    "package": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --minify && vsce package --no-dependencies"
+  },
+  "packageManager": "pnpm@10.12.3",
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "@types/vscode": "^1.109.0",
+    "typescript": "^5.9.3",
+    "@illog/esbuild-config": "workspace:*"
+  }
+}
