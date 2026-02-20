@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'fs'
 import { IndexedChunk, SearchResult } from './types'
 import { INDEX_FILE } from './common'
+import { config } from './env'
 
 function cosineSimilarity(a: number[], b: number[]): number {
   let dot = 0
@@ -17,14 +18,14 @@ function cosineSimilarity(a: number[], b: number[]): number {
 }
 
 async function embedQuery(query: string, apiKey: string): Promise<number[]> {
-  const res = await fetch(process.env.JINA_API_BASE_URL!, {
+  const res = await fetch(config.jinaApiBaseUrl, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: process.env.JINA_MODEL,
+      model: config.jinaModel,
       task: 'retrieval.query',
       input: [query]
     })

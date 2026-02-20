@@ -1,3 +1,4 @@
+import { config } from './env'
 import { SearchResult } from './types'
 
 export async function answer(
@@ -12,14 +13,14 @@ export async function answer(
     )
     .join('\n\n')
 
-  const res = await fetch(process.env.GROQ_API_BASE_URL!, {
+  const res = await fetch(config.groqApiBaseUrl, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${apikey}`,
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: process.env.GROQ_MODEL,
+      model: config.groqModel,
       stream: true,
       messages: [
         {

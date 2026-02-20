@@ -21,7 +21,8 @@
     "format": "prettier --write .",
     "prepare": "husky",
     "pre-commit": "lint-staged",
-    "ask": "tsx packages/codeqa/src/cli.ts"
+    "ask": "tsx packages/codeqa/src/cli.ts",
+    "gen:commit": "tsx packages/codeqa/src/cli.ts --commit"
   },
   "keywords": [],
   "author": "youaresoyoung",

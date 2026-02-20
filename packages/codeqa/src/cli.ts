@@ -1,47 +1,27 @@
-import dotenv from 'dotenv'
-import { existsSync } from 'fs'
-import { join, dirname } from 'path'
-import { fileURLToPath } from 'url'
 import { buildIndex } from './indexer'
 import { search } from './searcher'
 import { answer } from './answerer'
+import { generateCommitMessage } from './commit'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+import { config } from './env'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = join(__dirname, '../../..')
-const ENV_FILE = join(__dirname, '../.env.codeqa')
-
-function loadEnv() {
-  if (!existsSync(ENV_FILE)) {
-    console.error(
-      '❌ .env.codeqa file not found. Please create one with JINA_API_KEY and GROQ_API_KEY.'
-    )
-    process.exit(1)
-  }
-
-  dotenv.config({ path: ENV_FILE })
-
-  const jinaKey = process.env.JINA_API_KEY
-  const groqKey = process.env.GROQ_API_KEY
-
-  if (!jinaKey || !groqKey) {
-    console.error(
-      '❌ JINA_API_KEY or GROQ_API_KEY not found in .env.codeqa. Please add them before running the tool.'
-    )
-    process.exit(1)
-  }
-
-  return { jinaKey, groqKey }
-}
 
 async function main() {
   const args = process.argv.slice(2)
   const reindex = args.includes('--reindex')
+  const commit = args.includes('--commit')
   const query = args.filter((a) => !a.startsWith('--'))[0]
 
-  const { jinaKey, groqKey } = loadEnv()
+  if (commit) {
+    await generateCommitMessage(config.groqApiKey)
+    return
+  }
 
   if (reindex) {
-    await buildIndex(ROOT_DIR, jinaKey)
+    await buildIndex(ROOT_DIR, config.jinaApiKey)
     if (!query) return
   }
 
@@ -50,12 +30,13 @@ async function main() {
     console.log('  pnpm ask <question>           :Question')
     console.log('  pnpm ask --reindex            :Rebuild index')
     console.log('  pnpm ask --reindex <question> :Rebuild index and ask question')
+    console.log('  pnpm ask --commit             :Generate commit message')
     return
   }
 
   process.stdout.write('Searching for relevant code chunks...\r')
   const start = Date.now()
-  const results = await search(query, jinaKey)
+  const results = await search(query, config.jinaApiKey)
   const elapsed = Date.now() - start
 
   console.log(`Found ${results.length} relevant chunks in ${(elapsed / 1000).toFixed(2)} seconds.`)
@@ -67,7 +48,7 @@ async function main() {
   }
 
   console.log('')
-  await answer(query, results, groqKey)
+  await answer(query, results, config.groqApiKey)
 }
 
 main().catch((err) => {

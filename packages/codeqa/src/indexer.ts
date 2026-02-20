@@ -3,6 +3,7 @@ import { chunkFile } from './chunker'
 import { mkdirSync, writeFileSync } from 'fs'
 import { IndexedChunk } from './types'
 import { INDEX_DIR, INDEX_FILE } from './common'
+import { config } from './env'
 
 // Free: 100K tokens/per minute -> 20 files/minute
 const BATCH_SIZE = 20
@@ -25,14 +26,14 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 async function embedBatch(texts: string[], apiKey: string): Promise<number[][]> {
   for (let attempt = 1; attempt <= 3; attempt++) {
-    const res = await fetch(process.env.JINA_API_BASE_URL!, {
+    const res = await fetch(config.jinaApiBaseUrl, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: process.env.JINA_MODEL,
+        model: config.jinaModel,
         task: 'retrieval.passage',
         input: texts
       })
