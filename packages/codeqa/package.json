@@ -1,0 +1,21 @@
+{
+  "name": "@illog/codeqa",
+  "version": "0.1.0",
+  "description": "Question answering system for codebases",
+  "private": true,
+  "bin": {
+    "ask": "./src/cli.ts"
+  },
+  "type": "module",
+  "scripts": {
+    "ask": "tsx src/cli.ts"
+  },
+  "packageManager": "pnpm@10.12.3",
+  "dependencies": {
+    "glob": "^13.0.6"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.4",
+    "tsx": "^4.21.0"
+  }
+}

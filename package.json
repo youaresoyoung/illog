@@ -20,7 +20,8 @@
     "affected": "nx affected -t lint,typecheck,test,build --parallel=3",
     "format": "prettier --write .",
     "prepare": "husky",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "ask": "tsx packages/codeqa/src/cli.ts"
   },
   "keywords": [],
   "author": "youaresoyoung",

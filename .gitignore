@@ -6,6 +6,7 @@
 .env.local
 .env.production
 .env.*.local
+.env.codeqa
 
 **/dist/*
 dist
