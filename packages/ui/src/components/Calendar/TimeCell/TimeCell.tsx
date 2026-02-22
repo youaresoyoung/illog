@@ -31,7 +31,7 @@ export const TimeCell = ({
       cursor={onClick ? 'pointer' : undefined}
       overflow="hidden"
       zIndex={1}
-      bg={color.bg || '#f4f4f4'} // TODO: use theme tokens when available
+      bg={color.bg || 'backgroundDefaultSecondary'}
       style={{
         borderLeft: `4px solid ${color.border}`,
         ...style

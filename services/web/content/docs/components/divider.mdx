@@ -1,0 +1,60 @@
+---
+title: Divider
+description: Horizontal/vertical dividing line for visual content separation
+category: Components
+order: 20
+---
+
+## Overview
+
+Divider is a **dividing line component**. It renders a horizontal or vertical visual separator.
+
+- **Orientation** — `horizontal` (default) or `vertical`
+- **Variant** — `solid` (default) or `dashed`
+- **Zero config** — Usable with just `<Divider />` without any props
+
+## Basic Usage
+
+<ComponentPreview>
+  <Stack gap="400" width="100%">
+    <Text>Section 1</Text>
+    <Divider />
+    <Text>Section 2</Text>
+  </Stack>
+
+```tsx
+<Stack gap="400">
+  <Text>Section 1</Text>
+  <Divider />
+  <Text>Section 2</Text>
+</Stack>
+```
+</ComponentPreview>
+
+## Variants
+
+<ComponentPreview>
+  <Stack gap="400" width="100%">
+    <Divider variant="solid" />
+    <Divider variant="dashed" />
+  </Stack>
+
+```tsx
+<Divider variant="solid" />
+<Divider variant="dashed" />
+```
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Direction |
+| `variant` | `'solid' \| 'dashed'` | `'solid'` | Line style |
+| `color` | `'default'` | `'default'` | Color (borderDefaultDefault token) |
+| `thickness` | `'thin'` | `'thin'` | Thickness (stroke.border token) |
+
+## Guidelines
+
+- When using a vertical Divider, the parent element must have a defined `height`
+- Use Divider for logical section separation; use Stack's `gap` for simple spacing

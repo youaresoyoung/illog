@@ -1,7 +1,6 @@
 import { memo, useCallback } from 'react'
 import type { Project } from '../../types'
 import type { ProjectOverviewMetrics } from '../../utils/project-insights'
-import { tokens } from '@illog/themes'
 import { Stack, Inline, Text, HorizontalBar } from '@illog/ui'
 
 type Props = {
@@ -38,8 +37,8 @@ export const ProjectItem = memo(({ project, overview, isSelected, onSelect }: Pr
         value={overview.completionRate}
         max={100}
         height={8}
-        trackColor={tokens.colors.light.background.brand.tertiary}
-        fillColor={tokens.colors.light.text.tag[project.color]}
+        trackColor="var(--background-brand-tertiary)"
+        fillColor={`var(--text-tag-${project.color})`}
       />
     </Stack>
   )

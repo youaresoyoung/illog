@@ -1,0 +1,74 @@
+---
+title: Icon
+description: SVG icon component with theme color and size token support
+category: Components
+order: 3
+---
+
+## Overview
+
+A component that renders SVG icons. Supports theme color tokens and size tokens.
+
+## Sizes
+
+<ComponentPreview>
+  <Icon name="check" size="extraSmall" />
+  <Icon name="check" size="small" />
+  <Icon name="check" size="medium" />
+  <Icon name="check" size="large" />
+
+```tsx
+<Icon name="check" size="extraSmall" />  {/* 12px */}
+<Icon name="check" size="small" />       {/* 16px */}
+<Icon name="check" size="medium" />      {/* 20px */}
+<Icon name="check" size="large" />       {/* 24px */}
+```
+</ComponentPreview>
+
+| Size | Value | Use Case |
+|------|-------|----------|
+| `extraSmall` | 12px | Inline icons, inside tags |
+| `small` | 16px | Small buttons, inside input fields |
+| `medium` | 20px | Default icon size |
+| `large` | 24px | Navigation, header icons |
+
+## Colors
+
+Icon colors use semantic color tokens:
+
+- `iconDefaultDefault` — Default icon
+- `iconDefaultDisabled` — Disabled icon
+- `iconDangerDefault` — Danger/error icon
+- `iconBrandDefault` — Brand icon
+- `iconBrandOnBrand` — Icon on brand background
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `name` | `string` | - | Yes | Icon name |
+| `size` | `'extraSmall' \| 'small' \| 'medium' \| 'large'` | `'medium'` | No | Icon size |
+| `color` | `string` | `'iconDefaultDefault'` | No | Theme color token |
+| `rotate` | `number` | - | No | Rotation angle (degrees) |
+| `className` | `string` | - | No | Additional CSS class |
+
+## Usage
+
+```tsx
+import { Icon } from '@illog/ui'
+
+// Basic usage
+<Icon name="check" />
+
+// With size and color
+<Icon name="close" size="large" color="iconDangerDefault" />
+
+// Rotation
+<Icon name="chevron_down" rotate={90} />
+
+// With a button
+<Button variant="secondary">
+  <Icon name="plus" size="small" />
+  Add
+</Button>
+```

@@ -1,0 +1,128 @@
+---
+title: ContextMenu
+description: Custom right-click context menu with nested submenu support
+category: Components
+order: 27
+---
+
+## Overview
+
+ContextMenu is a **custom right-click menu**. Built without external libraries, it supports keyboard navigation and nested submenus.
+
+- **Compound** — Root, Trigger, Content, Item, SubRoot, SubTrigger, SubContent
+- **Keyboard** — Arrow keys, Home/End, Enter/Space, Escape
+- **Submenu** — Nested submenus, openable via hover/keyboard
+- **Positioning** — Displayed at click position, auto-adjusted within viewport
+
+## Basic Usage
+
+```tsx
+import { ContextMenu } from '@illog/ui'
+
+<ContextMenu.Root>
+  <ContextMenu.Trigger>
+    <div className="workspace">
+      Right-click area
+    </div>
+  </ContextMenu.Trigger>
+  <ContextMenu.Content>
+    <ContextMenu.Item onSelect={() => handleEdit()}>
+      Edit
+    </ContextMenu.Item>
+    <ContextMenu.Item onSelect={() => handleDuplicate()}>
+      Duplicate
+    </ContextMenu.Item>
+    <ContextMenu.Item onSelect={() => handleDelete()}>
+      Delete
+    </ContextMenu.Item>
+  </ContextMenu.Content>
+</ContextMenu.Root>
+```
+
+## Submenu
+
+```tsx
+<ContextMenu.Content>
+  <ContextMenu.Item onSelect={handleCut}>Cut</ContextMenu.Item>
+  <ContextMenu.Item onSelect={handleCopy}>Copy</ContextMenu.Item>
+  <ContextMenu.SubRoot>
+    <ContextMenu.SubTrigger>Sort By</ContextMenu.SubTrigger>
+    <ContextMenu.SubContent>
+      <ContextMenu.Item onSelect={() => sort('name')}>Name</ContextMenu.Item>
+      <ContextMenu.Item onSelect={() => sort('date')}>Date</ContextMenu.Item>
+      <ContextMenu.Item onSelect={() => sort('size')}>Size</ContextMenu.Item>
+    </ContextMenu.SubContent>
+  </ContextMenu.SubRoot>
+  <ContextMenu.Item isDisabled>Paste</ContextMenu.Item>
+</ContextMenu.Content>
+```
+
+## Sub-components
+
+### ContextMenu.Root
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `modal` | `boolean` | `false` | Modal mode |
+| `onOpenChange` | `(isOpen: boolean) => void` | — | Open state callback |
+
+### ContextMenu.Trigger
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isDisabled` | `boolean` | — | Disable right-click |
+
+### ContextMenu.Content
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isLoop` | `boolean` | `true` | Keyboard navigation loop |
+| `alignOffset` | `number` | `0` | Alignment offset |
+| `onEscapeKeyDown` | `(e: KeyboardEvent) => void` | — | Escape key handler |
+
+### ContextMenu.Item
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `onSelect` | `() => void` | — | Select handler (auto-closes after selection) |
+| `isDisabled` | `boolean` | `false` | Disabled state |
+| `textValue` | `string` | — | data-value attribute |
+
+### ContextMenu.SubRoot
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isOpen` | `boolean` | — | Controlled open state |
+| `isDefaultOpen` | `boolean` | `false` | Default open state |
+| `onOpenChange` | `(isOpen: boolean) => void` | — | Open state callback |
+
+### ContextMenu.SubTrigger
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isDisabled` | `boolean` | — | Disabled state |
+
+### ContextMenu.SubContent
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isLoop` | `boolean` | `true` | Keyboard navigation loop |
+| `sideOffset` | `number` | `0` | Gap beside the trigger |
+| `alignOffset` | `number` | `0` | Vertical alignment offset |
+
+## Keyboard Navigation
+
+| Key | Action |
+|-----|--------|
+| `↑` / `↓` | Move between items |
+| `Home` / `End` | First/last item |
+| `Enter` / `Space` | Select item |
+| `→` | Open submenu |
+| `←` | Close submenu |
+| `Escape` | Close menu |
+
+## Guidelines
+
+- Right-click is ignored when an input/textarea has focus (browser default menu is used)
+- The menu automatically closes on outside click or scroll
+- Submenus open after 100ms hover and close after 150ms mouse leave

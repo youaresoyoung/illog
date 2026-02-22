@@ -1,0 +1,41 @@
+---
+title: Spacing
+description: Space tokens for layout gaps and padding
+category: Foundation
+order: 3
+---
+
+## Overview
+
+Space tokens for consistent spacing. Use these tokens for all `gap`, `padding`, and `margin` values.
+
+## Space Scale
+
+<TokenReference group="size.space" />
+
+## Usage
+
+```tsx
+import { tokens } from '@illog/themes'
+
+tokens.size.space[300]  // '16px'
+tokens.size.space[400]  // '24px'
+
+// With the Box component
+<Box p="400" gap="200">
+  <Text>Padding 24px, gap 12px</Text>
+</Box>
+
+// Stack component
+<Stack gap="300">
+  <Item />
+  <Item />
+</Stack>
+```
+
+## Guidelines
+
+- Based on a 4px unit grid (2, 4, 6, 8, 12, 16, ...)
+- Use `100`–`300` for internal component padding
+- Use `300`–`500` for spacing between components
+- Use `600` or above for spacing between sections

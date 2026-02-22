@@ -1,0 +1,66 @@
+---
+title: Card
+description: Clickable list card — interactive content container
+category: Components
+order: 19
+---
+
+## Overview
+
+Card is a **clickable list item**. It renders as a `<li>` element and extends Box with fixed card styles.
+
+- **Interactive** — `role="button"`, `tabIndex={0}`, border on hover
+- **Box-based** — All Box sprinkle props available
+- **Fixed styles** — White background, rounded corners, drop shadow
+
+## Basic Usage
+
+```tsx
+import { Card } from '@illog/ui'
+
+<ul>
+  <Card onClick={() => navigate(`/tasks/${task.id}`)}>
+    <Text textStyle="bodyStrong">{task.title}</Text>
+    <Text textStyle="bodySmall" color="textDefaultTertiary">
+      {task.description}
+    </Text>
+  </Card>
+</ul>
+```
+
+## Width Control
+
+```tsx
+<Card maxWidth="480px" onClick={handleClick}>
+  <Text>Card with max width of 480px</Text>
+</Card>
+```
+
+## Default Applied Styles
+
+| Property | Value |
+|----------|-------|
+| Element | `<li>` |
+| display | `flex` |
+| flexDirection | `column` |
+| gap | `400` |
+| bg | `backgroundDefaultDefault` |
+| padding | `600` |
+| rounded | `200` |
+| shadow | `100` |
+| hover | 1px solid border |
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `onClick` | `(e: MouseEvent) => void` | **required** | Click handler |
+| `maxWidth` | `string` | — | Max width |
+| `children` | `ReactNode` | — | Card content |
+| `className` | `string` | — | Additional CSS class |
+| `...boxProps` | `BoxProps` | — | All Box props |
+
+## Guidelines
+
+- Always use Card inside a `<ul>` or `<ol>` (renders as `<li>`)
+- If you need a non-clickable container, use Box directly

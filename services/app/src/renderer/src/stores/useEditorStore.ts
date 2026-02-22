@@ -23,7 +23,7 @@ const INITIAL_TOOLBAR_STATE = {
   canRedo: false,
   canUndo: false,
   elementFormat: 'left' as ElementFormatType,
-  fontColor: '#000',
+  fontColor: 'var(--text-default-default)',
   fontFamily: 'Arial',
   fontSize: `${default_font_size}px`,
   isBold: false,

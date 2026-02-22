@@ -1,0 +1,81 @@
+---
+title: Text
+description: Typography component with text style presets and semantic HTML support
+category: Components
+order: 4
+---
+
+## Overview
+
+A component for rendering text. Uses text style presets from `@illog/themes` to provide consistent typography.
+
+## Text Styles
+
+<ComponentPreview>
+  <Stack gap="300" width="100%">
+    <Text textStyle="heading">Heading (24px)</Text>
+    <Text textStyle="subheading">Subheading (20px)</Text>
+    <Text textStyle="bodyBase">Body Base (16px)</Text>
+    <Text textStyle="bodyStrong">Body Strong (16px)</Text>
+    <Text textStyle="bodySmall">Body Small (14px)</Text>
+    <Text textStyle="caption">Caption (12px)</Text>
+  </Stack>
+
+```tsx
+<Text textStyle="heading">Heading</Text>
+<Text textStyle="subheading">Subheading</Text>
+<Text textStyle="bodyBase">Body Base</Text>
+<Text textStyle="bodyStrong">Body Strong</Text>
+<Text textStyle="bodySmall">Body Small</Text>
+<Text textStyle="caption">Caption</Text>
+```
+</ComponentPreview>
+
+| Style | Size | Weight | Line Height | Use Case |
+|-------|------|--------|-------------|----------|
+| `title` | 48px | bold | 1.2 | Page title |
+| `subtitle` | 32px | semiBold | 1.2 | Section heading |
+| `heading` | 24px | semiBold | 1.2 | Content heading |
+| `subheading` | 20px | regular | 1.2 | Subheading |
+| `bodyBase` | 16px | regular | 1.4 | Default body text |
+| `bodyStrong` | 16px | semiBold | 1.4 | Emphasized body text |
+| `bodySmall` | 14px | regular | 1.4 | Small body text |
+| `bodySmallStrong` | 14px | semiBold | 1.4 | Small emphasized body text |
+| `caption` | 12px | regular | 1.4 | Caption, label |
+| `captionStrong` | 12px | semiBold | 1.4 | Emphasized caption |
+
+## Colors
+
+```tsx
+<Text color="textDefaultDefault">Default</Text>
+<Text color="textDefaultTertiary">Secondary</Text>
+<Text color="textBrandDefault">Brand</Text>
+<Text color="textDangerDefault">Danger</Text>
+<Text color="textDefaultDisabled">Disabled</Text>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `as` | `ElementType` | `'p'` | HTML element |
+| `textStyle` | `string` | `'bodyBase'` | Text style preset |
+| `color` | `string` | `'textDefaultDefault'` | Text color token |
+| `align` | `'left' \| 'center' \| 'right'` | — | Text alignment |
+| `truncate` | `'true'` | — | Single-line truncation |
+| `lineClamp` | `'1' \| '2' \| '3'` | — | Multi-line truncation |
+| `children` | `ReactNode` | — | Text content |
+
+## Usage
+
+```tsx
+import { Text } from '@illog/ui'
+
+// Semantic HTML
+<Text as="h1" textStyle="title">Page Title</Text>
+<Text as="span" textStyle="caption" color="textDefaultDisabled">Secondary text</Text>
+
+// Truncation
+<Text truncate="true">Very long text will be truncated...</Text>
+<Text lineClamp="2">Multi-line text will display up to 2 lines...</Text>
+```

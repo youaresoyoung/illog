@@ -4,8 +4,8 @@ import type { DonutChartProps, DonutChartSegment } from './types'
 const DEFAULT_SIZE = 180
 const DEFAULT_INNER_RATIO = 0.55
 const DEFAULT_STROKE_WIDTH = 0.75
-const DEFAULT_EMPTY_FILL = '#e5e7eb'
-const DEFAULT_EMPTY_STROKE = '#d1d5db'
+const DEFAULT_EMPTY_FILL = 'var(--background-default-tertiary)'
+const DEFAULT_EMPTY_STROKE = 'var(--border-default-default)'
 const FULL_ARC_DEGREES = 359.99
 
 function toRadians(degrees: number): number {

@@ -54,7 +54,7 @@ export const NoteEditorSection = ({ taskId, note }: Props) => {
           <ToolbarPlugin />
         </ToolbarStoreProvider>
 
-        <Stack position="relative" p="300" minHeight="400px">
+        <Stack position="relative" p="300" minHeight="400px" color="textDefaultDefault">
           <RichTextPlugin
             contentEditable={
               <div ref={handleAnchorRef}>

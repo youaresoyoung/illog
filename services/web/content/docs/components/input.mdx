@@ -1,0 +1,58 @@
+---
+title: Input
+description: Styled text input field with error message support
+category: Components
+order: 14
+---
+
+## Overview
+
+Input is a styled **text input field**. It supports error message display, full width mode, and disabled state.
+
+- **Variant** — Three styles: `default`, `error`, `success`
+- **Error Message** — Displays error text below the input field via the `errorMessage` prop
+- **Full Width** — Takes up the full width of the parent container with `isFullWidth`
+
+## Variants
+
+<ComponentPreview>
+  <Stack gap="400" width="100%">
+    <Input variant="default" placeholder="Default input" />
+    <Input variant="error" errorMessage="This field is required" placeholder="Error state" />
+    <Input isDisabled placeholder="Disabled" />
+  </Stack>
+
+```tsx
+<Input variant="default" placeholder="Default input" />
+<Input variant="error" errorMessage="This field is required" placeholder="Error state" />
+<Input isDisabled placeholder="Disabled" />
+```
+</ComponentPreview>
+
+## Full Width
+
+<ComponentPreview>
+  <Input isFullWidth placeholder="Full width input" />
+
+```tsx
+<Input isFullWidth placeholder="Full width input" />
+```
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'default' \| 'error' \| 'success'` | `'default'` | Input field style |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Input field size |
+| `isFullWidth` | `boolean` | — | Full width mode |
+| `isDisabled` | `boolean` | — | Disabled state |
+| `errorMessage` | `string` | — | Error message displayed below the input |
+| `onChange` | `(e: ChangeEvent) => void` | — | Value change handler |
+| `ref` | `Ref<HTMLInputElement>` | — | Input element ref |
+| `...rest` | `InputHTMLAttributes` | — | Native input attributes (`placeholder`, `type`, `name`, etc.) |
+
+## Guidelines
+
+- When in error state, use `variant="error"` together with `errorMessage`
+- Use `isFullWidth` in forms to maintain a consistent layout

@@ -4,8 +4,8 @@ const DEFAULT_MIN = 0
 const DEFAULT_MAX = 100
 const DEFAULT_HEIGHT = 8
 const DEFAULT_RADIUS = 999
-const DEFAULT_TRACK_COLOR = '#eef2f7'
-const DEFAULT_FILL_COLOR = '#4f46e5'
+const DEFAULT_TRACK_COLOR = 'var(--background-default-tertiary)'
+const DEFAULT_FILL_COLOR = 'var(--background-brand-default)'
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max)

@@ -188,7 +188,7 @@ export const SortableTable = <T, F extends string>({
   }
 
   return (
-    <Stack gap="400" className={className}>
+    <Stack gap="400" className={className} color="textDefaultDefault">
       <Box
         as="table"
         bg="backgroundDefaultDefault"

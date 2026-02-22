@@ -1,0 +1,82 @@
+---
+title: Overlay
+description: Overlay component for modals, dialogs, and side panels
+category: Components
+order: 5
+---
+
+## Overview
+
+Overlay is a component that displays a semi-transparent background over content. Used for modals, confirmation dialogs, side panels, and more.
+
+## Features
+
+- Close on backdrop click (can be disabled)
+- Custom opacity
+- Animation support (fade, slide-left, slide-right)
+- Internal scroll support
+- Focus trapping
+
+## Animation Types
+
+| Animation | Description |
+|-----------|-------------|
+| `fade` | Fade in/out |
+| `slideLeft` | Slide from left |
+| `slideRight` | Slide from right |
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `isOpen` | `boolean` | - | Whether the overlay is visible |
+| `onClose` | `() => void` | - | Close handler |
+| `children` | `ReactNode` | - | Overlay content |
+| `backdropOpacity` | `number` | `50` | Backdrop opacity (0–100) |
+| `disableBackdropClick` | `boolean` | `false` | Disable close on backdrop click |
+| `animation` | `'fade' \| 'slideLeft' \| 'slideRight'` | `'fade'` | Animation type |
+| `className` | `string` | - | Additional CSS class |
+
+## Usage
+
+```tsx
+import { Overlay } from '@illog/ui'
+
+// Basic usage
+const [isOpen, setIsOpen] = useState(false)
+
+<button onClick={() => setIsOpen(true)}>Open</button>
+
+<Overlay isOpen={isOpen} onClose={() => setIsOpen(false)}>
+  <div>Overlay content</div>
+</Overlay>
+
+// Confirmation dialog
+<Overlay
+  isOpen={showConfirm}
+  onClose={() => setShowConfirm(false)}
+  disableBackdropClick
+>
+  <Dialog>
+    <Dialog.Title>Are you sure you want to delete?</Dialog.Title>
+    <Dialog.Actions>
+      <Button variant="secondary" onClick={() => setShowConfirm(false)}>
+        Cancel
+      </Button>
+      <Button variant="primary" onClick={handleDelete}>
+        Delete
+      </Button>
+    </Dialog.Actions>
+  </Dialog>
+</Overlay>
+
+// Custom opacity + animation
+<Overlay
+  isOpen={isOpen}
+  onClose={handleClose}
+  backdropOpacity={70}
+  animation="slideLeft"
+>
+  <SidePanel />
+</Overlay>
+```

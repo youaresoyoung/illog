@@ -1,0 +1,32 @@
+---
+title: Icons
+description: List of available SVG icons
+category: Foundation
+order: 7
+---
+
+## Overview
+
+A list of icons used in illog. Click an icon to copy its usage code (`<Icon name="..." />`) to your clipboard.
+
+All icons use `currentColor`, inheriting the parent's `color` property.
+
+## Icon Gallery
+
+<IconGallery />
+
+## Usage
+
+```tsx
+import { Icon } from '@illog/ui'
+
+<Icon name="check" size="medium" />
+<Icon name="chevron_down" size="small" color="iconDefaultDefault" />
+<Icon name="trash" size="large" color="iconDangerDefault" />
+```
+
+## How to Add Icons
+
+1. Add an `ic_<name>_24.svg` file to `packages/ui/src/assets/svg/`
+2. Run `pnpm --filter @illog/ui build:icons`
+3. `types.ts` and `index.ts` will be auto-generated

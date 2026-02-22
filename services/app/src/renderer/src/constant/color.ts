@@ -1,19 +1,17 @@
-import { tokens } from '@illog/themes'
-
 export const DONUT_BACKGROUND_COLORS: Record<string, string> = {
-  blue: tokens.colors.light.background.tag.blue,
-  green: tokens.colors.light.background.tag.green,
-  yellow: tokens.colors.light.background.tag.yellow,
-  purple: tokens.colors.light.background.tag.purple,
-  red: tokens.colors.light.background.tag.red,
-  gray: tokens.colors.light.background.tag.gray
+  blue: 'var(--background-tag-blue)',
+  green: 'var(--background-tag-green)',
+  yellow: 'var(--background-tag-yellow)',
+  purple: 'var(--background-tag-purple)',
+  red: 'var(--background-tag-red)',
+  gray: 'var(--background-tag-gray)'
 }
 
 export const DONUT_BORDER_COLORS: Record<string, string> = {
-  blue: tokens.colors.light.text.tag.blue,
-  green: tokens.colors.light.text.tag.green,
-  yellow: tokens.colors.light.text.tag.yellow,
-  purple: tokens.colors.light.text.tag.purple,
-  red: tokens.colors.light.text.tag.red,
-  gray: tokens.colors.light.text.tag.gray
+  blue: 'var(--text-tag-blue)',
+  green: 'var(--text-tag-green)',
+  yellow: 'var(--text-tag-yellow)',
+  purple: 'var(--text-tag-purple)',
+  red: 'var(--text-tag-red)',
+  gray: 'var(--text-tag-gray)'
 }

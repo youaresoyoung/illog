@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeImage } from 'electron'
+import { app, BrowserWindow, nativeImage, nativeTheme } from 'electron'
 import { openDB } from './db'
 import { installExtension, REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import { CrashReportService, initSentryEarly } from './service/CrashReportService'
@@ -35,11 +35,12 @@ app
         .then((ext) => console.log(`Added Extension:  ${ext.name}`))
         .catch((err) => console.log('An error occurred: ', err))
     }
-    // TODO: need to consider theme change handling (dark mode, light mode, system mode)
-    // nativeTheme.on('updated', () => {
-    //   const isDark = nativeTheme.shouldUseDarkColors
-    //   mainWindow.webContents.send('theme.changed', isDark)
-    // })
+    nativeTheme.on('updated', () => {
+      const isDark = nativeTheme.shouldUseDarkColors
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('theme.changed', isDark)
+      }
+    })
 
     const { db } = openDB()
 

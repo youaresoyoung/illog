@@ -14,6 +14,7 @@ export const inputWrapper = style([
 
 const inputBase = {
   width: '100%',
+  color: textColors.textDefaultDefault,
   backgroundColor: backgroundColors.backgroundDefaultDefault,
   borderRadius: tokens.size.radius[100],
   border: `${tokens.size.stroke.border}px solid ${backgroundColors.backgroundDefaultDefault}`,
