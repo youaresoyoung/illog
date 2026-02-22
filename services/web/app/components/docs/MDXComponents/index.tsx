@@ -16,8 +16,7 @@ import {
   Stack,
   Tag,
   Text,
-  ToastItem,
-  ToggleMenu
+  ToastItem
 } from './ClientComponents'
 import { ComponentPreview } from '../ComponentPreview/ComponentPreview'
 import { IconGallery } from '../IconGallery'
@@ -87,8 +86,10 @@ export const mdxComponents: MDXComponents = {
     />
   ),
   code: (props) => {
-    const className = typeof props.className === 'string' ? props.className : ''
-    const hasLanguageClass = className.split(' ').some((name) => name.startsWith('language-'))
+    const className: string = typeof props.className === 'string' ? props.className : ''
+    const hasLanguageClass = className
+      .split(' ')
+      .some((name: string) => name.startsWith('language-'))
     const isBlockCode =
       hasLanguageClass ||
       (props as Record<string, unknown>)['data-language'] !== undefined ||
@@ -188,6 +189,5 @@ export const mdxComponents: MDXComponents = {
   Overlay,
   DonutChart,
   HorizontalBar,
-  ToggleMenu,
   ToastItem
 }
