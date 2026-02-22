@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
     '@illog/ui/index.css',
     '@illog/themes/themes.css'
   ],
+  images: {
+    qualities: [75, 90, 95]
+  },
   reactCompiler: true
 }
 

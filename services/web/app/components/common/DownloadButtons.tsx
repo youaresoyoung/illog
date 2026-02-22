@@ -3,7 +3,7 @@
 import { usePlatform } from '@/app/hooks/usePlatform'
 import { useUmami } from '@/app/hooks/useUmami'
 import { DOWNLOAD_CLICKED } from '@illog/analytics'
-import styles from './DownloadButtons.module.css'
+import { Box, Button, Inline } from '@/app/components/common/UI'
 import { MobileNotice } from './MobileNotice'
 
 const DOWNLOAD_LINKS = {
@@ -17,6 +17,37 @@ type Props = {
   isShowAll?: boolean
 }
 
+function DownloadButton({
+  href,
+  label,
+  size,
+  onClick,
+  variant,
+  isDisabled = false
+}: {
+  href: string
+  label: string
+  size: 'md' | 'lg'
+  onClick?: () => void
+  variant: 'primary' | 'secondary'
+  isDisabled?: boolean
+}) {
+  return (
+    <Button
+      variant={variant}
+      size={size}
+      isDisabled={isDisabled}
+      onClick={() => {
+        if (isDisabled) return
+        onClick?.()
+        window.location.assign(href)
+      }}
+    >
+      {label}
+    </Button>
+  )
+}
+
 export function DownloadButtons({ size = 'md', isShowAll = false }: Props) {
   const { platform, isMobile } = usePlatform()
   const { track } = useUmami()
@@ -25,115 +56,126 @@ export function DownloadButtons({ size = 'md', isShowAll = false }: Props) {
     track(DOWNLOAD_CLICKED, { platform: downloadPlatform })
   }
 
-  // SSR / loading state
   if (platform === null) {
     return (
-      <div className={styles.buttons}>
-        <span className={styles.skeleton} />
-      </div>
+      <Inline align="center" justify="center" style={{ minHeight: '48px', width: '100%' }}>
+        <Box
+          rounded="400"
+          bg="backgroundDefaultTertiary"
+          style={{ width: '280px', height: '46px', opacity: 0.85 }}
+        />
+      </Inline>
     )
   }
 
   if (isMobile) return <MobileNotice />
 
-  const buttonClass = size === 'lg' ? styles.buttonLg : styles.buttonMd
-
   if (isShowAll) {
     return (
-      <div className={styles.buttons}>
-        <a
+      <Inline align="center" justify="center" wrap="wrap" gap="300" style={{ minHeight: '48px' }}>
+        <DownloadButton
           href={DOWNLOAD_LINKS['mac-arm'].href}
-          className={`${styles.buttonPrimary} ${buttonClass}`}
+          label={DOWNLOAD_LINKS['mac-arm'].label}
+          size={size}
+          variant="primary"
           onClick={() => handleDownloadClick('mac-arm')}
-        >
-          {DOWNLOAD_LINKS['mac-arm'].label}
-        </a>
-        <a
+        />
+        <DownloadButton
           href={DOWNLOAD_LINKS['mac-intel'].href}
-          className={`${styles.buttonPrimary} ${buttonClass}`}
+          label={DOWNLOAD_LINKS['mac-intel'].label}
+          size={size}
+          variant="primary"
           onClick={() => handleDownloadClick('mac-intel')}
-        >
-          {DOWNLOAD_LINKS['mac-intel'].label}
-        </a>
-        <button className={`${styles.buttonDisabled} ${buttonClass}`} disabled>
-          {DOWNLOAD_LINKS.windows.label}
-        </button>
-      </div>
+        />
+        <DownloadButton
+          href={DOWNLOAD_LINKS.windows.href}
+          label={DOWNLOAD_LINKS.windows.label}
+          size={size}
+          variant="secondary"
+          isDisabled
+        />
+      </Inline>
     )
   }
 
   if (platform === 'windows') {
     return (
-      <div className={styles.buttons}>
-        <button className={`${styles.buttonDisabled} ${buttonClass}`} disabled>
-          {DOWNLOAD_LINKS.windows.label}
-        </button>
-      </div>
+      <Inline align="center" justify="center" wrap="wrap" gap="300" style={{ minHeight: '48px' }}>
+        <DownloadButton
+          href={DOWNLOAD_LINKS.windows.href}
+          label={DOWNLOAD_LINKS.windows.label}
+          size={size}
+          variant="secondary"
+          isDisabled
+        />
+      </Inline>
     )
   }
 
   if (platform === 'mac-arm') {
     return (
-      <div className={styles.buttons}>
-        <a
+      <Inline align="center" justify="center" wrap="wrap" gap="300" style={{ minHeight: '48px' }}>
+        <DownloadButton
           href={DOWNLOAD_LINKS['mac-arm'].href}
-          className={`${styles.buttonPrimary} ${buttonClass}`}
+          label={DOWNLOAD_LINKS['mac-arm'].label}
+          size={size}
+          variant="primary"
           onClick={() => handleDownloadClick('mac-arm')}
-        >
-          {DOWNLOAD_LINKS['mac-arm'].label}
-        </a>
-      </div>
+        />
+      </Inline>
     )
   }
 
   if (platform === 'mac-intel') {
     return (
-      <div className={styles.buttons}>
-        <a
+      <Inline align="center" justify="center" wrap="wrap" gap="300" style={{ minHeight: '48px' }}>
+        <DownloadButton
           href={DOWNLOAD_LINKS['mac-intel'].href}
-          className={`${styles.buttonPrimary} ${buttonClass}`}
+          label={DOWNLOAD_LINKS['mac-intel'].label}
+          size={size}
+          variant="primary"
           onClick={() => handleDownloadClick('mac-intel')}
-        >
-          {DOWNLOAD_LINKS['mac-intel'].label}
-        </a>
-      </div>
+        />
+      </Inline>
     )
   }
 
-  // Mac (unknown arch) - show both
   if (platform === 'mac') {
     return (
-      <div className={styles.buttons}>
-        <a
+      <Inline align="center" justify="center" wrap="wrap" gap="300" style={{ minHeight: '48px' }}>
+        <DownloadButton
           href={DOWNLOAD_LINKS['mac-arm'].href}
-          className={`${styles.buttonPrimary} ${buttonClass}`}
+          label={DOWNLOAD_LINKS['mac-arm'].label}
+          size={size}
+          variant="primary"
           onClick={() => handleDownloadClick('mac-arm')}
-        >
-          {DOWNLOAD_LINKS['mac-arm'].label}
-        </a>
-        <a
+        />
+        <DownloadButton
           href={DOWNLOAD_LINKS['mac-intel'].href}
-          className={`${styles.buttonSecondary} ${buttonClass}`}
-        >
-          {DOWNLOAD_LINKS['mac-intel'].label}
-        </a>
-      </div>
+          label={DOWNLOAD_LINKS['mac-intel'].label}
+          size={size}
+          variant="secondary"
+        />
+      </Inline>
     )
   }
 
-  // Linux / unknown - show all mac options
   return (
-    <div className={styles.buttons}>
-      <a href={DOWNLOAD_LINKS['mac-arm'].href} className={`${styles.buttonPrimary} ${buttonClass}`}>
-        {DOWNLOAD_LINKS['mac-arm'].label}
-      </a>
-      <a
+    <Inline align="center" justify="center" wrap="wrap" gap="300" style={{ minHeight: '48px' }}>
+      <DownloadButton
+        href={DOWNLOAD_LINKS['mac-arm'].href}
+        label={DOWNLOAD_LINKS['mac-arm'].label}
+        size={size}
+        variant="primary"
+        onClick={() => handleDownloadClick('mac-arm')}
+      />
+      <DownloadButton
         href={DOWNLOAD_LINKS['mac-intel'].href}
-        className={`${styles.buttonSecondary} ${buttonClass}`}
+        label={DOWNLOAD_LINKS['mac-intel'].label}
+        size={size}
+        variant="secondary"
         onClick={() => handleDownloadClick('mac-intel')}
-      >
-        {DOWNLOAD_LINKS['mac-intel'].label}
-      </a>
-    </div>
+      />
+    </Inline>
   )
 }

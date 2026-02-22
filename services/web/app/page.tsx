@@ -1,3 +1,4 @@
+import { Box } from '@/app/components/common/UI'
 import { DownloadSection } from './components/DownloadSection/DownloadSection'
 import { FeatureSection } from './components/FeatureSection/FeatureSection'
 import { HeroSection } from './components/Hero/HeroSection'
@@ -8,11 +9,11 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main>
+      <Box as="main">
         <HeroSection />
         <FeatureSection />
         <DownloadSection />
-      </main>
+      </Box>
       <Footer />
     </>
   )
