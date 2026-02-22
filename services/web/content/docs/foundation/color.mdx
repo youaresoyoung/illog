@@ -1,0 +1,51 @@
+---
+title: Color
+description: The color system of the illog design system — Primitive, Light/Dark semantic colors
+category: Foundation
+order: 1
+---
+
+## Overview
+
+illog's color system is composed of two layers:
+
+1. **Primitive Colors** — Raw color palette (brand, grayscale, semantic colors)
+2. **Semantic Colors** — Purpose-specific theme colors (Light/Dark)
+
+## Primitive Colors
+
+The base palette, intended to be used as the source values for semantic tokens rather than applied directly.
+
+<TokenReference group="colors.primitive" />
+
+---
+
+## Semantic Colors (Light Theme)
+
+Tokens assigned meaning according to their intended use. Values automatically switch between Light and Dark themes.
+
+<TokenReference group="colors.light" />
+
+---
+
+## Dark Theme
+
+In the Dark theme, the same token names are mapped to different values.
+
+<TokenReference group="colors.dark" />
+
+## Usage
+
+```tsx
+import { tokens } from '@illog/themes'
+
+// Accessing Primitive colors
+tokens.colors.primitive.brand[1000] // '#1a1a1a'
+tokens.colors.primitive.gray[500]   // '#737373'
+
+// Accessing Semantic colors (per theme)
+tokens.colors.light.bgDefaultDefault  // primitive.white[1000]
+tokens.colors.dark.bgDefaultDefault   // primitive.gray[900]
+```
+
+You can also use CSS variables — importing `@illog/themes/themes.css` injects all tokens as CSS custom properties on `:root`.

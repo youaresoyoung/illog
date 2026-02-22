@@ -1,0 +1,27 @@
+---
+title: Radius
+description: Border radius tokens
+category: Foundation
+order: 4
+---
+
+## Overview
+
+Tokens that define the border radius of components.
+
+## Radius Scale
+
+<TokenReference group="size.radius" />
+
+## Usage
+
+```tsx
+import { tokens } from '@illog/themes'
+
+tokens.size.radius[200]   // '8px'
+tokens.size.radius.full    // '9999px'
+
+// With the Box component
+<Box rounded="200">Default radius</Box>
+<Box rounded="full">Circle</Box>
+```
