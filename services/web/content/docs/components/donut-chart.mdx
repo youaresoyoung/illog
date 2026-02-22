@@ -1,0 +1,86 @@
+---
+title: DonutChart
+description: SVG donut chart implemented in pure React without dependencies
+category: Components
+order: 22
+---
+
+## Overview
+
+DonutChart is a **pure SVG-based donut chart**. It renders using arc-path calculations without any external chart libraries.
+
+- **No dependency** — No need for D3, Chart.js, or other external libraries
+- **Interactive** — Supports segment click events
+- **Customizable** — Size, inner ratio, start angle, and colors are all customizable
+- **Accessible** — `role="img"` and `aria-label` applied by default
+
+## Basic Usage
+
+```tsx
+import { DonutChart } from '@illog/ui'
+
+<DonutChart
+  segments={[
+    { value: 40, fill: 'var(--background-brand-default)' },
+    { value: 30, fill: 'var(--background-success-default)' },
+    { value: 20, fill: 'var(--background-warning-default)' },
+    { value: 10, fill: 'var(--background-danger-default)' },
+  ]}
+/>
+```
+
+## Interaction
+
+```tsx
+<DonutChart
+  segments={categories.map(cat => ({
+    id: cat.id,
+    value: cat.hours,
+    fill: cat.color,
+    ariaLabel: `${cat.name}: ${cat.hours} hours`,
+  }))}
+  onSegmentClick={(segment, index) => {
+    setSelectedCategory(segment.id)
+  }}
+/>
+```
+
+## Customization
+
+```tsx
+// Small chart, thin ring
+<DonutChart segments={segments} size={120} innerRatio={0.75} />
+
+// Large chart, thick ring
+<DonutChart segments={segments} size={240} innerRatio={0.3} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `segments` | `DonutChartSegment[]` | **required** | Array of segment data |
+| `size` | `number` | `180` | Chart size (px) |
+| `innerRatio` | `number` | `0.55` | Inner hole ratio (0–0.95) |
+| `startAngle` | `number` | `0` | Start angle (12 o'clock = 0) |
+| `defaultStrokeWidth` | `number` | `0.75` | Default segment stroke width |
+| `emptyFill` | `string` | `var(--background-default-tertiary)` | Empty state fill color |
+| `emptyStroke` | `string` | `var(--border-default-default)` | Empty state stroke color |
+| `onSegmentClick` | `(segment, index) => void` | — | Segment click handler |
+| `segmentKey` | `(segment, index) => string` | — | React key generator function |
+
+### DonutChartSegment
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `value` | `number` | Segment value (values ≤ 0 are excluded) |
+| `fill` | `string` | CSS color |
+| `stroke` | `string` | Segment stroke color |
+| `strokeWidth` | `number` | Individual stroke width |
+| `ariaLabel` | `string` | Accessibility label |
+| `id` | `string` | Identifier |
+
+## Guidelines
+
+- When all segment values are 0, an empty gray ring is displayed
+- For data visualization, consider using TimeDistribution instead of DonutChart alone

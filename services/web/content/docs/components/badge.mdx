@@ -1,0 +1,78 @@
+---
+title: Badge
+description: Color label chip for categorization and status indication
+category: Components
+order: 17
+---
+
+## Overview
+
+Badge is a **color label chip**. It supports three modes: read-only, removable, and add button.
+
+- **6 colors** — blue, gray, green, purple, red, yellow
+- **3 modes** — Default (read-only), removable (`onRemove`), add button (`addButtonVariant`)
+- **Chevron icon** — Displays chevron in default mode when connected to a selector
+
+## Basic Usage
+
+```tsx
+import { Badge } from '@illog/ui'
+
+// Read-only
+<Badge item={{ id: '1', name: 'In Progress', color: 'blue' }} />
+
+// Removable
+<Badge
+  item={{ id: '1', name: 'Done', color: 'green' }}
+  onRemove={() => handleRemove('1')}
+/>
+
+// Add button
+<Badge
+  item={{ name: 'Add Category' }}
+  addButtonVariant="default"
+  openSelector={(e) => openBadgeSelector(e)}
+/>
+```
+
+## Colors
+
+| Color | Example Usage |
+|-------|--------------|
+| `blue` | In progress, informational |
+| `gray` | Default, inactive |
+| `green` | Completed, success |
+| `purple` | Special, premium |
+| `red` | Urgent, error |
+| `yellow` | Warning, pending |
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `item` | `BadgeItem \| OmittedBadgeItem` | **required** | Badge data (`name`, `color`, etc.) |
+| `addButtonVariant` | `'default' \| 'error'` | — | Enables add button mode |
+| `isOpenedSelector` | `boolean` | — | Chevron icon rotation state |
+| `withoutIcon` | `boolean` | — | Hides chevron in default mode |
+| `openSelector` | `(e: MouseEvent) => void` | — | Add button click handler |
+| `onRemove` | `() => void` | — | Enables remove mode + remove handler |
+
+### BadgeItem Type
+
+```tsx
+type BadgeColor = 'blue' | 'gray' | 'green' | 'purple' | 'red' | 'yellow'
+
+type BadgeItem = {
+  id: string
+  name: string
+  color?: BadgeColor
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  deletedAt?: Date | string | null
+}
+```
+
+## Guidelines
+
+- Use Badge for single selection; use Tag for multi-selection
+- Combine with BadgeSelector for a selection UI with built-in CRUD functionality

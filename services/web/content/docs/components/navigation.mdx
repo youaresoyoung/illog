@@ -1,0 +1,119 @@
+---
+title: Navigation
+description: Sidebar navigation based on React Router NavLink
+category: Components
+order: 30
+---
+
+## Overview
+
+Navigation is a **sidebar navigation** compound component. Based on React Router's `NavLink`, it automatically tracks the active state based on URL.
+
+- **Compound** — Container, List, Item
+- **Auto active** — Automatic active state detection based on URL
+- **Match strategy** — exact, startsWith, endsWith matching
+- **Render prop** — Access `{ isActive, isPending }` in Item's children, className, style
+
+## Basic Usage
+
+```tsx
+import { Navigation } from '@illog/ui'
+
+<Navigation.Container>
+  <Navigation.List match="startsWith">
+    <Navigation.Item to="/dashboard" iconName="home">
+      Dashboard
+    </Navigation.Item>
+    <Navigation.Item to="/tasks" iconName="check-square">
+      Tasks
+    </Navigation.Item>
+    <Navigation.Item to="/analytics" iconName="bar-chart">
+      Analytics
+    </Navigation.Item>
+    <Navigation.Item to="/settings" iconName="settings">
+      Settings
+    </Navigation.Item>
+  </Navigation.List>
+</Navigation.Container>
+```
+
+## Render Prop Pattern
+
+```tsx
+<Navigation.Item to="/tasks">
+  {({ isActive, isPending }) => (
+    <Inline gap="300" align="center">
+      <Icon name="check-square" color={isActive ? 'iconBrandDefault' : 'iconDefaultTertiary'} />
+      <Text color={isActive ? 'textBrandDefault' : 'textDefaultDefault'}>
+        Tasks
+      </Text>
+      {isPending && <Spinner size="sm" />}
+    </Inline>
+  )}
+</Navigation.Item>
+```
+
+## Match Strategy
+
+```tsx
+// Active only when URL matches exactly
+<Navigation.List match="exact">
+  <Navigation.Item to="/tasks">Tasks</Navigation.Item>
+</Navigation.List>
+
+// Active when URL starts with /tasks (includes /tasks/123)
+<Navigation.List match="startsWith">
+  <Navigation.Item to="/tasks">Tasks</Navigation.Item>
+</Navigation.List>
+
+// Override on individual Item
+<Navigation.Item to="/tasks" match="exact">Tasks</Navigation.Item>
+```
+
+## Sub-components
+
+### Navigation.Container
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `children` | `ReactNode` | Navigation.List elements |
+
+Fixed sidebar: `position: fixed`, `width: 256px`, `padding: 600`.
+
+### Navigation.List
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `match` | `'exact' \| 'startsWith' \| 'endsWith'` | `'exact'` | Match strategy |
+| `...sprinkles` | `Sprinkles` | — | Design token props |
+
+Wrapped with `<nav aria-label="Main navigation">`.
+
+### Navigation.Item
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `to` | `string` | **required** | Route path |
+| `iconName` | `IconName` | — | Icon (default children mode) |
+| `children` | `ReactNode \| ((props) => ReactNode)` | — | Content or render prop |
+| `className` | `string \| ((props) => string)` | — | CSS class or render prop |
+| `style` | `CSSProperties \| ((props) => CSSProperties)` | — | Style or render prop |
+| `match` | `MatchStrategy` | — | Override List's match strategy |
+| `end` | `boolean` | — | NavLink end prop |
+| `disabled` | `boolean` | — | Disabled state |
+| `onClick` | `(e: MouseEvent) => void` | — | Click handler |
+
+### Render Prop Type
+
+```tsx
+type ItemRenderProps = {
+  isActive: boolean   // Whether current URL matches
+  isPending: boolean  // React Router pending state
+}
+```
+
+## Guidelines
+
+- Container uses `position: fixed`, so apply `margin-left: 256px` to adjacent content
+- `match="startsWith"` is suitable for most nested routes
+- Requires React Router dependency — use only in React Router projects

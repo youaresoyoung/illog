@@ -1,0 +1,80 @@
+---
+title: Toast
+description: Notification toast system with auto-dismiss
+category: Components
+order: 28
+---
+
+## Overview
+
+Toast is a **notification toast system**. `ToastContainer` renders toasts in the top-right corner of the screen via a Portal.
+
+- **4 types** — success, error, warning, info
+- **Auto-dismiss** — Automatically disappears after 4 seconds
+- **Animation** — Slide in/out from the right
+- **Accessible** — `role="alert"`, `aria-live` applied
+
+## Basic Usage
+
+```tsx
+import { ToastContainer } from '@illog/ui'
+
+const [toasts, setToasts] = useState([])
+
+const addToast = (type, message) => {
+  setToasts(prev => [...prev, { id: crypto.randomUUID(), type, message }])
+}
+
+const removeToast = (id) => {
+  setToasts(prev => prev.filter(t => t.id !== id))
+}
+
+// Place at the app root
+<ToastContainer toasts={toasts} onRemove={removeToast} />
+
+// Usage
+<Button onClick={() => addToast('success', 'Saved successfully')}>Save</Button>
+<Button onClick={() => addToast('error', 'An error occurred')}>Error</Button>
+```
+
+## Toast Types
+
+| Type | Use Case | ARIA |
+|------|----------|------|
+| `success` | Success notification | `aria-live="polite"` |
+| `error` | Error notification | `aria-live="assertive"` |
+| `warning` | Warning notification | `aria-live="polite"` |
+| `info` | Informational notification | `aria-live="polite"` |
+
+## Components
+
+### ToastContainer
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `toasts` | `Array<{ id: string; type: ToastType; message: ReactNode }>` | **required** | Toast array |
+| `onRemove` | `(id: string) => void` | **required** | Toast remove callback |
+
+Position: top-right of screen (top: 16px, right: 16px). Returns null when there are no toasts.
+
+### ToastItem
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string` | **required** | Toast ID |
+| `type` | `ToastType` | **required** | Toast type |
+| `message` | `ReactNode` | **required** | Message content |
+| `onClose` | `(id: string) => void` | **required** | Close callback |
+
+## Behavior
+
+- **Enter**: Slide in from right, 200ms ease-out
+- **Exit**: Slide out to right, 150ms ease-in
+- **Auto-dismiss**: Automatically exits after 4000ms (4 seconds)
+- **Manual close**: Immediately exits on X button click
+
+## Guidelines
+
+- Place ToastContainer at the app root only once
+- Only error type uses `aria-live="assertive"` — screen readers announce it immediately
+- Use for short, clear notifications rather than long messages

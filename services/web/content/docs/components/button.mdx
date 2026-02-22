@@ -1,0 +1,95 @@
+---
+title: Button
+description: Basic interaction component to trigger user actions
+category: Components
+order: 1
+---
+
+## Overview
+
+Button triggers actions or events on click. Use it for form submissions, opening dialogs, executing operations, and more.
+
+## Variants
+
+<ComponentPreview>
+  <Button variant="primary">Primary</Button>
+  <Button variant="secondary">Secondary</Button>
+
+```tsx
+<Button variant="primary">Primary</Button>
+<Button variant="secondary">Secondary</Button>
+```
+</ComponentPreview>
+
+Use `primary` for the main action on a page, and `secondary` for supporting actions.
+
+## Sizes
+
+<ComponentPreview>
+  <Button variant="primary" size="sm">Small</Button>
+  <Button variant="primary" size="md">Medium</Button>
+  <Button variant="primary" size="lg">Large</Button>
+
+```tsx
+<Button variant="primary" size="sm">Small</Button>
+<Button variant="primary" size="md">Medium</Button>
+<Button variant="primary" size="lg">Large</Button>
+```
+</ComponentPreview>
+
+- **sm**: Suited for dense UIs or inline actions
+- **md**: Default. Suited for most use cases
+- **lg**: Suited for hero sections or primary CTAs
+
+## Full Width
+
+<ComponentPreview>
+  <Button variant="primary" isFullWidth>Full Width Button</Button>
+
+```tsx
+<Button variant="primary" isFullWidth>Full Width Button</Button>
+```
+</ComponentPreview>
+
+Use `isFullWidth` to make the button span the full width of its parent container. Useful for mobile layouts or form footers.
+
+## Disabled State
+
+<ComponentPreview>
+  <Button variant="primary" isDisabled>Primary Disabled</Button>
+  <Button variant="secondary" isDisabled>Secondary Disabled</Button>
+
+```tsx
+<Button variant="primary" isDisabled>Primary Disabled</Button>
+<Button variant="secondary" isDisabled>Secondary Disabled</Button>
+```
+</ComponentPreview>
+
+A disabled button indicates that the action is unavailable in the current state.
+
+## Props
+
+| Prop | Type | Default | Required | Description |
+|------|------|---------|----------|-------------|
+| `variant` | `'primary' \| 'secondary'` | - | Yes | Visual style of the button |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | No | Button size |
+| `isDisabled` | `boolean` | `false` | No | Whether the button is disabled |
+| `isFullWidth` | `boolean` | `false` | No | Whether to use full width |
+| `onClick` | `() => void` | - | No | Click handler |
+| `children` | `ReactNode` | - | Yes | Button content |
+| `className` | `string` | - | No | Additional CSS class |
+| `ariaLabel` | `string` | - | No | Accessibility label |
+
+## Usage Guidelines
+
+### Do
+
+- Use a primary button for the most important action on a page
+- Use secondary buttons for supporting or less important actions
+- Keep button labels concise and action-oriented
+
+### Don't
+
+- Don't use more than one primary button per section
+- Don't disable a button without explaining the reason
+- Don't use generic labels like "Click here"

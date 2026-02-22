@@ -1,0 +1,105 @@
+---
+title: ToggleMenu
+description: Segmented button group for single selection toggle
+category: Components
+order: 29
+---
+
+## Overview
+
+ToggleMenu is a **segmented button group**. It provides a toggle UI where only one option can be selected at a time.
+
+- **Compound** — Group + Item
+- **Icon + Label** — Can display icon only, label only, or both
+- **Two sizes** — small (28px), medium (32px)
+
+## Basic Usage
+
+```tsx
+import { ToggleMenu } from '@illog/ui'
+
+const items = [
+  { value: 'day', label: 'Day' },
+  { value: 'week', label: 'Week' },
+  { value: 'month', label: 'Month' },
+]
+
+<ToggleMenu.Group>
+  {items.map((item, index) => (
+    <ToggleMenu.Item
+      key={item.value}
+      item={item}
+      index={index}
+      value={selected}
+      onChange={setSelected}
+    />
+  ))}
+</ToggleMenu.Group>
+```
+
+## Icon Mode
+
+```tsx
+const viewItems = [
+  { value: 'list', icon: 'list' as IconName, ariaLabel: 'List view' },
+  { value: 'grid', icon: 'grid' as IconName, ariaLabel: 'Grid view' },
+  { value: 'calendar', icon: 'calendar' as IconName, ariaLabel: 'Calendar view' },
+]
+
+<ToggleMenu.Group>
+  {viewItems.map((item, index) => (
+    <ToggleMenu.Item
+      key={item.value}
+      item={item}
+      index={index}
+      value={view}
+      size="small"
+      onChange={setView}
+    />
+  ))}
+</ToggleMenu.Group>
+```
+
+## Sub-components
+
+### ToggleMenu.Group
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `children` | `ReactNode` | ToggleMenu.Item elements |
+
+Inline-based, border + rounded="200", overflow="hidden".
+
+### ToggleMenu.Item
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `item` | `ToggleGroupItem` | **required** | Item definition |
+| `index` | `number` | **required** | Item index (for divider rendering) |
+| `value` | `string` | **required** | Currently selected value |
+| `size` | `'small' \| 'medium'` | `'medium'` | Size |
+| `onChange` | `(value: string) => void` | **required** | Value change handler |
+
+### ToggleGroupItem Type
+
+```tsx
+type ToggleGroupItem<T extends string = string> = {
+  value: T          // Unique value
+  icon?: IconName   // Icon (optional)
+  label?: string    // Label (optional)
+  ariaLabel?: string // Accessibility label (falls back to label or value)
+}
+```
+
+## Sizes
+
+| Size | Dimensions |
+|------|------------|
+| `small` | 28 × 28 px |
+| `medium` | 32 × 32 px |
+
+## Guidelines
+
+- Use when there are 3 or fewer options — for more options, use BasicSelector
+- Always specify `ariaLabel` when using icons only
+- `index` is used for rendering vertical dividers between items

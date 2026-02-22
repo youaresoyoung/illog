@@ -1,0 +1,83 @@
+---
+title: Inline
+description: Horizontal layout container based on flexbox row
+category: Components
+order: 11
+---
+
+## Overview
+
+Inline is a **horizontal layout container**. `display: flex` and `flex-direction: row` are applied by default.
+
+- **Polymorphic** — Render as any HTML element via the `as` prop
+- **Interaction States** — Supports state-based styling with `_hover`, `_active`, `_focus`, etc.
+- **Sprinkles support** — All design token props available
+
+## Basic Usage
+
+```tsx
+import { Inline } from '@illog/ui'
+
+<Inline gap="400" align="center">
+  <Icon name="clock" />
+  <Text>10:30 AM</Text>
+</Inline>
+```
+
+## Alignment and Spacing
+
+```tsx
+// Space between
+<Inline justify="space-between" width="100%">
+  <Text>Left</Text>
+  <Text>Right</Text>
+</Inline>
+
+// Allow wrapping
+<Inline gap="300" wrap="wrap">
+  {tags.map(tag => <Tag key={tag.id} tag={tag} />)}
+</Inline>
+```
+
+## Interaction States
+
+```tsx
+<Inline
+  as="button"
+  gap="300"
+  p="400"
+  rounded="200"
+  bg="backgroundDefaultDefault"
+  _hover={{ bg: 'backgroundDefaultSecondary' }}
+  _active={{ bg: 'backgroundDefaultTertiary' }}
+  _disabled={{ bg: 'backgroundDisabledDefault' }}
+  isDisabled={disabled}
+>
+  <Icon name="plus" />
+  <Text>Add item</Text>
+</Inline>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `as` | `ElementType` | `'div'` | HTML element to render |
+| `gap` | `Sprinkles['gap']` | — | Gap between child elements |
+| `align` | `Sprinkles['alignItems']` | — | Cross-axis alignment |
+| `justify` | `Sprinkles['justifyContent']` | — | Main-axis alignment |
+| `wrap` | `Sprinkles['flexWrap']` | `'nowrap'` | Whether to wrap |
+| `_hover` | `object` | — | Hover state styles |
+| `_active` | `object` | — | Active state styles |
+| `_focus` | `object` | — | Focus state styles |
+| `_focusVisible` | `object` | — | Focus-visible state styles |
+| `_disabled` | `object` | — | Disabled state styles |
+| `isActive` | `boolean` | — | Force active state |
+| `isDisabled` | `boolean` | — | Force disabled state |
+| `...sprinkles` | `Sprinkles` | — | Design token props |
+
+## Guidelines
+
+- Use Inline for horizontal layouts and Stack for vertical layouts
+- Inline can also be used for simple layouts without interaction states
+- Combining `wrap="wrap"` with `gap` creates an auto-wrapping layout

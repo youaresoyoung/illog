@@ -1,0 +1,189 @@
+---
+title: TagSelector
+description: Tag-based multi-select compound component with built-in search and CRUD
+category: Components
+order: 7
+---
+
+## Overview
+
+TagSelector is a compound component for tag-based multi-selection. It has built-in search, create, edit, and delete functionality.
+
+## Features
+
+- Tag search and filtering
+- Inline tag creation
+- Tag edit/delete
+- Keyboard navigation
+- Close on outside click
+- Customizable trigger
+- TypeScript support
+
+## Anatomy
+
+```tsx
+import { TagSelector } from '@illog/ui'
+
+<TagSelector.Root
+  tags={tags}
+  selectedTags={selectedTags}
+  onAddTag={handleAddTag}
+  onRemoveTag={handleRemoveTag}
+  onCreateTag={handleCreateTag}
+  onDeleteTag={handleDeleteTag}
+  onUpdateTag={handleUpdateTag}
+>
+  <TagSelector.Trigger>
+    {/* Custom trigger button */}
+  </TagSelector.Trigger>
+
+  <TagSelector.Content>
+    <TagSelector.Search />
+    <TagSelector.List />
+  </TagSelector.Content>
+</TagSelector.Root>
+```
+
+## API Reference
+
+### Root
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `tags` | `Tag[]` | Yes | All available tags |
+| `selectedTags` | `Tag[]` | Yes | Currently selected tags |
+| `onAddTag` | `(tag: Tag) => void` | Yes | Tag select handler |
+| `onRemoveTag` | `(tagId: string) => void` | Yes | Tag deselect handler |
+| `onCreateTag` | `(name: string, color: string) => void` | Yes | Tag create handler |
+| `onDeleteTag` | `(tagId: string) => void` | Yes | Tag delete handler |
+| `onUpdateTag` | `(tagId: string, updates: Tag) => void` | Yes | Tag update handler |
+| `className` | `string` | No | CSS class |
+| `maxTagLength` | `number` | No | Max tag name length (default: 10) |
+| `emptyMessage` | `string` | No | Message when no search results |
+| `createTagLabel` | `string` | No | Create button label (default: "Create Tag") |
+| `manageTagsLabel` | `string` | No | Manage button label (default: "Manage Tags") |
+| `children` | `ReactNode` | Yes | Must include Trigger and Content |
+
+### Trigger
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `asChild` | `boolean` | No | Merge props with child element (default: true) |
+| `children` | `ReactNode` | Yes | Trigger content |
+
+**Data Attributes:** `data-state`: "open" \| "closed"
+
+### Content
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `children` | `ReactNode` | Yes | Usually Search and List |
+
+### Search
+
+| Prop | Type | Required | Description |
+|------|------|----------|-------------|
+| `placeholder` | `string` | No | Placeholder text (default: "Search...") |
+
+### List
+
+No props. Renders the filtered tag list.
+
+## Examples
+
+### Custom Trigger
+
+```tsx
+<TagSelector.Root {...handlers}>
+  <TagSelector.Trigger asChild>
+    <button className="my-custom-button">
+      {selectedTags.length > 0
+        ? `${selectedTags.length} tags`
+        : 'Select tags'}
+    </button>
+  </TagSelector.Trigger>
+  {/* ... */}
+</TagSelector.Root>
+```
+
+### With Custom Labels
+
+```tsx
+<TagSelector.Root
+  tags={tags}
+  selectedTags={selectedTags}
+  createTagLabel="Create New"
+  manageTagsLabel="Edit Tags"
+  maxTagLength={15}
+  emptyMessage="No tags found."
+  {...handlers}
+>
+  {/* ... */}
+</TagSelector.Root>
+```
+
+## Accessibility
+
+### Keyboard Interactions
+
+| Key | Action |
+|-----|--------|
+| `Enter` | Toggle tag selection / create new tag (while searching) |
+| `Backspace` | Remove last selected tag (when search is empty) |
+| `Escape` | Close dropdown |
+| `Space` (trigger) | Toggle dropdown |
+| `Enter` (trigger) | Toggle dropdown |
+
+### ARIA
+
+- **Trigger**: `aria-expanded`, `aria-haspopup="listbox"`
+- **Search**: `role="searchbox"`, `aria-label`
+- **List**: Proper tag button semantics
+
+### Focus Management
+
+- Focus returns to trigger when dropdown closes
+- Auto-focuses search input when dropdown opens
+- Full keyboard navigation without mouse
+
+## Custom API
+
+### useTagSelectorContext
+
+```tsx
+import { useTagSelectorContext } from '@illog/ui'
+
+function CustomTagList() {
+  const {
+    tags, selectedTags, searchTerm, isOpen,
+    filteredTags, isTagSelected,
+    selectTag, removeTag, createTag, deleteTag, updateTag,
+    setSearchTerm, setIsOpen,
+    maxTagLength, emptyMessage, createTagLabel, manageTagsLabel,
+  } = useTagSelectorContext()
+
+  return (
+    <div>
+      {filteredTags.map((tag) => (
+        <button key={tag.id} onClick={() => selectTag(tag)}>
+          {isTagSelected(tag.id) ? '✓ ' : ''}{tag.name}
+        </button>
+      ))}
+    </div>
+  )
+}
+```
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `tags` | `Tag[]` | All tags |
+| `selectedTags` | `Tag[]` | Selected tags |
+| `searchTerm` | `string` | Current search term |
+| `isOpen` | `boolean` | Dropdown open state |
+| `filteredTags` | `Tag[]` | Tags matching search |
+| `isTagSelected` | `(tagId: string) => boolean` | Check if tag is selected |
+| `selectTag` | `(tag: Tag) => void` | Add tag to selection |
+| `removeTag` | `(tagId: string) => void` | Remove tag from selection |
+| `createTag` | `(name: string, color: string) => void` | Create new tag |
+| `deleteTag` | `(tagId: string) => void` | Delete tag |
+| `updateTag` | `(tagId: string, updates: Tag) => void` | Update tag |

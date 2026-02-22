@@ -1,0 +1,128 @@
+---
+title: SortableTable
+description: Sortable data table with generic type safety
+category: Components
+order: 21
+---
+
+## Overview
+
+SortableTable is a **sortable data table**. It provides complete type safety with TypeScript generics.
+
+- **Generic** — Define data and field types with `<T, F>`
+- **Sortable** — Supports string (localeCompare), number, date, and null
+- **Controlled/Uncontrolled** — `sortState` or `defaultSort`
+- **Accessible** — `aria-sort` attribute, keyboard sorting support
+
+## Basic Usage
+
+```tsx
+import { SortableTable } from '@illog/ui'
+
+type Task = { id: string; title: string; createdAt: Date; priority: number }
+type Field = 'title' | 'createdAt' | 'priority'
+
+<SortableTable<Task, Field>
+  data={tasks}
+  columns={[
+    {
+      field: 'title',
+      header: 'Title',
+      render: (task) => <Text>{task.title}</Text>,
+    },
+    {
+      field: 'createdAt',
+      header: 'Created',
+      render: (task) => <Text>{formatDate(task.createdAt)}</Text>,
+      getSortValue: (task) => task.createdAt,
+    },
+    {
+      field: 'priority',
+      header: 'Priority',
+      render: (task) => <Text>{task.priority}</Text>,
+      headerAlign: 'center',
+      cellAlign: 'center',
+      width: 100,
+    },
+  ]}
+/>
+```
+
+## Controlled Sorting
+
+```tsx
+const [sort, setSort] = useState<SortState<Field>>({
+  field: 'createdAt',
+  direction: 'desc',
+})
+
+<SortableTable
+  data={tasks}
+  columns={columns}
+  sortState={sort}
+  onSortChange={setSort}
+/>
+```
+
+## Empty State
+
+```tsx
+<SortableTable
+  data={[]}
+  columns={columns}
+  emptyMessage="No tasks found"
+/>
+
+// Custom empty state
+<SortableTable
+  data={[]}
+  columns={columns}
+  emptyState={
+    <Center p="800">
+      <Stack align="center" gap="300">
+        <Icon name="inbox" size="lg" />
+        <Text>No data available</Text>
+      </Stack>
+    </Center>
+  }
+/>
+```
+
+## Column Definition
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `field` | `F` | **required** | Unique field key |
+| `header` | `ReactNode` | **required** | Header content |
+| `render` | `(item: T, index: number) => ReactNode` | **required** | Cell renderer |
+| `sortable` | `boolean` | `true` | Whether sortable |
+| `getSortValue` | `(item: T) => string \| number \| Date \| null` | — | Custom sort value extractor |
+| `headerAlign` | `'left' \| 'center' \| 'right'` | `'left'` | Header alignment |
+| `cellAlign` | `'left' \| 'center' \| 'right'` | `'left'` | Cell alignment |
+| `width` | `string \| number` | — | Column width |
+
+## Table Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `data` | `T[]` | **required** | Data array |
+| `columns` | `SortableTableColumn<T, F>[]` | **required** | Column definitions |
+| `getRowId` | `(item: T, index: number) => string` | `item.id \|\| index` | Row key |
+| `defaultSort` | `SortState<F>` | — | Default sort (uncontrolled) |
+| `sortState` | `SortState<F>` | — | Sort state (controlled) |
+| `onSortChange` | `(sort: SortState<F>) => void` | — | Sort change callback |
+| `emptyState` | `ReactNode` | — | Custom empty state |
+| `emptyMessage` | `ReactNode` | `'No data found'` | Default empty message |
+
+## Sort Behavior
+
+- Clicking the same column: toggles `asc` ↔ `desc`
+- Clicking a different column: starts with `desc`
+- Null values are always sorted last
+- Keyboard: toggle sort with Enter/Space
+
+## Guidelines
+
+- Without `getSortValue`, sorting cannot be applied based on raw data instead of `render` output
+- Always specify `getSortValue` for date columns
+- Use `sortable: false` to exclude columns where sorting is meaningless (e.g., action buttons)
