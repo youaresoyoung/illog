@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "pnpm run generate:llms && next build",
+    "build": "next build",
+    "build:with-llms": "pnpm run generate:llms && next build",
     "generate:llms": "node --import tsx scripts/generate-llms-txt.ts",
     "start": "next start",
     "lint": "eslint"
