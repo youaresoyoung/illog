@@ -2,7 +2,6 @@ import { Outlet } from 'react-router'
 import { LeftPanel } from './LeftPanel'
 import { MainContent } from './MainContent'
 import { RightPanel } from './RightPanel'
-// import { useUIStoreState, useUIStoreActions } from '../../stores/useUIStore'
 import { Box, Overlay } from '@illog/ui'
 import { useUIStore } from '../../stores/useUIStore'
 

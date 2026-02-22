@@ -31,9 +31,9 @@ export const TimePickerInput = ({
     padding: '6px 10px',
     borderRadius: '4px',
     cursor: 'pointer',
-    backgroundColor: '#f7f7f7',
+    backgroundColor: 'var(--background-default-secondary)',
     fontSize: '14px',
-    color: date ? '#37352f' : '#9b9a97',
+    color: date ? 'var(--text-default-default)' : 'var(--text-default-tertiary)',
     transition: 'background-color 0.15s ease',
     minWidth: '80px',
     ...style
@@ -45,8 +45,12 @@ export const TimePickerInput = ({
         className={className}
         style={defaultStyle}
         onClick={handleClick}
-        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#eeeeee')}
-        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#f7f7f7')}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.backgroundColor = 'var(--background-default-secondary-hover)')
+        }
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.backgroundColor = 'var(--background-default-secondary)')
+        }
       >
         {date ? formatTime(date) : placeholder}
       </div>

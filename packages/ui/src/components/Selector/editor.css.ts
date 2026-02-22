@@ -23,6 +23,7 @@ export const nameInput = style({
   alignItems: 'center',
   flexWrap: 'wrap',
   gap: tokens.size.space[200],
+  color: textColors.textDefaultDefault,
   ...styles.text.bodySmall,
   padding: tokens.size.space[200],
   borderRadius: tokens.size.radius[100],
@@ -67,6 +68,7 @@ export const colorItem = style({
   padding: `${tokens.size.space[100]}px ${tokens.size.space[200]}px`,
   borderRadius: tokens.size.radius[200],
   transition: 'background 0.2s',
+  color: textColors.textDefaultDefault,
   selectors: {
     '&:hover': {
       backgroundColor: backgroundColors.backgroundDefaultDefaultHover

@@ -15,7 +15,7 @@ export const TimePickerDateRange = ({ className, style }: TimePickerDateRangePro
 
   const defaultStyle: React.CSSProperties = {
     fontSize: '12px',
-    color: '#787774',
+    color: 'var(--text-default-secondary)',
     ...style
   }
 

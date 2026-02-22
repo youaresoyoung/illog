@@ -85,6 +85,6 @@ export const closeButton = style({
   padding: 0,
   ':hover': {
     opacity: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.08)'
+    backgroundColor: 'var(--background-default-secondary-hover)'
   }
 })

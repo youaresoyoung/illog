@@ -277,5 +277,37 @@ pre::-webkit-scrollbar {
 }
 
 pre::-webkit-scrollbar-thumb {
-  background: #999;
+  background: var(--text-default-tertiary);
+}
+
+.theme-dark .editor__token-comment {
+  color: #8b949e;
+}
+
+.theme-dark .editor__token-punctuation {
+  color: #b3b3b3;
+}
+
+.theme-dark .editor__token-property {
+  color: #f47067;
+}
+
+.theme-dark .editor__token-selector {
+  color: #7ee787;
+}
+
+.theme-dark .editor__token-operator {
+  color: #d2a8ff;
+}
+
+.theme-dark .editor__token-attr {
+  color: #79c0ff;
+}
+
+.theme-dark .editor__token-variable {
+  color: #ffa657;
+}
+
+.theme-dark .editor__token-function {
+  color: #ff7b72;
 }
