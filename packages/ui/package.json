@@ -20,6 +20,9 @@
     "build:prod": "pnpm run build:tsc && NODE_ENV=production pnpm run build:esbuild",
     "build:icons": "tsx ./scripts/generate-icons.ts",
     "build:color": "tsx ./scripts/generate-color-objects.ts",
+    "gen:spec": "tsx ./scripts/generate-component-spec.ts",
+    "gen:llms": "tsx ./scripts/generate-llms-full.ts",
+    "gen:ai-context": "pnpm run gen:spec && pnpm run gen:llms",
     "test": "vitest run",
     "test:watch": "vitest --watch"
   },

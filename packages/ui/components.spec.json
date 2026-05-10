@@ -1,0 +1,2447 @@
+{
+  "generatedAt": "2026-05-10T18:01:28.170Z",
+  "componentCount": 28,
+  "components": [
+    {
+      "name": "Badge",
+      "path": "src/components/Badge",
+      "valueExports": ["Badge"],
+      "typeExports": ["BadgeItem", "OmittedBadgeItem", "BadgeColor", "BadgeProps"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "BadgeProps",
+          "props": [
+            {
+              "name": "item",
+              "type": "BadgeItem | OmittedBadgeItem",
+              "optional": false
+            },
+            {
+              "name": "addButtonVariant",
+              "type": "'default' | 'error'",
+              "optional": true
+            },
+            {
+              "name": "isOpenedSelector",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "withoutIcon",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "openSelector",
+              "type": "(e: MouseEvent<HTMLButtonElement>) => void",
+              "optional": true
+            },
+            {
+              "name": "onRemove",
+              "type": "() => void",
+              "optional": true
+            }
+          ],
+          "extendsDom": "HTMLAttributes<HTMLSpanElement>",
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "BadgeSelector",
+      "path": "src/components/Selector/BadgeSelector",
+      "valueExports": ["BadgeSelector"],
+      "typeExports": [],
+      "hookExports": ["useBadgeSelectorContext"],
+      "propTypes": [
+        {
+          "name": "Props",
+          "props": [
+            {
+              "name": "item",
+              "type": "BadgeItem",
+              "optional": false
+            },
+            {
+              "name": "onDelete",
+              "type": "(itemId: string) => Promise<void>",
+              "optional": false
+            },
+            {
+              "name": "onChange",
+              "type": "(itemId: string, contents: Partial<OmittedBadgeItem>) => Promise<void>",
+              "optional": false
+            },
+            {
+              "name": "onCloseEditor",
+              "type": "() => void",
+              "optional": false
+            }
+          ],
+          "exported": false,
+          "source": "BadgeEditor.tsx"
+        },
+        {
+          "name": "ContentProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "exported": false,
+          "source": "Content.tsx"
+        },
+        {
+          "name": "RootProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "items",
+              "type": "BadgeItem[]",
+              "optional": false
+            },
+            {
+              "name": "selectedItem",
+              "type": "BadgeItem | null",
+              "optional": false
+            },
+            {
+              "name": "maxNameLength",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "onSelectItem",
+              "type": "(itemId: string) => Promise<void>",
+              "optional": false
+            },
+            {
+              "name": "onClearItem",
+              "type": "() => Promise<void>",
+              "optional": false
+            },
+            {
+              "name": "onCreateItem",
+              "type": "(data: Partial<OmittedBadgeItem>) => Promise<string>",
+              "optional": false
+            },
+            {
+              "name": "onDeleteItem",
+              "type": "(itemId: string) => Promise<void>",
+              "optional": false
+            },
+            {
+              "name": "onUpdateItem",
+              "type": "(itemId: string, data: Partial<OmittedBadgeItem>) => Promise<void>",
+              "optional": false
+            }
+          ],
+          "exported": false,
+          "source": "Root.tsx"
+        },
+        {
+          "name": "SearchProps",
+          "props": [
+            {
+              "name": "placeholder",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "maxLength",
+              "type": "number",
+              "optional": true
+            }
+          ],
+          "exported": false,
+          "source": "Search.tsx"
+        },
+        {
+          "name": "TriggerProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "asChild",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            }
+          ],
+          "exported": false,
+          "source": "Trigger.tsx"
+        }
+      ],
+      "compoundParts": ["BadgeEditor", "BadgeList", "Content", "List", "Root", "Search", "Trigger"],
+      "hasTest": false,
+      "hasStory": false
+    },
+    {
+      "name": "BasicSelector",
+      "path": "src/components/Selector/BasicSelector",
+      "valueExports": ["BasicSelector"],
+      "typeExports": [],
+      "hookExports": ["useBasicSelectorContext"],
+      "propTypes": [
+        {
+          "name": "BasicSelectorRootProps",
+          "props": [
+            {
+              "name": "value",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "defaultValue",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "isOpened",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "isDefaultOpen",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "disabled",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "onValueChange",
+              "type": "(value: string) => void",
+              "optional": true
+            },
+            {
+              "name": "onOpenChange",
+              "type": "(open: boolean) => void",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "BasicSelectorContentProps",
+          "props": [
+            {
+              "name": "position",
+              "type": "'item-aligned' | 'popover'",
+              "optional": true
+            },
+            {
+              "name": "side",
+              "type": "'top' | 'bottom' | 'left' | 'right'",
+              "optional": true
+            },
+            {
+              "name": "align",
+              "type": "'start' | 'center' | 'end'",
+              "optional": true
+            },
+            {
+              "name": "sideOffset",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "React.CSSProperties",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "BasicSelectorViewportProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "BasicSelectorTriggerProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "ariaLabel",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "BasicSelectorItemProps",
+          "props": [
+            {
+              "name": "value",
+              "type": "string",
+              "optional": false
+            },
+            {
+              "name": "disabled",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "React.CSSProperties",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "BasicSelectorValueProps",
+          "props": [
+            {
+              "name": "placeholder",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "(value: string) => ReactNode",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": ["Content", "Item", "Root", "Trigger", "Value", "Viewport"],
+      "hasTest": false,
+      "hasStory": false
+    },
+    {
+      "name": "Box",
+      "path": "src/components/Box",
+      "valueExports": ["Box"],
+      "typeExports": ["BoxProps"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "BoxOwnProps",
+          "props": [],
+          "exported": false,
+          "source": "types.ts"
+        },
+        {
+          "name": "BoxProps",
+          "props": [],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": true,
+      "storyPath": "../../services/storybook/stories/UI/Box"
+    },
+    {
+      "name": "Button",
+      "path": "src/components/Button",
+      "valueExports": ["Button"],
+      "typeExports": ["ButtonProps"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "ButtonProps",
+          "props": [
+            {
+              "name": "variant",
+              "type": "'primary' | 'secondary'",
+              "optional": false
+            },
+            {
+              "name": "size",
+              "type": "'sm' | 'md' | 'lg'",
+              "optional": true
+            },
+            {
+              "name": "isDisabled",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "onClick",
+              "type": "() => void",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "isFullWidth",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "ariaLabel",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "ref",
+              "type": "Ref<HTMLButtonElement>",
+              "optional": true
+            }
+          ],
+          "extendsDom": "ButtonHTMLAttributes<HTMLButtonElement>",
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": true,
+      "storyPath": "../../services/storybook/stories/UI/Button"
+    },
+    {
+      "name": "Calendar",
+      "path": "src/components/Calendar",
+      "valueExports": [
+        "Calendar",
+        "formatHour",
+        "formatTimeLabel",
+        "getMinutesFromMidnight",
+        "DEFAULT_HOUR_HEIGHT",
+        "DEFAULT_GUTTER_WIDTH"
+      ],
+      "typeExports": [
+        "TimeGridProps",
+        "TimeCellProps",
+        "TimeCellColor",
+        "DayColumnHeader",
+        "DayColumnHeadersProps"
+      ],
+      "hookExports": ["useCurrentTime"],
+      "propTypes": [
+        {
+          "name": "TimeCellProps",
+          "props": [
+            {
+              "name": "id",
+              "type": "string",
+              "optional": false
+            },
+            {
+              "name": "title",
+              "type": "string",
+              "optional": false
+            },
+            {
+              "name": "subtitle",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "caption",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "color",
+              "type": "TimeCellColor",
+              "optional": false
+            },
+            {
+              "name": "top",
+              "type": "number",
+              "optional": false
+            },
+            {
+              "name": "height",
+              "type": "number",
+              "optional": false
+            },
+            {
+              "name": "left",
+              "type": "string",
+              "optional": false
+            },
+            {
+              "name": "width",
+              "type": "string",
+              "optional": false
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": true
+            },
+            {
+              "name": "titleFontSize",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "subtitleFontSize",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "onClick",
+              "type": "() => void",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "DayColumnHeadersProps",
+          "props": [
+            {
+              "name": "days",
+              "type": "DayColumnHeader[]",
+              "optional": false
+            },
+            {
+              "name": "gutterWidth",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "height",
+              "type": "number",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "TimeGridProps",
+          "props": [
+            {
+              "name": "columns",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "hourHeight",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "gutterWidth",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "scrollHeight",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "showCurrentTime",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "currentTimeColumn",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "header",
+              "type": "ReactNode",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "HourRowProps",
+          "props": [
+            {
+              "name": "hour",
+              "type": "number",
+              "optional": false
+            },
+            {
+              "name": "hourHeight",
+              "type": "number",
+              "optional": false
+            },
+            {
+              "name": "gutterWidth",
+              "type": "number",
+              "optional": false
+            },
+            {
+              "name": "columns",
+              "type": "number",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "CurrentTimeIndicatorProps",
+          "props": [
+            {
+              "name": "nowMinutes",
+              "type": "number",
+              "optional": false
+            },
+            {
+              "name": "hourHeight",
+              "type": "number",
+              "optional": false
+            },
+            {
+              "name": "gutterWidth",
+              "type": "number",
+              "optional": false
+            },
+            {
+              "name": "columns",
+              "type": "number",
+              "optional": false
+            },
+            {
+              "name": "currentTimeColumn",
+              "type": "number",
+              "optional": false
+            },
+            {
+              "name": "timeLabel",
+              "type": "string",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": ["DayColumnHeaders", "TimeCell", "TimeGrid"],
+      "hasTest": false,
+      "hasStory": false
+    },
+    {
+      "name": "Card",
+      "path": "src/components/Card",
+      "valueExports": ["Card"],
+      "typeExports": [],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "CardProps",
+          "props": [
+            {
+              "name": "onClick",
+              "type": "(e: MouseEvent<HTMLElement>) => void",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "Center",
+      "path": "src/components/Center",
+      "valueExports": ["Center"],
+      "typeExports": ["CenterProps"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "CenterOwnProps",
+          "props": [],
+          "exported": false,
+          "source": "types.ts"
+        },
+        {
+          "name": "CenterProps",
+          "props": [],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "ContextMenu",
+      "path": "src/components/ContextMenu",
+      "valueExports": ["ContextMenu"],
+      "typeExports": [
+        "ContextMenuContextValue",
+        "ContextMenuRootProps",
+        "ContextMenuContentProps",
+        "ContextMenuItemProps"
+      ],
+      "hookExports": ["useContextMenuContext"],
+      "propTypes": [
+        {
+          "name": "ContextMenuRootProps",
+          "props": [
+            {
+              "name": "modal",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "onOpenChange",
+              "type": "(isOpen: boolean) => void",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "ContextMenuTriggerProps",
+          "props": [
+            {
+              "name": "isDisabled",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "ContextMenuContentProps",
+          "props": [
+            {
+              "name": "alignOffset",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "isLoop",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "onEscapeKeyDown",
+              "type": "(event: KeyboardEvent) => void",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "ContextMenuItemProps",
+          "props": [
+            {
+              "name": "isDisabled",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "textValue",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "onSelect",
+              "type": "() => void",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "ContextMenuSubRootProps",
+          "props": [
+            {
+              "name": "isOpen",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "isDefaultOpen",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "onOpenChange",
+              "type": "(isOpen: boolean) => void",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "ContextMenuSubTriggerProps",
+          "props": [
+            {
+              "name": "isDisabled",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "textValue",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "ContextMenuSubContentProps",
+          "props": [
+            {
+              "name": "isLoop",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "sideOffset",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "alignOffset",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "onEscapeKeyDown",
+              "type": "(event: KeyboardEvent) => void",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": ["Content", "Item", "Root", "Sub", "Trigger"],
+      "hasTest": false,
+      "hasStory": false
+    },
+    {
+      "name": "Dialog",
+      "path": "src/components/Dialog",
+      "valueExports": ["Dialog"],
+      "typeExports": [],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "DialogProps",
+          "props": [
+            {
+              "name": "isOpen",
+              "type": "boolean",
+              "optional": false
+            },
+            {
+              "name": "onClose",
+              "type": "() => void",
+              "optional": false
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "role",
+              "type": "'dialog' | 'alertdialog'",
+              "optional": true
+            },
+            {
+              "name": "ariaLabel",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "ariaDescribedby",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "DialogTitleProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "DialogContentProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "DialogDescriptionProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "DialogFooterProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": ["DialogContent", "DialogDescription", "DialogFooter", "DialogTitle"],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "Divider",
+      "path": "src/components/Divider",
+      "valueExports": ["Divider"],
+      "typeExports": [],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "DividerProps",
+          "props": [
+            {
+              "name": "orientation",
+              "type": "'horizontal' | 'vertical'",
+              "optional": true
+            },
+            {
+              "name": "variant",
+              "type": "'solid' | 'dashed'",
+              "optional": true
+            },
+            {
+              "name": "color",
+              "type": "'default'",
+              "optional": true
+            },
+            {
+              "name": "thickness",
+              "type": "'thin'",
+              "optional": true
+            }
+          ],
+          "extendsDom": "HTMLAttributes<HTMLDivElement>",
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "DonutChart",
+      "path": "src/components/DonutChart",
+      "valueExports": ["DonutChart"],
+      "typeExports": ["DonutChartProps", "DonutChartSegment"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "DonutChartProps",
+          "props": [
+            {
+              "name": "segments",
+              "type": "DonutChartSegment[]",
+              "optional": false
+            },
+            {
+              "name": "size",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "innerRatio",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "startAngle",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "defaultStrokeWidth",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "emptyFill",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "emptyStroke",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "onSegmentClick",
+              "type": "(segment: DonutChartSegment, index: number) => void",
+              "optional": true
+            },
+            {
+              "name": "segmentKey",
+              "type": "(segment: DonutChartSegment, index: number) => string",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "HorizontalBar",
+      "path": "src/components/HorizontalBar",
+      "valueExports": ["HorizontalBar"],
+      "typeExports": ["HorizontalBarProps"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "HorizontalBarProps",
+          "props": [
+            {
+              "name": "value",
+              "type": "number",
+              "optional": false
+            },
+            {
+              "name": "min",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "max",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "height",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "radius",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "fillColor",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "trackColor",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "isAnimated",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "trackStyle",
+              "type": "CSSProperties",
+              "optional": true
+            },
+            {
+              "name": "fillStyle",
+              "type": "CSSProperties",
+              "optional": true
+            },
+            {
+              "name": "ariaLabel",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "extendsDom": "Omit<HTMLAttributes<HTMLDivElement>, 'children'>",
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "Icon",
+      "path": "src/components/Icon",
+      "valueExports": ["Icon", "IconNameOptions"],
+      "typeExports": ["IconName"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "IconProps",
+          "props": [
+            {
+              "name": "name",
+              "type": "IconName",
+              "optional": false
+            },
+            {
+              "name": "size",
+              "type": "keyof typeof tokens.size.icon",
+              "optional": true
+            },
+            {
+              "name": "color",
+              "type": "keyof typeof iconColors | keyof typeof textColors",
+              "optional": true
+            },
+            {
+              "name": "rotate",
+              "type": "number",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "Icon.tsx"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": true,
+      "storyPath": "../../services/storybook/stories/UI/Icon"
+    },
+    {
+      "name": "Inline",
+      "path": "src/components/Inline",
+      "valueExports": ["Inline"],
+      "typeExports": ["InlineProps"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "InlineOwnProps",
+          "props": [
+            {
+              "name": "gap",
+              "type": "Sprinkles['gap']",
+              "optional": true
+            },
+            {
+              "name": "align",
+              "type": "Sprinkles['alignItems']",
+              "optional": true
+            },
+            {
+              "name": "justify",
+              "type": "Sprinkles['justifyContent']",
+              "optional": true
+            },
+            {
+              "name": "wrap",
+              "type": "Sprinkles['flexWrap']",
+              "optional": true
+            }
+          ],
+          "exported": false,
+          "source": "types.ts"
+        },
+        {
+          "name": "InlineProps",
+          "props": [],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "Input",
+      "path": "src/components/Input",
+      "valueExports": ["Input"],
+      "typeExports": [],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "InputProps",
+          "props": [
+            {
+              "name": "size",
+              "type": "'sm' | 'md' | 'lg'",
+              "optional": true
+            },
+            {
+              "name": "variant",
+              "type": "'default' | 'error' | 'success'",
+              "optional": true
+            },
+            {
+              "name": "isFullWidth",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "isDisabled",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "errorMessage",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "onChange",
+              "type": "(e: ChangeEvent<HTMLInputElement>) => void",
+              "optional": true
+            },
+            {
+              "name": "ref",
+              "type": "Ref<HTMLInputElement>",
+              "optional": true
+            }
+          ],
+          "extendsDom": "InputHTMLAttributes<HTMLInputElement>",
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "Navigation",
+      "path": "src/components/Navigation",
+      "valueExports": ["Navigation"],
+      "typeExports": ["ItemRenderProps", "MatchStrategy"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "ItemRenderProps",
+          "props": [
+            {
+              "name": "isActive",
+              "type": "boolean",
+              "optional": false
+            },
+            {
+              "name": "isPending",
+              "type": "boolean",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "ContainerProps",
+          "props": [
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "ListProps",
+          "props": [
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "match",
+              "type": "MatchStrategy",
+              "optional": true,
+              "description": "URL matching strategy for all items in this list"
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "ItemProps",
+          "props": [
+            {
+              "name": "to",
+              "type": "string",
+              "optional": false,
+              "description": "Navigation destination (also used for active state matching)"
+            },
+            {
+              "name": "iconName",
+              "type": "IconName",
+              "optional": true,
+              "description": "Optional icon name (only used when children is not a function)"
+            },
+            {
+              "name": "children",
+              "type": "ReactNode | ((props: ItemRenderProps) => ReactNode)",
+              "optional": false,
+              "description": "Item content - can be ReactNode or render function"
+            },
+            {
+              "name": "className",
+              "type": "string | ((props: ItemRenderProps) => string)",
+              "optional": true,
+              "description": "className - can be string or function"
+            },
+            {
+              "name": "style",
+              "type": "React.CSSProperties | ((props: ItemRenderProps) => React.CSSProperties)",
+              "optional": true,
+              "description": "style - can be object or function"
+            },
+            {
+              "name": "onClick",
+              "type": "(e: React.MouseEvent) => void",
+              "optional": true,
+              "description": "Click handler"
+            },
+            {
+              "name": "disabled",
+              "type": "boolean",
+              "optional": true,
+              "description": "Disabled state"
+            },
+            {
+              "name": "'aria-label'",
+              "type": "string",
+              "optional": true,
+              "description": "Accessible label"
+            },
+            {
+              "name": "match",
+              "type": "MatchStrategy",
+              "optional": true,
+              "description": "URL matching strategy"
+            },
+            {
+              "name": "end",
+              "type": "boolean",
+              "optional": true,
+              "description": "Match when URL ends with this path (for hash routing, etc.)"
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": ["Container", "Item", "List"],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "Overlay",
+      "path": "src/components/Overlay",
+      "valueExports": ["Overlay"],
+      "typeExports": ["OverlayProps", "OverlayAnimation"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "OverlayProps",
+          "props": [
+            {
+              "name": "isOpen",
+              "type": "boolean",
+              "optional": false
+            },
+            {
+              "name": "onClose",
+              "type": "() => void",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "backgroundOpacity",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "disableBackdropClick",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "disableEscapeKey",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "zIndex",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "backdropClassName",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "contentClassName",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "animationDuration",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "animation",
+              "type": "OverlayAnimation",
+              "optional": true
+            },
+            {
+              "name": "ariaLabel",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "container",
+              "type": "Element | DocumentFragment",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": true,
+      "storyPath": "../../services/storybook/stories/UI/Overlay"
+    },
+    {
+      "name": "Portal",
+      "path": "src/components/Portal",
+      "valueExports": ["Portal"],
+      "typeExports": [],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "PortalProps",
+          "props": [],
+          "exported": true,
+          "source": "Portal.tsx"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "SortableTable",
+      "path": "src/components/SortableTable",
+      "valueExports": ["SortableTable"],
+      "typeExports": ["SortableTableProps", "SortableTableColumn", "SortDirection", "SortState"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "SortableTableProps",
+          "props": [
+            {
+              "name": "data",
+              "type": "T[]",
+              "optional": false
+            },
+            {
+              "name": "columns",
+              "type": "SortableTableColumn<T, F>[]",
+              "optional": false
+            },
+            {
+              "name": "getRowId",
+              "type": "(item: T, index: number) => string",
+              "optional": true
+            },
+            {
+              "name": "defaultSort",
+              "type": "SortState<F>",
+              "optional": true
+            },
+            {
+              "name": "sortState",
+              "type": "SortState<F>",
+              "optional": true
+            },
+            {
+              "name": "onSortChange",
+              "type": "(nextSort: SortState<F>) => void",
+              "optional": true
+            },
+            {
+              "name": "emptyState",
+              "type": "ReactNode",
+              "optional": true
+            },
+            {
+              "name": "emptyMessage",
+              "type": "ReactNode",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "Stack",
+      "path": "src/components/Stack",
+      "valueExports": ["Stack"],
+      "typeExports": ["StackProps"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "StackOwnProps",
+          "props": [
+            {
+              "name": "direction",
+              "type": "'column' | 'column-reverse'",
+              "optional": true
+            },
+            {
+              "name": "gap",
+              "type": "Sprinkles['gap']",
+              "optional": true
+            },
+            {
+              "name": "align",
+              "type": "Sprinkles['alignItems']",
+              "optional": true
+            },
+            {
+              "name": "justify",
+              "type": "Sprinkles['justifyContent']",
+              "optional": true
+            },
+            {
+              "name": "wrap",
+              "type": "Sprinkles['flexWrap']",
+              "optional": true
+            }
+          ],
+          "exported": false,
+          "source": "types.ts"
+        },
+        {
+          "name": "StackProps",
+          "props": [],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "Tag",
+      "path": "src/components/Tag",
+      "valueExports": ["Tag"],
+      "typeExports": ["TagType", "OmittedTag", "TagColor"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "TagProps",
+          "props": [
+            {
+              "name": "tag",
+              "type": "TagType | OmittedTag",
+              "optional": false
+            },
+            {
+              "name": "addTagButtonVariant",
+              "type": "'default' | 'error'",
+              "optional": true
+            },
+            {
+              "name": "openTagSelector",
+              "type": "(e: MouseEvent<HTMLButtonElement>) => void",
+              "optional": true
+            },
+            {
+              "name": "removeFromTask",
+              "type": "(id: string) => void",
+              "optional": true
+            }
+          ],
+          "extendsDom": "HTMLAttributes<HTMLSpanElement>",
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "TagSelector",
+      "path": "src/components/Selector/TagSelector",
+      "valueExports": ["TagSelector"],
+      "typeExports": [],
+      "hookExports": ["useTagSelectorContext"],
+      "propTypes": [
+        {
+          "name": "ContentProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "exported": false,
+          "source": "Content.tsx"
+        },
+        {
+          "name": "RootProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "tags",
+              "type": "TagType[]",
+              "optional": false
+            },
+            {
+              "name": "selectedTags",
+              "type": "TagType[]",
+              "optional": false
+            },
+            {
+              "name": "maxTagLength",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "onAddTag",
+              "type": "(tagId: string) => Promise<void>",
+              "optional": false
+            },
+            {
+              "name": "onRemoveTag",
+              "type": "(tagId: string) => Promise<void>",
+              "optional": false
+            },
+            {
+              "name": "onCreateTag",
+              "type": "(data: Partial<OmittedTag>) => Promise<string>",
+              "optional": false
+            },
+            {
+              "name": "onDeleteTag",
+              "type": "(tagId: string) => Promise<void>",
+              "optional": false
+            },
+            {
+              "name": "onUpdateTag",
+              "type": "(tagId: string, data: Partial<OmittedTag>) => Promise<void>",
+              "optional": false
+            }
+          ],
+          "exported": false,
+          "source": "Root.tsx"
+        },
+        {
+          "name": "SearchProps",
+          "props": [
+            {
+              "name": "placeholder",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "maxLength",
+              "type": "number",
+              "optional": true
+            }
+          ],
+          "exported": false,
+          "source": "Search.tsx"
+        },
+        {
+          "name": "Props",
+          "props": [
+            {
+              "name": "tag",
+              "type": "TagType",
+              "optional": false
+            },
+            {
+              "name": "onDelete",
+              "type": "(tagId: string) => Promise<void>",
+              "optional": false
+            },
+            {
+              "name": "onChange",
+              "type": "(tagId: string, contents: Partial<OmittedTag>) => Promise<void>",
+              "optional": false
+            },
+            {
+              "name": "onCloseEditor",
+              "type": "() => void",
+              "optional": false
+            }
+          ],
+          "exported": false,
+          "source": "TagEditor.tsx"
+        },
+        {
+          "name": "TriggerProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "asChild",
+              "type": "boolean",
+              "optional": true
+            }
+          ],
+          "exported": false,
+          "source": "Trigger.tsx"
+        }
+      ],
+      "compoundParts": ["Content", "List", "Root", "Search", "TagEditor", "TagList", "Trigger"],
+      "hasTest": false,
+      "hasStory": false
+    },
+    {
+      "name": "TimeDistribution",
+      "path": "src/components/TimeDistribution",
+      "valueExports": ["TimeDistribution"],
+      "typeExports": [
+        "TimeDistributionProps",
+        "TimeDistributionLegendContext",
+        "TimeDistributionRenderItemParams"
+      ],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "TimeDistributionProps",
+          "props": [
+            {
+              "name": "title",
+              "type": "ReactNode",
+              "optional": true
+            },
+            {
+              "name": "items",
+              "type": "T[]",
+              "optional": false
+            },
+            {
+              "name": "getValue",
+              "type": "(item: T) => number",
+              "optional": false
+            },
+            {
+              "name": "getFillColor",
+              "type": "(item: T) => string",
+              "optional": false
+            },
+            {
+              "name": "getStrokeColor",
+              "type": "(item: T) => string | undefined",
+              "optional": true
+            },
+            {
+              "name": "getLabel",
+              "type": "(item: T, context: TimeDistributionLegendContext) => ReactNode",
+              "optional": false
+            },
+            {
+              "name": "getKey",
+              "type": "(item: T, index: number) => string",
+              "optional": true
+            },
+            {
+              "name": "onItemClick",
+              "type": "(item: T, index: number) => void",
+              "optional": true
+            },
+            {
+              "name": "isItemClickable",
+              "type": "(item: T, index: number) => boolean",
+              "optional": true
+            },
+            {
+              "name": "emptyMessage",
+              "type": "ReactNode",
+              "optional": true
+            },
+            {
+              "name": "chartSize",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "chartProps",
+              "type": "Omit<DonutChartProps, 'segments' | 'size' | 'onSegmentClick'>",
+              "optional": true
+            },
+            {
+              "name": "legendMaxWidth",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "legendDotSize",
+              "type": "number",
+              "optional": true
+            },
+            {
+              "name": "renderLegendItem",
+              "type": "(params: TimeDistributionRenderItemParams<T>) => ReactNode",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "TimePicker",
+      "path": "src/components/TimePicker",
+      "valueExports": ["TimePicker"],
+      "typeExports": ["TimePickerValue", "TimePickerProps"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "TimePickerProps",
+          "props": [
+            {
+              "name": "value",
+              "type": "TimePickerValue",
+              "optional": false
+            },
+            {
+              "name": "onChange",
+              "type": "(value: TimePickerValue) => void",
+              "optional": false
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "TimePickerInputProps",
+          "props": [
+            {
+              "name": "field",
+              "type": "'start' | 'end'",
+              "optional": false
+            },
+            {
+              "name": "placeholder",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "TimePickerSummaryProps",
+          "props": [
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            },
+            {
+              "name": "showTime",
+              "type": "boolean",
+              "optional": true
+            },
+            {
+              "name": "showDate",
+              "type": "boolean",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "TimePickerRangeProps",
+          "props": [
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "TimePickerSeparatorProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "TimePickerDateRangeProps",
+          "props": [
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "React.CSSProperties",
+              "optional": true
+            }
+          ],
+          "exported": false,
+          "source": "TimePickerDateRange.tsx"
+        },
+        {
+          "name": "TimePickerTimeRangeProps",
+          "props": [
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            }
+          ],
+          "exported": false,
+          "source": "TimePickerTimeRange.tsx"
+        }
+      ],
+      "compoundParts": [
+        "TimeInput",
+        "TimePickerDateRange",
+        "TimePickerRange",
+        "TimePickerSeparator",
+        "TimePickerSummary",
+        "TimePickerTimeRange"
+      ],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "Toast",
+      "path": "src/components/Toast",
+      "valueExports": ["ToastItem", "ToastContainer"],
+      "typeExports": ["ToastItemProps", "ToastContainerProps", "ToastType"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "ToastItemProps",
+          "props": [
+            {
+              "name": "id",
+              "type": "string",
+              "optional": false
+            },
+            {
+              "name": "type",
+              "type": "ToastType",
+              "optional": false
+            },
+            {
+              "name": "message",
+              "type": "ReactNode",
+              "optional": false
+            },
+            {
+              "name": "onClose",
+              "type": "(id: string) => void",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "ToastContainerProps",
+          "props": [
+            {
+              "name": "toasts",
+              "type": "Array<{ id: string; type: ToastType; message: ReactNode }>",
+              "optional": false
+            },
+            {
+              "name": "onRemove",
+              "type": "(id: string) => void",
+              "optional": false
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": [],
+      "hasTest": true,
+      "hasStory": false
+    },
+    {
+      "name": "ToggleMenu",
+      "path": "src/components/ToggleMenu",
+      "valueExports": ["ToggleMenu"],
+      "typeExports": ["ToggleGroupItem", "ToggleGroupProps", "ToggleItemProps"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "ToggleGroupProps",
+          "props": [
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        },
+        {
+          "name": "ToggleItemProps",
+          "props": [
+            {
+              "name": "item",
+              "type": "ToggleGroupItem",
+              "optional": false
+            },
+            {
+              "name": "index",
+              "type": "number",
+              "optional": false
+            },
+            {
+              "name": "value",
+              "type": "string",
+              "optional": false
+            },
+            {
+              "name": "size",
+              "type": "'small' | 'medium'",
+              "optional": true
+            },
+            {
+              "name": "onChange",
+              "type": "(value: string) => void",
+              "optional": false
+            }
+          ],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": ["Group", "Item"],
+      "hasTest": false,
+      "hasStory": false
+    },
+    {
+      "name": "Typography",
+      "path": "src/components/Typography",
+      "valueExports": ["Text"],
+      "typeExports": ["TextProps"],
+      "hookExports": [],
+      "propTypes": [
+        {
+          "name": "TextOwnProps",
+          "props": [
+            {
+              "name": "textStyle",
+              "type": "textStyle",
+              "optional": true
+            },
+            {
+              "name": "color",
+              "type": "keyof typeof textColors",
+              "optional": true
+            },
+            {
+              "name": "children",
+              "type": "ReactNode",
+              "optional": true
+            },
+            {
+              "name": "align",
+              "type": "CSSProperties['textAlign']",
+              "optional": true
+            },
+            {
+              "name": "className",
+              "type": "string",
+              "optional": true
+            },
+            {
+              "name": "style",
+              "type": "CSSProperties",
+              "optional": true
+            },
+            {
+              "name": "truncate",
+              "type": "'true'",
+              "optional": true
+            },
+            {
+              "name": "lineClamp",
+              "type": "'1' | '2' | '3'",
+              "optional": true
+            }
+          ],
+          "exported": false,
+          "source": "types.ts"
+        },
+        {
+          "name": "TextProps",
+          "props": [],
+          "exported": true,
+          "source": "types.ts"
+        }
+      ],
+      "compoundParts": ["Text"],
+      "hasTest": false,
+      "hasStory": true,
+      "storyPath": "../../services/storybook/stories/UI/Typography"
+    }
+  ]
+}

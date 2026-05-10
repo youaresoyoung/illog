@@ -22,7 +22,9 @@
     "prepare": "husky",
     "pre-commit": "lint-staged",
     "ask": "tsx packages/codeqa/src/cli.ts",
-    "gen:commit": "tsx packages/codeqa/src/cli.ts --commit"
+    "gen:commit": "tsx packages/codeqa/src/cli.ts --commit",
+    "gen:ai-context": "pnpm --filter @illog/ui gen:ai-context",
+    "figma:export-tokens": "tsx scripts/figma-push/export-tokens.ts"
   },
   "keywords": [],
   "author": "youaresoyoung",

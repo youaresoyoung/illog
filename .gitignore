@@ -28,3 +28,6 @@ storybook-static
 .nx/workspace-data
 
 .next
+
+# Claude Code local settings (per-machine tool allowlist — do not commit)
+.claude/
