@@ -1,0 +1,67 @@
+---
+title: HorizontalBar
+description: Horizontal progress bar for displaying progress
+category: Components
+order: 23
+---
+
+## Overview
+
+HorizontalBar is a **horizontal progress bar**. `role="progressbar"` and ARIA attributes are applied by default.
+
+- **Animated** — Fill width transitions with CSS animation
+- **Accessible** — `aria-valuenow`, `aria-valuemin`, `aria-valuemax` applied
+- **Customizable** — Height, color, and border radius are adjustable
+
+## Basic Usage
+
+<ComponentPreview>
+  <Stack gap="400" width="100%">
+    <HorizontalBar value={65} />
+    <HorizontalBar value={30} />
+    <HorizontalBar value={90} />
+  </Stack>
+
+```tsx
+<HorizontalBar value={65} />
+<HorizontalBar value={30} />
+<HorizontalBar value={90} />
+```
+</ComponentPreview>
+
+## Customization
+
+<ComponentPreview>
+  <Stack gap="400" width="100%">
+    <HorizontalBar value={80} height={12} radius={4} />
+    <HorizontalBar value={50} fillColor="var(--background-success-default)" />
+    <HorizontalBar value={25} fillColor="var(--background-danger-default)" />
+  </Stack>
+
+```tsx
+<HorizontalBar value={80} height={12} radius={4} />
+<HorizontalBar value={50} fillColor="var(--background-success-default)" />
+<HorizontalBar value={25} fillColor="var(--background-danger-default)" />
+```
+</ComponentPreview>
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | **required** | Current value (clamped to min/max range) |
+| `min` | `number` | `0` | Minimum value |
+| `max` | `number` | `100` | Maximum value |
+| `height` | `number` | `8` | Bar height (px) |
+| `radius` | `number` | `999` | border-radius (px) |
+| `fillColor` | `string` | `var(--background-brand-default)` | Fill color |
+| `trackColor` | `string` | `var(--background-default-tertiary)` | Track background color |
+| `isAnimated` | `boolean` | `true` | CSS transition animation |
+| `trackStyle` | `CSSProperties` | — | Additional track styles |
+| `fillStyle` | `CSSProperties` | — | Additional fill styles |
+| `ariaLabel` | `string` | `'Progress'` | Accessibility label |
+
+## Guidelines
+
+- `value` is automatically clamped to the min/max range
+- Use DonutChart for comparing ratios of multiple items; use HorizontalBar for single progress indicators

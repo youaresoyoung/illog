@@ -1,17 +1,71 @@
 {
-  "name": "illlog",
+  "name": "illog",
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "nx": "nx",
+    "nx:graph": "nx graph",
+    "nx:reset": "nx reset",
+    "build": "nx run-many -t build",
+    "build:packages": "nx run-many -t build --projects='packages/*'",
+    "build:affected": "nx affected -t build",
+    "lint": "nx run-many -t lint",
+    "lint:affected": "nx affected -t lint",
+    "typecheck": "nx run-many -t typecheck",
+    "typecheck:affected": "nx affected -t typecheck",
+    "test": "nx run-many -t test",
+    "test:affected": "nx affected -t test",
+    "affected": "nx affected -t lint,typecheck,test,build --parallel=3",
+    "format": "prettier --write .",
+    "prepare": "husky",
+    "pre-commit": "lint-staged",
+    "ask": "tsx packages/codeqa/src/cli.ts",
+    "gen:commit": "tsx packages/codeqa/src/cli.ts --commit",
+    "gen:ai-context": "pnpm --filter @illog/ui gen:ai-context",
+    "figma:export-tokens": "tsx scripts/figma-push/export-tokens.ts"
   },
   "keywords": [],
   "author": "youaresoyoung",
   "license": "ISC",
   "packageManager": "pnpm@10.12.3",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix --cache",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.sql": [
+      "prettier --write --plugin=prettier-plugin-sql"
+    ]
+  },
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "nx": "^21.0.0",
+    "@types/node": "^24.10.0",
+    "esbuild": "^0.25.12",
+    "eslint": "^9.33.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "prettier": "3.6.2",
+    "prettier-plugin-sql": "^0.19.2",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.46.4",
+    "vite": "^7.2.7",
+    "npm-check-updates": "^19.2.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "macos-alias",
+      "fs-xattr"
+    ]
   }
 }

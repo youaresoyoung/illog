@@ -1,0 +1,94 @@
+---
+title: TimeDistribution
+description: Data visualization component combining donut chart and legend
+category: Components
+order: 24
+---
+
+## Overview
+
+TimeDistribution is a high-level data visualization component that combines a **DonutChart + legend**. With generic types, it can visualize any data structure.
+
+- **Generic** — Freely define data shape with the `<T>` type parameter
+- **Compound** — Combines donut chart + legend + title into one
+- **Interactive** — Legend items and chart segments are clickable
+- **Empty State** — Automatically displays empty state when there is no data
+
+## Basic Usage
+
+```tsx
+import { TimeDistribution } from '@illog/ui'
+
+type Category = { id: string; name: string; hours: number; color: string }
+
+<TimeDistribution<Category>
+  title="This Week's Time Distribution"
+  items={categories}
+  getValue={(item) => item.hours}
+  getFillColor={(item) => item.color}
+  getLabel={(item, { percentage }) => (
+    <Text textStyle="bodySmall">
+      {item.name} ({percentage.toFixed(0)}%)
+    </Text>
+  )}
+  onItemClick={(item) => navigate(`/category/${item.id}`)}
+/>
+```
+
+## Custom Legend
+
+```tsx
+<TimeDistribution<Category>
+  items={categories}
+  getValue={(cat) => cat.hours}
+  getFillColor={(cat) => cat.color}
+  getLabel={(cat) => cat.name}
+  renderLegendItem={({ item, percentage, isClickable, onClick }) => (
+    <Inline
+      as={isClickable ? 'button' : 'div'}
+      gap="300"
+      align="center"
+      onClick={onClick}
+    >
+      <Text textStyle="bodyStrong">{item.name}</Text>
+      <Text textStyle="caption" color="textDefaultTertiary">
+        {percentage.toFixed(1)}%
+      </Text>
+    </Inline>
+  )}
+/>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `ReactNode` | — | Chart title |
+| `items` | `T[]` | **required** | Data array |
+| `getValue` | `(item: T) => number` | **required** | Value extractor function |
+| `getFillColor` | `(item: T) => string` | **required** | Color extractor function |
+| `getStrokeColor` | `(item: T) => string` | — | Stroke color extractor function |
+| `getLabel` | `(item: T, context) => ReactNode` | **required** | Legend label renderer |
+| `getKey` | `(item: T, index) => string` | — | React key generator |
+| `onItemClick` | `(item: T, index) => void` | — | Item click handler |
+| `isItemClickable` | `(item: T, index) => boolean` | — | Clickability control (fine-grained) |
+| `emptyMessage` | `ReactNode` | `'No data available'` | Empty state message |
+| `chartSize` | `number` | `180` | Donut chart size |
+| `chartProps` | `DonutChartProps` | — | Additional props passed to DonutChart |
+| `legendMaxWidth` | `number` | `240` | Legend max width |
+| `legendDotSize` | `number` | `12` | Legend color dot size |
+| `renderLegendItem` | `(params) => ReactNode` | — | Custom legend item renderer |
+
+### getLabel context
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `index` | `number` | Item index |
+| `value` | `number` | Extracted value |
+| `percentage` | `number` | Percentage of total |
+
+## Guidelines
+
+- Items with value ≤ 0 are excluded from the chart but shown as 0% in the legend
+- If you only need a simple donut chart, use DonutChart directly
+- Use `renderLegendItem` to fully customize the legend

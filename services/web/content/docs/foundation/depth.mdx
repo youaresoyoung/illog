@@ -1,0 +1,38 @@
+---
+title: Depth & Shadow
+description: z-index and shadow effect tokens
+category: Foundation
+order: 5
+---
+
+## Overview
+
+Tokens that define the sense of depth and shadow effects for UI elements.
+
+## Depth (z-index)
+
+<TokenReference group="size.depth" />
+
+## Blur
+
+<TokenReference group="size.blur" />
+
+## Stroke
+
+<TokenReference group="size.stroke" />
+
+## Usage
+
+```tsx
+import { tokens, styles } from '@illog/themes'
+
+// z-index
+tokens.size.depth[400]  // 16
+
+// Shadow
+<Box shadow="300">Dropdown shadow</Box>
+
+// Using drop shadow styles directly
+styles.dropShadow[300]
+// → Multiple layered box-shadow values
+```

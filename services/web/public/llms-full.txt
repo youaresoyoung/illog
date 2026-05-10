@@ -1,0 +1,1158 @@
+# illog Design System — Full Spec for AI Agents
+
+> Auto-generated. Do not edit by hand. Regenerate via `pnpm --filter @illog/ui gen:ai-context`.
+> Last generated: 2026-05-10T18:01:28.170Z
+> Components: 28
+
+## How to use this file
+
+You are an AI agent building UI for the illog desktop app. Before writing any UI code, read the rules in `CLAUDE.md` and `packages/ui/CLAUDE.md`. This file is the complete component + token reference. Always import from `@illog/ui`. Never invent new primitives. Never hardcode colors, spacing, radius, or font values — use the tokens in this file.
+
+## Hard rules
+
+1. Import components from `@illog/ui` only. No deep imports from `@illog/ui/src/...`.
+2. Use `@illog/themes` tokens via `@illog/ui` sprinkles or recipes. No raw hex, rgb, or magic px values.
+3. New UI primitives go in `packages/ui/src/components/<Name>/`, never in `services/app`.
+4. Use `@vanilla-extract/sprinkles` and `@vanilla-extract/recipes`. No Tailwind, no CSS modules, no styled-components.
+5. Boolean props: `is*` / `has*`. Variants: string union literals, never enums.
+6. Compound components expose `use<Name>Context` hook. See `Selector` for the canonical pattern.
+
+## Design tokens
+
+### Colors (CSS variables)
+
+**background** (26)
+
+- `var(--background-brand-default)`
+- `var(--background-brand-default-hover)`
+- `var(--background-brand-secondary)`
+- `var(--background-brand-secondary-hover)`
+- `var(--background-brand-tertiary)`
+- `var(--background-brand-tertiary-hover)`
+- `var(--background-danger-default)`
+- `var(--background-danger-hover)`
+- `var(--background-danger-secondary)`
+- `var(--background-danger-secondary-hover)`
+- `var(--background-default-default)`
+- `var(--background-default-default-hover)`
+- `var(--background-default-secondary)`
+- `var(--background-default-secondary-hover)`
+- `var(--background-default-tertiary)`
+- `var(--background-default-tertiary-hover)`
+- `var(--background-disabled-default)`
+- `var(--background-state-done)`
+- `var(--background-state-progress)`
+- `var(--background-state-to-do)`
+- `var(--background-tag-blue)`
+- `var(--background-tag-gray)`
+- `var(--background-tag-green)`
+- `var(--background-tag-purple)`
+- `var(--background-tag-red)`
+- `var(--background-tag-yellow)`
+
+**border** (8)
+
+- `var(--border-brand-default)`
+- `var(--border-brand-secondary)`
+- `var(--border-brand-tertiary)`
+- `var(--border-danger-default)`
+- `var(--border-default-default)`
+- `var(--border-default-secondary)`
+- `var(--border-default-tertiary)`
+- `var(--border-disabled-default)`
+
+**icon** (12)
+
+- `var(--icon-brand-default)`
+- `var(--icon-brand-on-brand)`
+- `var(--icon-brand-on-brand-secondary)`
+- `var(--icon-brand-on-brand-tertiary)`
+- `var(--icon-brand-secondary)`
+- `var(--icon-brand-tertiary)`
+- `var(--icon-danger-default)`
+- `var(--icon-default-default)`
+- `var(--icon-default-secondary)`
+- `var(--icon-default-tertiary)`
+- `var(--icon-disabled-default)`
+- `var(--icon-disabled-on-disabled)`
+
+**text** (23)
+
+- `var(--text-brand-default)`
+- `var(--text-brand-on-brand)`
+- `var(--text-brand-on-brand-secondary)`
+- `var(--text-brand-on-brand-tertiary)`
+- `var(--text-brand-secondary)`
+- `var(--text-brand-tertiary)`
+- `var(--text-danger-default)`
+- `var(--text-danger-on-danger)`
+- `var(--text-danger-on-danger-secondary)`
+- `var(--text-danger-on-danger-tertiary)`
+- `var(--text-danger-secondary)`
+- `var(--text-danger-tertiary)`
+- `var(--text-default-default)`
+- `var(--text-default-secondary)`
+- `var(--text-default-tertiary)`
+- `var(--text-disabled-default)`
+- `var(--text-disabled-on-disabled)`
+- `var(--text-tag-blue)`
+- `var(--text-tag-gray)`
+- `var(--text-tag-green)`
+- `var(--text-tag-purple)`
+- `var(--text-tag-red)`
+- `var(--text-tag-yellow)`
+
+### Spacing (`space`, in px; 8px grid + half-steps)
+
+| key | value |
+|---|---|
+| `0` | `0` |
+| `50` | `2` |
+| `100` | `4` |
+| `150` | `6` |
+| `200` | `8` |
+| `300` | `12` |
+| `400` | `16` |
+| `600` | `24` |
+| `800` | `32` |
+| `1200` | `48` |
+| `1600` | `64` |
+| `2400` | `96` |
+| `4000` | `160` |
+| `negative100` | `-4` |
+| `negative200` | `-8` |
+| `negative300` | `-12` |
+| `negative400` | `-16` |
+| `negative600` | `-24` |
+
+### Radius
+
+| key | value |
+|---|---|
+| `100` | `4` |
+| `200` | `8` |
+| `400` | `16` |
+| `full` | `9999` |
+
+### Icon size
+
+| key | value |
+|---|---|
+| `extraSmall` | `12` |
+| `small` | `16` |
+| `medium` | `20` |
+| `large` | `24` |
+
+### Blur
+
+| key | value |
+|---|---|
+| `100` | `4` |
+
+### Depth (z-index/elevation)
+
+| key | value |
+|---|---|
+| `0` | `0` |
+| `25` | `1` |
+| `100` | `4` |
+| `200` | `8` |
+| `400` | `16` |
+| `800` | `32` |
+| `1200` | `48` |
+| `negative025` | `-1` |
+| `negative100` | `-4` |
+| `negative200` | `-8` |
+| `negative400` | `-16` |
+| `negative800` | `-32` |
+| `negative1200` | `-48` |
+
+### Stroke
+
+| key | value |
+|---|---|
+| `border` | `1` |
+
+### Responsive breakpoints
+
+- **responsive**: {"mobile":"{","width":1200,"rootFontSize":"primitive.scale[3]","scale":1,"tablet":"{","desktop":"{"}
+
+### Typography
+
+**typography**
+
+- title: `{`
+- fontFamily: `primitive.family.sans`
+- small: `primitive.scale[1]`
+- base: `primitive.scale[3]`
+- large: `primitive.scale[4]`
+- fontWeight: `primitive.weight.regular`
+- subtitle: `{`
+- heading: `{`
+- subheading: `{`
+- medium: `primitive.scale[4]`
+- body: `{`
+- fontWeightRegular: `primitive.weight.regular`
+- fontWeightStrong: `primitive.weight.semiBold`
+- caption: `{`
+
+## Components
+
+### `Badge`
+
+- **Folder**: `src/components/Badge`
+- **Import**: `import { Badge } from '@illog/ui'`
+- **Types**: `import type { BadgeItem, OmittedBadgeItem, BadgeColor, BadgeProps } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `BadgeProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `item` | `BadgeItem \| OmittedBadgeItem` | ✓ |  |
+| `addButtonVariant` | `'default' \| 'error'` | – |  |
+| `isOpenedSelector` | `boolean` | – |  |
+| `withoutIcon` | `boolean` | – |  |
+| `openSelector` | `(e: MouseEvent<HTMLButtonElement>) => void` | – |  |
+| `onRemove` | `() => void` | – |  |
+
+Extends DOM attrs: `HTMLAttributes<HTMLSpanElement>`
+
+
+---
+
+### `BadgeSelector`
+
+- **Folder**: `src/components/Selector/BadgeSelector`
+- **Import**: `import { BadgeSelector } from '@illog/ui'`
+- **Hooks**: `useBadgeSelectorContext`
+- **Compound parts** (sub-components inside the folder): `BadgeEditor`, `BadgeList`, `Content`, `List`, `Root`, `Search`, `Trigger`
+- **Tested**: no · **Story**: no
+
+#### `Props` _(internal, from `BadgeEditor.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `item` | `BadgeItem` | ✓ |  |
+| `onDelete` | `(itemId: string) => Promise<void>` | ✓ |  |
+| `onChange` | `(itemId: string, contents: Partial<OmittedBadgeItem>) => Promise<void>` | ✓ |  |
+| `onCloseEditor` | `() => void` | ✓ |  |
+
+#### `ContentProps` _(internal, from `Content.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | – |  |
+| `className` | `string` | – |  |
+
+#### `RootProps` _(internal, from `Root.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | ✓ |  |
+| `items` | `BadgeItem[]` | ✓ |  |
+| `selectedItem` | `BadgeItem \| null` | ✓ |  |
+| `maxNameLength` | `number` | – |  |
+| `onSelectItem` | `(itemId: string) => Promise<void>` | ✓ |  |
+| `onClearItem` | `() => Promise<void>` | ✓ |  |
+| `onCreateItem` | `(data: Partial<OmittedBadgeItem>) => Promise<string>` | ✓ |  |
+| `onDeleteItem` | `(itemId: string) => Promise<void>` | ✓ |  |
+| `onUpdateItem` | `(itemId: string, data: Partial<OmittedBadgeItem>) => Promise<void>` | ✓ |  |
+
+#### `SearchProps` _(internal, from `Search.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `placeholder` | `string` | – |  |
+| `maxLength` | `number` | – |  |
+
+#### `TriggerProps` _(internal, from `Trigger.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | ✓ |  |
+| `asChild` | `boolean` | – |  |
+| `style` | `CSSProperties` | – |  |
+
+
+---
+
+### `BasicSelector`
+
+- **Folder**: `src/components/Selector/BasicSelector`
+- **Import**: `import { BasicSelector } from '@illog/ui'`
+- **Hooks**: `useBasicSelectorContext`
+- **Compound parts** (sub-components inside the folder): `Content`, `Item`, `Root`, `Trigger`, `Value`, `Viewport`
+- **Tested**: no · **Story**: no
+
+#### `BasicSelectorRootProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `value` | `string` | – |  |
+| `defaultValue` | `string` | – |  |
+| `isOpened` | `boolean` | – |  |
+| `isDefaultOpen` | `boolean` | – |  |
+| `disabled` | `boolean` | – |  |
+| `onValueChange` | `(value: string) => void` | – |  |
+| `onOpenChange` | `(open: boolean) => void` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+
+#### `BasicSelectorContentProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `position` | `'item-aligned' \| 'popover'` | – |  |
+| `side` | `'top' \| 'bottom' \| 'left' \| 'right'` | – |  |
+| `align` | `'start' \| 'center' \| 'end'` | – |  |
+| `sideOffset` | `number` | – |  |
+| `className` | `string` | – |  |
+| `style` | `React.CSSProperties` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+
+#### `BasicSelectorViewportProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | ✓ |  |
+| `className` | `string` | – |  |
+
+#### `BasicSelectorTriggerProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | ✓ |  |
+| `className` | `string` | – |  |
+| `ariaLabel` | `string` | – |  |
+
+#### `BasicSelectorItemProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `value` | `string` | ✓ |  |
+| `disabled` | `boolean` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+| `className` | `string` | – |  |
+| `style` | `React.CSSProperties` | – |  |
+
+#### `BasicSelectorValueProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `placeholder` | `string` | – |  |
+| `children` | `(value: string) => ReactNode` | – |  |
+
+
+---
+
+### `Box`
+
+- **Folder**: `src/components/Box`
+- **Import**: `import { Box } from '@illog/ui'`
+- **Types**: `import type { BoxProps } from '@illog/ui'`
+- **Tested**: yes · **Story**: yes
+
+#### `BoxOwnProps` _(internal, from `types.ts`)_
+
+_(no individual fields)_
+
+#### `BoxProps` _(exported, from `types.ts`)_
+
+_(no individual fields)_
+
+
+---
+
+### `Button`
+
+- **Folder**: `src/components/Button`
+- **Import**: `import { Button } from '@illog/ui'`
+- **Types**: `import type { ButtonProps } from '@illog/ui'`
+- **Tested**: yes · **Story**: yes
+
+#### `ButtonProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `variant` | `'primary' \| 'secondary'` | ✓ |  |
+| `size` | `'sm' \| 'md' \| 'lg'` | – |  |
+| `isDisabled` | `boolean` | – |  |
+| `onClick` | `() => void` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+| `className` | `string` | – |  |
+| `isFullWidth` | `boolean` | – |  |
+| `ariaLabel` | `string` | – |  |
+| `ref` | `Ref<HTMLButtonElement>` | – |  |
+
+Extends DOM attrs: `ButtonHTMLAttributes<HTMLButtonElement>`
+
+
+---
+
+### `Calendar`
+
+- **Folder**: `src/components/Calendar`
+- **Import**: `import { Calendar, formatHour, formatTimeLabel, getMinutesFromMidnight, DEFAULT_HOUR_HEIGHT, DEFAULT_GUTTER_WIDTH } from '@illog/ui'`
+- **Types**: `import type { TimeGridProps, TimeCellProps, TimeCellColor, DayColumnHeader, DayColumnHeadersProps } from '@illog/ui'`
+- **Hooks**: `useCurrentTime`
+- **Compound parts** (sub-components inside the folder): `DayColumnHeaders`, `TimeCell`, `TimeGrid`
+- **Tested**: no · **Story**: no
+
+#### `TimeCellProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `id` | `string` | ✓ |  |
+| `title` | `string` | ✓ |  |
+| `subtitle` | `string` | – |  |
+| `caption` | `string` | – |  |
+| `color` | `TimeCellColor` | ✓ |  |
+| `top` | `number` | ✓ |  |
+| `height` | `number` | ✓ |  |
+| `left` | `string` | ✓ |  |
+| `width` | `string` | ✓ |  |
+| `style` | `CSSProperties` | – |  |
+| `children` | `ReactNode` | – |  |
+| `titleFontSize` | `number` | – |  |
+| `subtitleFontSize` | `number` | – |  |
+| `onClick` | `() => void` | – |  |
+
+#### `DayColumnHeadersProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `days` | `DayColumnHeader[]` | ✓ |  |
+| `gutterWidth` | `number` | – |  |
+| `height` | `number` | – |  |
+
+#### `TimeGridProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `columns` | `number` | – |  |
+| `hourHeight` | `number` | – |  |
+| `gutterWidth` | `number` | – |  |
+| `scrollHeight` | `string` | – |  |
+| `showCurrentTime` | `boolean` | – |  |
+| `currentTimeColumn` | `number` | – |  |
+| `header` | `ReactNode` | – |  |
+| `children` | `ReactNode` | – |  |
+| `style` | `CSSProperties` | – |  |
+
+#### `HourRowProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `hour` | `number` | ✓ |  |
+| `hourHeight` | `number` | ✓ |  |
+| `gutterWidth` | `number` | ✓ |  |
+| `columns` | `number` | ✓ |  |
+
+#### `CurrentTimeIndicatorProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `nowMinutes` | `number` | ✓ |  |
+| `hourHeight` | `number` | ✓ |  |
+| `gutterWidth` | `number` | ✓ |  |
+| `columns` | `number` | ✓ |  |
+| `currentTimeColumn` | `number` | ✓ |  |
+| `timeLabel` | `string` | ✓ |  |
+
+
+---
+
+### `Card`
+
+- **Folder**: `src/components/Card`
+- **Import**: `import { Card } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `CardProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `onClick` | `(e: MouseEvent<HTMLElement>) => void` | ✓ |  |
+
+
+---
+
+### `Center`
+
+- **Folder**: `src/components/Center`
+- **Import**: `import { Center } from '@illog/ui'`
+- **Types**: `import type { CenterProps } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `CenterOwnProps` _(internal, from `types.ts`)_
+
+_(no individual fields)_
+
+#### `CenterProps` _(exported, from `types.ts`)_
+
+_(no individual fields)_
+
+
+---
+
+### `ContextMenu`
+
+- **Folder**: `src/components/ContextMenu`
+- **Import**: `import { ContextMenu } from '@illog/ui'`
+- **Types**: `import type { ContextMenuContextValue, ContextMenuRootProps, ContextMenuContentProps, ContextMenuItemProps } from '@illog/ui'`
+- **Hooks**: `useContextMenuContext`
+- **Compound parts** (sub-components inside the folder): `Content`, `Item`, `Root`, `Sub`, `Trigger`
+- **Tested**: no · **Story**: no
+
+#### `ContextMenuRootProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `modal` | `boolean` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+| `onOpenChange` | `(isOpen: boolean) => void` | – |  |
+
+#### `ContextMenuTriggerProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `isDisabled` | `boolean` | – |  |
+| `className` | `string` | – |  |
+| `style` | `CSSProperties` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+
+#### `ContextMenuContentProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `alignOffset` | `number` | – |  |
+| `isLoop` | `boolean` | – |  |
+| `style` | `CSSProperties` | – |  |
+| `className` | `string` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+| `onEscapeKeyDown` | `(event: KeyboardEvent) => void` | – |  |
+
+#### `ContextMenuItemProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `isDisabled` | `boolean` | – |  |
+| `textValue` | `string` | – |  |
+| `className` | `string` | – |  |
+| `style` | `CSSProperties` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+| `onSelect` | `() => void` | – |  |
+
+#### `ContextMenuSubRootProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `isOpen` | `boolean` | – |  |
+| `isDefaultOpen` | `boolean` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+| `onOpenChange` | `(isOpen: boolean) => void` | – |  |
+
+#### `ContextMenuSubTriggerProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `isDisabled` | `boolean` | – |  |
+| `textValue` | `string` | – |  |
+| `className` | `string` | – |  |
+| `style` | `CSSProperties` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+
+#### `ContextMenuSubContentProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `isLoop` | `boolean` | – |  |
+| `sideOffset` | `number` | – |  |
+| `alignOffset` | `number` | – |  |
+| `style` | `CSSProperties` | – |  |
+| `className` | `string` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+| `onEscapeKeyDown` | `(event: KeyboardEvent) => void` | – |  |
+
+
+---
+
+### `Dialog`
+
+- **Folder**: `src/components/Dialog`
+- **Import**: `import { Dialog } from '@illog/ui'`
+- **Compound parts** (sub-components inside the folder): `DialogContent`, `DialogDescription`, `DialogFooter`, `DialogTitle`
+- **Tested**: yes · **Story**: no
+
+#### `DialogProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `isOpen` | `boolean` | ✓ |  |
+| `onClose` | `() => void` | ✓ |  |
+| `children` | `ReactNode` | ✓ |  |
+| `className` | `string` | – |  |
+| `role` | `'dialog' \| 'alertdialog'` | – |  |
+| `ariaLabel` | `string` | – |  |
+| `ariaDescribedby` | `string` | – |  |
+
+#### `DialogTitleProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | ✓ |  |
+| `className` | `string` | – |  |
+
+#### `DialogContentProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | ✓ |  |
+| `className` | `string` | – |  |
+
+#### `DialogDescriptionProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | ✓ |  |
+| `className` | `string` | – |  |
+
+#### `DialogFooterProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | ✓ |  |
+| `className` | `string` | – |  |
+
+
+---
+
+### `Divider`
+
+- **Folder**: `src/components/Divider`
+- **Import**: `import { Divider } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `DividerProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `orientation` | `'horizontal' \| 'vertical'` | – |  |
+| `variant` | `'solid' \| 'dashed'` | – |  |
+| `color` | `'default'` | – |  |
+| `thickness` | `'thin'` | – |  |
+
+Extends DOM attrs: `HTMLAttributes<HTMLDivElement>`
+
+
+---
+
+### `DonutChart`
+
+- **Folder**: `src/components/DonutChart`
+- **Import**: `import { DonutChart } from '@illog/ui'`
+- **Types**: `import type { DonutChartProps, DonutChartSegment } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `DonutChartProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `segments` | `DonutChartSegment[]` | ✓ |  |
+| `size` | `number` | – |  |
+| `innerRatio` | `number` | – |  |
+| `startAngle` | `number` | – |  |
+| `defaultStrokeWidth` | `number` | – |  |
+| `emptyFill` | `string` | – |  |
+| `emptyStroke` | `string` | – |  |
+| `onSegmentClick` | `(segment: DonutChartSegment, index: number) => void` | – |  |
+| `segmentKey` | `(segment: DonutChartSegment, index: number) => string` | – |  |
+
+
+---
+
+### `HorizontalBar`
+
+- **Folder**: `src/components/HorizontalBar`
+- **Import**: `import { HorizontalBar } from '@illog/ui'`
+- **Types**: `import type { HorizontalBarProps } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `HorizontalBarProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `value` | `number` | ✓ |  |
+| `min` | `number` | – |  |
+| `max` | `number` | – |  |
+| `height` | `number` | – |  |
+| `radius` | `number` | – |  |
+| `fillColor` | `string` | – |  |
+| `trackColor` | `string` | – |  |
+| `isAnimated` | `boolean` | – |  |
+| `trackStyle` | `CSSProperties` | – |  |
+| `fillStyle` | `CSSProperties` | – |  |
+| `ariaLabel` | `string` | – |  |
+
+Extends DOM attrs: `Omit<HTMLAttributes<HTMLDivElement>, 'children'>`
+
+
+---
+
+### `Icon`
+
+- **Folder**: `src/components/Icon`
+- **Import**: `import { Icon, IconNameOptions } from '@illog/ui'`
+- **Types**: `import type { IconName } from '@illog/ui'`
+- **Tested**: yes · **Story**: yes
+
+#### `IconProps` _(exported, from `Icon.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `name` | `IconName` | ✓ |  |
+| `size` | `keyof typeof tokens.size.icon` | – |  |
+| `color` | `keyof typeof iconColors \| keyof typeof textColors` | – |  |
+| `rotate` | `number` | – |  |
+
+
+---
+
+### `Inline`
+
+- **Folder**: `src/components/Inline`
+- **Import**: `import { Inline } from '@illog/ui'`
+- **Types**: `import type { InlineProps } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `InlineOwnProps` _(internal, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `gap` | `Sprinkles['gap']` | – |  |
+| `align` | `Sprinkles['alignItems']` | – |  |
+| `justify` | `Sprinkles['justifyContent']` | – |  |
+| `wrap` | `Sprinkles['flexWrap']` | – |  |
+
+#### `InlineProps` _(exported, from `types.ts`)_
+
+_(no individual fields)_
+
+
+---
+
+### `Input`
+
+- **Folder**: `src/components/Input`
+- **Import**: `import { Input } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `InputProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `size` | `'sm' \| 'md' \| 'lg'` | – |  |
+| `variant` | `'default' \| 'error' \| 'success'` | – |  |
+| `isFullWidth` | `boolean` | – |  |
+| `isDisabled` | `boolean` | – |  |
+| `errorMessage` | `string` | – |  |
+| `onChange` | `(e: ChangeEvent<HTMLInputElement>) => void` | – |  |
+| `ref` | `Ref<HTMLInputElement>` | – |  |
+
+Extends DOM attrs: `InputHTMLAttributes<HTMLInputElement>`
+
+
+---
+
+### `Navigation`
+
+- **Folder**: `src/components/Navigation`
+- **Import**: `import { Navigation } from '@illog/ui'`
+- **Types**: `import type { ItemRenderProps, MatchStrategy } from '@illog/ui'`
+- **Compound parts** (sub-components inside the folder): `Container`, `Item`, `List`
+- **Tested**: yes · **Story**: no
+
+#### `ItemRenderProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `isActive` | `boolean` | ✓ |  |
+| `isPending` | `boolean` | ✓ |  |
+
+#### `ContainerProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `className` | `string` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+
+#### `ListProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `className` | `string` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+| `match` | `MatchStrategy` | – | URL matching strategy for all items in this list |
+
+#### `ItemProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `to` | `string` | ✓ | Navigation destination (also used for active state matching) |
+| `iconName` | `IconName` | – | Optional icon name (only used when children is not a function) |
+| `children` | `ReactNode \| ((props: ItemRenderProps) => ReactNode)` | ✓ | Item content - can be ReactNode or render function |
+| `className` | `string \| ((props: ItemRenderProps) => string)` | – | className - can be string or function |
+| `style` | `React.CSSProperties \| ((props: ItemRenderProps) => React.CSSProperties)` | – | style - can be object or function |
+| `onClick` | `(e: React.MouseEvent) => void` | – | Click handler |
+| `disabled` | `boolean` | – | Disabled state |
+| `'aria-label'` | `string` | – | Accessible label |
+| `match` | `MatchStrategy` | – | URL matching strategy |
+| `end` | `boolean` | – | Match when URL ends with this path (for hash routing, etc.) |
+
+
+---
+
+### `Overlay`
+
+- **Folder**: `src/components/Overlay`
+- **Import**: `import { Overlay } from '@illog/ui'`
+- **Types**: `import type { OverlayProps, OverlayAnimation } from '@illog/ui'`
+- **Tested**: yes · **Story**: yes
+
+#### `OverlayProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `isOpen` | `boolean` | ✓ |  |
+| `onClose` | `() => void` | – |  |
+| `children` | `ReactNode` | ✓ |  |
+| `backgroundOpacity` | `number` | – |  |
+| `disableBackdropClick` | `boolean` | – |  |
+| `disableEscapeKey` | `boolean` | – |  |
+| `zIndex` | `number` | – |  |
+| `backdropClassName` | `string` | – |  |
+| `contentClassName` | `string` | – |  |
+| `animationDuration` | `number` | – |  |
+| `animation` | `OverlayAnimation` | – |  |
+| `ariaLabel` | `string` | – |  |
+| `container` | `Element \| DocumentFragment` | – |  |
+
+
+---
+
+### `Portal`
+
+- **Folder**: `src/components/Portal`
+- **Import**: `import { Portal } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `PortalProps` _(exported, from `Portal.tsx`)_
+
+_(no individual fields)_
+
+
+---
+
+### `SortableTable`
+
+- **Folder**: `src/components/SortableTable`
+- **Import**: `import { SortableTable } from '@illog/ui'`
+- **Types**: `import type { SortableTableProps, SortableTableColumn, SortDirection, SortState } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `SortableTableProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `data` | `T[]` | ✓ |  |
+| `columns` | `SortableTableColumn<T, F>[]` | ✓ |  |
+| `getRowId` | `(item: T, index: number) => string` | – |  |
+| `defaultSort` | `SortState<F>` | – |  |
+| `sortState` | `SortState<F>` | – |  |
+| `onSortChange` | `(nextSort: SortState<F>) => void` | – |  |
+| `emptyState` | `ReactNode` | – |  |
+| `emptyMessage` | `ReactNode` | – |  |
+| `className` | `string` | – |  |
+
+
+---
+
+### `Stack`
+
+- **Folder**: `src/components/Stack`
+- **Import**: `import { Stack } from '@illog/ui'`
+- **Types**: `import type { StackProps } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `StackOwnProps` _(internal, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `direction` | `'column' \| 'column-reverse'` | – |  |
+| `gap` | `Sprinkles['gap']` | – |  |
+| `align` | `Sprinkles['alignItems']` | – |  |
+| `justify` | `Sprinkles['justifyContent']` | – |  |
+| `wrap` | `Sprinkles['flexWrap']` | – |  |
+
+#### `StackProps` _(exported, from `types.ts`)_
+
+_(no individual fields)_
+
+
+---
+
+### `Tag`
+
+- **Folder**: `src/components/Tag`
+- **Import**: `import { Tag } from '@illog/ui'`
+- **Types**: `import type { TagType, OmittedTag, TagColor } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `TagProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `tag` | `TagType \| OmittedTag` | ✓ |  |
+| `addTagButtonVariant` | `'default' \| 'error'` | – |  |
+| `openTagSelector` | `(e: MouseEvent<HTMLButtonElement>) => void` | – |  |
+| `removeFromTask` | `(id: string) => void` | – |  |
+
+Extends DOM attrs: `HTMLAttributes<HTMLSpanElement>`
+
+
+---
+
+### `TagSelector`
+
+- **Folder**: `src/components/Selector/TagSelector`
+- **Import**: `import { TagSelector } from '@illog/ui'`
+- **Hooks**: `useTagSelectorContext`
+- **Compound parts** (sub-components inside the folder): `Content`, `List`, `Root`, `Search`, `TagEditor`, `TagList`, `Trigger`
+- **Tested**: no · **Story**: no
+
+#### `ContentProps` _(internal, from `Content.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | – |  |
+| `className` | `string` | – |  |
+
+#### `RootProps` _(internal, from `Root.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | ✓ |  |
+| `tags` | `TagType[]` | ✓ |  |
+| `selectedTags` | `TagType[]` | ✓ |  |
+| `maxTagLength` | `number` | – |  |
+| `onAddTag` | `(tagId: string) => Promise<void>` | ✓ |  |
+| `onRemoveTag` | `(tagId: string) => Promise<void>` | ✓ |  |
+| `onCreateTag` | `(data: Partial<OmittedTag>) => Promise<string>` | ✓ |  |
+| `onDeleteTag` | `(tagId: string) => Promise<void>` | ✓ |  |
+| `onUpdateTag` | `(tagId: string, data: Partial<OmittedTag>) => Promise<void>` | ✓ |  |
+
+#### `SearchProps` _(internal, from `Search.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `placeholder` | `string` | – |  |
+| `maxLength` | `number` | – |  |
+
+#### `Props` _(internal, from `TagEditor.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `tag` | `TagType` | ✓ |  |
+| `onDelete` | `(tagId: string) => Promise<void>` | ✓ |  |
+| `onChange` | `(tagId: string, contents: Partial<OmittedTag>) => Promise<void>` | ✓ |  |
+| `onCloseEditor` | `() => void` | ✓ |  |
+
+#### `TriggerProps` _(internal, from `Trigger.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | ✓ |  |
+| `asChild` | `boolean` | – |  |
+
+
+---
+
+### `TimeDistribution`
+
+- **Folder**: `src/components/TimeDistribution`
+- **Import**: `import { TimeDistribution } from '@illog/ui'`
+- **Types**: `import type { TimeDistributionProps, TimeDistributionLegendContext, TimeDistributionRenderItemParams } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `TimeDistributionProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `title` | `ReactNode` | – |  |
+| `items` | `T[]` | ✓ |  |
+| `getValue` | `(item: T) => number` | ✓ |  |
+| `getFillColor` | `(item: T) => string` | ✓ |  |
+| `getStrokeColor` | `(item: T) => string \| undefined` | – |  |
+| `getLabel` | `(item: T, context: TimeDistributionLegendContext) => ReactNode` | ✓ |  |
+| `getKey` | `(item: T, index: number) => string` | – |  |
+| `onItemClick` | `(item: T, index: number) => void` | – |  |
+| `isItemClickable` | `(item: T, index: number) => boolean` | – |  |
+| `emptyMessage` | `ReactNode` | – |  |
+| `chartSize` | `number` | – |  |
+| `chartProps` | `Omit<DonutChartProps, 'segments' \| 'size' \| 'onSegmentClick'>` | – |  |
+| `legendMaxWidth` | `number` | – |  |
+| `legendDotSize` | `number` | – |  |
+| `renderLegendItem` | `(params: TimeDistributionRenderItemParams<T>) => ReactNode` | – |  |
+| `className` | `string` | – |  |
+
+
+---
+
+### `TimePicker`
+
+- **Folder**: `src/components/TimePicker`
+- **Import**: `import { TimePicker } from '@illog/ui'`
+- **Types**: `import type { TimePickerValue, TimePickerProps } from '@illog/ui'`
+- **Compound parts** (sub-components inside the folder): `TimeInput`, `TimePickerDateRange`, `TimePickerRange`, `TimePickerSeparator`, `TimePickerSummary`, `TimePickerTimeRange`
+- **Tested**: yes · **Story**: no
+
+#### `TimePickerProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `value` | `TimePickerValue` | ✓ |  |
+| `onChange` | `(value: TimePickerValue) => void` | ✓ |  |
+| `children` | `ReactNode` | ✓ |  |
+
+#### `TimePickerInputProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `field` | `'start' \| 'end'` | ✓ |  |
+| `placeholder` | `string` | – |  |
+| `className` | `string` | – |  |
+| `style` | `CSSProperties` | – |  |
+
+#### `TimePickerSummaryProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `className` | `string` | – |  |
+| `style` | `CSSProperties` | – |  |
+| `showTime` | `boolean` | – |  |
+| `showDate` | `boolean` | – |  |
+
+#### `TimePickerRangeProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `className` | `string` | – |  |
+| `style` | `CSSProperties` | – |  |
+| `children` | `ReactNode` | – |  |
+
+#### `TimePickerSeparatorProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | – |  |
+| `className` | `string` | – |  |
+| `style` | `CSSProperties` | – |  |
+
+#### `TimePickerDateRangeProps` _(internal, from `TimePickerDateRange.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `className` | `string` | – |  |
+| `style` | `React.CSSProperties` | – |  |
+
+#### `TimePickerTimeRangeProps` _(internal, from `TimePickerTimeRange.tsx`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `className` | `string` | – |  |
+| `style` | `CSSProperties` | – |  |
+
+
+---
+
+### `Toast`
+
+- **Folder**: `src/components/Toast`
+- **Import**: `import { ToastItem, ToastContainer } from '@illog/ui'`
+- **Types**: `import type { ToastItemProps, ToastContainerProps, ToastType } from '@illog/ui'`
+- **Tested**: yes · **Story**: no
+
+#### `ToastItemProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `id` | `string` | ✓ |  |
+| `type` | `ToastType` | ✓ |  |
+| `message` | `ReactNode` | ✓ |  |
+| `onClose` | `(id: string) => void` | ✓ |  |
+
+#### `ToastContainerProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `toasts` | `Array<{ id: string; type: ToastType; message: ReactNode }>` | ✓ |  |
+| `onRemove` | `(id: string) => void` | ✓ |  |
+| `className` | `string` | – |  |
+
+
+---
+
+### `ToggleMenu`
+
+- **Folder**: `src/components/ToggleMenu`
+- **Import**: `import { ToggleMenu } from '@illog/ui'`
+- **Types**: `import type { ToggleGroupItem, ToggleGroupProps, ToggleItemProps } from '@illog/ui'`
+- **Compound parts** (sub-components inside the folder): `Group`, `Item`
+- **Tested**: no · **Story**: no
+
+#### `ToggleGroupProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `children` | `ReactNode` | ✓ |  |
+
+#### `ToggleItemProps` _(exported, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `item` | `ToggleGroupItem` | ✓ |  |
+| `index` | `number` | ✓ |  |
+| `value` | `string` | ✓ |  |
+| `size` | `'small' \| 'medium'` | – |  |
+| `onChange` | `(value: string) => void` | ✓ |  |
+
+
+---
+
+### `Typography`
+
+- **Folder**: `src/components/Typography`
+- **Import**: `import { Text } from '@illog/ui'`
+- **Types**: `import type { TextProps } from '@illog/ui'`
+- **Compound parts** (sub-components inside the folder): `Text`
+- **Tested**: no · **Story**: yes
+
+#### `TextOwnProps` _(internal, from `types.ts`)_
+
+| prop | type | required | description |
+|---|---|---|---|
+| `textStyle` | `textStyle` | – |  |
+| `color` | `keyof typeof textColors` | – |  |
+| `children` | `ReactNode` | – |  |
+| `align` | `CSSProperties['textAlign']` | – |  |
+| `className` | `string` | – |  |
+| `style` | `CSSProperties` | – |  |
+| `truncate` | `'true'` | – |  |
+| `lineClamp` | `'1' \| '2' \| '3'` | – |  |
+
+#### `TextProps` _(exported, from `types.ts`)_
+
+_(no individual fields)_
+
+
+---

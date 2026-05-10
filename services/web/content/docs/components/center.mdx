@@ -1,0 +1,55 @@
+---
+title: Center
+description: A layout container that vertically and horizontally centers its children
+category: Components
+order: 10
+---
+
+## Overview
+
+Center is a **flexbox-based centering container**. `display: flex`, `align-items: center`, and `justify-content: center` are applied by default.
+
+- **Polymorphic** — Render as any HTML element via the `as` prop
+- **Sprinkles support** — All design token props available (`p`, `m`, `bg`, `rounded`, etc.)
+- **Concise** — Eliminates centering boilerplate
+
+## Basic Usage
+
+```tsx
+import { Center } from '@illog/ui'
+
+<Center width="100%" height="200px" bg="backgroundDefaultSecondary" rounded="200">
+  <Text>Centered text</Text>
+</Center>
+```
+
+## Polymorphic Rendering
+
+```tsx
+// Render as a section element
+<Center as="section" p="600" bg="backgroundDefaultDefault">
+  <Icon name="check" />
+</Center>
+
+// Render as a nav element
+<Center as="nav" height="64px">
+  <Logo />
+</Center>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `as` | `ElementType` | `'div'` | HTML element to render |
+| `children` | `ReactNode` | — | Child elements |
+| `className` | `string` | — | Additional CSS class |
+| `...sprinkles` | `Sprinkles` | — | Design token props (`p`, `m`, `bg`, `color`, `rounded`, `width`, `height`, `gap`, etc.) |
+| `...styleProps` | `StyleProps` | — | Inline CSS props (`top`, `left`, `transform`, etc.) |
+
+> `display`, `alignItems`, and `justifyContent` are fixed internally and cannot be overridden.
+
+## Guidelines
+
+- Use Center instead of Box when simple centering is needed
+- For single-axis alignment only, use Stack or Inline instead

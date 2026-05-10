@@ -1,0 +1,106 @@
+---
+title: Box
+description: Styling-capable universal container — foundation building block for all components
+category: Components
+order: 2
+---
+
+## Overview
+
+Box is the **foundation building block** of the design system. It provides styling capabilities to HTML elements while maintaining maximum flexibility.
+
+**Box is:** a stylable `<div>` that can render as any HTML element.
+
+- **Minimal** — No built-in layout logic or predefined styles
+- **Flexible** — Render as any HTML element via the `as` prop
+- **Universal** — Base layer for all other components (Stack, Card, Button, etc.)
+- **Unopinionated** — Everything is controlled by the user
+
+## When to Use
+
+### Use Box when:
+
+- You need a simple **wrapper** or **container**
+- You need **semantic HTML** (`as="section"`, `as="article"`, `as="nav"`)
+- You're building a **custom component** from scratch
+- You need **maximum control** with minimal abstraction
+
+### Consider alternatives when:
+
+- You need **vertical/horizontal stacking** → Use **Stack** or **Inline**
+- You need **center alignment** → Use **Center**
+- You're building a **card** → Use the **Card** component
+- You need **button behavior** → Use the **Button** component
+
+> If there's a specialized component for your use case, use it. Box is for everything else.
+
+## Box vs Other Components
+
+| Component | Purpose | Built on |
+|-----------|---------|----------|
+| **Box** | Universal container | - |
+| **Stack** | Vertical/horizontal layout | Box + flex logic |
+| **Inline** | Horizontal layout | Box + flex(row) |
+| **Center** | Center alignment | Box + centering |
+| **Card** | Card-styled container | Box + card styles |
+
+All components inherit Box's capabilities while adding specific behavior or styles.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `as` | `ElementType` | `'div'` | HTML element to render |
+| `children` | `ReactNode` | - | Child elements |
+| `display` | `string` | - | CSS display |
+| `flexDirection` | `string` | - | Flex direction |
+| `alignItems` | `string` | - | Flex alignment |
+| `justifyContent` | `string` | - | Flex justification |
+| `gap` | `string` | - | Gap (space token) |
+| `p` | `string` | - | Padding (space token) |
+| `px` | `string` | - | Horizontal padding |
+| `py` | `string` | - | Vertical padding |
+| `m` | `string` | - | Margin |
+| `w` | `string` | - | Width |
+| `h` | `string` | - | Height |
+| `maxW` | `string` | - | Max width |
+| `bg` | `string` | - | Background color (color token) |
+| `rounded` | `string` | - | Border radius (radius token) |
+| `border` | `string` | - | Border |
+| `borderColor` | `string` | - | Border color |
+| `borderStyle` | `string` | - | Border style |
+| `position` | `string` | - | CSS position |
+| `shadow` | `string` | - | Shadow (dropShadow token) |
+| `className` | `string` | - | Additional CSS class |
+| `style` | `CSSProperties` | - | Inline styles |
+
+## Usage
+
+```tsx
+import { Box } from '@illog/ui'
+
+// Basic usage
+<Box p="400" bg="bgDefaultDefault" rounded="200">
+  Content
+</Box>
+
+// Semantic HTML
+<Box as="section" p="600">
+  <Box as="article" p="400" shadow="200">
+    Article content
+  </Box>
+</Box>
+
+// Flex layout
+<Box display="flex" gap="300" alignItems="center">
+  <Icon name="check" />
+  <Text>Done</Text>
+</Box>
+```
+
+## Related Components
+
+- **Stack** — Vertical or horizontal layout with consistent spacing
+- **Inline** — Horizontal layout (row-direction optimized version of Stack)
+- **Center** — Center alignment
+- **Card** — Card-styled container

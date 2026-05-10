@@ -1,0 +1,107 @@
+---
+title: BasicSelector
+description: Generic single-select dropdown with controlled/uncontrolled modes
+category: Components
+order: 15
+---
+
+## Overview
+
+BasicSelector is a **generic single-select dropdown**. Built with the compound component pattern, it supports both controlled and uncontrolled modes.
+
+- **Compound** — Composed of Root, Trigger, Content, Viewport, Value, Item
+- **Keyboard** — Open with Enter/Space/ArrowDown, close with Escape
+- **Accessible** — `role="combobox"`, `role="listbox"`, `role="option"` applied
+
+> Use TagSelector and BadgeSelector for tag/badge selection respectively.
+
+## Basic Usage
+
+```tsx
+import { BasicSelector } from '@illog/ui'
+
+<BasicSelector.Root value={selected} onValueChange={setSelected}>
+  <BasicSelector.Trigger ariaLabel="Sort by">
+    <BasicSelector.Value placeholder="Select an option" />
+  </BasicSelector.Trigger>
+  <BasicSelector.Content>
+    <BasicSelector.Viewport>
+      <BasicSelector.Item value="latest">Latest</BasicSelector.Item>
+      <BasicSelector.Item value="oldest">Oldest</BasicSelector.Item>
+      <BasicSelector.Item value="name">Name</BasicSelector.Item>
+    </BasicSelector.Viewport>
+  </BasicSelector.Content>
+</BasicSelector.Root>
+```
+
+## Uncontrolled Mode
+
+```tsx
+<BasicSelector.Root defaultValue="latest">
+  <BasicSelector.Trigger>
+    <BasicSelector.Value />
+  </BasicSelector.Trigger>
+  <BasicSelector.Content>
+    <BasicSelector.Viewport>
+      <BasicSelector.Item value="latest">Latest</BasicSelector.Item>
+      <BasicSelector.Item value="oldest">Oldest</BasicSelector.Item>
+    </BasicSelector.Viewport>
+  </BasicSelector.Content>
+</BasicSelector.Root>
+```
+
+## Custom Value Rendering
+
+```tsx
+<BasicSelector.Value placeholder="Select an option">
+  {(value) => <Text color="textBrandDefault">{value}</Text>}
+</BasicSelector.Value>
+```
+
+## Sub-components
+
+### BasicSelector.Root
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | — | Controlled selected value |
+| `defaultValue` | `string` | `''` | Uncontrolled default value |
+| `isOpened` | `boolean` | — | Controlled open state |
+| `isDefaultOpen` | `boolean` | `false` | Uncontrolled default open state |
+| `disabled` | `boolean` | `false` | Disabled state |
+| `onValueChange` | `(value: string) => void` | — | Value change callback |
+| `onOpenChange` | `(open: boolean) => void` | — | Open state change callback |
+
+### BasicSelector.Trigger
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `ariaLabel` | `string` | — | Accessibility label |
+| `className` | `string` | — | Additional CSS class |
+
+### BasicSelector.Content
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `position` | `'item-aligned' \| 'popover'` | `'item-aligned'` | Positioning mode |
+| `side` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'bottom'` | Popover mode direction |
+| `sideOffset` | `number` | `0` | Gap from trigger (px) |
+
+### BasicSelector.Item
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | **required** | Selection value |
+| `disabled` | `boolean` | `false` | Disabled state |
+
+### BasicSelector.Value
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `placeholder` | `string` | — | Text to display when no value is selected |
+| `children` | `(value: string) => ReactNode` | — | Custom render function |
+
+## Guidelines
+
+- Consider ToggleMenu for 3 or fewer options
+- Always specify `ariaLabel` to ensure accessibility

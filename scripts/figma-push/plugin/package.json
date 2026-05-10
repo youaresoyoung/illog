@@ -1,0 +1,14 @@
+{
+  "name": "@illog-internal/figma-tokens-sync-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Figma plugin that imports illog DTCG tokens into Figma Variables.",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -p tsconfig.json --watch"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.110.0",
+    "typescript": "^5.8.3"
+  }
+}

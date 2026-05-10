@@ -1,0 +1,27 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "illog-web",
+  "projectType": "application",
+  "root": "services/web",
+  "sourceRoot": "services/web/app",
+  "implicitDependencies": ["illog-ui", "illog-themes", "illog-analytics"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "services/web", "command": "pnpm build" },
+      "outputs": ["{projectRoot}/.next"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "services/web", "command": "pnpm lint" }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "services/web", "command": "pnpm exec tsc --noEmit" }
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "services/web", "command": "pnpm dev" }
+    }
+  }
+}

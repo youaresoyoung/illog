@@ -1,0 +1,35 @@
+import { readFileSync } from 'fs'
+import { join } from 'path'
+import { app } from 'electron'
+import { isDev } from '../../config/env'
+
+const migrationsPath = isDev
+  ? join(app.getAppPath(), 'src/main/database/migrations')
+  : join(process.resourcesPath, 'migrations')
+
+const getMigrationFiles = (fileName: string) => {
+  return readFileSync(join(migrationsPath, `${fileName}.sql`), 'utf8')
+}
+
+export const migrations = [
+  {
+    version: 1,
+    up: getMigrationFiles('001_initial_schema')
+  },
+  {
+    version: 2,
+    up: getMigrationFiles('002_add_description_to_task')
+  },
+  {
+    version: 3,
+    up: getMigrationFiles('003_set_timer_columns')
+  },
+  {
+    version: 4,
+    up: getMigrationFiles('004_add_task_reflection')
+  },
+  {
+    version: 5,
+    up: getMigrationFiles('005_rename_task_columns')
+  }
+]

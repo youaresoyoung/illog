@@ -1,0 +1,74 @@
+---
+title: Tag
+description: Color tag chip optimized for multi-select contexts
+category: Components
+order: 18
+---
+
+## Overview
+
+Tag is a **color tag chip**. Similar to Badge but optimized for multi-select contexts.
+
+- **6 colors** — blue, gray, green, purple, red, yellow
+- **Removable** — Remove by passing tag id via `removeFromTask`
+- **Add button** — Add trigger with `+` icon via `addTagButtonVariant`
+
+## Basic Usage
+
+```tsx
+import { Tag } from '@illog/ui'
+
+// Read-only
+<Tag tag={{ id: '1', name: 'Design', color: 'purple' }} />
+
+// Removable
+<Tag
+  tag={{ id: '1', name: 'Development', color: 'blue' }}
+  removeFromTask={(id) => handleRemoveTag(id)}
+/>
+
+// Add button
+<Tag
+  tag={{ name: 'Add Tag' }}
+  addTagButtonVariant="default"
+  openTagSelector={(e) => openSelector(e)}
+/>
+```
+
+## Differences from Badge
+
+| Feature | Tag | Badge |
+|---------|-----|-------|
+| Selection mode | Multi-select | Single select |
+| Add icon | `+` icon | Chevron icon |
+| Remove callback | `removeFromTask(id)` | `onRemove()` |
+| Color required | Required in `TagType` | Optional in `BadgeItem` |
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `tag` | `TagType \| OmittedTag` | **required** | Tag data |
+| `addTagButtonVariant` | `'default' \| 'error'` | — | Add button mode |
+| `openTagSelector` | `(e: MouseEvent) => void` | — | Add button click handler |
+| `removeFromTask` | `(id: string) => void` | — | Tag remove handler |
+
+### TagType
+
+```tsx
+type TagColor = 'blue' | 'gray' | 'green' | 'purple' | 'red' | 'yellow'
+
+type TagType = {
+  id: string
+  name: string
+  color: TagColor
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date | null
+}
+```
+
+## Guidelines
+
+- Use Tag + TagSelector for multi-select; use Badge + BadgeSelector for single select
+- Tag can also be used for read-only display without add/remove UI

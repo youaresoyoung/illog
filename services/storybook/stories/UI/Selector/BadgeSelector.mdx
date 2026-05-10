@@ -1,0 +1,406 @@
+import { Canvas, Meta, Controls, Primary, Stories } from '@storybook/addon-docs/blocks'
+import * as BadgeSelectorStories from './BadgeSelector.stories'
+
+<Meta of={BadgeSelectorStories} />
+
+# BadgeSelector
+
+A compound component for managing badge-based single selection with built-in search, creation, and CRUD operations.
+
+<Primary />
+
+## Features
+
+<ul
+  style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '12px',
+    marginBottom: '24px'
+  }}
+>
+  <li>Search and filter items</li>
+  <li>Create items inline</li>
+  <li>Update existing items</li>
+  <li>Delete items</li>
+  <li>Keyboard navigation</li>
+  <li>Click outside to close</li>
+  <li>Customizable trigger</li>
+  <li>TypeScript support</li>
+</ul>
+
+## Installation
+
+```bash
+# Already included in @illog/ui package
+import { BadgeSelector } from '@illog/ui'
+```
+
+## Anatomy
+
+Import and structure the compound component:
+
+```tsx
+import { BadgeSelector } from '@illog/ui'
+
+export default () => (
+  <BadgeSelector.Root
+    items={items}
+    selectedItem={selectedItem}
+    onSelectItem={handleSelectItem}
+    onClearItem={handleClearItem}
+    onCreateItem={handleCreateItem}
+    onDeleteItem={handleDeleteItem}
+    onUpdateItem={handleUpdateItem}
+  >
+    <BadgeSelector.Trigger>{/* Custom trigger button */}</BadgeSelector.Trigger>
+
+    <BadgeSelector.Content>
+      <BadgeSelector.Search />
+      <BadgeSelector.List />
+    </BadgeSelector.Content>
+  </BadgeSelector.Root>
+)
+```
+
+## API Reference
+
+### Root
+
+The root component that provides context and manages state.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop             | Type                                                                   | Required | Description                                    |
+| ---------------- | ---------------------------------------------------------------------- | -------- | ---------------------------------------------- |
+| `items`          | `BadgeItem[]`                                                          | Yes      | All available items                            |
+| `selectedItem`   | `BadgeItem \| null`                                                    | Yes      | Currently selected item                        |
+| `onSelectItem`   | `(itemId: string) => Promise<void>`                                    | Yes      | Called when an item is selected                |
+| `onClearItem`    | `() => Promise<void>`                                                  | Yes      | Called when clearing the selected item         |
+| `onCreateItem`   | `(data: Partial<OmittedBadgeItem>) => Promise<string>`                 | Yes      | Called when creating a new item                |
+| `onDeleteItem`   | `(itemId: string) => Promise<void>`                                    | Yes      | Called when deleting an item                   |
+| `onUpdateItem`   | `(itemId: string, data: Partial<OmittedBadgeItem>) => Promise<void>`   | Yes      | Called when updating an item                   |
+| `maxNameLength`  | `number`                                                               | No       | Maximum characters for item names (default: 100) |
+| `children`       | `ReactNode`                                                            | Yes      | Must contain Trigger and Content               |
+
+</div>
+
+**Type Definitions:**
+
+```tsx
+type BadgeItem = {
+  id: string
+  name: string
+  color: BadgeColor
+  createdAt: Date
+  updatedAt: Date | null
+  deletedAt: Date | null
+}
+
+type OmittedBadgeItem = Omit<BadgeItem, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
+```
+
+### Trigger
+
+Opens and closes the badge selector dropdown.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop       | Type        | Required | Description                                     |
+| ---------- | ----------- | -------- | ----------------------------------------------- |
+| `asChild`  | `boolean`   | No       | Merge props with child element (default: false) |
+| `children` | `ReactNode` | Yes      | Trigger button content                          |
+
+</div>
+
+**Data Attributes:**
+
+- `data-state`: "open" | "closed"
+
+### Content
+
+Container for the dropdown content with portal rendering.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop        | Type        | Required | Description                         |
+| ----------- | ----------- | -------- | ----------------------------------- |
+| `children`  | `ReactNode` | Yes      | Typically Search and List           |
+| `className` | `string`    | No       | CSS class for the content container |
+
+</div>
+
+### Search
+
+Input field for filtering and creating items with selected item display.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop          | Type     | Required | Description                                |
+| ------------- | -------- | -------- | ------------------------------------------ |
+| `placeholder` | `string` | No       | Placeholder text (default: "Search...")    |
+| `maxLength`   | `number` | No       | Maximum input length (default: 100)        |
+
+</div>
+
+### List
+
+Renders the filtered item list with management options.
+
+<div style={{ marginBottom: '24px' }}>
+
+| Prop | Type | Required | Description |
+| ---- | ---- | -------- | ----------- |
+| -    | -    | -        | No props    |
+
+</div>
+
+## Examples
+
+### Custom Trigger with Badge
+
+Use `asChild` to render your own trigger element:
+
+```tsx
+<BadgeSelector.Root {...handlers}>
+  <BadgeSelector.Trigger asChild>
+    <div style={{ cursor: 'pointer' }}>
+      {selectedItem ? (
+        <Badge item={selectedItem} />
+      ) : (
+        <button>Select Item</button>
+      )}
+    </div>
+  </BadgeSelector.Trigger>
+  {/* ... */}
+</BadgeSelector.Root>
+```
+
+### With Custom Max Name Length
+
+```tsx
+<BadgeSelector.Root
+  items={items}
+  selectedItem={selectedItem}
+  maxNameLength={50}
+  {...handlers}
+>
+  {/* ... */}
+</BadgeSelector.Root>
+```
+
+### With Custom Search Placeholder
+
+```tsx
+<BadgeSelector.Content>
+  <BadgeSelector.Search placeholder="Find an item..." />
+  <Divider />
+  <BadgeSelector.List />
+</BadgeSelector.Content>
+```
+
+### Complete Example with All Handlers
+
+```tsx
+import { useState } from 'react'
+import { BadgeSelector, Divider } from '@illog/ui'
+
+export default function MyComponent() {
+  const [items, setItems] = useState<BadgeItem[]>([])
+  const [selectedItem, setSelectedItem] = useState<BadgeItem | null>(null)
+
+  const handleSelectItem = async (itemId: string) => {
+    const item = items.find((i) => i.id === itemId)
+    if (item) setSelectedItem(item)
+  }
+
+  const handleClearItem = async () => {
+    setSelectedItem(null)
+  }
+
+  const handleCreateItem = async (data: Partial<OmittedBadgeItem>) => {
+    const newItem = {
+      id: Date.now().toString(),
+      name: data.name!,
+      color: data.color!,
+      createdAt: new Date(),
+      updatedAt: null,
+      deletedAt: null
+    }
+    setItems([...items, newItem])
+    return newItem.id
+  }
+
+  const handleDeleteItem = async (itemId: string) => {
+    setItems(items.filter((i) => i.id !== itemId))
+  }
+
+  const handleUpdateItem = async (itemId: string, data: Partial<OmittedBadgeItem>) => {
+    setItems(
+      items.map((i) => (i.id === itemId ? { ...i, ...data, updatedAt: new Date() } : i))
+    )
+  }
+
+  return (
+    <BadgeSelector.Root
+      items={items}
+      selectedItem={selectedItem}
+      onSelectItem={handleSelectItem}
+      onClearItem={handleClearItem}
+      onCreateItem={handleCreateItem}
+      onDeleteItem={handleDeleteItem}
+      onUpdateItem={handleUpdateItem}
+    >
+      <BadgeSelector.Trigger asChild>
+        <button>{selectedItem?.name ?? 'Select Item'}</button>
+      </BadgeSelector.Trigger>
+
+      <BadgeSelector.Content>
+        <BadgeSelector.Search />
+        <Divider />
+        <BadgeSelector.List />
+      </BadgeSelector.Content>
+    </BadgeSelector.Root>
+  )
+}
+```
+
+## Accessibility
+
+### Keyboard Interactions
+
+<div style={{ marginBottom: '24px' }}>
+
+| Key                  | Action                                      |
+| -------------------- | ------------------------------------------- |
+| `Enter`              | Select item / Create new item (in search)   |
+| `Backspace`          | Clear selected item (when search is empty)  |
+| `Escape`             | Close dropdown                              |
+| `Space` (on trigger) | Toggle dropdown                             |
+| `Enter` (on trigger) | Toggle dropdown                             |
+
+</div>
+
+### ARIA
+
+BadgeSelector implements proper ARIA attributes:
+
+- **Trigger**: `aria-expanded`, `aria-haspopup="listbox"`, `role="button"`
+- **Search**: Auto-focus when opened, proper input semantics
+- **Content**: `role="listbox"` for proper list semantics
+
+### Focus Management
+
+- Focus returns to trigger when dropdown closes
+- Search input auto-focuses when dropdown opens
+- Keyboard navigation works without mouse
+- Selected item displayed with remove button
+
+## Custom APIs
+
+### useBadgeSelectorContext
+
+Access internal state and handlers from custom components:
+
+```tsx
+import { useBadgeSelectorContext } from '@illog/ui'
+
+function CustomBadgeList() {
+  const {
+    // State
+    isOpen,
+    searchTerm,
+    selectedItem,
+    filteredItems,
+    canCreateNew,
+    previewColor,
+
+    // Refs
+    triggerRef,
+    contentRef,
+    inputRef,
+
+    // Handlers
+    setIsOpen,
+    setSearchTerm,
+    selectItem,
+    clearItem,
+    createItem,
+    deleteItem,
+    updateItem,
+    handleKeyDown
+  } = useBadgeSelectorContext()
+
+  return (
+    <div>
+      {filteredItems.map((item) => (
+        <button key={item.id} onClick={() => selectItem(item)}>
+          {item.name}
+        </button>
+      ))}
+    </div>
+  )
+}
+```
+
+**Context Values:**
+
+<div style={{ marginBottom: '24px' }}>
+
+| Property        | Type                                                                    | Description                     |
+| --------------- | ----------------------------------------------------------------------- | ------------------------------- |
+| `isOpen`        | `boolean`                                                               | Dropdown open state             |
+| `searchTerm`    | `string`                                                                | Current search input value      |
+| `selectedItem`  | `BadgeItem \| null`                                                     | Currently selected item         |
+| `filteredItems` | `BadgeItem[]`                                                           | Items matching current search   |
+| `canCreateNew`  | `boolean`                                                               | Whether new item can be created |
+| `previewColor`  | `BadgeColor`                                                            | Preview color for new items     |
+| `triggerRef`    | `RefObject<HTMLElement>`                                                | Ref to trigger element          |
+| `contentRef`    | `RefObject<HTMLDivElement>`                                             | Ref to content element          |
+| `inputRef`      | `RefObject<HTMLInputElement>`                                           | Ref to search input             |
+| `setIsOpen`     | `(open: boolean) => void`                                               | Control dropdown state          |
+| `setSearchTerm` | `(term: string) => void`                                                | Update search input             |
+| `selectItem`    | `(item: BadgeItem) => Promise<void>`                                    | Select an item                  |
+| `clearItem`     | `() => Promise<void>`                                                   | Clear selected item             |
+| `createItem`    | `() => Promise<void>`                                                   | Create new item from search     |
+| `deleteItem`    | `(itemId: string) => Promise<void>`                                     | Delete existing item            |
+| `updateItem`    | `(itemId: string, data: Partial<OmittedBadgeItem>) => Promise<void>`    | Update item properties          |
+| `handleKeyDown` | `(e: React.KeyboardEvent<HTMLInputElement>) => void`                    | Keyboard event handler          |
+
+</div>
+
+**Usage Example:**
+
+```tsx
+import { BadgeSelector, useBadgeSelectorContext } from '@illog/ui'
+
+function CompactBadgeDisplay() {
+  const { selectedItem, clearItem } = useBadgeSelectorContext()
+
+  if (!selectedItem) return null
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <span style={{ color: selectedItem.color }}>● {selectedItem.name}</span>
+      <button onClick={() => clearItem()}>×</button>
+    </div>
+  )
+}
+
+export default () => (
+  <BadgeSelector.Root {...handlers}>
+    <BadgeSelector.Trigger>Select Item</BadgeSelector.Trigger>
+    <BadgeSelector.Content>
+      <CompactBadgeDisplay />
+      <BadgeSelector.Search />
+      <BadgeSelector.List />
+    </BadgeSelector.Content>
+  </BadgeSelector.Root>
+)
+```
+
+---
+
+## Stories
+
+<Stories />

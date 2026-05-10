@@ -4,13 +4,30 @@
 
 .env
 .env.local
+.env.production
 .env.*.local
+.env.codeqa
 
 **/dist/*
 dist
+**/out/*
+out
+**/build/*
+**/.vite/*
+
 
 node_modules
-pnpm-lock.yaml
-package-lock.json
 
 .vscode/
+*storybook.log
+storybook-static
+
+.eslintcache
+
+.nx/cache
+.nx/workspace-data
+
+.next
+
+# Claude Code local settings (per-machine tool allowlist — do not commit)
+.claude/

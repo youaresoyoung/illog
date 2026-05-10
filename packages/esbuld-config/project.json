@@ -1,0 +1,17 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "illog-esbuild-config",
+  "projectType": "library",
+  "root": "packages/esbuld-config",
+  "sourceRoot": "packages/esbuld-config",
+  "targets": {
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "packages/esbuld-config", "command": "pnpm exec eslint --cache ." }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "packages/esbuld-config", "command": "pnpm exec tsc --noEmit" }
+    }
+  }
+}

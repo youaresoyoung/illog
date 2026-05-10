@@ -1,0 +1,46 @@
+---
+description: illog design system rules — applies to all UI work
+globs: packages/ui/**/*.{ts,tsx}, services/app/**/*.{ts,tsx}, services/storybook/**/*.{ts,tsx}, services/web/**/*.{ts,tsx}
+alwaysApply: true
+---
+
+# illog UI rules
+
+This project has a custom design system at `@illog/ui` backed by tokens in `@illog/themes`. Always reuse the existing primitives. The full reference is in `services/web/public/llms-full.txt` — load it whenever you need component or token details.
+
+## Hard rules
+
+1. **No raw color, spacing, radius, font, blur, depth, or stroke values** in component code. Reference `@illog/themes` tokens via `@illog/ui` sprinkles or recipes.
+2. **New UI primitives go in `packages/ui/src/components/<Name>/`**, never inside `services/app`. App code only composes existing `@illog/ui` primitives.
+3. **No deep imports**. Always `import { X } from '@illog/ui'`. Never `@illog/ui/src/...`.
+4. **Vanilla Extract only** for styling — `@vanilla-extract/sprinkles`, `@vanilla-extract/recipes`, `@vanilla-extract/css`, `@vanilla-extract/dynamic`. No Tailwind, no CSS modules, no styled-components.
+5. **Boolean props use `is` / `has` prefixes** (`isDisabled`, `hasError`). Variants are string union literals, never enums.
+6. **React 19 ref-as-prop** — accept `ref?: Ref<HTMLXxxElement>` directly in props. Do not use `forwardRef`.
+7. **Compound components** expose a `use<Name>Context` hook (see `Selector` for the canonical pattern).
+
+## Component creation checklist
+
+Before adding a new component to `packages/ui`:
+
+- [ ] Confirm no existing primitive covers the use case (check `packages/ui/src/index.ts` and `llms-full.txt`).
+- [ ] Folder layout: `index.ts`, `<Name>.tsx`, `<name>.css.ts`, `types.ts` (optional), `<Name>.test.tsx`.
+- [ ] Export from `packages/ui/src/index.ts` (the only public surface).
+- [ ] Style with sprinkles for tokenized values, recipes for variant-driven styling.
+- [ ] Add a story in `services/storybook/stories/UI/<Name>/`.
+- [ ] Run `pnpm --filter @illog/ui typecheck` and `test`.
+- [ ] If you added a token: regenerate via `pnpm --filter @illog/themes build:css` and `pnpm --filter @illog/ui build:color`.
+- [ ] Regenerate AI context: `pnpm gen:ai-context`.
+
+## Auto-generated files — do not hand-edit
+
+- `packages/ui/src/core/tokens/generatedColors.ts`
+- `packages/ui/src/assets/icons/*`
+- `packages/ui/components.spec.json`
+- `services/web/public/llms-full.txt`
+
+## Discovery order when looking for a component
+
+1. `packages/ui/src/index.ts` exports — if it exists, use it.
+2. `services/web/public/llms-full.txt` for the full prop spec.
+3. `services/storybook/stories/UI/<Component>/` for usage examples.
+4. Only if no existing primitive fits: propose adding one to `packages/ui`.

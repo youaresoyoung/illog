@@ -1,0 +1,45 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "illog-app",
+  "projectType": "application",
+  "root": "services/app",
+  "sourceRoot": "services/app/src",
+  "implicitDependencies": ["illog-ui", "illog-themes", "illog-analytics"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "cwd": "services/app",
+        "command": "pnpm exec vite build --config vite.renderer.config.ts"
+      },
+      "outputs": ["{projectRoot}/.vite/renderer/main_window"]
+    },
+    "lint": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "services/app", "command": "pnpm exec eslint --cache ." }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "services/app", "command": "pnpm exec tsc --noEmit" }
+    },
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "services/app", "command": "pnpm start" }
+    },
+    "package": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": { "cwd": "services/app", "command": "pnpm package" }
+    },
+    "make": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": { "cwd": "services/app", "command": "pnpm make" }
+    },
+    "publish": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build"],
+      "options": { "cwd": "services/app", "command": "pnpm publish" }
+    }
+  }
+}

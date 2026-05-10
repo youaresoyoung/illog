@@ -1,0 +1,95 @@
+---
+title: TimePicker
+description: Start/end date and time range selection compound component
+category: Components
+order: 16
+---
+
+## Overview
+
+TimePicker is a **date and time range selection** compound component. It uses the native `<input type="datetime-local">` to leverage the browser's built-in date picker.
+
+- **Compound** — Root, Input, Range, Separator, Summary, TimeRange, DateRange
+- **Controlled** — External state management via `value` + `onChange`
+- **Context** — Access state anywhere with `useTimePickerContext`
+
+## Basic Usage
+
+```tsx
+import { TimePicker } from '@illog/ui'
+
+const [value, setValue] = useState({ start: null, end: null })
+
+<TimePicker value={value} onChange={setValue}>
+  <TimePicker.Range>
+    <TimePicker.Input field="start" placeholder="Start time" />
+    <TimePicker.Separator />
+    <TimePicker.Input field="end" placeholder="End time" />
+  </TimePicker.Range>
+</TimePicker>
+```
+
+## Summary Display
+
+```tsx
+<TimePicker value={value} onChange={setValue}>
+  <TimePicker.Range>
+    <TimePicker.Input field="start" />
+    <TimePicker.Separator>→</TimePicker.Separator>
+    <TimePicker.Input field="end" />
+  </TimePicker.Range>
+  <TimePicker.Summary showDate showTime />
+</TimePicker>
+```
+
+## Partial Display
+
+```tsx
+// Time only
+<TimePicker.TimeRange />
+
+// Date only
+<TimePicker.DateRange />
+```
+
+## Sub-components
+
+### TimePicker (Root)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `{ start: string \| null, end: string \| null }` | **required** | ISO date string |
+| `onChange` | `(value) => void` | **required** | Value change callback |
+
+### TimePicker.Input
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `field` | `'start' \| 'end'` | **required** | Field to control |
+| `placeholder` | `string` | `'Add time'` | Placeholder text |
+
+### TimePicker.Separator
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | `'–'` | Separator text |
+
+### TimePicker.Summary
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `showTime` | `boolean` | `true` | Whether to show time |
+| `showDate` | `boolean` | `true` | Whether to show date |
+
+## Context Hook
+
+```tsx
+import { useTimePickerContext } from '@illog/ui'
+
+const { value, onChange, startDate, endDate, isSameDay } = useTimePickerContext()
+```
+
+## Guidelines
+
+- Use ISO strings (`"2024-01-15T10:30"`) or null for value
+- When start/end are on the same day, Summary displays the date only once

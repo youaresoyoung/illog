@@ -1,0 +1,38 @@
+---
+title: Typography
+description: Font family, scale, weight, and text style tokens
+category: Foundation
+order: 2
+---
+
+## Overview
+
+illog's typography system is composed of **Primitive tokens** (font family, scale, weight) and **Text Styles** (combined style presets).
+
+## Primitive Tokens
+
+Base tokens that define font families, size scales, and weights.
+
+<TokenReference group="typography.primitive" />
+
+---
+
+## Text Styles
+
+Predefined text style presets. Each style combines `fontFamily`, `fontSize`, `fontWeight`, and `lineHeight`.
+
+<TokenReference group="typography.typography" />
+
+## Usage
+
+```tsx
+import { styles } from '@illog/themes'
+
+// With the Text component
+<Text textStyle="heading">Heading text</Text>
+<Text textStyle="bodyBase">Body text</Text>
+
+// Using style objects directly
+const titleStyle = styles.text.title.base
+// { fontFamily: 'Inter, sans-serif', fontSize: '48px', fontWeight: 700, lineHeight: 1.2, ... }
+```

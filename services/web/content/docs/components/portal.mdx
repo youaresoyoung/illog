@@ -1,0 +1,49 @@
+---
+title: Portal
+description: Utility component to render children elsewhere in the DOM tree
+category: Components
+order: 13
+---
+
+## Overview
+
+Portal is a utility component that wraps React's `createPortal`. Used internally by overlay components such as Dialog, Toast, and ContextMenu.
+
+- **SSR Safe** — Checks `typeof document` for safe server-side rendering
+- **Customizable** — Change the target DOM node with the `container` prop
+- **Null safe** — Returns null when there are no children
+
+## Basic Usage
+
+```tsx
+import { Portal } from '@illog/ui'
+
+<Portal>
+  <div className="floating-panel">
+    This content is rendered in document.body.
+  </div>
+</Portal>
+```
+
+## Custom Container
+
+```tsx
+const containerRef = useRef<HTMLDivElement>(null)
+
+<div ref={containerRef} />
+<Portal container={containerRef.current}>
+  <div>This content is rendered in the containerRef element.</div>
+</Portal>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `container` | `Element \| DocumentFragment` | `document.body` | Target DOM node for rendering |
+| `children` | `ReactNode` | — | Content to render through the portal |
+
+## Guidelines
+
+- Typically used indirectly through Dialog, Toast, ContextMenu, etc., rather than directly
+- Use a custom `container` when you need to resolve z-index conflicts

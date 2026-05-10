@@ -1,0 +1,71 @@
+name: Reusable Validation
+
+on:
+  workflow_call:
+    inputs:
+      extract-version:
+        description: 'Whether to extract version info from package.json or tag'
+        required: false
+        type: boolean
+        default: false
+    outputs:
+      version:
+        description: 'Extracted version string'
+        value: ${{ jobs.validate.outputs.version }}
+      is_prerelease:
+        description: 'Whether this is a prerelease version'
+        value: ${{ jobs.validate.outputs.is_prerelease }}
+    secrets:
+      AWS_CLOUDFRONT_DOMAIN:
+        required: false
+
+jobs:
+  validate:
+    name: Validate Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+      is_prerelease: ${{ steps.get_version.outputs.is_prerelease }}
+    env:
+      AWS_CLOUDFRONT_DOMAIN: ${{ secrets.AWS_CLOUDFRONT_DOMAIN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get version
+        if: ${{ inputs.extract-version }}
+        id: get_version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            VERSION="${{ github.ref_name }}"
+          else
+            VERSION=$(node -p "require('./package.json').version")
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          # Check if it's a prerelease (contains alpha, beta, rc, etc.)
+          if [[ "$VERSION" =~ (alpha|beta|rc) ]]; then
+            echo "is_prerelease=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_prerelease=false" >> $GITHUB_OUTPUT
+          fi
+
+          echo "Version: $VERSION"
+
+      - name: Setup Node.js & pnpm
+        uses: ./.github/actions/setup-node-pnpm
+
+      - name: Run linting
+        run: pnpm nx run-many -t lint --parallel=3
+
+      - name: Build packages
+        run: pnpm nx run-many -t build --projects='packages/*'
+
+      - name: Type check
+        run: pnpm nx run-many -t typecheck --parallel=3
+
+      - name: Build renderer
+        run: pnpm nx run illog-app:build
