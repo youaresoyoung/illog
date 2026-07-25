@@ -9,7 +9,11 @@
     padding: 40px 24px 80px;
     background: #1a1a1a;
     color: #e6e6e6;
+<<<<<<< HEAD
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Pretendard, sans-serif;
+=======
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Pretendard, sans-serif;
+>>>>>>> caa6779 (docs: add commit workflow documentation)
     line-height: 1.6;
   }
   .wrap {
@@ -139,13 +143,18 @@
 
 <div class="wrap">
   <h1>illog 커밋 작성 프로세스</h1>
+<<<<<<< HEAD
   <p class="subtitle">
     AI 커밋 메시지 생성부터 husky 훅 검증까지, 로컬에서 커밋 하나가 완성되는 전체 과정
   </p>
+=======
+  <p class="subtitle">AI 커밋 메시지 생성부터 husky 훅 검증까지, 로컬에서 커밋 하나가 완성되는 전체 과정</p>
+>>>>>>> caa6779 (docs: add commit workflow documentation)
 
   <section>
     <h2><span class="num">1</span>전체 흐름 개요</h2>
     <p class="desc">
+<<<<<<< HEAD
       코드 수정 후 <code>git add</code>로 스테이징하고, 선택적으로
       <code>pnpm gen:commit</code>(codeqa CLI)이 Groq LLM을 호출해 커밋 메시지 초안을 생성합니다.
       <code>git commit</code> 실행 시 husky가 등록한 두 개의 훅(<code>pre-commit</code> →
@@ -193,6 +202,47 @@
         fill:#f59f00,stroke:#e67700,color:#1a1a1a classDef api
         fill:#7048e8,stroke:#5f3dc4,color:#fff classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
         classDef done fill:#2f9e44,stroke:#2b8a3e,color:#fff
+=======
+      코드 수정 후 <code>git add</code>로 스테이징하고, 선택적으로 <code>pnpm gen:commit</code>(codeqa
+      CLI)이 Groq LLM을 호출해 커밋 메시지 초안을 생성합니다. <code>git commit</code> 실행 시
+      husky가 등록한 두 개의 훅(<code>pre-commit</code> → <code>commit-msg</code>)이 순서대로
+      실행되어 코드 스타일과 커밋 메시지 포맷을 검증합니다.
+    </p>
+    <div class="legend">
+      <div class="legend-item"><div class="swatch" style="background:#4c6ef5"></div>개발자 액션</div>
+      <div class="legend-item"><div class="swatch" style="background:#f59f00"></div>husky 훅</div>
+      <div class="legend-item"><div class="swatch" style="background:#7048e8"></div>외부 API / 도구</div>
+      <div class="legend-item"><div class="swatch" style="background:#e03131"></div>실패 경로</div>
+      <div class="legend-item"><div class="swatch" style="background:#2f9e44"></div>완료</div>
+    </div>
+    <div class="diagram">
+      <div class="mermaid">
+flowchart TD
+    Dev["개발자: 코드 수정"]:::actor --> Stage["git add\n(스테이징)"]:::actor
+    Stage --> AIGen{"AI로 커밋 메시지\n생성할까?"}:::actor
+    AIGen -- "예: pnpm gen:commit" --> Codeqa[["codeqa CLI --commit"]]:::hook
+    Codeqa --> GroqAPI[("Groq API\n(LLM 스트리밍)")]:::api
+    GroqAPI --> MsgReady["터미널에 출력된 메시지를\n확인/복사"]:::actor
+    AIGen -- "아니오: 직접 작성" --> MsgReady
+    MsgReady --> GitCommit["git commit -m \"...\""]:::actor
+    GitCommit --> PreCommit{{".husky/pre-commit"}}:::hook
+    PreCommit --> LintStaged["lint-staged\n(eslint --fix / prettier)"]:::hook
+    LintStaged -- "실패" --> LintFail["❌ 훅 중단\n(에러 위치 안내)"]:::fail
+    LintFail -.->|"수정 후 재시도"| Stage
+    LintStaged -- "통과 (자동 재스테이징)" --> CommitMsgHook{{".husky/commit-msg"}}:::hook
+    CommitMsgHook --> Regex{"정규식 패턴 검사\n(Conventional/PR/Gitmoji/Special)"}:::hook
+    Regex -- "불일치" --> MsgFail["❌ 커밋 거부\n(허용 포맷 안내 출력)"]:::fail
+    MsgFail -.->|"메시지 수정 후 재시도"| GitCommit
+    Regex -- "일치" --> CommitDone[("✅ 커밋 생성 완료")]:::done
+    CommitDone --> Push["git push"]:::actor
+    Push --> CI[["GitHub Actions CI\n(lint/typecheck/test/build)"]]:::api
+
+    classDef actor fill:#4c6ef5,stroke:#364fc7,color:#fff
+    classDef hook fill:#f59f00,stroke:#e67700,color:#1a1a1a
+    classDef api fill:#7048e8,stroke:#5f3dc4,color:#fff
+    classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
+    classDef done fill:#2f9e44,stroke:#2b8a3e,color:#fff
+>>>>>>> caa6779 (docs: add commit workflow documentation)
       </div>
     </div>
   </section>
@@ -234,12 +284,18 @@
     <h2><span class="num">3</span>pre-commit 훅 상세 (lint-staged)</h2>
     <p class="desc">
       <a href="../../.husky/pre-commit">.husky/pre-commit</a>은 <code>pnpm pre-commit</code>만
+<<<<<<< HEAD
       실행하며, 이는 루트 <code>package.json</code>의 <code>lint-staged</code> 설정을 따릅니다. 파일
       확장자 패턴별로 다른 도구가 스테이징된 파일에만 적용되고, 수정된 결과는 자동으로
+=======
+      실행하며, 이는 루트 <code>package.json</code>의 <code>lint-staged</code> 설정을 따릅니다.
+      파일 확장자 패턴별로 다른 도구가 스테이징된 파일에만 적용되고, 수정된 결과는 자동으로
+>>>>>>> caa6779 (docs: add commit workflow documentation)
       재스테이징됩니다.
     </p>
     <div class="diagram">
       <div class="mermaid">
+<<<<<<< HEAD
         flowchart TD GitCommit(["git commit 실행"]):::actor -->
         HuskyPre{{".husky/pre-commit"}}:::hook HuskyPre --> PnpmScript["pnpm
         pre-commit\n(package.json script)"]:::hook PnpmScript --> LintStaged["npx
@@ -255,6 +311,31 @@
         fill:#f59f00,stroke:#e67700,color:#1a1a1a classDef code
         fill:#495057,stroke:#343a40,color:#fff classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
         classDef done fill:#2f9e44,stroke:#2b8a3e,color:#fff
+=======
+flowchart TD
+    GitCommit(["git commit 실행"]):::actor --> HuskyPre{{".husky/pre-commit"}}:::hook
+    HuskyPre --> PnpmScript["pnpm pre-commit\n(package.json script)"]:::hook
+    PnpmScript --> LintStaged["npx lint-staged"]:::hook
+
+    subgraph Patterns["패턴별 처리 (lint-staged 설정)"]
+        direction TB
+        P1["*.js / *.jsx / *.ts / *.tsx"]:::code --> A1["eslint --fix --cache"]:::code --> A2["prettier --write"]:::code
+        P2["*.json / *.md / *.yml / *.yaml"]:::code --> B1["prettier --write"]:::code
+        P3["*.sql"]:::code --> C1["prettier --write\n--plugin=prettier-plugin-sql"]:::code
+    end
+
+    LintStaged --> Patterns
+    Patterns --> Result{"모든 파일\n통과?"}:::hook
+    Result -- "실패\n(eslint 에러 등)" --> Fail["❌ 훅 중단, 커밋 실패\n(에러 로그 출력)"]:::fail
+    Result -- "통과" --> Restage["수정분 자동 git add\n(재스테이징)"]:::hook
+    Restage --> Next(["다음 훅: commit-msg로 진행"]):::done
+
+    classDef actor fill:#4c6ef5,stroke:#364fc7,color:#fff
+    classDef hook fill:#f59f00,stroke:#e67700,color:#1a1a1a
+    classDef code fill:#495057,stroke:#343a40,color:#fff
+    classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
+    classDef done fill:#2f9e44,stroke:#2b8a3e,color:#fff
+>>>>>>> caa6779 (docs: add commit workflow documentation)
       </div>
     </div>
   </section>
@@ -263,6 +344,7 @@
     <h2><span class="num">4</span>commit-msg 훅 상세 (포맷 검증)</h2>
     <p class="desc">
       <a href="../../.husky/commit-msg">.husky/commit-msg</a>는 커밋 메시지 파일
+<<<<<<< HEAD
       (<code>.git/COMMIT_EDITMSG</code>)을 읽어 4가지 정규식 패턴 중 하나라도 일치하는지 순서대로
       검사합니다. 하나도 일치하지 않으면 허용 포맷 가이드를 출력하고 <code>exit 1</code>로 커밋을
       거부합니다.
@@ -280,6 +362,30 @@
         가이드 출력 +\n커밋 거부"]:::fail classDef code fill:#495057,stroke:#343a40,color:#fff
         classDef hook fill:#f59f00,stroke:#e67700,color:#1a1a1a classDef done
         fill:#2f9e44,stroke:#2b8a3e,color:#fff classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
+=======
+      (<code>.git/COMMIT_EDITMSG</code>)을 읽어 4가지 정규식 패턴 중 하나라도 일치하는지
+      순서대로 검사합니다. 하나도 일치하지 않으면 허용 포맷 가이드를 출력하고
+      <code>exit 1</code>로 커밋을 거부합니다.
+    </p>
+    <div class="diagram">
+      <div class="mermaid">
+flowchart TD
+    MsgFile["커밋 메시지\n(.git/COMMIT_EDITMSG)"]:::code --> Hook{{".husky/commit-msg"}}:::hook
+    Hook --> P1{"Conventional Commits?\nfeat/fix/docs/style/refactor/\ntest/chore/perf/ci/build/revert: msg"}:::hook
+    P1 -- "일치" --> Valid[["✅ exit 0\n커밋 허용"]]:::done
+    P1 -- "불일치" --> P2{"PR Merge 형식?\n[#123] feat(scope): msg\n[PROJ-123] fix: msg"}:::hook
+    P2 -- "일치" --> Valid
+    P2 -- "불일치" --> P3{"Gitmoji 형식?\n:sparkles: / :bug: / :memo: ..."}:::hook
+    P3 -- "일치" --> Valid
+    P3 -- "불일치" --> P4{"Special 패턴?\nMerge... / WIP: / wip: /\nRevert... / fixup! / squash!"}:::hook
+    P4 -- "일치" --> Valid
+    P4 -- "불일치" --> Invalid["❌ exit 1\n허용 포맷 가이드 출력 +\n커밋 거부"]:::fail
+
+    classDef code fill:#495057,stroke:#343a40,color:#fff
+    classDef hook fill:#f59f00,stroke:#e67700,color:#1a1a1a
+    classDef done fill:#2f9e44,stroke:#2b8a3e,color:#fff
+    classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
+>>>>>>> caa6779 (docs: add commit workflow documentation)
       </div>
     </div>
   </section>
@@ -288,6 +394,7 @@
     <h2><span class="num">5</span>왜 commitlint 대신 직접 만든 셸 스크립트인가</h2>
     <p class="desc">
       이 저장소에는 <code>commitlint</code>가 전혀 설치되어 있지 않습니다 —
+<<<<<<< HEAD
       <a href="../../.husky/commit-msg">.husky/commit-msg</a>가 <code>grep -Eq</code>로 4개의
       정규식을 직접 매칭하는 방식으로 같은 역할을 대신합니다. 둘 다 "hook 시점에 메시지를
       검증한다"는 목적은 같고, commitlint 역시 결국 같은 <code>commit-msg</code> 훅 안에서
@@ -301,6 +408,21 @@
       >), Gitmoji, WIP/Merge 특수 패턴까지 4갈래를 모두 허용하는 관대한 규칙을 씁니다. Gitmoji와 PR
       브래킷 형식은 commitlint의 기본 <code>config-conventional</code> 스펙 밖의 규칙이라 어차피
       커스텀 플러그인을 작성해야 했을 것이고, 그럴 바엔 정규식 4줄을 직접 짜는 편이 의존성 추가 없이
+=======
+      <a href="../../.husky/commit-msg">.husky/commit-msg</a>가 <code>grep -Eq</code>로
+      4개의 정규식을 직접 매칭하는 방식으로 같은 역할을 대신합니다. 둘 다 "hook 시점에
+      메시지를 검증한다"는 목적은 같고, commitlint 역시 결국 같은 <code>commit-msg</code> 훅
+      안에서 <code>npx commitlint --edit $1</code>로 호출되는 구조이므로, 실제 비교 대상은
+      "hook이냐 아니냐"가 아니라 "직접 짠 스크립트냐 commitlint를 끼워 넣은 스크립트냐"입니다.
+    </p>
+
+    <div class="note">
+      <strong>핵심 이유:</strong> 이 프로젝트는 Conventional Commits, PR 브래킷 형식
+      (<code>[#123] feat: ...</code>), Gitmoji, WIP/Merge 특수 패턴까지 4갈래를 모두
+      허용하는 관대한 규칙을 씁니다. Gitmoji와 PR 브래킷 형식은 commitlint의 기본
+      <code>config-conventional</code> 스펙 밖의 규칙이라 어차피 커스텀 플러그인을
+      작성해야 했을 것이고, 그럴 바엔 정규식 4줄을 직접 짜는 편이 의존성 추가 없이
+>>>>>>> caa6779 (docs: add commit workflow documentation)
       더 빠르고 이 프로젝트 특유의 예외 케이스를 자유롭게 넣기 쉬웠을 것으로 보입니다.
     </div>
 
@@ -317,14 +439,19 @@
           <tr>
             <td>구현 방식</td>
             <td>bash <code>grep -Eq</code>로 정규식 4개 순차 매칭</td>
+<<<<<<< HEAD
             <td>
               <code>@commitlint/cli</code> + <code>@commitlint/config-conventional</code> 등 설정
               기반 파서
             </td>
+=======
+            <td><code>@commitlint/cli</code> + <code>@commitlint/config-conventional</code> 등 설정 기반 파서</td>
+>>>>>>> caa6779 (docs: add commit workflow documentation)
           </tr>
           <tr>
             <td>유연성</td>
             <td>패턴 추가/수정은 셸 스크립트를 직접 편집</td>
+<<<<<<< HEAD
             <td>
               <code>commitlint.config.js</code>에서 type 목록, scope 필수 여부, 대소문자, 줄 길이
               등을 선언적으로 설정
@@ -347,6 +474,18 @@
               Gitmoji, PR 브래킷 형식(<code>[#123] feat: ...</code>), WIP/Merge를 정규식에 자유롭게
               추가 — 실제로 이미 반영됨
             </td>
+=======
+            <td><code>commitlint.config.js</code>에서 type 목록, scope 필수 여부, 대소문자, 줄 길이 등을 선언적으로 설정</td>
+          </tr>
+          <tr>
+            <td>파싱 정확도</td>
+            <td>정규식 기반이라 body/footer, <code>BREAKING CHANGE</code> 같은 스펙 세부 요소는 검사하지 않음</td>
+            <td>conventional-commits 스펙을 제대로 파싱 (header/body/footer 분리, <code>!</code> breaking change 등)</td>
+          </tr>
+          <tr>
+            <td>이 프로젝트의 예외 규칙</td>
+            <td>Gitmoji, PR 브래킷 형식(<code>[#123] feat: ...</code>), WIP/Merge를 정규식에 자유롭게 추가 — 실제로 이미 반영됨</td>
+>>>>>>> caa6779 (docs: add commit workflow documentation)
             <td>기본 스펙 밖의 규칙이라 별도 커스텀 룰/플러그인을 작성해야 함</td>
           </tr>
           <tr>
@@ -357,10 +496,14 @@
           <tr>
             <td>에러 메시지</td>
             <td>스크립트에 하드코딩된 안내문 (이모지 + 예시로 커스터마이징됨)</td>
+<<<<<<< HEAD
             <td>
               어떤 규칙을 어겼는지 자동 리포트 (예: <code>subject-case</code>,
               <code>type-empty</code>)
             </td>
+=======
+            <td>어떤 규칙을 어겼는지 자동 리포트 (예: <code>subject-case</code>, <code>type-empty</code>)</td>
+>>>>>>> caa6779 (docs: add commit workflow documentation)
           </tr>
         </tbody>
       </table>
@@ -369,5 +512,9 @@
 </div>
 
 <script>
+<<<<<<< HEAD
   mermaid.initialize({ startOnLoad: true, theme: 'dark' })
+=======
+  mermaid.initialize({ startOnLoad: true, theme: "dark" });
+>>>>>>> caa6779 (docs: add commit workflow documentation)
 </script>
