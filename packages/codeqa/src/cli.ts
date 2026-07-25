@@ -1,7 +1,7 @@
 import { buildIndex } from './indexer'
 import { search } from './searcher'
 import { answer } from './answerer'
-import { generateCommitMessage } from './commit'
+import { generateCommitMessage, commitWithMessage } from './commit'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { config } from './env'
@@ -13,10 +13,12 @@ async function main() {
   const args = process.argv.slice(2)
   const reindex = args.includes('--reindex')
   const commit = args.includes('--commit')
+  const write = args.includes('--write')
   const query = args.filter((a) => !a.startsWith('--'))[0]
 
   if (commit) {
-    await generateCommitMessage(config.groqApiKey)
+    const message = await generateCommitMessage(config.groqApiKey)
+    if (write) commitWithMessage(message)
     return
   }
 
@@ -31,6 +33,7 @@ async function main() {
     console.log('  pnpm ask --reindex            :Rebuild index')
     console.log('  pnpm ask --reindex <question> :Rebuild index and ask question')
     console.log('  pnpm ask --commit             :Generate commit message')
+    console.log('  pnpm ask --commit --write     :Generate commit message and commit')
     return
   }
 

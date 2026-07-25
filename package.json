@@ -22,7 +22,8 @@
     "prepare": "husky",
     "pre-commit": "lint-staged",
     "ask": "tsx packages/codeqa/src/cli.ts",
-    "gen:commit": "tsx packages/codeqa/src/cli.ts --commit"
+    "gen:commit": "tsx packages/codeqa/src/cli.ts --commit",
+    "gen:commit:write": "tsx packages/codeqa/src/cli.ts --commit --write"
   },
   "keywords": [],
   "author": "youaresoyoung",
