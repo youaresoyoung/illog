@@ -18,10 +18,8 @@ Portal is a utility component that wraps React's `createPortal`. Used internally
 ```tsx
 import { Portal } from '@illog/ui'
 
-<Portal>
-  <div className="floating-panel">
-    This content is rendered in document.body.
-  </div>
+;<Portal>
+  <div className="floating-panel">This content is rendered in document.body.</div>
 </Portal>
 ```
 
@@ -38,10 +36,10 @@ const containerRef = useRef<HTMLDivElement>(null)
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `container` | `Element \| DocumentFragment` | `document.body` | Target DOM node for rendering |
-| `children` | `ReactNode` | — | Content to render through the portal |
+| Prop        | Type                          | Default         | Description                          |
+| ----------- | ----------------------------- | --------------- | ------------------------------------ |
+| `container` | `Element \| DocumentFragment` | `document.body` | Target DOM node for rendering        |
+| `children`  | `ReactNode`                   | —               | Content to render through the portal |
 
 ## Guidelines
 

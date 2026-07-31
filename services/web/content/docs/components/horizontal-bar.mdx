@@ -27,6 +27,7 @@ HorizontalBar is a **horizontal progress bar**. `role="progressbar"` and ARIA at
 <HorizontalBar value={30} />
 <HorizontalBar value={90} />
 ```
+
 </ComponentPreview>
 
 ## Customization
@@ -43,23 +44,24 @@ HorizontalBar is a **horizontal progress bar**. `role="progressbar"` and ARIA at
 <HorizontalBar value={50} fillColor="var(--background-success-default)" />
 <HorizontalBar value={25} fillColor="var(--background-danger-default)" />
 ```
+
 </ComponentPreview>
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `number` | **required** | Current value (clamped to min/max range) |
-| `min` | `number` | `0` | Minimum value |
-| `max` | `number` | `100` | Maximum value |
-| `height` | `number` | `8` | Bar height (px) |
-| `radius` | `number` | `999` | border-radius (px) |
-| `fillColor` | `string` | `var(--background-brand-default)` | Fill color |
-| `trackColor` | `string` | `var(--background-default-tertiary)` | Track background color |
-| `isAnimated` | `boolean` | `true` | CSS transition animation |
-| `trackStyle` | `CSSProperties` | — | Additional track styles |
-| `fillStyle` | `CSSProperties` | — | Additional fill styles |
-| `ariaLabel` | `string` | `'Progress'` | Accessibility label |
+| Prop         | Type            | Default                              | Description                              |
+| ------------ | --------------- | ------------------------------------ | ---------------------------------------- |
+| `value`      | `number`        | **required**                         | Current value (clamped to min/max range) |
+| `min`        | `number`        | `0`                                  | Minimum value                            |
+| `max`        | `number`        | `100`                                | Maximum value                            |
+| `height`     | `number`        | `8`                                  | Bar height (px)                          |
+| `radius`     | `number`        | `999`                                | border-radius (px)                       |
+| `fillColor`  | `string`        | `var(--background-brand-default)`    | Fill color                               |
+| `trackColor` | `string`        | `var(--background-default-tertiary)` | Track background color                   |
+| `isAnimated` | `boolean`       | `true`                               | CSS transition animation                 |
+| `trackStyle` | `CSSProperties` | —                                    | Additional track styles                  |
+| `fillStyle`  | `CSSProperties` | —                                    | Additional fill styles                   |
+| `ariaLabel`  | `string`        | `'Progress'`                         | Accessibility label                      |
 
 ## Guidelines
 

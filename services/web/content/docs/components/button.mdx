@@ -19,6 +19,7 @@ Button triggers actions or events on click. Use it for form submissions, opening
 <Button variant="primary">Primary</Button>
 <Button variant="secondary">Secondary</Button>
 ```
+
 </ComponentPreview>
 
 Use `primary` for the main action on a page, and `secondary` for supporting actions.
@@ -35,6 +36,7 @@ Use `primary` for the main action on a page, and `secondary` for supporting acti
 <Button variant="primary" size="md">Medium</Button>
 <Button variant="primary" size="lg">Large</Button>
 ```
+
 </ComponentPreview>
 
 - **sm**: Suited for dense UIs or inline actions
@@ -47,8 +49,11 @@ Use `primary` for the main action on a page, and `secondary` for supporting acti
   <Button variant="primary" isFullWidth>Full Width Button</Button>
 
 ```tsx
-<Button variant="primary" isFullWidth>Full Width Button</Button>
+<Button variant="primary" isFullWidth>
+  Full Width Button
+</Button>
 ```
+
 </ComponentPreview>
 
 Use `isFullWidth` to make the button span the full width of its parent container. Useful for mobile layouts or form footers.
@@ -63,22 +68,23 @@ Use `isFullWidth` to make the button span the full width of its parent container
 <Button variant="primary" isDisabled>Primary Disabled</Button>
 <Button variant="secondary" isDisabled>Secondary Disabled</Button>
 ```
+
 </ComponentPreview>
 
 A disabled button indicates that the action is unavailable in the current state.
 
 ## Props
 
-| Prop | Type | Default | Required | Description |
-|------|------|---------|----------|-------------|
-| `variant` | `'primary' \| 'secondary'` | - | Yes | Visual style of the button |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | No | Button size |
-| `isDisabled` | `boolean` | `false` | No | Whether the button is disabled |
-| `isFullWidth` | `boolean` | `false` | No | Whether to use full width |
-| `onClick` | `() => void` | - | No | Click handler |
-| `children` | `ReactNode` | - | Yes | Button content |
-| `className` | `string` | - | No | Additional CSS class |
-| `ariaLabel` | `string` | - | No | Accessibility label |
+| Prop          | Type                       | Default | Required | Description                    |
+| ------------- | -------------------------- | ------- | -------- | ------------------------------ |
+| `variant`     | `'primary' \| 'secondary'` | -       | Yes      | Visual style of the button     |
+| `size`        | `'sm' \| 'md' \| 'lg'`     | `'md'`  | No       | Button size                    |
+| `isDisabled`  | `boolean`                  | `false` | No       | Whether the button is disabled |
+| `isFullWidth` | `boolean`                  | `false` | No       | Whether to use full width      |
+| `onClick`     | `() => void`               | -       | No       | Click handler                  |
+| `children`    | `ReactNode`                | -       | Yes      | Button content                 |
+| `className`   | `string`                   | -       | No       | Additional CSS class           |
+| `ariaLabel`   | `string`                   | -       | No       | Accessibility label            |
 
 ## Usage Guidelines
 

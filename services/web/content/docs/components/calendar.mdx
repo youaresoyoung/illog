@@ -19,13 +19,13 @@ Calendar is a **time-based calendar view** compound component. It renders a time
 ```tsx
 import { Calendar } from '@illog/ui'
 
-<Calendar.TimeGrid
+;<Calendar.TimeGrid
   columns={7}
   header={
     <Calendar.DayColumnHeaders
       days={[
         { label: 'Mon', dateNum: '17', isToday: false },
-        { label: 'Tue', dateNum: '18', isToday: true },
+        { label: 'Tue', dateNum: '18', isToday: true }
         // ...
       ]}
     />
@@ -39,7 +39,7 @@ import { Calendar } from '@illog/ui'
     color={{
       bg: 'backgroundBrandSecondary',
       border: 'var(--background-brand-default)',
-      text: 'textBrandDefault',
+      text: 'textBrandDefault'
     }}
     top={600}
     height={60}
@@ -54,46 +54,46 @@ import { Calendar } from '@illog/ui'
 
 ### Calendar.TimeGrid
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `columns` | `number` | `1` | Number of day columns |
-| `hourHeight` | `number` | `60` | Height per hour (px) |
-| `gutterWidth` | `number` | `64` | Time label area width (px) |
-| `scrollHeight` | `string` | `'calc(100vh - 160px)'` | Scroll container height |
-| `showCurrentTime` | `boolean` | `true` | Current time indicator line |
-| `currentTimeColumn` | `number` | `-1` | Column for current time line (-1 = all) |
-| `header` | `ReactNode` | — | Header area (DayColumnHeaders) |
+| Prop                | Type        | Default                 | Description                             |
+| ------------------- | ----------- | ----------------------- | --------------------------------------- |
+| `columns`           | `number`    | `1`                     | Number of day columns                   |
+| `hourHeight`        | `number`    | `60`                    | Height per hour (px)                    |
+| `gutterWidth`       | `number`    | `64`                    | Time label area width (px)              |
+| `scrollHeight`      | `string`    | `'calc(100vh - 160px)'` | Scroll container height                 |
+| `showCurrentTime`   | `boolean`   | `true`                  | Current time indicator line             |
+| `currentTimeColumn` | `number`    | `-1`                    | Column for current time line (-1 = all) |
+| `header`            | `ReactNode` | —                       | Header area (DayColumnHeaders)          |
 
 ### Calendar.TimeCell
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `string` | **required** | Event ID |
-| `title` | `string` | **required** | Event title |
-| `subtitle` | `string` | — | Subtitle (shown when height > 34px) |
-| `caption` | `string` | — | Caption (shown when height > 54px) |
-| `color` | `TimeCellColor` | **required** | Color settings (`bg`, `border`, `text`) |
-| `top` | `number` | **required** | Top offset (px) |
-| `height` | `number` | **required** | Height (px) |
-| `left` | `string` | **required** | Left offset (CSS) |
-| `width` | `string` | **required** | Width (CSS) |
-| `onClick` | `() => void` | — | Click handler |
+| Prop       | Type            | Default      | Description                             |
+| ---------- | --------------- | ------------ | --------------------------------------- |
+| `id`       | `string`        | **required** | Event ID                                |
+| `title`    | `string`        | **required** | Event title                             |
+| `subtitle` | `string`        | —            | Subtitle (shown when height > 34px)     |
+| `caption`  | `string`        | —            | Caption (shown when height > 54px)      |
+| `color`    | `TimeCellColor` | **required** | Color settings (`bg`, `border`, `text`) |
+| `top`      | `number`        | **required** | Top offset (px)                         |
+| `height`   | `number`        | **required** | Height (px)                             |
+| `left`     | `string`        | **required** | Left offset (CSS)                       |
+| `width`    | `string`        | **required** | Width (CSS)                             |
+| `onClick`  | `() => void`    | —            | Click handler                           |
 
 ### Calendar.DayColumnHeaders
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `days` | `DayColumnHeader[]` | **required** | Day data array |
-| `gutterWidth` | `number` | `64` | Time label area width |
-| `height` | `number` | `40` | Header height |
+| Prop          | Type                | Default      | Description           |
+| ------------- | ------------------- | ------------ | --------------------- |
+| `days`        | `DayColumnHeader[]` | **required** | Day data array        |
+| `gutterWidth` | `number`            | `64`         | Time label area width |
+| `height`      | `number`            | `40`         | Header height         |
 
 ### DayColumnHeader
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `label` | `string` | Day display (e.g., 'Mon') |
-| `dateNum` | `string` | Date display (e.g., '21') |
-| `isToday` | `boolean` | Today highlight |
+| Prop      | Type      | Description               |
+| --------- | --------- | ------------------------- |
+| `label`   | `string`  | Day display (e.g., 'Mon') |
+| `dateNum` | `string`  | Date display (e.g., '21') |
+| `isToday` | `boolean` | Today highlight           |
 
 ## Utility Functions
 
@@ -103,9 +103,9 @@ import {
   formatHour,
   formatTimeLabel,
   getMinutesFromMidnight,
-  DEFAULT_HOUR_HEIGHT,   // 60
-  DEFAULT_GUTTER_WIDTH,  // 64
-  HOURS,                 // [0, 1, 2, ..., 23]
+  DEFAULT_HOUR_HEIGHT, // 60
+  DEFAULT_GUTTER_WIDTH, // 64
+  HOURS // [0, 1, 2, ..., 23]
 } from '@illog/ui'
 
 // Current time hook (refreshes every 30 seconds)
@@ -113,7 +113,7 @@ const now = useCurrentTime()
 
 // Minutes → px conversion example
 const topPx = getMinutesFromMidnight(eventStart) * (hourHeight / 60)
-const heightPx = (durationMinutes) * (hourHeight / 60)
+const heightPx = durationMinutes * (hourHeight / 60)
 ```
 
 ## Guidelines

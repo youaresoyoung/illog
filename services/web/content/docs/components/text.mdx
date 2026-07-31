@@ -29,20 +29,21 @@ A component for rendering text. Uses text style presets from `@illog/themes` to 
 <Text textStyle="bodySmall">Body Small</Text>
 <Text textStyle="caption">Caption</Text>
 ```
+
 </ComponentPreview>
 
-| Style | Size | Weight | Line Height | Use Case |
-|-------|------|--------|-------------|----------|
-| `title` | 48px | bold | 1.2 | Page title |
-| `subtitle` | 32px | semiBold | 1.2 | Section heading |
-| `heading` | 24px | semiBold | 1.2 | Content heading |
-| `subheading` | 20px | regular | 1.2 | Subheading |
-| `bodyBase` | 16px | regular | 1.4 | Default body text |
-| `bodyStrong` | 16px | semiBold | 1.4 | Emphasized body text |
-| `bodySmall` | 14px | regular | 1.4 | Small body text |
-| `bodySmallStrong` | 14px | semiBold | 1.4 | Small emphasized body text |
-| `caption` | 12px | regular | 1.4 | Caption, label |
-| `captionStrong` | 12px | semiBold | 1.4 | Emphasized caption |
+| Style             | Size | Weight   | Line Height | Use Case                   |
+| ----------------- | ---- | -------- | ----------- | -------------------------- |
+| `title`           | 48px | bold     | 1.2         | Page title                 |
+| `subtitle`        | 32px | semiBold | 1.2         | Section heading            |
+| `heading`         | 24px | semiBold | 1.2         | Content heading            |
+| `subheading`      | 20px | regular  | 1.2         | Subheading                 |
+| `bodyBase`        | 16px | regular  | 1.4         | Default body text          |
+| `bodyStrong`      | 16px | semiBold | 1.4         | Emphasized body text       |
+| `bodySmall`       | 14px | regular  | 1.4         | Small body text            |
+| `bodySmallStrong` | 14px | semiBold | 1.4         | Small emphasized body text |
+| `caption`         | 12px | regular  | 1.4         | Caption, label             |
+| `captionStrong`   | 12px | semiBold | 1.4         | Emphasized caption         |
 
 ## Colors
 
@@ -56,15 +57,15 @@ A component for rendering text. Uses text style presets from `@illog/themes` to 
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `as` | `ElementType` | `'p'` | HTML element |
-| `textStyle` | `string` | `'bodyBase'` | Text style preset |
-| `color` | `string` | `'textDefaultDefault'` | Text color token |
-| `align` | `'left' \| 'center' \| 'right'` | — | Text alignment |
-| `truncate` | `'true'` | — | Single-line truncation |
-| `lineClamp` | `'1' \| '2' \| '3'` | — | Multi-line truncation |
-| `children` | `ReactNode` | — | Text content |
+| Prop        | Type                            | Default                | Description            |
+| ----------- | ------------------------------- | ---------------------- | ---------------------- |
+| `as`        | `ElementType`                   | `'p'`                  | HTML element           |
+| `textStyle` | `string`                        | `'bodyBase'`           | Text style preset      |
+| `color`     | `string`                        | `'textDefaultDefault'` | Text color token       |
+| `align`     | `'left' \| 'center' \| 'right'` | —                      | Text alignment         |
+| `truncate`  | `'true'`                        | —                      | Single-line truncation |
+| `lineClamp` | `'1' \| '2' \| '3'`             | —                      | Multi-line truncation  |
+| `children`  | `ReactNode`                     | —                      | Text content           |
 
 ## Usage
 

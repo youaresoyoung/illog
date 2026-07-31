@@ -1,421 +1,297 @@
 <!doctype html>
 <html lang="ko">
-<head>
-<meta charset="utf-8" />
-<title>illog — Architecture</title>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-<style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: #1a1a1a;
-    color: #e8e8e8;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 24px 80px;
-  }
-  header {
-    max-width: 900px;
-    width: 100%;
-    margin-bottom: 32px;
-  }
-  header h1 {
-    font-size: 24px;
-    font-weight: 700;
-    margin: 0 0 8px;
-    color: #f5f5f5;
-  }
-  header p {
-    color: #9a9a9a;
-    line-height: 1.6;
-    margin: 0;
-    font-size: 14px;
-  }
-  section {
-    width: 100%;
-    max-width: 1100px;
-    margin-bottom: 48px;
-  }
-  section h2 {
-    font-size: 17px;
-    font-weight: 600;
-    color: #eaeaea;
-    margin: 0 0 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  section h2 .num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
-    background: #2d2d3a;
-    color: #a5b4fc;
-    font-size: 12px;
-    font-weight: 700;
-  }
-  section .desc {
-    color: #9a9a9a;
-    font-size: 13.5px;
-    line-height: 1.6;
-    margin: 0 0 16px;
-  }
-  .legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    margin: 10px 0 16px;
-    font-size: 12.5px;
-    color: #b0b0b0;
-  }
-  .legend span {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .legend i {
-    width: 12px;
-    height: 12px;
-    border-radius: 3px;
-    display: inline-block;
-    flex-shrink: 0;
-  }
-  .mermaid {
-    background: #212121;
-    border: 1px solid #2e2e2e;
-    border-radius: 12px;
-    padding: 24px;
-    max-width: 100%;
-    overflow: auto;
-  }
-  footer {
-    max-width: 900px;
-    width: 100%;
-    color: #6b6b6b;
-    font-size: 12px;
-    text-align: center;
-    margin-top: 12px;
-  }
-</style>
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <title>illog — Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #1a1a1a;
+        color: #e8e8e8;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Pretendard', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 24px 80px;
+      }
+      header {
+        max-width: 900px;
+        width: 100%;
+        margin-bottom: 32px;
+      }
+      header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0 0 8px;
+        color: #f5f5f5;
+      }
+      header p {
+        color: #9a9a9a;
+        line-height: 1.6;
+        margin: 0;
+        font-size: 14px;
+      }
+      section {
+        width: 100%;
+        max-width: 1100px;
+        margin-bottom: 48px;
+      }
+      section h2 {
+        font-size: 17px;
+        font-weight: 600;
+        color: #eaeaea;
+        margin: 0 0 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      section h2 .num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: #2d2d3a;
+        color: #a5b4fc;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      section .desc {
+        color: #9a9a9a;
+        font-size: 13.5px;
+        line-height: 1.6;
+        margin: 0 0 16px;
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin: 10px 0 16px;
+        font-size: 12.5px;
+        color: #b0b0b0;
+      }
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .legend i {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+      .mermaid {
+        background: #212121;
+        border: 1px solid #2e2e2e;
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 100%;
+        overflow: auto;
+      }
+      footer {
+        max-width: 900px;
+        width: 100%;
+        color: #6b6b6b;
+        font-size: 12px;
+        text-align: center;
+        margin-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>illog — 아키텍처 다이어그램</h1>
+      <p>
+        Electron 데스크톱 앱 <code>services/app</code>의 소스 코드를 직접 읽고 분석해 그린
+        다이어그램입니다. 프로세스 간 관계 → Main 프로세스 내부 계층 → Renderer 컴포넌트 트리 → 상태
+        흐름 순서로, 범위를 좁혀가며 살펴볼 수 있도록 구성했습니다.
+      </p>
+    </header>
 
-<header>
-  <h1>illog — 아키텍처 다이어그램</h1>
-  <p>
-    Electron 데스크톱 앱 <code>services/app</code>의 소스 코드를 직접 읽고 분석해 그린 다이어그램입니다.
-    프로세스 간 관계 → Main 프로세스 내부 계층 → Renderer 컴포넌트 트리 → 상태 흐름 순서로,
-    범위를 좁혀가며 살펴볼 수 있도록 구성했습니다.
-  </p>
-</header>
+    <section>
+      <h2><span class="num">1</span> 시스템 아키텍처 개요</h2>
+      <p class="desc">
+        Electron의 세 프로세스(Renderer / Preload / Main)가 어떻게 연결되는지와, Renderer가 사용하는
+        워크스페이스 패키지(<code>@illog/ui</code> 등)를 보여줍니다. Renderer는
+        <code>window.api</code>(Preload가 <code>contextBridge</code>로 노출)를 통해서만 Main과
+        통신하며, 다크모드 전환처럼 Main → Renderer 방향으로 흐르는 상태(점선)도 존재합니다.
+      </p>
+      <div class="mermaid">
+        graph TB subgraph RendererProc["Renderer 프로세스 (Chromium · React 19)"]
+        RendererApp["App.tsx"] end subgraph PreloadProc["Preload (contextBridge)"]
+        PreloadAPI["window.api / window.theme<br />safeInvoke (AppError 복원)"] end subgraph
+        MainProc["Main 프로세스 (Node.js)"] MainEntry["main/index.ts"] DB[("SQLite<br />better-sqlite3
+        + Drizzle")] end subgraph Packages["워크스페이스 패키지"] UI["@illog/ui"]
+        Themes["@illog/themes"] Analytics["@illog/analytics"] end RendererApp
+        -->|ipcRenderer.invoke| PreloadAPI PreloadAPI <-->|ipcMain.handle| MainEntry MainEntry
+        -.->|nativeTheme 변경 push| PreloadAPI MainEntry --> DB RendererApp --> UI RendererApp -->
+        Analytics UI --> Themes classDef proc fill:#20242c,stroke:#5b7fff,color:#dbe4ff classDef pkg
+        fill:#242032,stroke:#a78bfa,color:#ede9fe class RendererApp,PreloadAPI,MainEntry,DB proc
+        class UI,Themes,Analytics pkg
+      </div>
+    </section>
 
-<section>
-  <h2><span class="num">1</span> 시스템 아키텍처 개요</h2>
-  <p class="desc">
-    Electron의 세 프로세스(Renderer / Preload / Main)가 어떻게 연결되는지와,
-    Renderer가 사용하는 워크스페이스 패키지(<code>@illog/ui</code> 등)를 보여줍니다.
-    Renderer는 <code>window.api</code>(Preload가 <code>contextBridge</code>로 노출)를 통해서만 Main과 통신하며,
-    다크모드 전환처럼 Main → Renderer 방향으로 흐르는 상태(점선)도 존재합니다.
-  </p>
-  <div class="mermaid">
-graph TB
-  subgraph RendererProc["Renderer 프로세스 (Chromium · React 19)"]
-    RendererApp["App.tsx"]
-  end
+    <section>
+      <h2><span class="num">2</span> Main 프로세스 내부 의존성</h2>
+      <p class="desc">
+        <code>src/main/controller/registerHandlers.ts</code>가 컴포지션 루트입니다 — 여기서 모든
+        Repository/Service를 생성하고 IPC 핸들러에 연결합니다. 계층은 항상
+        <b>Repository → Service → IPC Handler</b> 한 방향으로 흐릅니다 (실제 코드를 그대로 반영).
+      </p>
+      <div class="legend">
+        <span><i style="background: #68d391"></i>Repository (Drizzle ORM)</span>
+        <span><i style="background: #f6ad55"></i>Service</span>
+        <span><i style="background: #b794f4"></i>IPC Handler</span>
+        <span><i style="background: #fc8181"></i>Composition Root</span>
+      </div>
+      <div class="mermaid">
+        graph LR Composition["controller/registerHandlers.ts<br />(composition root)"] subgraph
+        RepoLayer["Repository"] TaskRepo["TaskRepository"] NoteRepo["NoteRepository"]
+        TagRepo["TagRepository"] ProjectRepo["ProjectRepository"]
+        ReflectionRepo["ReflectionRepository"] WeeklyRepo["WeeklyReflectionRepository"]
+        TaskTypeRepo["TaskTypeRepository"] CrashRepo["CrashReportRepository"] end subgraph
+        ServiceLayer["Service"] NoteService["NoteService"] UserService["UserService"]
+        GeminiService["GeminiService"] CrashService["CrashReportService"]
+        AnalyticsService["AnalyticsService"] end subgraph IpcLayer["IPC Handlers (ipcMain.handle)"]
+        TaskH["registerTaskHandlers"] NoteH["registerTaskNoteHandlers"] TagH["registerTagHandlers"]
+        ProjectH["registerProjectHandlers"] WeeklyH["registerWeeklyReflectionHandlers"]
+        TaskTypeH["registerTaskTypeHandlers"] CrashH["registerCrashReportHandlers"]
+        UserH["registerUserHandlers"] AnalyticsH["registerAnalyticsHandlers"] end Composition -->
+        TaskRepo Composition --> NoteRepo Composition --> TagRepo Composition --> ProjectRepo
+        Composition --> ReflectionRepo Composition --> WeeklyRepo Composition --> TaskTypeRepo
+        Composition --> CrashRepo Composition --> UserService Composition --> GeminiService
+        Composition --> AnalyticsService TaskRepo --> TaskH NoteRepo --> NoteService ReflectionRepo
+        --> NoteService GeminiService --> NoteService UserService --> NoteService NoteService -->
+        NoteH TagRepo --> TagH ProjectRepo --> ProjectH WeeklyRepo --> WeeklyH TaskTypeRepo -->
+        TaskTypeH CrashRepo --> CrashService CrashService --> CrashH UserService --> UserH
+        AnalyticsService --> AnalyticsH CrashService -.->|opt-in 변경 시 콜백| AnalyticsService
+        classDef repo fill:#1f2a1f,stroke:#68d391,color:#c6f6d5 classDef svc
+        fill:#2a2213,stroke:#f6ad55,color:#feebc8 classDef ipc
+        fill:#241f2e,stroke:#b794f4,color:#e9d8fd classDef root
+        fill:#2c1f22,stroke:#fc8181,color:#fed7d7 class
+        TaskRepo,NoteRepo,TagRepo,ProjectRepo,ReflectionRepo,WeeklyRepo,TaskTypeRepo,CrashRepo repo
+        class NoteService,UserService,GeminiService,CrashService,AnalyticsService svc class
+        TaskH,NoteH,TagH,ProjectH,WeeklyH,TaskTypeH,CrashH,UserH,AnalyticsH ipc class Composition
+        root
+      </div>
+    </section>
 
-  subgraph PreloadProc["Preload (contextBridge)"]
-    PreloadAPI["window.api / window.theme<br/>safeInvoke (AppError 복원)"]
-  end
+    <section>
+      <h2><span class="num">3</span> Renderer 컴포넌트 의존성</h2>
+      <p class="desc">
+        <code>main.tsx → App.tsx</code>부터 실제 라우팅(<code>createHashRouter</code>)과 페이지·섹션
+        컴포넌트, 그리고 각 페이지가 사용하는 데이터 훅(<code>hooks/queries/*</code>)까지 실제
+        import 관계를 따라간 결과입니다. 모든 서버 데이터 훅은 결국 Preload가 노출한
+        <code>window.api</code> 하나로 수렴합니다.
+      </p>
+      <div class="legend">
+        <span><i style="background: #63b3ed"></i>페이지 (라우트)</span>
+        <span><i style="background: #48bb78"></i>컴포넌트</span>
+        <span><i style="background: #9f7aea"></i>데이터 훅 (React Query)</span>
+        <span><i style="background: #fc8181"></i>IPC 브릿지</span>
+      </div>
+      <div class="mermaid">
+        graph TD Main["main.tsx"] --> App["App.tsx"] App --> ThemeProvider["ThemeProvider"] App -->
+        QueryProvider["QueryProvider (React Query)"] App --> Router["createHashRouter"] App -->
+        CrashReportDialog["CrashReportDialog"] App --> ToastContainer["ToastContainer"] App -->
+        UpdateDialog["UpdateDialog"] App --> SettingsDialogOnboarding["SettingsDialog (onboarding)"]
+        Router --> Layout["Layout"] Layout --> LeftPanel["LeftPanel"] Layout -->
+        MainContent["MainContent"] Layout --> RightPanel["RightPanel"] MainContent -->
+        Today["Today"] MainContent --> ThisWeek["ThisWeek"] MainContent --> History["History"]
+        MainContent --> Projects["Projects"] Today --> TaskCard["TaskCard"] Today -->
+        CalendarView["CalendarView"] History --> TaskCard ThisWeek -->
+        WeeklyCalendarView["WeeklyCalendarView"] Projects --> ProjectList["ProjectList"] Projects
+        --> ProjectTaskCardList["ProjectTaskCardList"] Projects --> OverviewCards["OverviewCards"]
+        Projects --> TaskTypeAnalysis["TaskTypeAnalysis"] Projects --> SubtypeTable["SubtypeTable"]
+        RightPanel --> NoteEditorSection["NoteEditorSection"] RightPanel -->
+        ReflectionSection["ReflectionSection"] RightPanel -->
+        ProjectAndTaskTypeSection["ProjectAndTaskTypeSection"] RightPanel -->
+        TimeSection["TimeSection"] RightPanel --> TagSection["TagSection"] RightPanel -->
+        Status["Status"] NoteEditorSection --> ToolbarStoreProvider["ToolbarStoreProvider"]
+        ToolbarStoreProvider --> ToolbarPlugin["ToolbarPlugin"] ToolbarStoreProvider -->
+        TextFormat["TextFormat"] ToolbarStoreProvider --> BlockFormatDropDown["BlockFormatDropDown"]
+        Today --> TaskQueries["useTaskQueries"] ThisWeek --> TaskQueries History --> TaskQueries
+        Projects --> ProjectQueries["useProjectQueries / useProjects"] RightPanel -->
+        NoteQueries["useNoteQueries"] RightPanel --> TagQueries["useTagQueries"] TaskQueries -->
+        Bridge["window.api (preload)"] ProjectQueries --> Bridge NoteQueries --> Bridge TagQueries
+        --> Bridge classDef page fill:#1c2333,stroke:#63b3ed,color:#bee3f8 classDef component
+        fill:#1a2b23,stroke:#48bb78,color:#c6f6d5 classDef hook
+        fill:#2b2140,stroke:#9f7aea,color:#e9d8fd classDef bridge
+        fill:#332222,stroke:#fc8181,color:#fed7d7 class Today,ThisWeek,History,Projects page class
+        Layout,LeftPanel,MainContent,RightPanel,TaskCard,CalendarView,WeeklyCalendarView,ProjectList,ProjectTaskCardList,OverviewCards,TaskTypeAnalysis,SubtypeTable,NoteEditorSection,ReflectionSection,ProjectAndTaskTypeSection,TimeSection,TagSection,Status,ToolbarStoreProvider,ToolbarPlugin,TextFormat,BlockFormatDropDown
+        component class TaskQueries,ProjectQueries,NoteQueries,TagQueries hook class Bridge bridge
+      </div>
+    </section>
 
-  subgraph MainProc["Main 프로세스 (Node.js)"]
-    MainEntry["main/index.ts"]
-    DB[("SQLite<br/>better-sqlite3 + Drizzle")]
-  end
+    <section>
+      <h2><span class="num">4</span> 상태 흐름도</h2>
+      <p class="desc">
+        illog 렌더러는 세 종류의 상태를 함께 씁니다: <b>Zustand 스토어</b>(클라이언트 UI 상태),
+        <b>React Context</b>(테마처럼 프로세스 경계를 넘거나, 에디터 툴바처럼 인스턴스별로 스코프된
+        상태), <b>React Query 캐시</b>(SQLite에서 온 서버 상태). 스타디움 도형은 Zustand 스토어,
+        육각형은 Context, 실린더는 React Query 캐시입니다.
+      </p>
+      <div class="legend">
+        <span><i style="background: #b794f4"></i>Zustand 스토어</span>
+        <span><i style="background: #63b3ed"></i>React Context</span>
+        <span><i style="background: #4fd1c5"></i>React Query 캐시</span>
+        <span><i style="background: #718096"></i>소비하는 컴포넌트/훅</span>
+      </div>
+      <div class="mermaid">
+        graph LR subgraph ClientState["클라이언트 상태 — Zustand"] UIStore(["useUIStore"])
+        UserStore(["useUserStore"]) ToastStore(["useToastStore"])
+        CrashStore(["useCrashReportStore"]) EditorFactory(["createToolbarStore<br />(인스턴스별
+        생성)"]) end subgraph ContextState["React Context"] ThemeCtx{{"ThemeContext"}}
+        ToolbarCtx{{"ToolbarStoreContext"}} end subgraph ServerState["서버 상태 — React Query"]
+        RQCache[("Query 캐시")] end UIStore --> Layout2["Layout"] UIStore --> TodayS["Today /
+        ThisWeek / History"] UIStore --> ProjectListS["ProjectList"] UIStore -->
+        ProjectTaskCardListS["ProjectTaskCardList"] UIStore --> DaySectionS["DaySection"] UIStore
+        --> useProjectsHook["useProjects"] UserStore --> WeekParamHooks["useThisWeekParams /
+        useWeeklyParams"] WeekParamHooks --> ThisWeekS["ThisWeek"] QueryProviderS["QueryProvider"]
+        --> ToastStore NoteQueriesS["useNoteQueries"] --> ToastStore ToastStore -->
+        ToastContainerS["ToastContainer"] GlobalErrHandlerS["useGlobalErrorHandler"] --> CrashStore
+        CrashStore --> CrashBoundaryS["CrashErrorBoundary"] CrashStore -->
+        CrashDialogS["CrashReportDialog"] EditorFactory --> ToolbarCtx ToolbarCtx -->
+        ToolbarPluginS["ToolbarPlugin"] ToolbarCtx --> TextFormatS["TextFormat"] ToolbarCtx -->
+        BlockFormatS["BlockFormatDropDown"] MainTheme["Main: nativeTheme.on('updated')"] -.->|IPC
+        push: theme.changed| ThemeCtx ThemeCtx --> NoteEditorS["NoteEditor 하위 컴포넌트"]
+        HooksQueries["hooks/queries/*"] -->|window.api 호출| RQCache RQCache -->
+        PagesSections["Pages / RightPanel Sections"] classDef store
+        fill:#241a33,stroke:#b794f4,color:#e9d8fd classDef ctx
+        fill:#1a2433,stroke:#63b3ed,color:#bee3f8 classDef server
+        fill:#1a2e26,stroke:#4fd1c5,color:#b2f5ea classDef consumer
+        fill:#232323,stroke:#718096,color:#e2e8f0 class
+        UIStore,UserStore,ToastStore,CrashStore,EditorFactory store class ThemeCtx,ToolbarCtx ctx
+        class RQCache server class
+        Layout2,TodayS,ProjectListS,ProjectTaskCardListS,DaySectionS,useProjectsHook,WeekParamHooks,ThisWeekS,QueryProviderS,NoteQueriesS,ToastContainerS,GlobalErrHandlerS,CrashBoundaryS,CrashDialogS,ToolbarPluginS,TextFormatS,BlockFormatS,MainTheme,NoteEditorS,HooksQueries,PagesSections
+        consumer
+      </div>
+    </section>
 
-  subgraph Packages["워크스페이스 패키지"]
-    UI["@illog/ui"]
-    Themes["@illog/themes"]
-    Analytics["@illog/analytics"]
-  end
+    <footer>services/app 소스 코드를 직접 읽어 작성 · illog 아키텍처 다이어그램</footer>
 
-  RendererApp -->|ipcRenderer.invoke| PreloadAPI
-  PreloadAPI <-->|ipcMain.handle| MainEntry
-  MainEntry -.->|nativeTheme 변경 push| PreloadAPI
-  MainEntry --> DB
-  RendererApp --> UI
-  RendererApp --> Analytics
-  UI --> Themes
-
-  classDef proc fill:#20242c,stroke:#5b7fff,color:#dbe4ff
-  classDef pkg fill:#242032,stroke:#a78bfa,color:#ede9fe
-  class RendererApp,PreloadAPI,MainEntry,DB proc
-  class UI,Themes,Analytics pkg
-  </div>
-</section>
-
-<section>
-  <h2><span class="num">2</span> Main 프로세스 내부 의존성</h2>
-  <p class="desc">
-    <code>src/main/controller/registerHandlers.ts</code>가 컴포지션 루트입니다 — 여기서 모든
-    Repository/Service를 생성하고 IPC 핸들러에 연결합니다. 계층은 항상
-    <b>Repository → Service → IPC Handler</b> 한 방향으로 흐릅니다 (실제 코드를 그대로 반영).
-  </p>
-  <div class="legend">
-    <span><i style="background:#68d391"></i>Repository (Drizzle ORM)</span>
-    <span><i style="background:#f6ad55"></i>Service</span>
-    <span><i style="background:#b794f4"></i>IPC Handler</span>
-    <span><i style="background:#fc8181"></i>Composition Root</span>
-  </div>
-  <div class="mermaid">
-graph LR
-  Composition["controller/registerHandlers.ts<br/>(composition root)"]
-
-  subgraph RepoLayer["Repository"]
-    TaskRepo["TaskRepository"]
-    NoteRepo["NoteRepository"]
-    TagRepo["TagRepository"]
-    ProjectRepo["ProjectRepository"]
-    ReflectionRepo["ReflectionRepository"]
-    WeeklyRepo["WeeklyReflectionRepository"]
-    TaskTypeRepo["TaskTypeRepository"]
-    CrashRepo["CrashReportRepository"]
-  end
-
-  subgraph ServiceLayer["Service"]
-    NoteService["NoteService"]
-    UserService["UserService"]
-    GeminiService["GeminiService"]
-    CrashService["CrashReportService"]
-    AnalyticsService["AnalyticsService"]
-  end
-
-  subgraph IpcLayer["IPC Handlers (ipcMain.handle)"]
-    TaskH["registerTaskHandlers"]
-    NoteH["registerTaskNoteHandlers"]
-    TagH["registerTagHandlers"]
-    ProjectH["registerProjectHandlers"]
-    WeeklyH["registerWeeklyReflectionHandlers"]
-    TaskTypeH["registerTaskTypeHandlers"]
-    CrashH["registerCrashReportHandlers"]
-    UserH["registerUserHandlers"]
-    AnalyticsH["registerAnalyticsHandlers"]
-  end
-
-  Composition --> TaskRepo
-  Composition --> NoteRepo
-  Composition --> TagRepo
-  Composition --> ProjectRepo
-  Composition --> ReflectionRepo
-  Composition --> WeeklyRepo
-  Composition --> TaskTypeRepo
-  Composition --> CrashRepo
-  Composition --> UserService
-  Composition --> GeminiService
-  Composition --> AnalyticsService
-
-  TaskRepo --> TaskH
-  NoteRepo --> NoteService
-  ReflectionRepo --> NoteService
-  GeminiService --> NoteService
-  UserService --> NoteService
-  NoteService --> NoteH
-  TagRepo --> TagH
-  ProjectRepo --> ProjectH
-  WeeklyRepo --> WeeklyH
-  TaskTypeRepo --> TaskTypeH
-  CrashRepo --> CrashService
-  CrashService --> CrashH
-  UserService --> UserH
-  AnalyticsService --> AnalyticsH
-  CrashService -.->|opt-in 변경 시 콜백| AnalyticsService
-
-  classDef repo fill:#1f2a1f,stroke:#68d391,color:#c6f6d5
-  classDef svc fill:#2a2213,stroke:#f6ad55,color:#feebc8
-  classDef ipc fill:#241f2e,stroke:#b794f4,color:#e9d8fd
-  classDef root fill:#2c1f22,stroke:#fc8181,color:#fed7d7
-  class TaskRepo,NoteRepo,TagRepo,ProjectRepo,ReflectionRepo,WeeklyRepo,TaskTypeRepo,CrashRepo repo
-  class NoteService,UserService,GeminiService,CrashService,AnalyticsService svc
-  class TaskH,NoteH,TagH,ProjectH,WeeklyH,TaskTypeH,CrashH,UserH,AnalyticsH ipc
-  class Composition root
-  </div>
-</section>
-
-<section>
-  <h2><span class="num">3</span> Renderer 컴포넌트 의존성</h2>
-  <p class="desc">
-    <code>main.tsx → App.tsx</code>부터 실제 라우팅(<code>createHashRouter</code>)과 페이지·섹션 컴포넌트,
-    그리고 각 페이지가 사용하는 데이터 훅(<code>hooks/queries/*</code>)까지 실제 import 관계를 따라간 결과입니다.
-    모든 서버 데이터 훅은 결국 Preload가 노출한 <code>window.api</code> 하나로 수렴합니다.
-  </p>
-  <div class="legend">
-    <span><i style="background:#63b3ed"></i>페이지 (라우트)</span>
-    <span><i style="background:#48bb78"></i>컴포넌트</span>
-    <span><i style="background:#9f7aea"></i>데이터 훅 (React Query)</span>
-    <span><i style="background:#fc8181"></i>IPC 브릿지</span>
-  </div>
-  <div class="mermaid">
-graph TD
-  Main["main.tsx"] --> App["App.tsx"]
-  App --> ThemeProvider["ThemeProvider"]
-  App --> QueryProvider["QueryProvider (React Query)"]
-  App --> Router["createHashRouter"]
-  App --> CrashReportDialog["CrashReportDialog"]
-  App --> ToastContainer["ToastContainer"]
-  App --> UpdateDialog["UpdateDialog"]
-  App --> SettingsDialogOnboarding["SettingsDialog (onboarding)"]
-
-  Router --> Layout["Layout"]
-  Layout --> LeftPanel["LeftPanel"]
-  Layout --> MainContent["MainContent"]
-  Layout --> RightPanel["RightPanel"]
-
-  MainContent --> Today["Today"]
-  MainContent --> ThisWeek["ThisWeek"]
-  MainContent --> History["History"]
-  MainContent --> Projects["Projects"]
-
-  Today --> TaskCard["TaskCard"]
-  Today --> CalendarView["CalendarView"]
-  History --> TaskCard
-  ThisWeek --> WeeklyCalendarView["WeeklyCalendarView"]
-  Projects --> ProjectList["ProjectList"]
-  Projects --> ProjectTaskCardList["ProjectTaskCardList"]
-  Projects --> OverviewCards["OverviewCards"]
-  Projects --> TaskTypeAnalysis["TaskTypeAnalysis"]
-  Projects --> SubtypeTable["SubtypeTable"]
-
-  RightPanel --> NoteEditorSection["NoteEditorSection"]
-  RightPanel --> ReflectionSection["ReflectionSection"]
-  RightPanel --> ProjectAndTaskTypeSection["ProjectAndTaskTypeSection"]
-  RightPanel --> TimeSection["TimeSection"]
-  RightPanel --> TagSection["TagSection"]
-  RightPanel --> Status["Status"]
-
-  NoteEditorSection --> ToolbarStoreProvider["ToolbarStoreProvider"]
-  ToolbarStoreProvider --> ToolbarPlugin["ToolbarPlugin"]
-  ToolbarStoreProvider --> TextFormat["TextFormat"]
-  ToolbarStoreProvider --> BlockFormatDropDown["BlockFormatDropDown"]
-
-  Today --> TaskQueries["useTaskQueries"]
-  ThisWeek --> TaskQueries
-  History --> TaskQueries
-  Projects --> ProjectQueries["useProjectQueries / useProjects"]
-  RightPanel --> NoteQueries["useNoteQueries"]
-  RightPanel --> TagQueries["useTagQueries"]
-
-  TaskQueries --> Bridge["window.api (preload)"]
-  ProjectQueries --> Bridge
-  NoteQueries --> Bridge
-  TagQueries --> Bridge
-
-  classDef page fill:#1c2333,stroke:#63b3ed,color:#bee3f8
-  classDef component fill:#1a2b23,stroke:#48bb78,color:#c6f6d5
-  classDef hook fill:#2b2140,stroke:#9f7aea,color:#e9d8fd
-  classDef bridge fill:#332222,stroke:#fc8181,color:#fed7d7
-  class Today,ThisWeek,History,Projects page
-  class Layout,LeftPanel,MainContent,RightPanel,TaskCard,CalendarView,WeeklyCalendarView,ProjectList,ProjectTaskCardList,OverviewCards,TaskTypeAnalysis,SubtypeTable,NoteEditorSection,ReflectionSection,ProjectAndTaskTypeSection,TimeSection,TagSection,Status,ToolbarStoreProvider,ToolbarPlugin,TextFormat,BlockFormatDropDown component
-  class TaskQueries,ProjectQueries,NoteQueries,TagQueries hook
-  class Bridge bridge
-  </div>
-</section>
-
-<section>
-  <h2><span class="num">4</span> 상태 흐름도</h2>
-  <p class="desc">
-    illog 렌더러는 세 종류의 상태를 함께 씁니다: <b>Zustand 스토어</b>(클라이언트 UI 상태),
-    <b>React Context</b>(테마처럼 프로세스 경계를 넘거나, 에디터 툴바처럼 인스턴스별로 스코프된 상태),
-    <b>React Query 캐시</b>(SQLite에서 온 서버 상태). 스타디움 도형은 Zustand 스토어,
-    육각형은 Context, 실린더는 React Query 캐시입니다.
-  </p>
-  <div class="legend">
-    <span><i style="background:#b794f4"></i>Zustand 스토어</span>
-    <span><i style="background:#63b3ed"></i>React Context</span>
-    <span><i style="background:#4fd1c5"></i>React Query 캐시</span>
-    <span><i style="background:#718096"></i>소비하는 컴포넌트/훅</span>
-  </div>
-  <div class="mermaid">
-graph LR
-  subgraph ClientState["클라이언트 상태 — Zustand"]
-    UIStore(["useUIStore"])
-    UserStore(["useUserStore"])
-    ToastStore(["useToastStore"])
-    CrashStore(["useCrashReportStore"])
-    EditorFactory(["createToolbarStore<br/>(인스턴스별 생성)"])
-  end
-
-  subgraph ContextState["React Context"]
-    ThemeCtx{{"ThemeContext"}}
-    ToolbarCtx{{"ToolbarStoreContext"}}
-  end
-
-  subgraph ServerState["서버 상태 — React Query"]
-    RQCache[("Query 캐시")]
-  end
-
-  UIStore --> Layout2["Layout"]
-  UIStore --> TodayS["Today / ThisWeek / History"]
-  UIStore --> ProjectListS["ProjectList"]
-  UIStore --> ProjectTaskCardListS["ProjectTaskCardList"]
-  UIStore --> DaySectionS["DaySection"]
-  UIStore --> useProjectsHook["useProjects"]
-
-  UserStore --> WeekParamHooks["useThisWeekParams / useWeeklyParams"]
-  WeekParamHooks --> ThisWeekS["ThisWeek"]
-
-  QueryProviderS["QueryProvider"] --> ToastStore
-  NoteQueriesS["useNoteQueries"] --> ToastStore
-  ToastStore --> ToastContainerS["ToastContainer"]
-
-  GlobalErrHandlerS["useGlobalErrorHandler"] --> CrashStore
-  CrashStore --> CrashBoundaryS["CrashErrorBoundary"]
-  CrashStore --> CrashDialogS["CrashReportDialog"]
-
-  EditorFactory --> ToolbarCtx
-  ToolbarCtx --> ToolbarPluginS["ToolbarPlugin"]
-  ToolbarCtx --> TextFormatS["TextFormat"]
-  ToolbarCtx --> BlockFormatS["BlockFormatDropDown"]
-
-  MainTheme["Main: nativeTheme.on('updated')"] -.->|IPC push: theme.changed| ThemeCtx
-  ThemeCtx --> NoteEditorS["NoteEditor 하위 컴포넌트"]
-
-  HooksQueries["hooks/queries/*"] -->|window.api 호출| RQCache
-  RQCache --> PagesSections["Pages / RightPanel Sections"]
-
-  classDef store fill:#241a33,stroke:#b794f4,color:#e9d8fd
-  classDef ctx fill:#1a2433,stroke:#63b3ed,color:#bee3f8
-  classDef server fill:#1a2e26,stroke:#4fd1c5,color:#b2f5ea
-  classDef consumer fill:#232323,stroke:#718096,color:#e2e8f0
-  class UIStore,UserStore,ToastStore,CrashStore,EditorFactory store
-  class ThemeCtx,ToolbarCtx ctx
-  class RQCache server
-  class Layout2,TodayS,ProjectListS,ProjectTaskCardListS,DaySectionS,useProjectsHook,WeekParamHooks,ThisWeekS,QueryProviderS,NoteQueriesS,ToastContainerS,GlobalErrHandlerS,CrashBoundaryS,CrashDialogS,ToolbarPluginS,TextFormatS,BlockFormatS,MainTheme,NoteEditorS,HooksQueries,PagesSections consumer
-  </div>
-</section>
-
-<footer>
-  services/app 소스 코드를 직접 읽어 작성 · illog 아키텍처 다이어그램
-</footer>
-
-<script>
-  mermaid.initialize({
-    startOnLoad: true,
-    theme: "dark",
-    themeVariables: {
-      background: "#1a1a1a",
-      primaryColor: "#232323",
-      primaryTextColor: "#e8e8e8",
-      primaryBorderColor: "#4a5568",
-      lineColor: "#718096",
-      secondaryColor: "#232323",
-      tertiaryColor: "#232323"
-    },
-    flowchart: { curve: "basis" }
-  });
-</script>
-</body>
+    <script>
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        themeVariables: {
+          background: '#1a1a1a',
+          primaryColor: '#232323',
+          primaryTextColor: '#e8e8e8',
+          primaryBorderColor: '#4a5568',
+          lineColor: '#718096',
+          secondaryColor: '#232323',
+          tertiaryColor: '#232323'
+        },
+        flowchart: { curve: 'basis' }
+      })
+    </script>
+  </body>
 </html>
