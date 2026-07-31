@@ -34,7 +34,7 @@
       "eslint --fix --cache",
       "prettier --write"
     ],
-    "*.{json,md,yml,yaml}": [
+    "*.{json,md,mdx,yml,yaml,html}": [
       "prettier --write"
     ],
     "*.sql": [
