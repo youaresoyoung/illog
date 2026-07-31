@@ -6,7 +6,17 @@ import eslintConfigPrettier from 'eslint-config-prettier'
 
 export default tseslint.config(
   {
-    ignores: ['**/node_modules', '**/dist', '**/out', '**/build', '**/*.tsbuildinfo', '.cache']
+    ignores: [
+      '**/node_modules',
+      '**/dist',
+      '**/out',
+      '**/build',
+      '**/*.tsbuildinfo',
+      '.cache',
+      '**/.next',
+      '**/.vite',
+      '**/storybook-static'
+    ]
   },
   tseslint.configs.recommended,
   eslintPluginReact.configs.flat.recommended,
