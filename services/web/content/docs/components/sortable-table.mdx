@@ -21,7 +21,6 @@ import { SortableTable } from '@illog/ui'
 
 type Task = { id: string; title: string; createdAt: Date; priority: number }
 type Field = 'title' | 'createdAt' | 'priority'
-
 ;<SortableTable<Task, Field>
   data={tasks}
   columns={[
