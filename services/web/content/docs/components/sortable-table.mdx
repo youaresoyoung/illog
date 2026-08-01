@@ -21,20 +21,19 @@ import { SortableTable } from '@illog/ui'
 
 type Task = { id: string; title: string; createdAt: Date; priority: number }
 type Field = 'title' | 'createdAt' | 'priority'
-
-<SortableTable<Task, Field>
+;<SortableTable<Task, Field>
   data={tasks}
   columns={[
     {
       field: 'title',
       header: 'Title',
-      render: (task) => <Text>{task.title}</Text>,
+      render: (task) => <Text>{task.title}</Text>
     },
     {
       field: 'createdAt',
       header: 'Created',
       render: (task) => <Text>{formatDate(task.createdAt)}</Text>,
-      getSortValue: (task) => task.createdAt,
+      getSortValue: (task) => task.createdAt
     },
     {
       field: 'priority',
@@ -42,8 +41,8 @@ type Field = 'title' | 'createdAt' | 'priority'
       render: (task) => <Text>{task.priority}</Text>,
       headerAlign: 'center',
       cellAlign: 'center',
-      width: 100,
-    },
+      width: 100
+    }
   ]}
 />
 ```
@@ -90,29 +89,29 @@ const [sort, setSort] = useState<SortState<Field>>({
 
 ## Column Definition
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `field` | `F` | **required** | Unique field key |
-| `header` | `ReactNode` | **required** | Header content |
-| `render` | `(item: T, index: number) => ReactNode` | **required** | Cell renderer |
-| `sortable` | `boolean` | `true` | Whether sortable |
-| `getSortValue` | `(item: T) => string \| number \| Date \| null` | — | Custom sort value extractor |
-| `headerAlign` | `'left' \| 'center' \| 'right'` | `'left'` | Header alignment |
-| `cellAlign` | `'left' \| 'center' \| 'right'` | `'left'` | Cell alignment |
-| `width` | `string \| number` | — | Column width |
+| Prop           | Type                                            | Default      | Description                 |
+| -------------- | ----------------------------------------------- | ------------ | --------------------------- |
+| `field`        | `F`                                             | **required** | Unique field key            |
+| `header`       | `ReactNode`                                     | **required** | Header content              |
+| `render`       | `(item: T, index: number) => ReactNode`         | **required** | Cell renderer               |
+| `sortable`     | `boolean`                                       | `true`       | Whether sortable            |
+| `getSortValue` | `(item: T) => string \| number \| Date \| null` | —            | Custom sort value extractor |
+| `headerAlign`  | `'left' \| 'center' \| 'right'`                 | `'left'`     | Header alignment            |
+| `cellAlign`    | `'left' \| 'center' \| 'right'`                 | `'left'`     | Cell alignment              |
+| `width`        | `string \| number`                              | —            | Column width                |
 
 ## Table Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `data` | `T[]` | **required** | Data array |
-| `columns` | `SortableTableColumn<T, F>[]` | **required** | Column definitions |
-| `getRowId` | `(item: T, index: number) => string` | `item.id \|\| index` | Row key |
-| `defaultSort` | `SortState<F>` | — | Default sort (uncontrolled) |
-| `sortState` | `SortState<F>` | — | Sort state (controlled) |
-| `onSortChange` | `(sort: SortState<F>) => void` | — | Sort change callback |
-| `emptyState` | `ReactNode` | — | Custom empty state |
-| `emptyMessage` | `ReactNode` | `'No data found'` | Default empty message |
+| Prop           | Type                                 | Default              | Description                 |
+| -------------- | ------------------------------------ | -------------------- | --------------------------- |
+| `data`         | `T[]`                                | **required**         | Data array                  |
+| `columns`      | `SortableTableColumn<T, F>[]`        | **required**         | Column definitions          |
+| `getRowId`     | `(item: T, index: number) => string` | `item.id \|\| index` | Row key                     |
+| `defaultSort`  | `SortState<F>`                       | —                    | Default sort (uncontrolled) |
+| `sortState`    | `SortState<F>`                       | —                    | Sort state (controlled)     |
+| `onSortChange` | `(sort: SortState<F>) => void`       | —                    | Sort change callback        |
+| `emptyState`   | `ReactNode`                          | —                    | Custom empty state          |
+| `emptyMessage` | `ReactNode`                          | `'No data found'`    | Default empty message       |
 
 ## Sort Behavior
 

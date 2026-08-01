@@ -27,6 +27,7 @@ Input is a styled **text input field**. It supports error message display, full 
 <Input variant="error" errorMessage="This field is required" placeholder="Error state" />
 <Input isDisabled placeholder="Disabled" />
 ```
+
 </ComponentPreview>
 
 ## Full Width
@@ -37,20 +38,21 @@ Input is a styled **text input field**. It supports error message display, full 
 ```tsx
 <Input isFullWidth placeholder="Full width input" />
 ```
+
 </ComponentPreview>
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'default' \| 'error' \| 'success'` | `'default'` | Input field style |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Input field size |
-| `isFullWidth` | `boolean` | — | Full width mode |
-| `isDisabled` | `boolean` | — | Disabled state |
-| `errorMessage` | `string` | — | Error message displayed below the input |
-| `onChange` | `(e: ChangeEvent) => void` | — | Value change handler |
-| `ref` | `Ref<HTMLInputElement>` | — | Input element ref |
-| `...rest` | `InputHTMLAttributes` | — | Native input attributes (`placeholder`, `type`, `name`, etc.) |
+| Prop           | Type                                | Default     | Description                                                   |
+| -------------- | ----------------------------------- | ----------- | ------------------------------------------------------------- |
+| `variant`      | `'default' \| 'error' \| 'success'` | `'default'` | Input field style                                             |
+| `size`         | `'sm' \| 'md' \| 'lg'`              | `'md'`      | Input field size                                              |
+| `isFullWidth`  | `boolean`                           | —           | Full width mode                                               |
+| `isDisabled`   | `boolean`                           | —           | Disabled state                                                |
+| `errorMessage` | `string`                            | —           | Error message displayed below the input                       |
+| `onChange`     | `(e: ChangeEvent) => void`          | —           | Value change handler                                          |
+| `ref`          | `Ref<HTMLInputElement>`             | —           | Input element ref                                             |
+| `...rest`      | `InputHTMLAttributes`               | —           | Native input attributes (`placeholder`, `type`, `name`, etc.) |
 
 ## Guidelines
 

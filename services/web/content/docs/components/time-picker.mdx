@@ -56,30 +56,30 @@ const [value, setValue] = useState({ start: null, end: null })
 
 ### TimePicker (Root)
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `{ start: string \| null, end: string \| null }` | **required** | ISO date string |
-| `onChange` | `(value) => void` | **required** | Value change callback |
+| Prop       | Type                                             | Default      | Description           |
+| ---------- | ------------------------------------------------ | ------------ | --------------------- |
+| `value`    | `{ start: string \| null, end: string \| null }` | **required** | ISO date string       |
+| `onChange` | `(value) => void`                                | **required** | Value change callback |
 
 ### TimePicker.Input
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `field` | `'start' \| 'end'` | **required** | Field to control |
-| `placeholder` | `string` | `'Add time'` | Placeholder text |
+| Prop          | Type               | Default      | Description      |
+| ------------- | ------------------ | ------------ | ---------------- |
+| `field`       | `'start' \| 'end'` | **required** | Field to control |
+| `placeholder` | `string`           | `'Add time'` | Placeholder text |
 
 ### TimePicker.Separator
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `ReactNode` | `'–'` | Separator text |
+| Prop       | Type        | Default | Description    |
+| ---------- | ----------- | ------- | -------------- |
+| `children` | `ReactNode` | `'–'`   | Separator text |
 
 ### TimePicker.Summary
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `showTime` | `boolean` | `true` | Whether to show time |
-| `showDate` | `boolean` | `true` | Whether to show date |
+| Prop       | Type      | Default | Description          |
+| ---------- | --------- | ------- | -------------------- |
+| `showTime` | `boolean` | `true`  | Whether to show time |
+| `showDate` | `boolean` | `true`  | Whether to show date |
 
 ## Context Hook
 

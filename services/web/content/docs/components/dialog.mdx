@@ -18,8 +18,7 @@ Dialog is a **modal dialog** based on the native `<dialog>` HTML element. It ren
 
 ```tsx
 import { Dialog, Button } from '@illog/ui'
-
-<Dialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
+;<Dialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
   <Dialog.Title>Confirm Delete</Dialog.Title>
   <Dialog.Content>
     <Dialog.Description>
@@ -48,9 +47,7 @@ import { Dialog, Button } from '@illog/ui'
 >
   <Dialog.Title>Session Expired</Dialog.Title>
   <Dialog.Content>
-    <Dialog.Description>
-      Your session has expired. Please log in again.
-    </Dialog.Description>
+    <Dialog.Description>Your session has expired. Please log in again.</Dialog.Description>
   </Dialog.Content>
   <Dialog.Footer>
     <Button variant="primary" onClick={handleLogin}>
@@ -64,36 +61,36 @@ import { Dialog, Button } from '@illog/ui'
 
 ### Dialog (Root)
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isOpen` | `boolean` | **required** | Open state |
-| `onClose` | `() => void` | **required** | Close callback |
-| `role` | `'dialog' \| 'alertdialog'` | `'dialog'` | ARIA role |
-| `ariaLabel` | `string` | — | Accessibility label |
-| `ariaDescribedby` | `string` | — | Description element ID |
+| Prop              | Type                        | Default      | Description            |
+| ----------------- | --------------------------- | ------------ | ---------------------- |
+| `isOpen`          | `boolean`                   | **required** | Open state             |
+| `onClose`         | `() => void`                | **required** | Close callback         |
+| `role`            | `'dialog' \| 'alertdialog'` | `'dialog'`   | ARIA role              |
+| `ariaLabel`       | `string`                    | —            | Accessibility label    |
+| `ariaDescribedby` | `string`                    | —            | Description element ID |
 
 ### Dialog.Title
 
-| Prop | Type | Description |
-|------|------|-------------|
+| Prop       | Type        | Description                           |
+| ---------- | ----------- | ------------------------------------- |
 | `children` | `ReactNode` | Title text (h2, bodyStrong, centered) |
 
 ### Dialog.Content
 
-| Prop | Type | Description |
-|------|------|-------------|
+| Prop       | Type        | Description                     |
+| ---------- | ----------- | ------------------------------- |
 | `children` | `ReactNode` | Body content (wrapped in Stack) |
 
 ### Dialog.Description
 
-| Prop | Type | Description |
-|------|------|-------------|
+| Prop       | Type        | Description                                    |
+| ---------- | ----------- | ---------------------------------------------- |
 | `children` | `ReactNode` | Description text (bodyBase, textBrandTertiary) |
 
 ### Dialog.Footer
 
-| Prop | Type | Description |
-|------|------|-------------|
+| Prop       | Type        | Description                          |
+| ---------- | ----------- | ------------------------------------ |
 | `children` | `ReactNode` | Action buttons (Inline, width: 100%) |
 
 ## Guidelines

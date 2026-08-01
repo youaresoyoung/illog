@@ -37,25 +37,25 @@ import { Badge } from '@illog/ui'
 
 ## Colors
 
-| Color | Example Usage |
-|-------|--------------|
-| `blue` | In progress, informational |
-| `gray` | Default, inactive |
-| `green` | Completed, success |
-| `purple` | Special, premium |
-| `red` | Urgent, error |
-| `yellow` | Warning, pending |
+| Color    | Example Usage              |
+| -------- | -------------------------- |
+| `blue`   | In progress, informational |
+| `gray`   | Default, inactive          |
+| `green`  | Completed, success         |
+| `purple` | Special, premium           |
+| `red`    | Urgent, error              |
+| `yellow` | Warning, pending           |
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `item` | `BadgeItem \| OmittedBadgeItem` | **required** | Badge data (`name`, `color`, etc.) |
-| `addButtonVariant` | `'default' \| 'error'` | — | Enables add button mode |
-| `isOpenedSelector` | `boolean` | — | Chevron icon rotation state |
-| `withoutIcon` | `boolean` | — | Hides chevron in default mode |
-| `openSelector` | `(e: MouseEvent) => void` | — | Add button click handler |
-| `onRemove` | `() => void` | — | Enables remove mode + remove handler |
+| Prop               | Type                            | Default      | Description                          |
+| ------------------ | ------------------------------- | ------------ | ------------------------------------ |
+| `item`             | `BadgeItem \| OmittedBadgeItem` | **required** | Badge data (`name`, `color`, etc.)   |
+| `addButtonVariant` | `'default' \| 'error'`          | —            | Enables add button mode              |
+| `isOpenedSelector` | `boolean`                       | —            | Chevron icon rotation state          |
+| `withoutIcon`      | `boolean`                       | —            | Hides chevron in default mode        |
+| `openSelector`     | `(e: MouseEvent) => void`       | —            | Add button click handler             |
+| `onRemove`         | `() => void`                    | —            | Enables remove mode + remove handler |
 
 ### BadgeItem Type
 

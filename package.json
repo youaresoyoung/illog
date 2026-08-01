@@ -21,8 +21,10 @@
     "format": "prettier --write .",
     "prepare": "husky",
     "pre-commit": "lint-staged",
+    "pre-push": "prettier --check .",
     "ask": "tsx packages/codeqa/src/cli.ts",
-    "gen:commit": "tsx packages/codeqa/src/cli.ts --commit"
+    "gen:commit": "tsx packages/codeqa/src/cli.ts --commit",
+    "gen:commit:write": "tsx packages/codeqa/src/cli.ts --commit --write"
   },
   "keywords": [],
   "author": "youaresoyoung",
@@ -33,7 +35,7 @@
       "eslint --fix --cache",
       "prettier --write"
     ],
-    "*.{json,md,yml,yaml}": [
+    "*.{json,md,mdx,yml,yaml,html}": [
       "prettier --write"
     ],
     "*.sql": [

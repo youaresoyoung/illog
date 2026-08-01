@@ -21,8 +21,8 @@ describe('Navigation.Item - URL based active state', () => {
     const homeLink = screen.getByText('Home').closest('a')
     const aboutLink = screen.getByText('About').closest('a')
 
-    expect(homeLink).toHaveClass('isActive_true')
-    expect(aboutLink).not.toHaveClass('isActive_true')
+    expect(homeLink?.className).toContain('isActive_true')
+    expect(aboutLink?.className).not.toContain('isActive_true')
   })
 
   it('updates active state when navigating', async () => {
@@ -39,7 +39,7 @@ describe('Navigation.Item - URL based active state', () => {
     const aboutLink = screen.getByText('About')
     await user.click(aboutLink)
 
-    expect(aboutLink.closest('a')).toHaveClass('isActive_true')
+    expect(aboutLink.closest('a')?.className).toContain('isActive_true')
   })
 
   it('renders with icon', () => {
@@ -64,7 +64,7 @@ describe('Navigation.Item - URL based active state', () => {
     )
 
     const settingsLink = screen.getByText('Settings').closest('a')
-    expect(settingsLink).toHaveClass('isActive_true')
+    expect(settingsLink?.className).toContain('isActive_true')
   })
 
   it('exact match does not activate for nested routes', () => {
@@ -76,7 +76,7 @@ describe('Navigation.Item - URL based active state', () => {
     )
 
     const settingsLink = screen.getByText('Settings').closest('a')
-    expect(settingsLink).not.toHaveClass('isActive_true')
+    expect(settingsLink?.className).not.toContain('isActive_true')
   })
 })
 

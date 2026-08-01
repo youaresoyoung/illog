@@ -1,4 +1,7 @@
 import { execFileSync } from 'child_process'
+import { writeFileSync, unlinkSync } from 'fs'
+import { tmpdir } from 'os'
+import { join } from 'path'
 import { config } from './env'
 
 function getStagedDiff() {
@@ -12,7 +15,7 @@ function getStagedDiff() {
   }
 }
 
-export async function generateCommitMessage(apiKey: string): Promise<void> {
+export async function generateCommitMessage(apiKey: string): Promise<string> {
   const { stat, diff } = getStagedDiff()
 
   if (!diff) {
@@ -94,6 +97,7 @@ export async function generateCommitMessage(apiKey: string): Promise<void> {
   const reader = res.body.getReader()
   const decoder = new TextDecoder()
 
+  let fullMessage = ''
   let finished = false
   while (!finished) {
     const { done, value } = await reader.read()
@@ -113,7 +117,10 @@ export async function generateCommitMessage(apiKey: string): Promise<void> {
           choices: { delta: { content: string } }[]
         }
         const content = parsed?.choices?.[0]?.delta?.content
-        if (content) process.stdout.write(content)
+        if (content) {
+          process.stdout.write(content)
+          fullMessage += content
+        }
       } catch {
         // skip incomplete chunks
       }
@@ -121,4 +128,22 @@ export async function generateCommitMessage(apiKey: string): Promise<void> {
   }
 
   console.log('\n')
+  return fullMessage.trim()
+}
+
+/**
+ * 생성된 커밋 메시지로 스테이징된 변경사항을 실제로 커밋한다.
+ * LLM 출력에 따옴표/백틱이 섞여도 깨지지 않도록 -m 대신 임시 파일(-F)을 사용한다.
+ */
+export function commitWithMessage(message: string): void {
+  const tmpFile = join(tmpdir(), `illog-commit-msg-${Date.now()}.txt`)
+  writeFileSync(tmpFile, message, 'utf-8')
+
+  try {
+    execFileSync('git', ['commit', '-F', tmpFile], { stdio: 'inherit' })
+  } catch {
+    process.exit(1)
+  } finally {
+    unlinkSync(tmpFile)
+  }
 }

@@ -23,8 +23,7 @@ BadgeSelector is a compound component for badge-based single selection. It has b
 
 ```tsx
 import { BadgeSelector } from '@illog/ui'
-
-<BadgeSelector.Root
+;<BadgeSelector.Root
   items={items}
   selectedItem={selectedItem}
   onSelectItem={handleSelectItem}
@@ -33,9 +32,7 @@ import { BadgeSelector } from '@illog/ui'
   onDeleteItem={handleDeleteItem}
   onUpdateItem={handleUpdateItem}
 >
-  <BadgeSelector.Trigger>
-    {/* Custom trigger button */}
-  </BadgeSelector.Trigger>
+  <BadgeSelector.Trigger>{/* Custom trigger button */}</BadgeSelector.Trigger>
 
   <BadgeSelector.Content>
     <BadgeSelector.Search />
@@ -50,17 +47,17 @@ import { BadgeSelector } from '@illog/ui'
 
 Root component that manages state and provides context.
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `items` | `BadgeItem[]` | Yes | All available items |
-| `selectedItem` | `BadgeItem \| null` | Yes | Currently selected item |
-| `onSelectItem` | `(itemId: string) => Promise<void>` | Yes | Item select handler |
-| `onClearItem` | `() => Promise<void>` | Yes | Clear selection handler |
-| `onCreateItem` | `(data: Partial<OmittedBadgeItem>) => Promise<string>` | Yes | Item create handler |
-| `onDeleteItem` | `(itemId: string) => Promise<void>` | Yes | Item delete handler |
-| `onUpdateItem` | `(itemId: string, data: Partial<OmittedBadgeItem>) => Promise<void>` | Yes | Item update handler |
-| `maxNameLength` | `number` | No | Max name length (default: 100) |
-| `children` | `ReactNode` | Yes | Must include Trigger and Content |
+| Prop            | Type                                                                 | Required | Description                      |
+| --------------- | -------------------------------------------------------------------- | -------- | -------------------------------- |
+| `items`         | `BadgeItem[]`                                                        | Yes      | All available items              |
+| `selectedItem`  | `BadgeItem \| null`                                                  | Yes      | Currently selected item          |
+| `onSelectItem`  | `(itemId: string) => Promise<void>`                                  | Yes      | Item select handler              |
+| `onClearItem`   | `() => Promise<void>`                                                | Yes      | Clear selection handler          |
+| `onCreateItem`  | `(data: Partial<OmittedBadgeItem>) => Promise<string>`               | Yes      | Item create handler              |
+| `onDeleteItem`  | `(itemId: string) => Promise<void>`                                  | Yes      | Item delete handler              |
+| `onUpdateItem`  | `(itemId: string, data: Partial<OmittedBadgeItem>) => Promise<void>` | Yes      | Item update handler              |
+| `maxNameLength` | `number`                                                             | No       | Max name length (default: 100)   |
+| `children`      | `ReactNode`                                                          | Yes      | Must include Trigger and Content |
 
 **Type Definitions:**
 
@@ -81,10 +78,10 @@ type OmittedBadgeItem = Omit<BadgeItem, 'id' | 'createdAt' | 'updatedAt' | 'dele
 
 Trigger element that opens and closes the dropdown.
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `asChild` | `boolean` | No | Merge props with child element (default: false) |
-| `children` | `ReactNode` | Yes | Trigger button content |
+| Prop       | Type        | Required | Description                                     |
+| ---------- | ----------- | -------- | ----------------------------------------------- |
+| `asChild`  | `boolean`   | No       | Merge props with child element (default: false) |
+| `children` | `ReactNode` | Yes      | Trigger button content                          |
 
 **Data Attributes:** `data-state`: "open" \| "closed"
 
@@ -92,19 +89,19 @@ Trigger element that opens and closes the dropdown.
 
 Container that renders dropdown content via a portal.
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `children` | `ReactNode` | Yes | Usually Search and List |
-| `className` | `string` | No | CSS class |
+| Prop        | Type        | Required | Description             |
+| ----------- | ----------- | -------- | ----------------------- |
+| `children`  | `ReactNode` | Yes      | Usually Search and List |
+| `className` | `string`    | No       | CSS class               |
 
 ### Search
 
 Input field for filtering and creating items.
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `placeholder` | `string` | No | Placeholder text (default: "Search...") |
-| `maxLength` | `number` | No | Max input length (default: 100) |
+| Prop          | Type     | Required | Description                             |
+| ------------- | -------- | -------- | --------------------------------------- |
+| `placeholder` | `string` | No       | Placeholder text (default: "Search...") |
+| `maxLength`   | `number` | No       | Max input length (default: 100)         |
 
 ### List
 
@@ -118,11 +115,7 @@ Renders the filtered item list. No props.
 <BadgeSelector.Root {...handlers}>
   <BadgeSelector.Trigger asChild>
     <div style={{ cursor: 'pointer' }}>
-      {selectedItem ? (
-        <Badge item={selectedItem} />
-      ) : (
-        <button>Select Item</button>
-      )}
+      {selectedItem ? <Badge item={selectedItem} /> : <button>Select Item</button>}
     </div>
   </BadgeSelector.Trigger>
   <BadgeSelector.Content>
@@ -177,13 +170,13 @@ export default function MyComponent() {
 
 ### Keyboard Interactions
 
-| Key | Action |
-|-----|--------|
-| `Enter` | Select item / create new item (while searching) |
-| `Backspace` | Clear selection (when search is empty) |
-| `Escape` | Close dropdown |
-| `Space` (trigger) | Toggle dropdown |
-| `Enter` (trigger) | Toggle dropdown |
+| Key               | Action                                          |
+| ----------------- | ----------------------------------------------- |
+| `Enter`           | Select item / create new item (while searching) |
+| `Backspace`       | Clear selection (when search is empty)          |
+| `Escape`          | Close dropdown                                  |
+| `Space` (trigger) | Toggle dropdown                                 |
+| `Enter` (trigger) | Toggle dropdown                                 |
 
 ### ARIA
 
@@ -208,10 +201,19 @@ import { useBadgeSelectorContext } from '@illog/ui'
 
 function CustomBadgeList() {
   const {
-    isOpen, searchTerm, selectedItem, filteredItems,
-    canCreateNew, previewColor,
-    setIsOpen, setSearchTerm,
-    selectItem, clearItem, createItem, deleteItem, updateItem,
+    isOpen,
+    searchTerm,
+    selectedItem,
+    filteredItems,
+    canCreateNew,
+    previewColor,
+    setIsOpen,
+    setSearchTerm,
+    selectItem,
+    clearItem,
+    createItem,
+    deleteItem,
+    updateItem
   } = useBadgeSelectorContext()
 
   return (
@@ -226,16 +228,16 @@ function CustomBadgeList() {
 }
 ```
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `isOpen` | `boolean` | Dropdown open state |
-| `searchTerm` | `string` | Current search term |
-| `selectedItem` | `BadgeItem \| null` | Selected item |
-| `filteredItems` | `BadgeItem[]` | Items matching search |
-| `canCreateNew` | `boolean` | Whether a new item can be created |
-| `previewColor` | `BadgeColor` | Preview color for new item |
-| `selectItem` | `(item: BadgeItem) => Promise<void>` | Select item |
-| `clearItem` | `() => Promise<void>` | Clear selection |
-| `createItem` | `() => Promise<void>` | Create new item |
-| `deleteItem` | `(itemId: string) => Promise<void>` | Delete item |
-| `updateItem` | `(itemId: string, data) => Promise<void>` | Update item |
+| Property        | Type                                      | Description                       |
+| --------------- | ----------------------------------------- | --------------------------------- |
+| `isOpen`        | `boolean`                                 | Dropdown open state               |
+| `searchTerm`    | `string`                                  | Current search term               |
+| `selectedItem`  | `BadgeItem \| null`                       | Selected item                     |
+| `filteredItems` | `BadgeItem[]`                             | Items matching search             |
+| `canCreateNew`  | `boolean`                                 | Whether a new item can be created |
+| `previewColor`  | `BadgeColor`                              | Preview color for new item        |
+| `selectItem`    | `(item: BadgeItem) => Promise<void>`      | Select item                       |
+| `clearItem`     | `() => Promise<void>`                     | Clear selection                   |
+| `createItem`    | `() => Promise<void>`                     | Create new item                   |
+| `deleteItem`    | `(itemId: string) => Promise<void>`       | Delete item                       |
+| `updateItem`    | `(itemId: string, data) => Promise<void>` | Update item                       |

@@ -18,8 +18,7 @@ Navigation is a **sidebar navigation** compound component. Based on React Router
 
 ```tsx
 import { Navigation } from '@illog/ui'
-
-<Navigation.Container>
+;<Navigation.Container>
   <Navigation.List match="startsWith">
     <Navigation.Item to="/dashboard" iconName="home">
       Dashboard
@@ -44,9 +43,7 @@ import { Navigation } from '@illog/ui'
   {({ isActive, isPending }) => (
     <Inline gap="300" align="center">
       <Icon name="check-square" color={isActive ? 'iconBrandDefault' : 'iconDefaultTertiary'} />
-      <Text color={isActive ? 'textBrandDefault' : 'textDefaultDefault'}>
-        Tasks
-      </Text>
+      <Text color={isActive ? 'textBrandDefault' : 'textDefaultDefault'}>Tasks</Text>
       {isPending && <Spinner size="sm" />}
     </Inline>
   )}
@@ -74,41 +71,41 @@ import { Navigation } from '@illog/ui'
 
 ### Navigation.Container
 
-| Prop | Type | Description |
-|------|------|-------------|
+| Prop       | Type        | Description              |
+| ---------- | ----------- | ------------------------ |
 | `children` | `ReactNode` | Navigation.List elements |
 
 Fixed sidebar: `position: fixed`, `width: 256px`, `padding: 600`.
 
 ### Navigation.List
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `match` | `'exact' \| 'startsWith' \| 'endsWith'` | `'exact'` | Match strategy |
-| `...sprinkles` | `Sprinkles` | — | Design token props |
+| Prop           | Type                                    | Default   | Description        |
+| -------------- | --------------------------------------- | --------- | ------------------ |
+| `match`        | `'exact' \| 'startsWith' \| 'endsWith'` | `'exact'` | Match strategy     |
+| `...sprinkles` | `Sprinkles`                             | —         | Design token props |
 
 Wrapped with `<nav aria-label="Main navigation">`.
 
 ### Navigation.Item
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `to` | `string` | **required** | Route path |
-| `iconName` | `IconName` | — | Icon (default children mode) |
-| `children` | `ReactNode \| ((props) => ReactNode)` | — | Content or render prop |
-| `className` | `string \| ((props) => string)` | — | CSS class or render prop |
-| `style` | `CSSProperties \| ((props) => CSSProperties)` | — | Style or render prop |
-| `match` | `MatchStrategy` | — | Override List's match strategy |
-| `end` | `boolean` | — | NavLink end prop |
-| `disabled` | `boolean` | — | Disabled state |
-| `onClick` | `(e: MouseEvent) => void` | — | Click handler |
+| Prop        | Type                                          | Default      | Description                    |
+| ----------- | --------------------------------------------- | ------------ | ------------------------------ |
+| `to`        | `string`                                      | **required** | Route path                     |
+| `iconName`  | `IconName`                                    | —            | Icon (default children mode)   |
+| `children`  | `ReactNode \| ((props) => ReactNode)`         | —            | Content or render prop         |
+| `className` | `string \| ((props) => string)`               | —            | CSS class or render prop       |
+| `style`     | `CSSProperties \| ((props) => CSSProperties)` | —            | Style or render prop           |
+| `match`     | `MatchStrategy`                               | —            | Override List's match strategy |
+| `end`       | `boolean`                                     | —            | NavLink end prop               |
+| `disabled`  | `boolean`                                     | —            | Disabled state                 |
+| `onClick`   | `(e: MouseEvent) => void`                     | —            | Click handler                  |
 
 ### Render Prop Type
 
 ```tsx
 type ItemRenderProps = {
-  isActive: boolean   // Whether current URL matches
-  isPending: boolean  // React Router pending state
+  isActive: boolean // Whether current URL matches
+  isPending: boolean // React Router pending state
 }
 ```
 

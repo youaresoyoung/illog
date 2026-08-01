@@ -37,21 +37,21 @@ import { Tag } from '@illog/ui'
 
 ## Differences from Badge
 
-| Feature | Tag | Badge |
-|---------|-----|-------|
-| Selection mode | Multi-select | Single select |
-| Add icon | `+` icon | Chevron icon |
-| Remove callback | `removeFromTask(id)` | `onRemove()` |
-| Color required | Required in `TagType` | Optional in `BadgeItem` |
+| Feature         | Tag                   | Badge                   |
+| --------------- | --------------------- | ----------------------- |
+| Selection mode  | Multi-select          | Single select           |
+| Add icon        | `+` icon              | Chevron icon            |
+| Remove callback | `removeFromTask(id)`  | `onRemove()`            |
+| Color required  | Required in `TagType` | Optional in `BadgeItem` |
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `tag` | `TagType \| OmittedTag` | **required** | Tag data |
-| `addTagButtonVariant` | `'default' \| 'error'` | — | Add button mode |
-| `openTagSelector` | `(e: MouseEvent) => void` | — | Add button click handler |
-| `removeFromTask` | `(id: string) => void` | — | Tag remove handler |
+| Prop                  | Type                      | Default      | Description              |
+| --------------------- | ------------------------- | ------------ | ------------------------ |
+| `tag`                 | `TagType \| OmittedTag`   | **required** | Tag data                 |
+| `addTagButtonVariant` | `'default' \| 'error'`    | —            | Add button mode          |
+| `openTagSelector`     | `(e: MouseEvent) => void` | —            | Add button click handler |
+| `removeFromTask`      | `(id: string) => void`    | —            | Tag remove handler       |
 
 ### TagType
 

@@ -19,8 +19,7 @@ BasicSelector is a **generic single-select dropdown**. Built with the compound c
 
 ```tsx
 import { BasicSelector } from '@illog/ui'
-
-<BasicSelector.Root value={selected} onValueChange={setSelected}>
+;<BasicSelector.Root value={selected} onValueChange={setSelected}>
   <BasicSelector.Trigger ariaLabel="Sort by">
     <BasicSelector.Value placeholder="Select an option" />
   </BasicSelector.Trigger>
@@ -62,44 +61,44 @@ import { BasicSelector } from '@illog/ui'
 
 ### BasicSelector.Root
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | — | Controlled selected value |
-| `defaultValue` | `string` | `''` | Uncontrolled default value |
-| `isOpened` | `boolean` | — | Controlled open state |
-| `isDefaultOpen` | `boolean` | `false` | Uncontrolled default open state |
-| `disabled` | `boolean` | `false` | Disabled state |
-| `onValueChange` | `(value: string) => void` | — | Value change callback |
-| `onOpenChange` | `(open: boolean) => void` | — | Open state change callback |
+| Prop            | Type                      | Default | Description                     |
+| --------------- | ------------------------- | ------- | ------------------------------- |
+| `value`         | `string`                  | —       | Controlled selected value       |
+| `defaultValue`  | `string`                  | `''`    | Uncontrolled default value      |
+| `isOpened`      | `boolean`                 | —       | Controlled open state           |
+| `isDefaultOpen` | `boolean`                 | `false` | Uncontrolled default open state |
+| `disabled`      | `boolean`                 | `false` | Disabled state                  |
+| `onValueChange` | `(value: string) => void` | —       | Value change callback           |
+| `onOpenChange`  | `(open: boolean) => void` | —       | Open state change callback      |
 
 ### BasicSelector.Trigger
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `ariaLabel` | `string` | — | Accessibility label |
-| `className` | `string` | — | Additional CSS class |
+| Prop        | Type     | Default | Description          |
+| ----------- | -------- | ------- | -------------------- |
+| `ariaLabel` | `string` | —       | Accessibility label  |
+| `className` | `string` | —       | Additional CSS class |
 
 ### BasicSelector.Content
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `position` | `'item-aligned' \| 'popover'` | `'item-aligned'` | Positioning mode |
-| `side` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'bottom'` | Popover mode direction |
-| `sideOffset` | `number` | `0` | Gap from trigger (px) |
+| Prop         | Type                                     | Default          | Description            |
+| ------------ | ---------------------------------------- | ---------------- | ---------------------- |
+| `position`   | `'item-aligned' \| 'popover'`            | `'item-aligned'` | Positioning mode       |
+| `side`       | `'top' \| 'bottom' \| 'left' \| 'right'` | `'bottom'`       | Popover mode direction |
+| `sideOffset` | `number`                                 | `0`              | Gap from trigger (px)  |
 
 ### BasicSelector.Item
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | **required** | Selection value |
-| `disabled` | `boolean` | `false` | Disabled state |
+| Prop       | Type      | Default      | Description     |
+| ---------- | --------- | ------------ | --------------- |
+| `value`    | `string`  | **required** | Selection value |
+| `disabled` | `boolean` | `false`      | Disabled state  |
 
 ### BasicSelector.Value
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `placeholder` | `string` | — | Text to display when no value is selected |
-| `children` | `(value: string) => ReactNode` | — | Custom render function |
+| Prop          | Type                           | Default | Description                               |
+| ------------- | ------------------------------ | ------- | ----------------------------------------- |
+| `placeholder` | `string`                       | —       | Text to display when no value is selected |
+| `children`    | `(value: string) => ReactNode` | —       | Custom render function                    |
 
 ## Guidelines
 

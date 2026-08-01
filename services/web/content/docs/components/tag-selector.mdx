@@ -23,8 +23,7 @@ TagSelector is a compound component for tag-based multi-selection. It has built-
 
 ```tsx
 import { TagSelector } from '@illog/ui'
-
-<TagSelector.Root
+;<TagSelector.Root
   tags={tags}
   selectedTags={selectedTags}
   onAddTag={handleAddTag}
@@ -33,9 +32,7 @@ import { TagSelector } from '@illog/ui'
   onDeleteTag={handleDeleteTag}
   onUpdateTag={handleUpdateTag}
 >
-  <TagSelector.Trigger>
-    {/* Custom trigger button */}
-  </TagSelector.Trigger>
+  <TagSelector.Trigger>{/* Custom trigger button */}</TagSelector.Trigger>
 
   <TagSelector.Content>
     <TagSelector.Search />
@@ -48,42 +45,42 @@ import { TagSelector } from '@illog/ui'
 
 ### Root
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `tags` | `Tag[]` | Yes | All available tags |
-| `selectedTags` | `Tag[]` | Yes | Currently selected tags |
-| `onAddTag` | `(tag: Tag) => void` | Yes | Tag select handler |
-| `onRemoveTag` | `(tagId: string) => void` | Yes | Tag deselect handler |
-| `onCreateTag` | `(name: string, color: string) => void` | Yes | Tag create handler |
-| `onDeleteTag` | `(tagId: string) => void` | Yes | Tag delete handler |
-| `onUpdateTag` | `(tagId: string, updates: Tag) => void` | Yes | Tag update handler |
-| `className` | `string` | No | CSS class |
-| `maxTagLength` | `number` | No | Max tag name length (default: 10) |
-| `emptyMessage` | `string` | No | Message when no search results |
-| `createTagLabel` | `string` | No | Create button label (default: "Create Tag") |
-| `manageTagsLabel` | `string` | No | Manage button label (default: "Manage Tags") |
-| `children` | `ReactNode` | Yes | Must include Trigger and Content |
+| Prop              | Type                                    | Required | Description                                  |
+| ----------------- | --------------------------------------- | -------- | -------------------------------------------- |
+| `tags`            | `Tag[]`                                 | Yes      | All available tags                           |
+| `selectedTags`    | `Tag[]`                                 | Yes      | Currently selected tags                      |
+| `onAddTag`        | `(tag: Tag) => void`                    | Yes      | Tag select handler                           |
+| `onRemoveTag`     | `(tagId: string) => void`               | Yes      | Tag deselect handler                         |
+| `onCreateTag`     | `(name: string, color: string) => void` | Yes      | Tag create handler                           |
+| `onDeleteTag`     | `(tagId: string) => void`               | Yes      | Tag delete handler                           |
+| `onUpdateTag`     | `(tagId: string, updates: Tag) => void` | Yes      | Tag update handler                           |
+| `className`       | `string`                                | No       | CSS class                                    |
+| `maxTagLength`    | `number`                                | No       | Max tag name length (default: 10)            |
+| `emptyMessage`    | `string`                                | No       | Message when no search results               |
+| `createTagLabel`  | `string`                                | No       | Create button label (default: "Create Tag")  |
+| `manageTagsLabel` | `string`                                | No       | Manage button label (default: "Manage Tags") |
+| `children`        | `ReactNode`                             | Yes      | Must include Trigger and Content             |
 
 ### Trigger
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `asChild` | `boolean` | No | Merge props with child element (default: true) |
-| `children` | `ReactNode` | Yes | Trigger content |
+| Prop       | Type        | Required | Description                                    |
+| ---------- | ----------- | -------- | ---------------------------------------------- |
+| `asChild`  | `boolean`   | No       | Merge props with child element (default: true) |
+| `children` | `ReactNode` | Yes      | Trigger content                                |
 
 **Data Attributes:** `data-state`: "open" \| "closed"
 
 ### Content
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `children` | `ReactNode` | Yes | Usually Search and List |
+| Prop       | Type        | Required | Description             |
+| ---------- | ----------- | -------- | ----------------------- |
+| `children` | `ReactNode` | Yes      | Usually Search and List |
 
 ### Search
 
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `placeholder` | `string` | No | Placeholder text (default: "Search...") |
+| Prop          | Type     | Required | Description                             |
+| ------------- | -------- | -------- | --------------------------------------- |
+| `placeholder` | `string` | No       | Placeholder text (default: "Search...") |
 
 ### List
 
@@ -97,9 +94,7 @@ No props. Renders the filtered tag list.
 <TagSelector.Root {...handlers}>
   <TagSelector.Trigger asChild>
     <button className="my-custom-button">
-      {selectedTags.length > 0
-        ? `${selectedTags.length} tags`
-        : 'Select tags'}
+      {selectedTags.length > 0 ? `${selectedTags.length} tags` : 'Select tags'}
     </button>
   </TagSelector.Trigger>
   {/* ... */}
@@ -126,13 +121,13 @@ No props. Renders the filtered tag list.
 
 ### Keyboard Interactions
 
-| Key | Action |
-|-----|--------|
-| `Enter` | Toggle tag selection / create new tag (while searching) |
-| `Backspace` | Remove last selected tag (when search is empty) |
-| `Escape` | Close dropdown |
-| `Space` (trigger) | Toggle dropdown |
-| `Enter` (trigger) | Toggle dropdown |
+| Key               | Action                                                  |
+| ----------------- | ------------------------------------------------------- |
+| `Enter`           | Toggle tag selection / create new tag (while searching) |
+| `Backspace`       | Remove last selected tag (when search is empty)         |
+| `Escape`          | Close dropdown                                          |
+| `Space` (trigger) | Toggle dropdown                                         |
+| `Enter` (trigger) | Toggle dropdown                                         |
 
 ### ARIA
 
@@ -155,18 +150,31 @@ import { useTagSelectorContext } from '@illog/ui'
 
 function CustomTagList() {
   const {
-    tags, selectedTags, searchTerm, isOpen,
-    filteredTags, isTagSelected,
-    selectTag, removeTag, createTag, deleteTag, updateTag,
-    setSearchTerm, setIsOpen,
-    maxTagLength, emptyMessage, createTagLabel, manageTagsLabel,
+    tags,
+    selectedTags,
+    searchTerm,
+    isOpen,
+    filteredTags,
+    isTagSelected,
+    selectTag,
+    removeTag,
+    createTag,
+    deleteTag,
+    updateTag,
+    setSearchTerm,
+    setIsOpen,
+    maxTagLength,
+    emptyMessage,
+    createTagLabel,
+    manageTagsLabel
   } = useTagSelectorContext()
 
   return (
     <div>
       {filteredTags.map((tag) => (
         <button key={tag.id} onClick={() => selectTag(tag)}>
-          {isTagSelected(tag.id) ? '✓ ' : ''}{tag.name}
+          {isTagSelected(tag.id) ? '✓ ' : ''}
+          {tag.name}
         </button>
       ))}
     </div>
@@ -174,16 +182,16 @@ function CustomTagList() {
 }
 ```
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `tags` | `Tag[]` | All tags |
-| `selectedTags` | `Tag[]` | Selected tags |
-| `searchTerm` | `string` | Current search term |
-| `isOpen` | `boolean` | Dropdown open state |
-| `filteredTags` | `Tag[]` | Tags matching search |
-| `isTagSelected` | `(tagId: string) => boolean` | Check if tag is selected |
-| `selectTag` | `(tag: Tag) => void` | Add tag to selection |
-| `removeTag` | `(tagId: string) => void` | Remove tag from selection |
-| `createTag` | `(name: string, color: string) => void` | Create new tag |
-| `deleteTag` | `(tagId: string) => void` | Delete tag |
-| `updateTag` | `(tagId: string, updates: Tag) => void` | Update tag |
+| Property        | Type                                    | Description               |
+| --------------- | --------------------------------------- | ------------------------- |
+| `tags`          | `Tag[]`                                 | All tags                  |
+| `selectedTags`  | `Tag[]`                                 | Selected tags             |
+| `searchTerm`    | `string`                                | Current search term       |
+| `isOpen`        | `boolean`                               | Dropdown open state       |
+| `filteredTags`  | `Tag[]`                                 | Tags matching search      |
+| `isTagSelected` | `(tagId: string) => boolean`            | Check if tag is selected  |
+| `selectTag`     | `(tag: Tag) => void`                    | Add tag to selection      |
+| `removeTag`     | `(tagId: string) => void`               | Remove tag from selection |
+| `createTag`     | `(name: string, color: string) => void` | Create new tag            |
+| `deleteTag`     | `(tagId: string) => void`               | Delete tag                |
+| `updateTag`     | `(tagId: string, updates: Tag) => void` | Update tag                |

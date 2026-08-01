@@ -39,32 +39,32 @@ const removeToast = (id) => {
 
 ## Toast Types
 
-| Type | Use Case | ARIA |
-|------|----------|------|
-| `success` | Success notification | `aria-live="polite"` |
-| `error` | Error notification | `aria-live="assertive"` |
-| `warning` | Warning notification | `aria-live="polite"` |
-| `info` | Informational notification | `aria-live="polite"` |
+| Type      | Use Case                   | ARIA                    |
+| --------- | -------------------------- | ----------------------- |
+| `success` | Success notification       | `aria-live="polite"`    |
+| `error`   | Error notification         | `aria-live="assertive"` |
+| `warning` | Warning notification       | `aria-live="polite"`    |
+| `info`    | Informational notification | `aria-live="polite"`    |
 
 ## Components
 
 ### ToastContainer
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `toasts` | `Array<{ id: string; type: ToastType; message: ReactNode }>` | **required** | Toast array |
-| `onRemove` | `(id: string) => void` | **required** | Toast remove callback |
+| Prop       | Type                                                         | Default      | Description           |
+| ---------- | ------------------------------------------------------------ | ------------ | --------------------- |
+| `toasts`   | `Array<{ id: string; type: ToastType; message: ReactNode }>` | **required** | Toast array           |
+| `onRemove` | `(id: string) => void`                                       | **required** | Toast remove callback |
 
 Position: top-right of screen (top: 16px, right: 16px). Returns null when there are no toasts.
 
 ### ToastItem
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `id` | `string` | **required** | Toast ID |
-| `type` | `ToastType` | **required** | Toast type |
-| `message` | `ReactNode` | **required** | Message content |
-| `onClose` | `(id: string) => void` | **required** | Close callback |
+| Prop      | Type                   | Default      | Description     |
+| --------- | ---------------------- | ------------ | --------------- |
+| `id`      | `string`               | **required** | Toast ID        |
+| `type`    | `ToastType`            | **required** | Toast type      |
+| `message` | `ReactNode`            | **required** | Message content |
+| `onClose` | `(id: string) => void` | **required** | Close callback  |
 
 ## Behavior
 

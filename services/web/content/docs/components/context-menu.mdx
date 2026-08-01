@@ -18,23 +18,14 @@ ContextMenu is a **custom right-click menu**. Built without external libraries, 
 
 ```tsx
 import { ContextMenu } from '@illog/ui'
-
-<ContextMenu.Root>
+;<ContextMenu.Root>
   <ContextMenu.Trigger>
-    <div className="workspace">
-      Right-click area
-    </div>
+    <div className="workspace">Right-click area</div>
   </ContextMenu.Trigger>
   <ContextMenu.Content>
-    <ContextMenu.Item onSelect={() => handleEdit()}>
-      Edit
-    </ContextMenu.Item>
-    <ContextMenu.Item onSelect={() => handleDuplicate()}>
-      Duplicate
-    </ContextMenu.Item>
-    <ContextMenu.Item onSelect={() => handleDelete()}>
-      Delete
-    </ContextMenu.Item>
+    <ContextMenu.Item onSelect={() => handleEdit()}>Edit</ContextMenu.Item>
+    <ContextMenu.Item onSelect={() => handleDuplicate()}>Duplicate</ContextMenu.Item>
+    <ContextMenu.Item onSelect={() => handleDelete()}>Delete</ContextMenu.Item>
   </ContextMenu.Content>
 </ContextMenu.Root>
 ```
@@ -61,65 +52,65 @@ import { ContextMenu } from '@illog/ui'
 
 ### ContextMenu.Root
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `modal` | `boolean` | `false` | Modal mode |
-| `onOpenChange` | `(isOpen: boolean) => void` | — | Open state callback |
+| Prop           | Type                        | Default | Description         |
+| -------------- | --------------------------- | ------- | ------------------- |
+| `modal`        | `boolean`                   | `false` | Modal mode          |
+| `onOpenChange` | `(isOpen: boolean) => void` | —       | Open state callback |
 
 ### ContextMenu.Trigger
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isDisabled` | `boolean` | — | Disable right-click |
+| Prop         | Type      | Default | Description         |
+| ------------ | --------- | ------- | ------------------- |
+| `isDisabled` | `boolean` | —       | Disable right-click |
 
 ### ContextMenu.Content
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isLoop` | `boolean` | `true` | Keyboard navigation loop |
-| `alignOffset` | `number` | `0` | Alignment offset |
-| `onEscapeKeyDown` | `(e: KeyboardEvent) => void` | — | Escape key handler |
+| Prop              | Type                         | Default | Description              |
+| ----------------- | ---------------------------- | ------- | ------------------------ |
+| `isLoop`          | `boolean`                    | `true`  | Keyboard navigation loop |
+| `alignOffset`     | `number`                     | `0`     | Alignment offset         |
+| `onEscapeKeyDown` | `(e: KeyboardEvent) => void` | —       | Escape key handler       |
 
 ### ContextMenu.Item
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `onSelect` | `() => void` | — | Select handler (auto-closes after selection) |
-| `isDisabled` | `boolean` | `false` | Disabled state |
-| `textValue` | `string` | — | data-value attribute |
+| Prop         | Type         | Default | Description                                  |
+| ------------ | ------------ | ------- | -------------------------------------------- |
+| `onSelect`   | `() => void` | —       | Select handler (auto-closes after selection) |
+| `isDisabled` | `boolean`    | `false` | Disabled state                               |
+| `textValue`  | `string`     | —       | data-value attribute                         |
 
 ### ContextMenu.SubRoot
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isOpen` | `boolean` | — | Controlled open state |
-| `isDefaultOpen` | `boolean` | `false` | Default open state |
-| `onOpenChange` | `(isOpen: boolean) => void` | — | Open state callback |
+| Prop            | Type                        | Default | Description           |
+| --------------- | --------------------------- | ------- | --------------------- |
+| `isOpen`        | `boolean`                   | —       | Controlled open state |
+| `isDefaultOpen` | `boolean`                   | `false` | Default open state    |
+| `onOpenChange`  | `(isOpen: boolean) => void` | —       | Open state callback   |
 
 ### ContextMenu.SubTrigger
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isDisabled` | `boolean` | — | Disabled state |
+| Prop         | Type      | Default | Description    |
+| ------------ | --------- | ------- | -------------- |
+| `isDisabled` | `boolean` | —       | Disabled state |
 
 ### ContextMenu.SubContent
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isLoop` | `boolean` | `true` | Keyboard navigation loop |
-| `sideOffset` | `number` | `0` | Gap beside the trigger |
-| `alignOffset` | `number` | `0` | Vertical alignment offset |
+| Prop          | Type      | Default | Description               |
+| ------------- | --------- | ------- | ------------------------- |
+| `isLoop`      | `boolean` | `true`  | Keyboard navigation loop  |
+| `sideOffset`  | `number`  | `0`     | Gap beside the trigger    |
+| `alignOffset` | `number`  | `0`     | Vertical alignment offset |
 
 ## Keyboard Navigation
 
-| Key | Action |
-|-----|--------|
-| `↑` / `↓` | Move between items |
-| `Home` / `End` | First/last item |
-| `Enter` / `Space` | Select item |
-| `→` | Open submenu |
-| `←` | Close submenu |
-| `Escape` | Close menu |
+| Key               | Action             |
+| ----------------- | ------------------ |
+| `↑` / `↓`         | Move between items |
+| `Home` / `End`    | First/last item    |
+| `Enter` / `Space` | Select item        |
+| `→`               | Open submenu       |
+| `←`               | Close submenu      |
+| `Escape`          | Close menu         |
 
 ## Guidelines
 

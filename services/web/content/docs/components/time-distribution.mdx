@@ -20,8 +20,7 @@ TimeDistribution is a high-level data visualization component that combines a **
 import { TimeDistribution } from '@illog/ui'
 
 type Category = { id: string; name: string; hours: number; color: string }
-
-<TimeDistribution<Category>
+;<TimeDistribution<Category>
   title="This Week's Time Distribution"
   items={categories}
   getValue={(item) => item.hours}
@@ -44,12 +43,7 @@ type Category = { id: string; name: string; hours: number; color: string }
   getFillColor={(cat) => cat.color}
   getLabel={(cat) => cat.name}
   renderLegendItem={({ item, percentage, isClickable, onClick }) => (
-    <Inline
-      as={isClickable ? 'button' : 'div'}
-      gap="300"
-      align="center"
-      onClick={onClick}
-    >
+    <Inline as={isClickable ? 'button' : 'div'} gap="300" align="center" onClick={onClick}>
       <Text textStyle="bodyStrong">{item.name}</Text>
       <Text textStyle="caption" color="textDefaultTertiary">
         {percentage.toFixed(1)}%
@@ -61,30 +55,30 @@ type Category = { id: string; name: string; hours: number; color: string }
 
 ## Props
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `title` | `ReactNode` | — | Chart title |
-| `items` | `T[]` | **required** | Data array |
-| `getValue` | `(item: T) => number` | **required** | Value extractor function |
-| `getFillColor` | `(item: T) => string` | **required** | Color extractor function |
-| `getStrokeColor` | `(item: T) => string` | — | Stroke color extractor function |
-| `getLabel` | `(item: T, context) => ReactNode` | **required** | Legend label renderer |
-| `getKey` | `(item: T, index) => string` | — | React key generator |
-| `onItemClick` | `(item: T, index) => void` | — | Item click handler |
-| `isItemClickable` | `(item: T, index) => boolean` | — | Clickability control (fine-grained) |
-| `emptyMessage` | `ReactNode` | `'No data available'` | Empty state message |
-| `chartSize` | `number` | `180` | Donut chart size |
-| `chartProps` | `DonutChartProps` | — | Additional props passed to DonutChart |
-| `legendMaxWidth` | `number` | `240` | Legend max width |
-| `legendDotSize` | `number` | `12` | Legend color dot size |
-| `renderLegendItem` | `(params) => ReactNode` | — | Custom legend item renderer |
+| Prop               | Type                              | Default               | Description                           |
+| ------------------ | --------------------------------- | --------------------- | ------------------------------------- |
+| `title`            | `ReactNode`                       | —                     | Chart title                           |
+| `items`            | `T[]`                             | **required**          | Data array                            |
+| `getValue`         | `(item: T) => number`             | **required**          | Value extractor function              |
+| `getFillColor`     | `(item: T) => string`             | **required**          | Color extractor function              |
+| `getStrokeColor`   | `(item: T) => string`             | —                     | Stroke color extractor function       |
+| `getLabel`         | `(item: T, context) => ReactNode` | **required**          | Legend label renderer                 |
+| `getKey`           | `(item: T, index) => string`      | —                     | React key generator                   |
+| `onItemClick`      | `(item: T, index) => void`        | —                     | Item click handler                    |
+| `isItemClickable`  | `(item: T, index) => boolean`     | —                     | Clickability control (fine-grained)   |
+| `emptyMessage`     | `ReactNode`                       | `'No data available'` | Empty state message                   |
+| `chartSize`        | `number`                          | `180`                 | Donut chart size                      |
+| `chartProps`       | `DonutChartProps`                 | —                     | Additional props passed to DonutChart |
+| `legendMaxWidth`   | `number`                          | `240`                 | Legend max width                      |
+| `legendDotSize`    | `number`                          | `12`                  | Legend color dot size                 |
+| `renderLegendItem` | `(params) => ReactNode`           | —                     | Custom legend item renderer           |
 
 ### getLabel context
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `index` | `number` | Item index |
-| `value` | `number` | Extracted value |
+| Prop         | Type     | Description         |
+| ------------ | -------- | ------------------- |
+| `index`      | `number` | Item index          |
+| `value`      | `number` | Extracted value     |
 | `percentage` | `number` | Percentage of total |
 
 ## Guidelines

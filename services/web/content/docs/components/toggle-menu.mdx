@@ -64,38 +64,38 @@ const viewItems = [
 
 ### ToggleMenu.Group
 
-| Prop | Type | Description |
-|------|------|-------------|
+| Prop       | Type        | Description              |
+| ---------- | ----------- | ------------------------ |
 | `children` | `ReactNode` | ToggleMenu.Item elements |
 
 Inline-based, border + rounded="200", overflow="hidden".
 
 ### ToggleMenu.Item
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `item` | `ToggleGroupItem` | **required** | Item definition |
-| `index` | `number` | **required** | Item index (for divider rendering) |
-| `value` | `string` | **required** | Currently selected value |
-| `size` | `'small' \| 'medium'` | `'medium'` | Size |
-| `onChange` | `(value: string) => void` | **required** | Value change handler |
+| Prop       | Type                      | Default      | Description                        |
+| ---------- | ------------------------- | ------------ | ---------------------------------- |
+| `item`     | `ToggleGroupItem`         | **required** | Item definition                    |
+| `index`    | `number`                  | **required** | Item index (for divider rendering) |
+| `value`    | `string`                  | **required** | Currently selected value           |
+| `size`     | `'small' \| 'medium'`     | `'medium'`   | Size                               |
+| `onChange` | `(value: string) => void` | **required** | Value change handler               |
 
 ### ToggleGroupItem Type
 
 ```tsx
 type ToggleGroupItem<T extends string = string> = {
-  value: T          // Unique value
-  icon?: IconName   // Icon (optional)
-  label?: string    // Label (optional)
+  value: T // Unique value
+  icon?: IconName // Icon (optional)
+  label?: string // Label (optional)
   ariaLabel?: string // Accessibility label (falls back to label or value)
 }
 ```
 
 ## Sizes
 
-| Size | Dimensions |
-|------|------------|
-| `small` | 28 × 28 px |
+| Size     | Dimensions |
+| -------- | ---------- |
+| `small`  | 28 × 28 px |
 | `medium` | 32 × 32 px |
 
 ## Guidelines
