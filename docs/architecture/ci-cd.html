@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>illog — CI/CD Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #1a1a1a;
+        color: #e8e8e8;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Pretendard', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 24px 80px;
+      }
+      header {
+        max-width: 900px;
+        width: 100%;
+        margin-bottom: 32px;
+      }
+      header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0 0 8px;
+        color: #f5f5f5;
+      }
+      header p {
+        color: #9a9a9a;
+        line-height: 1.6;
+        margin: 0;
+        font-size: 14px;
+      }
+      header a {
+        color: #a5b4fc;
+        text-decoration: none;
+      }
+      header a:hover {
+        text-decoration: underline;
+      }
+      section {
+        width: 100%;
+        max-width: 1100px;
+        margin-bottom: 48px;
+      }
+      section h2 {
+        font-size: 17px;
+        font-weight: 600;
+        color: #eaeaea;
+        margin: 0 0 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      section h2 .num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: #2d2d3a;
+        color: #a5b4fc;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      section .desc {
+        color: #9a9a9a;
+        font-size: 13.5px;
+        line-height: 1.6;
+        margin: 0 0 16px;
+      }
+      code {
+        background: #262626;
+        border-radius: 4px;
+        padding: 1px 5px;
+        font-size: 12.5px;
+        color: #d7bea8;
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin: 10px 0 16px;
+        font-size: 12.5px;
+        color: #b0b0b0;
+      }
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .legend i {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+      .mermaid {
+        background: #212121;
+        border: 1px solid #2e2e2e;
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 100%;
+        overflow: auto;
+        font-family: inherit;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #212121;
+        border: 1px solid #2e2e2e;
+        border-radius: 12px;
+        overflow: hidden;
+        font-size: 12.5px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 10px 12px;
+        border-bottom: 1px solid #2e2e2e;
+        vertical-align: top;
+        line-height: 1.5;
+      }
+      th {
+        background: #262626;
+        color: #cbd5e1;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      td {
+        color: #b8b8b8;
+      }
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+      .note {
+        background: #221f18;
+        border: 1px solid #4a3f22;
+        border-left: 3px solid #d69e2e;
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: #d8c9a8;
+        font-size: 13px;
+        line-height: 1.65;
+        margin-top: 16px;
+      }
+      .note b {
+        color: #f0d9a8;
+      }
+      footer {
+        max-width: 900px;
+        width: 100%;
+        color: #6b6b6b;
+        font-size: 12px;
+        text-align: center;
+        margin-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>illog — CI/CD 아키텍처</h1>
+      <p>
+        <code>.github/workflows</code>의 워크플로우 4개와 컴포지트 액션, 그리고
+        <code>services/app/forge.config.ts</code>의 서명·배포 설정을 직접 읽어 그린
+        다이어그램입니다. 트리거 맵 → 일상 CI → 재사용 검증 → 릴리스 파이프라인 → 배포/자동 업데이트
+        순으로 범위를 좁혀갑니다. 앱 내부 구조는 <a href="./index.html">아키텍처 다이어그램</a>을
+        참고하세요.
+      </p>
+    </header>
+
+    <section>
+      <h2><span class="num">1</span> 트리거 → 워크플로우 맵</h2>
+      <p class="desc">
+        어떤 Git 이벤트가 어떤 워크플로우를 깨우는지, 그리고 그 워크플로우들이 공유하는 두 가지
+        재사용 단위(<code>reusable-validate.yml</code> 재사용 워크플로우,
+        <code>setup-node-pnpm</code> 컴포지트 액션)를 보여줍니다. 브랜치가
+        <code>develop → release/* → main → tag</code>로 승격될수록 검증 강도와 배포 범위가
+        넓어집니다.
+      </p>
+      <div class="legend">
+        <span><i style="background: #5b7fff"></i>Git 이벤트</span>
+        <span><i style="background: #68d391"></i>워크플로우</span>
+        <span><i style="background: #b794f4"></i>재사용 단위</span>
+      </div>
+      <pre class="mermaid">
+flowchart LR
+  subgraph Events["Git 이벤트"]
+    direction TB
+    EvPR["PR → develop / staging / main"]
+    EvPush["push → develop / staging"]
+    EvRel["push · PR → release/*"]
+    EvMain["push → main"]
+    EvTag["push tag v*"]
+  end
+
+  subgraph Workflows["워크플로우"]
+    direction TB
+    CI["ci.yml<br/>Lint · Typecheck · Test · Build"]
+    RC["release-checks.yml<br/>Release Branch Checks"]
+    MN["main.yml<br/>Main Checks &amp; Final Artifacts"]
+    TG["tag.yml<br/>Tag Release &amp; Deploy"]
+  end
+
+  subgraph Shared["재사용 단위"]
+    direction TB
+    RV["reusable-validate.yml<br/>workflow_call"]
+    SETUP["actions/setup-node-pnpm<br/>composite"]
+  end
+
+  EvPR --> CI
+  EvPush --> CI
+  EvRel --> RC
+  EvMain --> MN
+  EvTag --> TG
+
+  RC --> RV
+  MN --> RV
+  TG --> RV
+
+  CI --> SETUP
+  RV --> SETUP
+  RC --> SETUP
+  MN --> SETUP
+  TG --> SETUP
+
+  classDef ev fill:#20242c,stroke:#5b7fff,color:#dbe4ff
+  classDef wf fill:#1e2a22,stroke:#68d391,color:#d7f5e3
+  classDef sh fill:#242032,stroke:#b794f4,color:#ede9fe
+  class EvPR,EvPush,EvRel,EvMain,EvTag ev
+  class CI,RC,MN,TG wf
+  class RV,SETUP sh
+      </pre>
+    </section>
+
+    <section>
+      <h2><span class="num">2</span> 일상 CI 파이프라인 (<code>ci.yml</code>)</h2>
+      <p class="desc">
+        PR과 <code>develop</code>/<code>staging</code> push에서 도는 단일 잡입니다. 핵심은
+        <b>nx affected</b> — <code>nrwl/nx-set-shas</code>가 base/head SHA를 계산해주고, 그 범위에
+        영향을 받는 프로젝트에 대해서만 lint·typecheck·test·build를 재실행합니다. 포맷 검사만
+        예외적으로 저장소 전체(<code>prettier --check .</code>)를 훑습니다.
+      </p>
+      <pre class="mermaid">
+flowchart TB
+  subgraph Job["job: ci · runs-on ubuntu-latest · concurrency cancel-in-progress: true"]
+    direction TB
+    S1["actions/checkout@v4<br/>fetch-depth: 0 (affected 비교에 전체 히스토리 필요)"]
+    S2["setup-node-pnpm<br/>pnpm 10.12.3 → Node 22 (+pnpm 캐시) → pnpm install --frozen-lockfile"]
+    S3["nrwl/nx-set-shas@v4<br/>NX_BASE / NX_HEAD 산출"]
+    S4["nx affected -t lint --parallel=3"]
+    S5["prettier --check .<br/>저장소 전체 (affected 아님)"]
+    S6["nx affected -t typecheck --parallel=3"]
+    S7["nx affected -t test --parallel=3"]
+    S8["nx affected -t build --parallel=3"]
+    S1 --> S2 --> S3 --> S4 --> S5 --> S6 --> S7 --> S8
+  end
+
+  NXC[("Nx Cloud<br/>원격 캐시 · nxCloudId")]
+  S4 -.-> NXC
+  S6 -.-> NXC
+  S7 -.-> NXC
+  S8 -.-> NXC
+
+  classDef setup fill:#242032,stroke:#b794f4,color:#ede9fe
+  classDef task fill:#1e2a22,stroke:#68d391,color:#d7f5e3
+  classDef fmt fill:#2b2418,stroke:#f6ad55,color:#ffe8cc
+  classDef ext fill:#2a2028,stroke:#f687b3,color:#ffd9ea
+  class S1,S2,S3 setup
+  class S4,S6,S7,S8 task
+  class S5 fmt
+  class NXC ext
+      </pre>
+    </section>
+
+    <section>
+      <h2>
+        <span class="num">3</span> 재사용 검증 워크플로우 (<code>reusable-validate.yml</code>)
+      </h2>
+      <p class="desc">
+        릴리스 계열 워크플로우 3개가 공유하는 <code>workflow_call</code> 워크플로우입니다. 일상 CI와
+        달리 <b><code>affected</code>가 아니라 <code>run-many</code></b
+        >로 전 프로젝트를 검증하고, 테스트 대신 <code>illog-app:build</code>(렌더러 빌드)까지
+        확인합니다. <code>extract-version</code> 입력이 켜지면 태그명 또는 루트
+        <code>package.json</code>에서 버전을 뽑아 <code>version</code>·<code>is_prerelease</code>
+        출력으로 호출자에게 돌려줍니다.
+      </p>
+      <pre class="mermaid">
+flowchart LR
+  RC["release-checks.yml<br/>extract-version: 미지정(false)"] --> RV
+  MN["main.yml<br/>extract-version: true"] --> RV
+  TG["tag.yml<br/>extract-version: true"] --> RV
+
+  subgraph RV["reusable-validate.yml · job validate · ubuntu-latest"]
+    direction TB
+    V1["checkout · fetch-depth: 0"]
+    V2["Get version (if extract-version)<br/>refs/tags/* → ref_name<br/>그 외 → package.json version<br/>alpha|beta|rc 포함 시 is_prerelease=true"]
+    V3["setup-node-pnpm"]
+    V4["nx run-many -t lint --parallel=3"]
+    V5["nx run-many -t build --projects=packages/*"]
+    V6["nx run-many -t typecheck --parallel=3"]
+    V7["nx run illog-app:build (렌더러)"]
+    V1 --> V2 --> V3 --> V4 --> V5 --> V6 --> V7
+  end
+
+  RV --> OUT["outputs<br/>version · is_prerelease"]
+  OUT -.->|"needs.validate.outputs"| MN
+  OUT -.->|"needs.validate.outputs"| TG
+
+  classDef caller fill:#20242c,stroke:#5b7fff,color:#dbe4ff
+  classDef step fill:#1e2a22,stroke:#68d391,color:#d7f5e3
+  classDef out fill:#242032,stroke:#b794f4,color:#ede9fe
+  class RC,MN,TG caller
+  class V1,V2,V3,V4,V5,V6,V7 step
+  class OUT out
+      </pre>
+      <div class="note">
+        <b>주의:</b> 이 워크플로우에는 <code>test</code> 타겟이 없습니다. 테스트는
+        <code>ci.yml</code>의 <code>nx affected -t test</code>에서만 실행되므로, 릴리스 브랜치로
+        가는 경로에서 테스트를 보장하려면 PR 단계의 CI가 통과했다는 전제가 필요합니다.
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="num">4</span> 태그 릴리스 파이프라인 (<code>tag.yml</code>)</h2>
+      <p class="desc">
+        <code>v*</code> 태그 push에서만 도는 실제 배포 경로입니다. macOS 러너에서 임시 키체인을
+        만들어 인증서를 넣고 <code>electron-forge publish</code>로
+        <b>빌드 → 서명 → 공증 → S3 업로드</b>를 한 번에 처리한 뒤, 서명/공증 결과를
+        <code>codesign</code>·<code>spctl</code>·<code>stapler</code>로 되짚어 검증합니다. arm64와
+        x64를 순차로 돌리기 때문에 두 번째 빌드가 <code>out/make</code>를 덮어쓰지 않도록 중간에
+        아티팩트를 백업·복원하는 단계가 끼어 있습니다.
+      </p>
+      <div class="legend">
+        <span><i style="background: #5b7fff"></i>검증 잡</span>
+        <span><i style="background: #f6ad55"></i>서명/공증 (macOS)</span>
+        <span><i style="background: #68d391"></i>빌드·배포</span>
+        <span><i style="background: #fc8181"></i>사후 검증</span>
+        <span><i style="background: #b794f4"></i>릴리스 발행</span>
+      </div>
+      <pre class="mermaid">
+flowchart TB
+  subgraph J1["job: validate (reusable-validate.yml)"]
+    direction TB
+    JV["lint · packages 빌드 · typecheck · 렌더러 빌드<br/>→ outputs: version, is_prerelease"]
+  end
+
+  subgraph J2["job: build-sign-notarize · macos-latest · needs: validate"]
+    direction TB
+    B1["임시 키체인 생성 · unlock"]
+    B2["Apple 중간 인증서 설치<br/>DeveloperIDG2CA · DeveloperIDCA"]
+    B3["CERTIFICATE_P12_BASE64 디코드 → security import"]
+    B4["Developer ID Application 존재 확인<br/>없으면 exit 1"]
+    B5["nx run-many -t build --projects=packages/*"]
+    B6[".env.production 생성<br/>SENTRY_DSN · CLOUDFRONT_DOMAIN · UMAMI_*"]
+    B7["electron-forge publish --arch=arm64"]
+    B8["out/make → out/make-backup 백업"]
+    B9["electron-forge publish --arch=x64"]
+    B10["백업 복원 (arm64 + x64 동시 보관)"]
+    B11["codesign --verify · Authority=Developer ID 확인"]
+    B12["spctl --assess / stapler validate"]
+    B13["aws s3 ls s3://illog/updates/darwin/"]
+    B14["키체인 삭제 (if: always)"]
+    B15["upload-artifact<br/>release-macOS-{version} · 30일"]
+    B1 --> B2 --> B3 --> B4 --> B5 --> B6 --> B7 --> B8 --> B9 --> B10
+    B10 --> B11 --> B12 --> B13 --> B14 --> B15
+  end
+
+  subgraph J3["job: create-github-release · ubuntu · if: refs/tags/v*"]
+    direction TB
+    R1["download-artifact (전체)"]
+    R2["CHANGELOG.md에서 해당 버전 구간 awk 추출"]
+    R3["softprops/action-gh-release@v2<br/>*.dmg · *.zip 첨부 · prerelease 플래그"]
+    R1 --> R2 --> R3
+  end
+
+  subgraph J4["job: deployment-summary · if: always()"]
+    direction TB
+    D1["GITHUB_STEP_SUMMARY에<br/>버전 · 각 잡 결과 · CDN URL 기록"]
+  end
+
+  J1 --> J2 --> J3 --> J4
+  J1 --> J4
+  J2 --> J4
+
+  classDef val fill:#20242c,stroke:#5b7fff,color:#dbe4ff
+  classDef sign fill:#2b2418,stroke:#f6ad55,color:#ffe8cc
+  classDef build fill:#1e2a22,stroke:#68d391,color:#d7f5e3
+  classDef verify fill:#2b1e1e,stroke:#fc8181,color:#ffd9d9
+  classDef rel fill:#242032,stroke:#b794f4,color:#ede9fe
+  class JV val
+  class B1,B2,B3,B4,B14 sign
+  class B5,B6,B7,B8,B9,B10,B15 build
+  class B11,B12,B13 verify
+  class R1,R2,R3,D1 rel
+      </pre>
+    </section>
+
+    <section>
+      <h2><span class="num">5</span> 아티팩트 배포 · 자동 업데이트 경로</h2>
+      <p class="desc">
+        <code>electron-forge publish</code>가 <code>forge.config.ts</code>의 maker/publisher를 타고
+        어디로 흘러가는지, 그리고 배포된 산출물을 실행 중인 앱이 어떻게 다시 집어오는지를
+        보여줍니다. S3 키는 <code>updates/{platform}/{arch}/{filename}</code>으로 결정되고, 앱의
+        <code>AppUpdater</code>는 CloudFront 도메인을 JSON 피드로 삼아 업데이트를 확인합니다.
+      </p>
+      <pre class="mermaid">
+flowchart LR
+  subgraph Forge["electron-forge (services/app/forge.config.ts)"]
+    direction TB
+    MK1["maker-dmg<br/>ULFO · illog-installer"]
+    MK2["maker-zip<br/>macUpdateManifestBaseUrl:<br/>https://{CDN}/updates/darwin/{arch}"]
+    SG["osxSign<br/>identity: Developer ID Application<br/>(APPLE_ID 있을 때만)"]
+    NT["osxNotarize<br/>appleId · appleIdPassword · teamId<br/>(APPLE_ID + APPLE_ID_PASSWORD 있을 때만)"]
+    PB["publisher-s3<br/>keyResolver: updates/{platform}/{arch}/{file}"]
+    MK1 --> SG
+    MK2 --> SG
+    SG --> NT --> PB
+  end
+
+  S3[("S3<br/>bucket: illog · us-east-2")]
+  CF["CloudFront<br/>AWS_CLOUDFRONT_DOMAIN"]
+  MANIFEST["RELEASES.json<br/>업데이트 매니페스트"]
+  GHR["GitHub Release<br/>.dmg · .zip 첨부"]
+  APP["AppUpdater<br/>src/main/updater/autoUpdater.ts"]
+  USER["설치된 illog 앱"]
+
+  PB --> S3 --> CF
+  CF --> MANIFEST
+  PB -.->|"upload-artifact → download-artifact"| GHR
+  APP -->|"setFeedURL(serverType: json)"| MANIFEST
+  MANIFEST -.->|"update-available → download"| APP
+  APP -->|"quitAndInstall()"| USER
+  GHR -.->|"수동 다운로드"| USER
+
+  classDef forge fill:#1e2a22,stroke:#68d391,color:#d7f5e3
+  classDef sign fill:#2b2418,stroke:#f6ad55,color:#ffe8cc
+  classDef infra fill:#2a2028,stroke:#f687b3,color:#ffd9ea
+  classDef app fill:#20242c,stroke:#5b7fff,color:#dbe4ff
+  class MK1,MK2,PB forge
+  class SG,NT sign
+  class S3,CF,MANIFEST,GHR infra
+  class APP,USER app
+      </pre>
+    </section>
+
+    <section>
+      <h2><span class="num">6</span> 워크플로우 비교</h2>
+      <p class="desc">
+        네 워크플로우가 어디까지 책임지는지 한눈에 비교한 표입니다.
+        <b>S3/CloudFront 배포와 GitHub Release 생성은 오직 <code>tag.yml</code>만</b> 수행하며,
+        <code>main.yml</code>과 <code>release-checks.yml</code>은 서명된 산출물을 GitHub Actions
+        아티팩트로만 남깁니다.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>워크플로우</th>
+            <th>트리거</th>
+            <th>검증</th>
+            <th>빌드 · 서명</th>
+            <th>배포</th>
+            <th>아티팩트</th>
+            <th>동시성</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>ci.yml</code></td>
+            <td>PR → develop / staging / main<br />push → develop / staging</td>
+            <td>
+              nx <b>affected</b><br />lint · typecheck · test · build<br />+ prettier 전체 검사
+            </td>
+            <td>—</td>
+            <td>—</td>
+            <td>—</td>
+            <td>취소함<br />(cancel-in-progress: true)</td>
+          </tr>
+          <tr>
+            <td><code>release-checks.yml</code></td>
+            <td>push · PR → release/*</td>
+            <td>reusable-validate<br />(run-many, 버전 추출 없음)</td>
+            <td>macOS · <code>electron-forge make</code><br />arm64 + x64</td>
+            <td>—</td>
+            <td><code>release-build-{sha}</code><br />14일</td>
+            <td>취소 안 함</td>
+          </tr>
+          <tr>
+            <td><code>main.yml</code></td>
+            <td>push → main</td>
+            <td>reusable-validate<br />+ 버전 추출</td>
+            <td>macOS · <code>pnpm make</code><br />arm64 + x64</td>
+            <td>—</td>
+            <td><code>release-macOS-{version}</code><br />30일</td>
+            <td>취소 안 함<br />group: main-release</td>
+          </tr>
+          <tr>
+            <td><code>tag.yml</code></td>
+            <td>push tag <code>v*</code></td>
+            <td>reusable-validate<br />+ 버전 · prerelease 판정</td>
+            <td>macOS · 중간 인증서 설치<br />+ Developer ID 존재 검증</td>
+            <td><b>S3 → CloudFront</b><br />+ GitHub Release</td>
+            <td><code>release-macOS-{version}</code><br />30일</td>
+            <td>취소 안 함<br />group: main-release</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <b>문서와 실제 설정의 차이:</b> <code>release-checks.yml</code>의 요약 스텝은 "Notarization
+        will be done on main branch"라고 적고 있지만, <code>forge.config.ts</code>의
+        <code>osxNotarize</code>는 <code>APPLE_ID</code>와 <code>APPLE_ID_PASSWORD</code>가 모두
+        있으면 활성화됩니다. 세 macOS 워크플로우 모두 두 값을 주입하므로 실제로는 release
+        브랜치에서도 공증이 수행됩니다. 실제로 갈리는 지점은 공증 여부가 아니라
+        <code>make</code>(로컬 산출물)와 <code>publish</code>(S3 업로드) 중 무엇을 쓰느냐입니다.
+      </div>
+    </section>
+
+    <footer>.github/workflows · forge.config.ts를 직접 읽어 작성 · illog CI/CD 아키텍처</footer>
+
+    <script>
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: 'dark',
+        themeVariables: {
+          background: '#1a1a1a',
+          primaryColor: '#232323',
+          primaryTextColor: '#e8e8e8',
+          primaryBorderColor: '#4a5568',
+          lineColor: '#718096',
+          secondaryColor: '#232323',
+          tertiaryColor: '#232323'
+        },
+        flowchart: { curve: 'basis' }
+      })
+    </script>
+  </body>
+</html>

@@ -60,6 +60,10 @@
     padding: 24px;
     overflow-x: auto;
   }
+  .mermaid {
+    margin: 0;
+    font-family: inherit;
+  }
   .legend {
     display: flex;
     flex-wrap: wrap;
@@ -174,26 +178,36 @@
       </div>
     </div>
     <div class="diagram">
-      <div class="mermaid">
-        flowchart TD Dev["개발자: 코드 수정"]:::actor --> Stage["git add\n(스테이징)"]:::actor Stage
-        --> AIGen{"AI로 커밋 메시지\n생성할까?"}:::actor AIGen -- "예: pnpm gen:commit" -->
-        Codeqa[["codeqa CLI --commit"]]:::hook Codeqa --> GroqAPI[("Groq API\n(LLM
-        스트리밍)")]:::api GroqAPI --> MsgReady["터미널에 출력된 메시지를\n확인/복사"]:::actor AIGen
-        -- "아니오: 직접 작성" --> MsgReady MsgReady --> GitCommit["git commit -m \"...\""]:::actor
-        GitCommit --> PreCommit{{".husky/pre-commit"}}:::hook PreCommit -->
-        LintStaged["lint-staged\n(eslint --fix / prettier)"]:::hook LintStaged -- "실패" -->
-        LintFail["❌ 훅 중단\n(에러 위치 안내)"]:::fail LintFail -.->|"수정 후 재시도"| Stage
-        LintStaged -- "통과 (자동 재스테이징)" --> CommitMsgHook{{".husky/commit-msg"}}:::hook
-        CommitMsgHook --> Regex{"정규식 패턴 검사\n(Conventional/PR/Gitmoji/Special)"}:::hook Regex
-        -- "불일치" --> MsgFail["❌ 커밋 거부\n(허용 포맷 안내 출력)"]:::fail MsgFail -.->|"메시지
-        수정 후 재시도"| GitCommit Regex -- "일치" --> CommitDone[("✅ 커밋 생성 완료")]:::done
-        CommitDone --> Push["git push"]:::actor Push --> CI[["GitHub Actions
-        CI\n(lint/typecheck/test/build)"]]:::api classDef actor
-        fill:#4c6ef5,stroke:#364fc7,color:#fff classDef hook
-        fill:#f59f00,stroke:#e67700,color:#1a1a1a classDef api
-        fill:#7048e8,stroke:#5f3dc4,color:#fff classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
-        classDef done fill:#2f9e44,stroke:#2b8a3e,color:#fff
-      </div>
+      <pre class="mermaid">
+flowchart TD
+  Dev["개발자: 코드 수정"]:::actor --> Stage["git add\n(스테이징)"]:::actor
+  Stage --> AIGen{"AI로 커밋 메시지\n생성할까?"}:::actor
+  AIGen -- "예: pnpm gen:commit" --> Codeqa[["codeqa CLI --commit"]]:::hook
+  Codeqa --> GroqAPI[("Groq API\n(LLM 스트리밍)")]:::api
+  GroqAPI --> MsgReady["터미널에 출력된 메시지를\n확인/복사"]:::actor
+  AIGen -- "아니오: 직접 작성" --> MsgReady
+  MsgReady --> GitCommit["git commit -m \"...\""]:::actor
+
+  GitCommit --> PreCommit{{".husky/pre-commit"}}:::hook
+  PreCommit --> LintStaged["lint-staged\n(eslint --fix / prettier)"]:::hook
+  LintStaged -- "실패" --> LintFail["❌ 훅 중단\n(에러 위치 안내)"]:::fail
+  LintFail -.->|"수정 후 재시도"| Stage
+
+  LintStaged -- "통과 (자동 재스테이징)" --> CommitMsgHook{{".husky/commit-msg"}}:::hook
+  CommitMsgHook --> Regex{"정규식 패턴 검사\n(Conventional/PR/Gitmoji/Special)"}:::hook
+  Regex -- "불일치" --> MsgFail["❌ 커밋 거부\n(허용 포맷 안내 출력)"]:::fail
+  MsgFail -.->|"메시지 수정 후 재시도"| GitCommit
+
+  Regex -- "일치" --> CommitDone[("✅ 커밋 생성 완료")]:::done
+  CommitDone --> Push["git push"]:::actor
+  Push --> CI[["GitHub Actions CI\n(lint/typecheck/test/build)"]]:::api
+
+  classDef actor fill:#4c6ef5,stroke:#364fc7,color:#fff
+  classDef hook fill:#f59f00,stroke:#e67700,color:#1a1a1a
+  classDef api fill:#7048e8,stroke:#5f3dc4,color:#fff
+  classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
+  classDef done fill:#2f9e44,stroke:#2b8a3e,color:#fff
+      </pre>
     </div>
   </section>
 
@@ -208,25 +222,33 @@
       프롬프트에 명시해 그 형식에 맞는 메시지를 생성합니다.
     </p>
     <div class="diagram">
-      <div class="mermaid">
-        flowchart TD Start(["pnpm gen:commit"]):::actor --> CLI["cli.ts: --commit 플래그
-        감지"]:::code CLI --> Commit["commit.ts:\ngenerateCommitMessage(apiKey)"]:::code Commit -->
-        Env["env.ts:\n.env.codeqa 로드\n(GROQ_API_KEY, GROQ_MODEL 등)"]:::code Env -->|"없으면"|
-        EnvFail["❌ 환경변수 누락 에러 후 종료"]:::fail Env --> GetDiff["getStagedDiff():\ngit diff
-        --cached --stat\ngit diff --cached"]:::code GetDiff --> CheckEmpty{"스테이징된\nchange
-        있음?"}:::code CheckEmpty -- "없음" --> NoStage["⚠️ 'git add 먼저 하세요' 후 종료"]:::fail
-        CheckEmpty -- "있음" --> TruncCheck{"diff 길이 > 12000자?"}:::code TruncCheck -- "예" -->
-        Truncate["앞부분만 사용 +\n'... (truncated)' 표시"]:::code TruncCheck -- "아니오" -->
-        BuildPrompt Truncate --> BuildPrompt["system/user 프롬프트 구성\n(Conventional Commits
-        규칙,\n허용 type 목록, 72자 제한 명시)"]:::code BuildPrompt --> GroqAPI[("Groq Chat
-        Completions API\nstream: true")]:::api GroqAPI --> SSE["SSE 청크 파싱\n(data: {...} 라인
-        단위)"]:::code SSE --> Stdout[["터미널에 실시간 출력\n(process.stdout.write)"]]:::hook
-        Stdout --> UserReview["개발자가 결과 확인 후\ngit commit -m 에 사용"]:::actor classDef actor
-        fill:#4c6ef5,stroke:#364fc7,color:#fff classDef code fill:#495057,stroke:#343a40,color:#fff
-        classDef api fill:#7048e8,stroke:#5f3dc4,color:#fff classDef fail
-        fill:#e03131,stroke:#c92a2a,color:#fff classDef hook
-        fill:#f59f00,stroke:#e67700,color:#1a1a1a
-      </div>
+      <pre class="mermaid">
+flowchart TD
+  Start(["pnpm gen:commit"]):::actor --> CLI["cli.ts: --commit 플래그 감지"]:::code
+  CLI --> Commit["commit.ts:\ngenerateCommitMessage(apiKey)"]:::code
+  Commit --> Env["env.ts:\n.env.codeqa 로드\n(GROQ_API_KEY, GROQ_MODEL 등)"]:::code
+  Env -->|"없으면"| EnvFail["❌ 환경변수 누락 에러 후 종료"]:::fail
+
+  Env --> GetDiff["getStagedDiff():\ngit diff --cached --stat\ngit diff --cached"]:::code
+  GetDiff --> CheckEmpty{"스테이징된\nchange 있음?"}:::code
+  CheckEmpty -- "없음" --> NoStage["⚠️ 'git add 먼저 하세요' 후 종료"]:::fail
+  CheckEmpty -- "있음" --> TruncCheck{"diff 길이 > 12000자?"}:::code
+
+  TruncCheck -- "예" --> Truncate["앞부분만 사용 +\n'... (truncated)' 표시"]:::code
+  TruncCheck -- "아니오" --> BuildPrompt
+  Truncate --> BuildPrompt["system/user 프롬프트 구성\n(Conventional Commits 규칙,\n허용 type 목록, 72자 제한 명시)"]:::code
+
+  BuildPrompt --> GroqAPI[("Groq Chat Completions API\nstream: true")]:::api
+  GroqAPI --> SSE["SSE 청크 파싱\n(data: {...} 라인 단위)"]:::code
+  SSE --> Stdout[["터미널에 실시간 출력\n(process.stdout.write)"]]:::hook
+  Stdout --> UserReview["개발자가 결과 확인 후\ngit commit -m 에 사용"]:::actor
+
+  classDef actor fill:#4c6ef5,stroke:#364fc7,color:#fff
+  classDef code fill:#495057,stroke:#343a40,color:#fff
+  classDef api fill:#7048e8,stroke:#5f3dc4,color:#fff
+  classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
+  classDef hook fill:#f59f00,stroke:#e67700,color:#1a1a1a
+      </pre>
     </div>
   </section>
 
@@ -239,23 +261,31 @@
       재스테이징됩니다.
     </p>
     <div class="diagram">
-      <div class="mermaid">
-        flowchart TD GitCommit(["git commit 실행"]):::actor -->
-        HuskyPre{{".husky/pre-commit"}}:::hook HuskyPre --> PnpmScript["pnpm
-        pre-commit\n(package.json script)"]:::hook PnpmScript --> LintStaged["npx
-        lint-staged"]:::hook subgraph Patterns["패턴별 처리 (lint-staged 설정)"] direction TB
-        P1["*.js / *.jsx / *.ts / *.tsx"]:::code --> A1["eslint --fix --cache"]:::code -->
-        A2["prettier --write"]:::code P2["*.json / *.md / *.yml / *.yaml"]:::code --> B1["prettier
-        --write"]:::code P3["*.sql"]:::code --> C1["prettier
-        --write\n--plugin=prettier-plugin-sql"]:::code end LintStaged --> Patterns Patterns -->
-        Result{"모든 파일\n통과?"}:::hook Result -- "실패\n(eslint 에러 등)" --> Fail["❌ 훅 중단,
-        커밋 실패\n(에러 로그 출력)"]:::fail Result -- "통과" --> Restage["수정분 자동 git
-        add\n(재스테이징)"]:::hook Restage --> Next(["다음 훅: commit-msg로 진행"]):::done classDef
-        actor fill:#4c6ef5,stroke:#364fc7,color:#fff classDef hook
-        fill:#f59f00,stroke:#e67700,color:#1a1a1a classDef code
-        fill:#495057,stroke:#343a40,color:#fff classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
-        classDef done fill:#2f9e44,stroke:#2b8a3e,color:#fff
-      </div>
+      <pre class="mermaid">
+flowchart TD
+  GitCommit(["git commit 실행"]):::actor --> HuskyPre{{".husky/pre-commit"}}:::hook
+  HuskyPre --> PnpmScript["pnpm pre-commit\n(package.json script)"]:::hook
+  PnpmScript --> LintStaged["npx lint-staged"]:::hook
+
+  subgraph Patterns["패턴별 처리 (lint-staged 설정)"]
+    direction TB
+    P1["*.js / *.jsx / *.ts / *.tsx"]:::code --> A1["eslint --fix --cache"]:::code --> A2["prettier --write"]:::code
+    P2["*.json / *.md / *.mdx / *.yml / *.yaml / *.html"]:::code --> B1["prettier --write"]:::code
+    P3["*.sql"]:::code --> C1["prettier --write\n--plugin=prettier-plugin-sql"]:::code
+  end
+
+  LintStaged --> Patterns
+  Patterns --> Result{"모든 파일\n통과?"}:::hook
+  Result -- "실패\n(eslint 에러 등)" --> Fail["❌ 훅 중단, 커밋 실패\n(에러 로그 출력)"]:::fail
+  Result -- "통과" --> Restage["수정분 자동 git add\n(재스테이징)"]:::hook
+  Restage --> Next(["다음 훅: commit-msg로 진행"]):::done
+
+  classDef actor fill:#4c6ef5,stroke:#364fc7,color:#fff
+  classDef hook fill:#f59f00,stroke:#e67700,color:#1a1a1a
+  classDef code fill:#495057,stroke:#343a40,color:#fff
+  classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
+  classDef done fill:#2f9e44,stroke:#2b8a3e,color:#fff
+      </pre>
     </div>
   </section>
 
@@ -268,19 +298,25 @@
       거부합니다.
     </p>
     <div class="diagram">
-      <div class="mermaid">
-        flowchart TD MsgFile["커밋 메시지\n(.git/COMMIT_EDITMSG)"]:::code -->
-        Hook{{".husky/commit-msg"}}:::hook Hook --> P1{"Conventional
-        Commits?\nfeat/fix/docs/style/refactor/\ntest/chore/perf/ci/build/revert: msg"}:::hook P1 --
-        "일치" --> Valid[["✅ exit 0\n커밋 허용"]]:::done P1 -- "불일치" --> P2{"PR Merge
-        형식?\n[#123] feat(scope): msg\n[PROJ-123] fix: msg"}:::hook P2 -- "일치" --> Valid P2 --
-        "불일치" --> P3{"Gitmoji 형식?\n:sparkles: / :bug: / :memo: ..."}:::hook P3 -- "일치" -->
-        Valid P3 -- "불일치" --> P4{"Special 패턴?\nMerge... / WIP: / wip: /\nRevert... / fixup! /
-        squash!"}:::hook P4 -- "일치" --> Valid P4 -- "불일치" --> Invalid["❌ exit 1\n허용 포맷
-        가이드 출력 +\n커밋 거부"]:::fail classDef code fill:#495057,stroke:#343a40,color:#fff
-        classDef hook fill:#f59f00,stroke:#e67700,color:#1a1a1a classDef done
-        fill:#2f9e44,stroke:#2b8a3e,color:#fff classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
-      </div>
+      <pre class="mermaid">
+flowchart TD
+  MsgFile["커밋 메시지\n(.git/COMMIT_EDITMSG)"]:::code --> Hook{{".husky/commit-msg"}}:::hook
+
+  Hook --> P1{"Conventional Commits?\nfeat/fix/docs/style/refactor/\ntest/chore/perf/ci/build/revert: msg"}:::hook
+  P1 -- "일치" --> Valid[["✅ exit 0\n커밋 허용"]]:::done
+  P1 -- "불일치" --> P2{"PR Merge 형식?\n[#123] feat(scope): msg\n[PROJ-123] fix: msg"}:::hook
+  P2 -- "일치" --> Valid
+  P2 -- "불일치" --> P3{"Gitmoji 형식?\n:sparkles: / :bug: / :memo: ..."}:::hook
+  P3 -- "일치" --> Valid
+  P3 -- "불일치" --> P4{"Special 패턴?\nMerge... / WIP: / wip: /\nRevert... / fixup! / squash!"}:::hook
+  P4 -- "일치" --> Valid
+  P4 -- "불일치" --> Invalid["❌ exit 1\n허용 포맷 가이드 출력 +\n커밋 거부"]:::fail
+
+  classDef code fill:#495057,stroke:#343a40,color:#fff
+  classDef hook fill:#f59f00,stroke:#e67700,color:#1a1a1a
+  classDef done fill:#2f9e44,stroke:#2b8a3e,color:#fff
+  classDef fail fill:#e03131,stroke:#c92a2a,color:#fff
+      </pre>
     </div>
   </section>
 
