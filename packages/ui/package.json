@@ -21,7 +21,8 @@
     "build:icons": "tsx ./scripts/generate-icons.ts",
     "build:color": "tsx ./scripts/generate-color-objects.ts",
     "test": "vitest run",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "spec:validate": "tsx ./scripts/spec/validate.ts"
   },
   "keywords": [],
   "author": "",

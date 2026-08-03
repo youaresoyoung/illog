@@ -22,6 +22,14 @@
     "test": {
       "executor": "nx:run-commands",
       "options": { "cwd": "packages/ui", "command": "pnpm test" }
+    },
+    "spec-validate": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "packages/ui", "command": "pnpm spec:validate" }
+    },
+    "spec-generate": {
+      "executor": "nx:run-commands",
+      "options": { "cwd": "packages/ui", "command": "pnpm spec:generate" }
     }
   }
 }
