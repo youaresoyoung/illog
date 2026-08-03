@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <title>illog — Design System Spec 파이프라인</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #1a1a1a;
+        color: #e8e8e8;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Pretendard', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 24px 80px;
+      }
+      header {
+        max-width: 900px;
+        width: 100%;
+        margin-bottom: 32px;
+      }
+      header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0 0 8px;
+        color: #f5f5f5;
+      }
+      header p {
+        color: #9a9a9a;
+        line-height: 1.6;
+        margin: 0;
+        font-size: 14px;
+      }
+      section {
+        width: 100%;
+        max-width: 1100px;
+        margin-bottom: 48px;
+      }
+      section h2 {
+        font-size: 17px;
+        font-weight: 600;
+        color: #eaeaea;
+        margin: 0 0 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      section h2 .num {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: #2d2d3a;
+        color: #a5b4fc;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      section .desc {
+        color: #9a9a9a;
+        font-size: 13.5px;
+        line-height: 1.6;
+        margin: 0 0 16px;
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin: 10px 0 16px;
+        font-size: 12.5px;
+        color: #b0b0b0;
+      }
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .legend i {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+      .mermaid {
+        background: #212121;
+        border: 1px solid #2e2e2e;
+        border-radius: 12px;
+        padding: 24px;
+        max-width: 100%;
+        overflow: auto;
+        font-family: inherit;
+      }
+      table.api {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        margin-top: 4px;
+        background: #212121;
+        border: 1px solid #2e2e2e;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      table.api th,
+      table.api td {
+        text-align: left;
+        padding: 9px 14px;
+        border-bottom: 1px solid #2a2a2a;
+        vertical-align: top;
+      }
+      table.api th {
+        background: #262626;
+        color: #cfcfcf;
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.02em;
+      }
+      table.api tr:last-child td {
+        border-bottom: none;
+      }
+      table.api td code {
+        white-space: nowrap;
+      }
+      code {
+        background: #2a2a2a;
+        border-radius: 4px;
+        padding: 1px 5px;
+        font-size: 0.92em;
+        color: #d8d8d8;
+      }
+      .note {
+        border-left: 3px solid #a5b4fc;
+        background: #202030;
+        padding: 12px 16px;
+        border-radius: 0 8px 8px 0;
+        font-size: 13px;
+        line-height: 1.65;
+        color: #c2c2d0;
+        margin: 16px 0 0;
+      }
+      .note b {
+        color: #e6e6f5;
+      }
+      footer {
+        max-width: 900px;
+        width: 100%;
+        color: #6b6b6b;
+        font-size: 12px;
+        text-align: center;
+        margin-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>illog — Design System Spec 파이프라인</h1>
+      <p>
+        <code>packages/ui</code>의 컴포넌트 스펙 추출 파이프라인을 정리한 문서입니다. YAML로 쓴
+        컴포넌트 스펙을 읽어 검증하고, 디자인 토큰을 실제 값으로 해석해 문서용 표로 만드는 흐름을
+        파일 단위 → 함수 단위 순으로 좁혀가며 보여줍니다. 현재 브랜치에 존재하는 코드만 반영했으며,
+        아직 비어 있는 엔트리(<code>generate.ts</code>, <code>validate.ts</code>)는 점선으로
+        표시했습니다. 앱 전체 구조는
+        <a href="./index.html" style="color: #a5b4fc">아키텍처 다이어그램</a>을 참고하세요.
+      </p>
+    </header>
+
+    <section>
+      <h2><span class="num">1</span> 파이프라인 전체 흐름</h2>
+      <p class="desc">
+        입력은 두 가지입니다 — 컴포넌트 스펙(<code>spec/*.yaml</code>)과 그 형태를 규정하는 JSON
+        Schema. 여기에 <code>@illog/themes</code>의 디자인 토큰이 합쳐져, <b>이슈 목록</b>과
+        <b>문서용 표</b> 두 종류의 산출물이 나옵니다. 검사는
+        <b>형식(JSON Schema) → 의미(코드)</b> 2단계로 나뉘며, 형식 검사를 통과하지 못한 파일은 의미
+        검사로 넘어가지 않습니다.
+      </p>
+      <div class="legend">
+        <span><i style="background: #f6ad55"></i>입력 (사람이 쓰는 파일)</span>
+        <span><i style="background: #68d391"></i>파이프라인 모듈</span>
+        <span><i style="background: #b794f4"></i>산출물</span>
+        <span><i style="background: #718096"></i>미구현 (예정)</span>
+      </div>
+      <pre class="mermaid">
+graph LR
+  subgraph Input["입력"]
+    YAML["spec/button.yaml<br />컴포넌트 스펙"]
+    SCHEMA["spec/_schema/<br />component.schema.json"]
+  end
+  subgraph Tokens["디자인 토큰 (SSOT)"]
+    THEMES["@illog/themes<br />tokens · styles"]
+    GEN["src/core/tokens/<br />generatedColors"]
+  end
+  subgraph Pipeline["scripts/spec"]
+    LOAD["loadSpecs.ts<br />읽기 + 형식 검사"]
+    CHECK["checkSemantics.ts<br />의미 검사"]
+    RESOLVE["resolveToken.ts<br />토큰 해석"]
+    TABLE["buildTables.ts<br />표 가공"]
+  end
+  subgraph Output["산출물"]
+    ISSUES["Issue[]<br />error · warn"]
+    SPECS["ComponentSpec[]"]
+    ROWS["PropRow[] · SpecRow[]"]
+  end
+  subgraph Entry["엔트리 (미작성)"]
+    VALIDATE["validate.ts"]
+    GENERATE["generate.ts"]
+  end
+
+  YAML --> LOAD
+  SCHEMA --> LOAD
+  LOAD --> CHECK
+  CHECK --> RESOLVE
+  THEMES --> RESOLVE
+  GEN --> RESOLVE
+  LOAD --> ISSUES
+  CHECK --> ISSUES
+  LOAD --> SPECS
+  SPECS --> TABLE
+  RESOLVE --> TABLE
+  TABLE --> ROWS
+  ISSUES -.-> VALIDATE
+  ROWS -.-> GENERATE
+
+  classDef input fill:#2a2318,stroke:#f6ad55,color:#fde8c8
+  classDef mod fill:#182a20,stroke:#68d391,color:#ccf3dd
+  classDef out fill:#241f32,stroke:#b794f4,color:#ece4fe
+  classDef todo fill:#232527,stroke:#718096,color:#9aa5b1,stroke-dasharray:4 3
+  class YAML,SCHEMA,THEMES,GEN input
+  class LOAD,CHECK,RESOLVE,TABLE mod
+  class ISSUES,SPECS,ROWS out
+  class VALIDATE,GENERATE todo
+      </pre>
+    </section>
+
+    <section>
+      <h2><span class="num">2</span> 모듈 의존 관계 (파일 단위)</h2>
+      <p class="desc">
+        각 파일의 <code>import</code>문을 그대로 옮긴 그래프입니다. 화살표는 위에서 아래
+        <b>한 방향으로만</b> 흐르며 순환이 없습니다 — 아래층 파일은 위층을 절대 import하지 않기
+        때문에, 어느 파일을 엔트리로 잡아도 초기화 순서 문제가 생기지 않습니다.
+        <code>types.ts</code>와 <code>utils.ts</code>는 import가 하나도 없는 잎(leaf)입니다.
+      </p>
+      <div class="legend">
+        <span><i style="background: #90cdf4"></i>L0 잎 — 의존 없음</span>
+        <span><i style="background: #68d391"></i>L1 도메인 헬퍼</span>
+        <span><i style="background: #f6ad55"></i>L2 검사</span>
+        <span><i style="background: #fc8181"></i>L3 조립</span>
+        <span><i style="background: #718096"></i>L4 엔트리 (미작성)</span>
+      </div>
+      <pre class="mermaid">
+graph TD
+  subgraph L4["L4 · 엔트리 (미작성)"]
+    VALIDATE["validate.ts"]
+    GENERATE["generate.ts"]
+  end
+  subgraph L3["L3 · 조립"]
+    LOAD["loadSpecs.ts"]
+    TABLE["buildTables.ts"]
+  end
+  subgraph L2["L2 · 검사"]
+    CHECK["checkSemantics.ts"]
+  end
+  subgraph L1["L1 · 도메인 헬퍼"]
+    RESOLVE["resolveToken.ts"]
+    FLATTEN["flattenDefinitions.ts"]
+  end
+  subgraph L0["L0 · 잎"]
+    TYPES["types.ts"]
+    UTILS["utils.ts"]
+  end
+
+  VALIDATE -.-> LOAD
+  GENERATE -.-> LOAD
+  GENERATE -.-> TABLE
+  LOAD --> CHECK
+  LOAD --> TYPES
+  TABLE --> FLATTEN
+  TABLE --> RESOLVE
+  TABLE --> UTILS
+  TABLE --> TYPES
+  CHECK --> FLATTEN
+  CHECK --> RESOLVE
+  CHECK --> TYPES
+  RESOLVE --> UTILS
+  RESOLVE --> TYPES
+  FLATTEN --> TYPES
+
+  classDef leaf fill:#1b2430,stroke:#90cdf4,color:#d6ebfb
+  classDef helper fill:#182a20,stroke:#68d391,color:#ccf3dd
+  classDef check fill:#2a2318,stroke:#f6ad55,color:#fde8c8
+  classDef assemble fill:#2b1d1d,stroke:#fc8181,color:#fcdcdc
+  classDef todo fill:#232527,stroke:#718096,color:#9aa5b1,stroke-dasharray:4 3
+  class TYPES,UTILS leaf
+  class RESOLVE,FLATTEN helper
+  class CHECK check
+  class LOAD,TABLE assemble
+  class VALIDATE,GENERATE todo
+      </pre>
+      <p class="note">
+        <b>왜 단방향이 중요한가</b> — 이전 구조에서는 <code>lib.ts</code>가
+        <code>checkSemantics.ts</code>를 부르고 <code>checkSemantics.ts</code>가 다시
+        <code>lib.ts</code>의 토큰 해석 함수를 불러 순환이 있었습니다. 함수 선언이 호이스팅되는 덕에
+        우연히 동작했을 뿐, 화살표 함수로 바꾸거나 CJS로 번들하면 바로 깨지는 상태였습니다. 토큰
+        해석을 <code>resolveToken.ts</code>로 내리면서 순환이 사라졌습니다.
+      </p>
+    </section>
+
+    <section>
+      <h2><span class="num">3</span> 함수 호출 흐름 (함수 단위)</h2>
+      <p class="desc">
+        각 함수가 <b>어디서 호출되는지</b>를 그린 콜 그래프입니다. 실선은 실제 호출, 점선은 아직
+        호출부가 없는 것(예정)입니다. <code>flattenDefinitions</code>와
+        <code>tryResolveTokenRef</code>가 검사 경로와 표 생성 경로 <b>양쪽에서 공유</b>되는 점이 이
+        구조의 핵심입니다 — <code>definitions</code>의 4중 중첩을 순회하는 코드가 한 곳에만
+        존재합니다.
+      </p>
+      <div class="legend">
+        <span><i style="background: #fc8181"></i>진입 함수</span>
+        <span><i style="background: #f6ad55"></i>검사</span>
+        <span><i style="background: #68d391"></i>공유 순회 · 토큰 해석</span>
+        <span><i style="background: #90cdf4"></i>순수 헬퍼</span>
+        <span><i style="background: #b794f4"></i>외부 라이브러리</span>
+      </div>
+      <pre class="mermaid">
+graph TD
+  subgraph LoadFile["loadSpecs.ts"]
+    LOADSPECS["loadSpecs(specDir?)<br />디렉터리 순회 · 형식 검사 · id 규칙"]
+    SCHEMAPATH["schemaPathFor(specDir)"]
+    GETVAL["getValidator(schemaPath)<br />ajv 컴파일 1회 캐시"]
+  end
+  subgraph CheckFile["checkSemantics.ts"]
+    CHECKSEM["checkSemantics(spec, file)<br />Issue[] 수집"]
+  end
+  subgraph FlattenFile["flattenDefinitions.ts"]
+    PARSESEL["parseSelector(selector)<br />'size=md' 해석"]
+    FLAT["flattenDefinitions(spec)<br />4중 중첩 → 평평한 목록"]
+    DESCRIBE["describeLocation(entry)<br />위치 문자열"]
+  end
+  subgraph ResolveFile["resolveToken.ts"]
+    TRYRES["tryResolveTokenRef(ref)<br />실패를 값으로 반환"]
+    RES["resolveTokenRef(ref)<br />실패 시 throw"]
+    COLORMAP["getColorKeyMap()<br />역색인 · lazy memo"]
+  end
+  subgraph TableFile["buildTables.ts"]
+    PROPS["buildPropsTable(spec)<br />variants + props → PropRow[]"]
+    SPECT["buildSpecTable(spec)<br />definitions → SpecRow[]"]
+  end
+  subgraph UtilFile["utils.ts"]
+    KEBAB["toKebab"]
+    GETIN["getIn"]
+    QUOTE["quote"]
+    FMT["formatDefault"]
+  end
+  subgraph Ext["외부"]
+    AJV["ajv · Ajv2020"]
+    YAMLLIB["yaml · parse"]
+    FS["fs · readdirSync/readFileSync"]
+  end
+
+  LOADSPECS --> SCHEMAPATH
+  LOADSPECS --> GETVAL
+  LOADSPECS --> CHECKSEM
+  LOADSPECS --> YAMLLIB
+  LOADSPECS --> FS
+  GETVAL --> AJV
+  GETVAL --> FS
+
+  CHECKSEM --> PARSESEL
+  CHECKSEM --> FLAT
+  CHECKSEM --> DESCRIBE
+  CHECKSEM --> TRYRES
+
+  SPECT --> FLAT
+  SPECT --> DESCRIBE
+  SPECT --> TRYRES
+  PROPS --> QUOTE
+  PROPS --> FMT
+
+  TRYRES --> COLORMAP
+  TRYRES --> GETIN
+  TRYRES --> KEBAB
+  RES -.->|"래핑"| TRYRES
+
+  classDef entry fill:#2b1d1d,stroke:#fc8181,color:#fcdcdc
+  classDef check fill:#2a2318,stroke:#f6ad55,color:#fde8c8
+  classDef shared fill:#182a20,stroke:#68d391,color:#ccf3dd
+  classDef util fill:#1b2430,stroke:#90cdf4,color:#d6ebfb
+  classDef ext fill:#241f32,stroke:#b794f4,color:#ece4fe
+  classDef unused fill:#232527,stroke:#718096,color:#9aa5b1,stroke-dasharray:4 3
+  class LOADSPECS,PROPS,SPECT entry
+  class CHECKSEM check
+  class FLAT,PARSESEL,DESCRIBE,TRYRES,COLORMAP shared
+  class KEBAB,GETIN,QUOTE,FMT,SCHEMAPATH,GETVAL util
+  class AJV,YAMLLIB,FS ext
+  class RES unused
+      </pre>
+      <p class="note">
+        <b>점선으로 표시한 <code>resolveTokenRef</code></b> — 현재 어느 모듈도 호출하지 않습니다.
+        "이미 검증을 통과한 스펙"을 다루는 자리에서 쓰라고 남겨둔 API로, <code>generate.ts</code>가
+        작성되면 호출부가 생깁니다. <code>SCHEMA_PATH</code> 상수도 같은 이유로 아직 미사용
+        export입니다.
+      </p>
+    </section>
+
+    <section>
+      <h2><span class="num">4</span> 함수별 역할 정리</h2>
+      <p class="desc">
+        위 콜 그래프의 각 노드가 실제로 무슨 일을 하고, 무엇을 돌려주는지 한 줄로 정리했습니다.
+      </p>
+      <table class="api">
+        <thead>
+          <tr>
+            <th>파일</th>
+            <th>함수</th>
+            <th>역할</th>
+            <th>반환</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>loadSpecs.ts</code></td>
+            <td><code>loadSpecs(specDir?)</code></td>
+            <td>
+              yaml 파일 나열 → 파싱 → JSON Schema 형식 검사 → id/파일명 일치·중복 확인 →
+              <code>checkSemantics</code> 위임
+            </td>
+            <td><code>LoadResult</code></td>
+          </tr>
+          <tr>
+            <td><code>loadSpecs.ts</code></td>
+            <td><code>getValidator(path)</code></td>
+            <td>ajv 컴파일 결과를 경로별로 캐시 (import 시점이 아닌 첫 호출 때 1회)</td>
+            <td><code>ValidateFunction</code></td>
+          </tr>
+          <tr>
+            <td><code>loadSpecs.ts</code></td>
+            <td><code>schemaPathFor(dir)</code></td>
+            <td>스펙 디렉터리로부터 스키마 경로를 만든다 (픽스처 디렉터리 지원)</td>
+            <td><code>string</code></td>
+          </tr>
+          <tr>
+            <td><code>checkSemantics.ts</code></td>
+            <td><code>checkSemantics(spec, file)</code></td>
+            <td>
+              형식 검사를 통과한 스펙의 <b>의미</b>를 검사 — 선언되지 않은 variant/값/state/element
+              참조, 해석 불가 토큰, 스타일 미구현 등
+            </td>
+            <td><code>Issue[]</code></td>
+          </tr>
+          <tr>
+            <td><code>flattenDefinitions.ts</code></td>
+            <td><code>flattenDefinitions(spec)</code></td>
+            <td>
+              <code>selector → state → element → property</code> 4중 중첩을 평평한 항목으로 편다.
+              검사와 표 생성이 이 순회 하나를 공유한다
+            </td>
+            <td><code>Generator&lt;DefinitionEntry&gt;</code></td>
+          </tr>
+          <tr>
+            <td><code>flattenDefinitions.ts</code></td>
+            <td><code>parseSelector(selector)</code></td>
+            <td>
+              selector 문법을 해석하는 유일한 곳. <code>'size=md'</code> →
+              <code>[{ variant, value }]</code>, <code>'base'</code> → <code>[]</code>
+            </td>
+            <td><code>SelectorPart[]</code></td>
+          </tr>
+          <tr>
+            <td><code>flattenDefinitions.ts</code></td>
+            <td><code>describeLocation(entry)</code></td>
+            <td>이슈 메시지와 에러가 공유하는 위치 표기를 만든다</td>
+            <td><code>string</code></td>
+          </tr>
+          <tr>
+            <td><code>resolveToken.ts</code></td>
+            <td><code>tryResolveTokenRef(ref)</code></td>
+            <td>
+              <code>$color/$size/$text</code> 참조를 실제 값으로 해석. 실패를 예외가 아닌 값으로
+              돌려주므로 호출부가 Issue로 모을 수 있다
+            </td>
+            <td><code>TokenResolution</code></td>
+          </tr>
+          <tr>
+            <td><code>resolveToken.ts</code></td>
+            <td><code>resolveTokenRef(ref)</code></td>
+            <td>위를 감싸 실패 시 던지는 버전 — 검증을 통과한 스펙 전용 (현재 호출부 없음)</td>
+            <td><code>ResolvedToken</code></td>
+          </tr>
+          <tr>
+            <td><code>resolveToken.ts</code></td>
+            <td><code>getColorKeyMap()</code></td>
+            <td>
+              <code>generatedColors</code>의 <code>var(--x)</code> → camelCase 키 역색인. 첫
+              호출에만 만들고 이후 재사용
+            </td>
+            <td><code>Map&lt;string, string&gt;</code></td>
+          </tr>
+          <tr>
+            <td><code>buildTables.ts</code></td>
+            <td><code>buildPropsTable(spec)</code></td>
+            <td>variants와 props를 합쳐 문서 props 표의 행을 만든다</td>
+            <td><code>PropRow[]</code></td>
+          </tr>
+          <tr>
+            <td><code>buildTables.ts</code></td>
+            <td><code>buildSpecTable(spec)</code></td>
+            <td>definitions를 해석된 값이 담긴 행으로 펼친다. 해석 실패 시 위치를 붙여 던진다</td>
+            <td><code>SpecRow[]</code></td>
+          </tr>
+          <tr>
+            <td><code>utils.ts</code></td>
+            <td><code>toKebab · getIn · quote · formatDefault</code></td>
+            <td>
+              도메인 지식이 전혀 없는 순수 헬퍼. 스펙·토큰·파일 구조를 알아야 하면 이 파일이 아니다
+            </td>
+            <td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2><span class="num">5</span> 토큰 참조가 값이 되기까지</h2>
+      <p class="desc">
+        <code>tryResolveTokenRef</code> 내부를 단계별로 편 그림입니다. 네임스페이스에 따라 경로가
+        갈리며, 색상만 CSS 변수명 변환과 역색인을 한 번 더 거칩니다. 어느 단계에서 막히든
+        <b>예외 대신 <code>{ ok: false, error }</code></b
+        >가 나오고, 그 <code>error</code>가 그대로 Issue 메시지가 됩니다.
+      </p>
+      <pre class="mermaid">
+graph TD
+  START["ref 예: $color.text.brand.onBrand"] --> SPLIT["ref.slice(1).split('.')<br />namespace='color', rest=[text, brand, onBrand]"]
+  SPLIT --> NS{"namespace?"}
+
+  NS -->|color| C1["getIn(tokens.colors.light, rest)<br />getIn(tokens.colors.dark, rest)"]
+  C1 --> C2{"light·dark 모두 존재?"}
+  C2 -->|아니오| FAIL["ok: false<br />error 메시지"]
+  C2 -->|예| C3["rest.map(toKebab).join('-')<br />→ --text-brand-on-brand"]
+  C3 --> C4["getColorKeyMap().get(cssVar)"]
+  C4 --> C5{"generatedColors에 있음?"}
+  C5 -->|아니오| FAIL
+  C5 -->|예| COK["display: var(--text-brand-on-brand)<br />colorKey: textBrandOnBrand"]
+
+  NS -->|size| S1["getIn(tokens.size, rest)"]
+  S1 --> S2{"존재?"}
+  S2 -->|아니오| FAIL
+  S2 -->|예| SOK["display: 8px<br />number면 px 부착"]
+
+  NS -->|text| T1["getIn(styles.text, rest)"]
+  T1 --> T2{"존재?"}
+  T2 -->|아니오| FAIL
+  T2 -->|예| TOK["display: styles.text.singleLine.bodyBase"]
+
+  NS -->|그 외| FAIL
+
+  COK --> OK["ok: true · ResolvedToken"]
+  SOK --> OK
+  TOK --> OK
+  FAIL --> ISSUE["호출부가 Issue(error)로 기록<br />buildSpecTable은 위치를 붙여 throw"]
+
+  classDef start fill:#2a2318,stroke:#f6ad55,color:#fde8c8
+  classDef step fill:#182a20,stroke:#68d391,color:#ccf3dd
+  classDef good fill:#241f32,stroke:#b794f4,color:#ece4fe
+  classDef bad fill:#2b1d1d,stroke:#fc8181,color:#fcdcdc
+  class START,SPLIT start
+  class C1,C3,C4,S1,T1 step
+  class COK,SOK,TOK,OK good
+  class FAIL,ISSUE bad
+      </pre>
+    </section>
+
+    <section>
+      <h2><span class="num">6</span> checkSemantics의 4단계 검사</h2>
+      <p class="desc">
+        의미 검사는 네 덩어리로 나뉘고, 각 단계가 어떤 Issue를 만드는지 보여줍니다. 3단계만
+        <code>flattenDefinitions</code>를 순회하며, 같은 (selector, state, element)에 대한 중복
+        보고는 <code>once()</code>로 한 번만 나가게 막습니다.
+      </p>
+      <div class="legend">
+        <span><i style="background: #fc8181"></i>error — 반드시 고쳐야 함</span>
+        <span><i style="background: #f6ad55"></i>warn — 의도된 drift일 수 있음</span>
+      </div>
+      <pre class="mermaid">
+graph LR
+  SPEC["ComponentSpec"] --> P1["1 · variants 자체 정합성"]
+  SPEC --> P2["2 · selector 참조 검사<br />parseSelector 사용"]
+  SPEC --> P3["3 · definitions 순회<br />flattenDefinitions 사용"]
+  SPEC --> P4["4 · 스타일 미구현 탐지"]
+
+  P1 --> E1["error: enum인데 values 없음"]
+  P1 --> E2["error: default가 values에 없음"]
+  P1 --> W1["warn: default와 required 동시 존재"]
+
+  P2 --> E3["error: 선언되지 않은 variant"]
+  P2 --> E4["error: variant에 없는 값"]
+
+  P3 --> E5["error: states에 없는 상태"]
+  P3 --> E6["error: 선언되지 않은 element"]
+  P3 --> E7["error: 토큰 해석 실패"]
+  P3 --> W2["warn: 토큰 밖 값 raw/reason"]
+
+  P4 --> W3["warn: definitions 없는 variant 값"]
+
+  E1 --> OUT["Issue[]"]
+  E2 --> OUT
+  E3 --> OUT
+  E4 --> OUT
+  E5 --> OUT
+  E6 --> OUT
+  E7 --> OUT
+  W1 --> OUT
+  W2 --> OUT
+  W3 --> OUT
+
+  classDef phase fill:#182a20,stroke:#68d391,color:#ccf3dd
+  classDef err fill:#2b1d1d,stroke:#fc8181,color:#fcdcdc
+  classDef wrn fill:#2a2318,stroke:#f6ad55,color:#fde8c8
+  classDef out fill:#241f32,stroke:#b794f4,color:#ece4fe
+  class P1,P2,P3,P4 phase
+  class E1,E2,E3,E4,E5,E6,E7 err
+  class W1,W2,W3 wrn
+  class SPEC,OUT out
+      </pre>
+      <p class="note">
+        <b>warn은 실패가 아니다</b> — 현재 <code>button.yaml</code>은 error 0건, warn 3건입니다.
+        <code>size=sm</code>이 <code>button.css.ts</code>에서 빈 스타일이라는 사실과
+        <code>height</code>가 sizing 토큰 부재로 하드코딩됐다는 사실을 <b>숨기지 않고 기록해 둔</b>
+        결과입니다. 스펙은 이상적인 모습이 아니라 현재 구현을 그대로 드러내는 쪽을 택했습니다.
+      </p>
+    </section>
+
+    <section>
+      <h2><span class="num">7</span> 스펙 문서와 실제 코드의 정렬</h2>
+      <p class="desc">
+        스펙을 쓰는 과정에서 실제 컴포넌트 코드와의 어긋남이 드러납니다. 이번 변경에 포함된
+        <code>Button/types.ts</code> 수정이 그 예입니다 — <code>Button.tsx</code>는
+        <code>variant = 'primary'</code>로 기본값을 주고 있는데 타입만 필수였습니다.
+      </p>
+      <pre class="mermaid">
+graph LR
+  YAML["button.yaml<br />variants.variant.default: primary"] --> CMP{"실제 코드와 일치?"}
+  IMPL["Button.tsx<br />variant = 'primary' 기본값 있음"] --> CMP
+  TYPE["Button/types.ts<br />variant: 'primary' | 'secondary' (필수)"] --> CMP
+  CMP -->|불일치| FIX["variant?: 'primary' | 'secondary'<br />옵셔널로 수정"]
+
+  CSS["button.css.ts<br />sm: {} 빈 스타일"] --> DRIFT{"스펙에 어떻게 남길까?"}
+  DRIFT -->|숨기지 않고 기록| WARN["definitions에 size=sm 생략<br />→ warn으로 드러남"]
+
+  classDef src fill:#2a2318,stroke:#f6ad55,color:#fde8c8
+  classDef q fill:#1b2430,stroke:#90cdf4,color:#d6ebfb
+  classDef fix fill:#182a20,stroke:#68d391,color:#ccf3dd
+  class YAML,IMPL,TYPE,CSS src
+  class CMP,DRIFT q
+  class FIX,WARN fix
+      </pre>
+    </section>
+
+    <footer>실제 소스 코드를 읽고 작성한 다이어그램입니다 · packages/ui 기준</footer>
+
+    <script>
+      mermaid.initialize({ startOnLoad: true, theme: 'dark' })
+    </script>
+  </body>
+</html>
