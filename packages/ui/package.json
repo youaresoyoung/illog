@@ -9,7 +9,8 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./index.css": "./dist/index.css"
+    "./index.css": "./dist/index.css",
+    "./spec.json": "./spec/__generated__/spec.json"
   },
   "scripts": {
     "build": "pnpm run build:tsc && pnpm run build:esbuild",
@@ -59,7 +60,9 @@
     "tsx": "^4.21.0",
     "vite-plugin-svgr": "^4.5.0",
     "vitest": "^4.0.14",
-    "vitest-browser-react": "^2.0.2"
+    "vitest-browser-react": "^2.0.2",
+    "yaml": "^2.8.2",
+    "ajv": "^8.17.1"
   },
   "peerDependencies": {
     "react": "^19.2.4",
