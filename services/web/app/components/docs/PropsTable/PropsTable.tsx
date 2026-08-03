@@ -1,16 +1,24 @@
 import { Box, Text } from '@/app/components/common/UI'
+import { getComponentSpec } from '@/lib/spec'
 
 type Prop = {
   name: string
   type: string
-  default?: string
+  default?: string | null
   required?: boolean
   description: string
 }
 
-type Props = {
-  data: Prop[]
-}
+/**
+ * component 를 주면 packages/ui/spec 에서 생성된 표를 그림
+ * data 는 아직 스펙이 없는 컴포넌트를 위한 임시 경로
+ */
+type Props =
+  | {
+      component: string
+      data?: never
+    }
+  | { component?: never; data: Prop[] }
 
 const headerCellStyle = {
   padding: '0.75rem 1rem',
@@ -25,7 +33,10 @@ const bodyCellStyle = {
   verticalAlign: 'top' as const
 }
 
-export function PropsTable({ data }: Props) {
+export function PropsTable({ component, data }: Props) {
+  const spec = component ? getComponentSpec(component) : null
+  const rows: Prop[] = spec ? spec.propsTable : (data ?? [])
+
   return (
     <Box overflow="auto" my="600">
       <Box as="table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
@@ -60,7 +71,7 @@ export function PropsTable({ data }: Props) {
         </Box>
 
         <Box as="tbody">
-          {data.map((p) => (
+          {rows.map((p) => (
             <Box as="tr" key={p.name}>
               <Box as="td" style={bodyCellStyle}>
                 <Box
