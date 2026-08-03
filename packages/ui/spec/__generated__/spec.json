@@ -1,0 +1,305 @@
+{
+  "$generated": "// ⚠️ Auto-generated from packages/ui/spec/*.yaml - Do not edit",
+  "components": {
+    "button": {
+      "id": "button",
+      "name": "Button",
+      "description": "사용자 액션을 트리거하는 기본 인터랙션 컴포넌트",
+      "status": {
+        "figma": "done",
+        "react": "done"
+      },
+      "elements": {
+        "root": {
+          "tag": "button",
+          "description": "버튼 컨테이너이자 인터랙션 타깃"
+        },
+        "label": {
+          "description": "버튼 텍스트 (children)"
+        }
+      },
+      "variants": {
+        "variant": {
+          "type": "enum",
+          "values": ["primary", "secondary"],
+          "default": "primary",
+          "description": "시각적 위계. primary 는 한 섹션에 하나만 사용한다."
+        },
+        "size": {
+          "type": "enum",
+          "values": ["sm", "md", "lg"],
+          "default": "md",
+          "description": "버튼 크기"
+        },
+        "isFullWidth": {
+          "type": "boolean",
+          "default": false,
+          "description": "부모 너비를 가득 채울지 여부"
+        }
+      },
+      "states": ["enabled", "hover", "disabled"],
+      "extends": "ButtonHTMLAttributes<HTMLButtonElement>",
+      "propsTable": [
+        {
+          "name": "variant",
+          "type": "'primary' | 'secondary'",
+          "default": "'primary'",
+          "required": false,
+          "description": "시각적 위계. primary 는 한 섹션에 하나만 사용한다."
+        },
+        {
+          "name": "size",
+          "type": "'sm' | 'md' | 'lg'",
+          "default": "'md'",
+          "required": false,
+          "description": "버튼 크기"
+        },
+        {
+          "name": "isFullWidth",
+          "type": "boolean",
+          "default": "false",
+          "required": false,
+          "description": "부모 너비를 가득 채울지 여부"
+        },
+        {
+          "name": "isDisabled",
+          "type": "boolean",
+          "default": "false",
+          "required": false,
+          "description": "비활성 여부"
+        },
+        {
+          "name": "onClick",
+          "type": "() => void",
+          "default": null,
+          "required": false,
+          "description": "클릭 핸들러"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "default": null,
+          "required": true,
+          "description": "버튼 내용"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "default": null,
+          "required": false,
+          "description": "추가 CSS 클래스"
+        },
+        {
+          "name": "ariaLabel",
+          "type": "string",
+          "default": null,
+          "required": false,
+          "description": "접근성 레이블"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "default": null,
+          "required": false,
+          "description": "button 엘리먼트 ref"
+        }
+      ],
+      "specTable": [
+        {
+          "selector": "base",
+          "state": "enabled",
+          "element": "root",
+          "property": "borderRadius",
+          "token": "$size.radius.200",
+          "value": "8px"
+        },
+        {
+          "selector": "base",
+          "state": "enabled",
+          "element": "root",
+          "property": "borderWidth",
+          "token": "$size.stroke.border",
+          "value": "1px"
+        },
+        {
+          "selector": "base",
+          "state": "enabled",
+          "element": "root",
+          "property": "typography",
+          "token": "$text.singleLine.bodyBase",
+          "value": "styles.text.singleLine.bodyBase"
+        },
+        {
+          "selector": "base",
+          "state": "enabled",
+          "element": "label",
+          "property": "color",
+          "token": "$color.text.default.default",
+          "value": "var(--text-default-default)"
+        },
+        {
+          "selector": "variant=primary",
+          "state": "enabled",
+          "element": "root",
+          "property": "backgroundColor",
+          "token": "$color.background.brand.default",
+          "value": "var(--background-brand-default)"
+        },
+        {
+          "selector": "variant=primary",
+          "state": "enabled",
+          "element": "root",
+          "property": "borderColor",
+          "token": "$color.border.brand.default",
+          "value": "var(--border-brand-default)"
+        },
+        {
+          "selector": "variant=primary",
+          "state": "enabled",
+          "element": "label",
+          "property": "color",
+          "token": "$color.text.brand.onBrand",
+          "value": "var(--text-brand-on-brand)"
+        },
+        {
+          "selector": "variant=primary",
+          "state": "hover",
+          "element": "root",
+          "property": "backgroundColor",
+          "token": "$color.background.brand.defaultHover",
+          "value": "var(--background-brand-default-hover)"
+        },
+        {
+          "selector": "variant=primary",
+          "state": "hover",
+          "element": "label",
+          "property": "color",
+          "token": "$color.text.brand.onBrand",
+          "value": "var(--text-brand-on-brand)"
+        },
+        {
+          "selector": "variant=primary",
+          "state": "disabled",
+          "element": "root",
+          "property": "backgroundColor",
+          "token": "$color.background.disabled.default",
+          "value": "var(--background-disabled-default)"
+        },
+        {
+          "selector": "variant=primary",
+          "state": "disabled",
+          "element": "root",
+          "property": "borderColor",
+          "token": "$color.border.disabled.default",
+          "value": "var(--border-disabled-default)"
+        },
+        {
+          "selector": "variant=primary",
+          "state": "disabled",
+          "element": "label",
+          "property": "color",
+          "token": "$color.text.disabled.default",
+          "value": "var(--text-disabled-default)"
+        },
+        {
+          "selector": "variant=secondary",
+          "state": "enabled",
+          "element": "root",
+          "property": "backgroundColor",
+          "token": "$color.background.default.default",
+          "value": "var(--background-default-default)"
+        },
+        {
+          "selector": "variant=secondary",
+          "state": "enabled",
+          "element": "root",
+          "property": "borderColor",
+          "token": "$color.border.default.default",
+          "value": "var(--border-default-default)"
+        },
+        {
+          "selector": "variant=secondary",
+          "state": "enabled",
+          "element": "label",
+          "property": "color",
+          "token": "$color.text.brand.default",
+          "value": "var(--text-brand-default)"
+        },
+        {
+          "selector": "variant=secondary",
+          "state": "hover",
+          "element": "root",
+          "property": "backgroundColor",
+          "token": "$color.background.default.defaultHover",
+          "value": "var(--background-default-default-hover)"
+        },
+        {
+          "selector": "variant=secondary",
+          "state": "hover",
+          "element": "label",
+          "property": "color",
+          "token": "$color.text.default.default",
+          "value": "var(--text-default-default)"
+        },
+        {
+          "selector": "variant=secondary",
+          "state": "disabled",
+          "element": "root",
+          "property": "backgroundColor",
+          "token": "$color.background.disabled.default",
+          "value": "var(--background-disabled-default)"
+        },
+        {
+          "selector": "variant=secondary",
+          "state": "disabled",
+          "element": "root",
+          "property": "borderColor",
+          "token": "$color.border.disabled.default",
+          "value": "var(--border-disabled-default)"
+        },
+        {
+          "selector": "variant=secondary",
+          "state": "disabled",
+          "element": "label",
+          "property": "color",
+          "token": "$color.text.disabled.default",
+          "value": "var(--text-disabled-default)"
+        },
+        {
+          "selector": "size=md",
+          "state": "enabled",
+          "element": "root",
+          "property": "padding",
+          "token": "$size.space.300",
+          "value": "12px"
+        },
+        {
+          "selector": "size=md",
+          "state": "enabled",
+          "element": "root",
+          "property": "height",
+          "token": null,
+          "value": "2.5rem",
+          "reason": "sizing 토큰 스케일 부재"
+        },
+        {
+          "selector": "size=lg",
+          "state": "enabled",
+          "element": "root",
+          "property": "padding",
+          "token": "$size.space.400",
+          "value": "16px"
+        },
+        {
+          "selector": "size=lg",
+          "state": "enabled",
+          "element": "root",
+          "property": "height",
+          "token": null,
+          "value": "3rem",
+          "reason": "sizing 토큰 스케일 부재"
+        }
+      ]
+    }
+  }
+}
