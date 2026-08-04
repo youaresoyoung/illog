@@ -55,7 +55,7 @@ export function SpecTable({ component }: Props) {
     <Stack gap="800" my="600">
       {groupBySelector(spec.specTable).map(([selector, rows]) => (
         <Stack key={selector} gap="300">
-          <Text as="h4" textStyle="bodyBaseStrong" color="textDefaultDefault">
+          <Text as="h4" textStyle="bodyStrong" color="textDefaultDefault">
             {selector}
           </Text>
 

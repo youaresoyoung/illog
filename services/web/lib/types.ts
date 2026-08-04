@@ -21,7 +21,7 @@ export type ComponentSpec = {
   name: string
   description: string
   status: { figma: string; react: string }
-  elements: Record<string, { element?: string; description?: string }>
+  elements: Record<string, { tag?: string; description?: string }>
   states: string[]
   extends: string | null
   propsTable: PropRow[]
