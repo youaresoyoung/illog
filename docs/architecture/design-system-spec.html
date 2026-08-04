@@ -161,10 +161,14 @@
       <h1>illog — Design System Spec 파이프라인</h1>
       <p>
         <code>packages/ui</code>의 컴포넌트 스펙 추출 파이프라인을 정리한 문서입니다. YAML로 쓴
-        컴포넌트 스펙을 읽어 검증하고, 디자인 토큰을 실제 값으로 해석해 문서용 표로 만드는 흐름을
-        파일 단위 → 함수 단위 순으로 좁혀가며 보여줍니다. 현재 브랜치에 존재하는 코드만 반영했으며,
-        아직 비어 있는 엔트리(<code>generate.ts</code>, <code>validate.ts</code>)는 점선으로
-        표시했습니다. 앱 전체 구조는
+        컴포넌트 스펙을 읽어 검증하고, 디자인 토큰을 실제 값으로 해석해 문서용 표와 생성 파일로
+        만드는 흐름을 파일 단위 → 함수 단위 순으로 좁혀가며 보여줍니다. 진입점은 두 CLI 엔트리(<code
+          >pnpm spec:validate</code
+        >, <code>pnpm spec:generate</code>)입니다. 생성물 2개는
+        <b>양쪽 모두 소비처에 연결된 상태</b>입니다 — <code>spec.json</code>은
+        <code>services/web</code>의 문서 표가, <code>spec.types.ts</code>는
+        <code>Button/types.ts</code>가 실제로 import합니다. 현재 브랜치에 존재하는 코드만
+        반영했습니다. 앱 전체 구조는
         <a href="./index.html" style="color: #a5b4fc">아키텍처 다이어그램</a>을 참고하세요.
       </p>
     </header>
@@ -172,17 +176,22 @@
     <section>
       <h2><span class="num">1</span> 파이프라인 전체 흐름</h2>
       <p class="desc">
-        입력은 두 가지입니다 — 컴포넌트 스펙(<code>spec/*.yaml</code>)과 그 형태를 규정하는 JSON
-        Schema. 여기에 <code>@illog/themes</code>의 디자인 토큰이 합쳐져, <b>이슈 목록</b>과
-        <b>문서용 표</b> 두 종류의 산출물이 나옵니다. 검사는
+        사람이 쓰는 입력은 컴포넌트 스펙(<code>spec/*.yaml</code>)과 그 형태를 규정하는 JSON
+        Schema이고, 여기에 <code>@illog/themes</code>의 디자인 토큰이 합쳐집니다. 검사는
         <b>형식(JSON Schema) → 의미(코드)</b> 2단계로 나뉘며, 형식 검사를 통과하지 못한 파일은 의미
-        검사로 넘어가지 않습니다.
+        검사로 넘어가지 않습니다. 파이프라인 중간 산출물(<code>Issue[]</code>,
+        <code>ComponentSpec[]</code>, 표)을 두 CLI 엔트리가 각각 소비해, 한쪽은 <b>종료 코드</b>를
+        다른 한쪽은 <b>커밋되는 생성 파일 2개</b>를 내놓습니다. 그 두 파일은 각각
+        <code>services/web</code>의 문서 표와 <code>Button/types.ts</code>로 흘러들어가,
+        <b>YAML이 문서와 타입 양쪽의 SSOT</b>가 됩니다.
       </p>
       <div class="legend">
         <span><i style="background: #f6ad55"></i>입력 (사람이 쓰는 파일)</span>
         <span><i style="background: #68d391"></i>파이프라인 모듈</span>
-        <span><i style="background: #b794f4"></i>산출물</span>
-        <span><i style="background: #718096"></i>미구현 (예정)</span>
+        <span><i style="background: #b794f4"></i>중간 산출물 (메모리)</span>
+        <span><i style="background: #fc8181"></i>CLI 엔트리</span>
+        <span><i style="background: #4fd1c5"></i>생성 파일 (git 커밋)</span>
+        <span><i style="background: #90cdf4"></i>소비처</span>
       </div>
       <pre class="mermaid">
 graph LR
@@ -200,14 +209,22 @@ graph LR
     RESOLVE["resolveToken.ts<br />토큰 해석"]
     TABLE["buildTables.ts<br />표 가공"]
   end
-  subgraph Output["산출물"]
+  subgraph Output["중간 산출물"]
     ISSUES["Issue[]<br />error · warn"]
     SPECS["ComponentSpec[]"]
     ROWS["PropRow[] · SpecRow[]"]
   end
-  subgraph Entry["엔트리 (미작성)"]
-    VALIDATE["validate.ts"]
-    GENERATE["generate.ts"]
+  subgraph Entry["CLI 엔트리"]
+    VALIDATE["validate.ts<br />pnpm spec:validate"]
+    GENERATE["generate.ts<br />pnpm spec:generate"]
+  end
+  subgraph Artifacts["생성 파일 (커밋됨)"]
+    SPECJSON["spec/__generated__/spec.json<br />전 컴포넌트 1개 파일"]
+    SPECTYPES["src/(sourceDir)/__generated__/<br />spec.types.ts · 컴포넌트마다"]
+  end
+  subgraph Consumers["소비처"]
+    WEB["services/web<br />PropsTable · SpecTable"]
+    CTYPES["src/(sourceDir)/types.ts<br />ButtonProps"]
   end
 
   YAML --> LOAD
@@ -222,38 +239,67 @@ graph LR
   SPECS --> TABLE
   RESOLVE --> TABLE
   TABLE --> ROWS
-  ISSUES -.-> VALIDATE
-  ROWS -.-> GENERATE
+
+  ISSUES --> VALIDATE
+  VALIDATE --> EXIT["종료 코드 0 / 1"]
+  ISSUES -->|error 있으면 중단| GENERATE
+  SPECS --> GENERATE
+  ROWS --> GENERATE
+  GENERATE --> SPECJSON
+  GENERATE --> SPECTYPES
+  SPECJSON -->|"@illog/ui/spec.json"| WEB
+  SPECTYPES -->|"상대 경로 import"| CTYPES
 
   classDef input fill:#2a2318,stroke:#f6ad55,color:#fde8c8
   classDef mod fill:#182a20,stroke:#68d391,color:#ccf3dd
   classDef out fill:#241f32,stroke:#b794f4,color:#ece4fe
-  classDef todo fill:#232527,stroke:#718096,color:#9aa5b1,stroke-dasharray:4 3
+  classDef entry fill:#2b1d1d,stroke:#fc8181,color:#fcdcdc
+  classDef art fill:#152a2a,stroke:#4fd1c5,color:#c8f3ef
+  classDef consumer fill:#1b2430,stroke:#90cdf4,color:#d6ebfb
   class YAML,SCHEMA,THEMES,GEN input
   class LOAD,CHECK,RESOLVE,TABLE mod
-  class ISSUES,SPECS,ROWS out
-  class VALIDATE,GENERATE todo
+  class ISSUES,SPECS,ROWS,EXIT out
+  class VALIDATE,GENERATE entry
+  class SPECJSON,SPECTYPES art
+  class WEB,CTYPES consumer
       </pre>
+      <p class="note">
+        <b>생성 파일을 왜 커밋하는가</b> — <code>generate.ts</code>의 주석에 적힌 정책 그대로,
+        codegen을 돌리지 않은 상태에서도 에디터와 typecheck가 동작해야 하기 때문입니다
+        (<code>generatedColors.ts</code>와 같은 방침). 현재 두 파일 모두 git에 추가돼 있고,
+        <code>.gitignore</code>가 잡는 것은 <code>dist</code>뿐입니다.
+      </p>
+      <p class="note">
+        <b>두 생성물의 배치가 다른 이유</b> — <code>spec.json</code>은 전 컴포넌트를 하나로
+        모읍니다. 문서 사이트가 <code>getComponentSpec(id)</code>로
+        <b>목록 전체를 한 번에</b> 필요로 하기 때문입니다. 반대로 타입은 컴포넌트 폴더 안에
+        co-location합니다 — 컴포넌트를 지우면 생성물도 같이 사라집니다. 출력 위치는
+        <code>id</code>에서 추론하지 않고 스펙의 <code>sourceDir</code> 필드를 따르는데,
+        <code>Selector</code>/<code>TagSelector</code>처럼 중첩된 컴포넌트가 있어
+        <code>pascal(id)</code> 규칙이 성립하지 않기 때문입니다.
+      </p>
     </section>
 
     <section>
       <h2><span class="num">2</span> 모듈 의존 관계 (파일 단위)</h2>
       <p class="desc">
-        각 파일의 <code>import</code>문을 그대로 옮긴 그래프입니다. 화살표는 위에서 아래
+        각 파일이 <code>scripts/spec</code> 안에서 무엇을 <code>import</code>하는지 그대로 옮긴
+        그래프입니다(외부 패키지는 3절에서 다룹니다). 화살표는 위에서 아래
         <b>한 방향으로만</b> 흐르며 순환이 없습니다 — 아래층 파일은 위층을 절대 import하지 않기
         때문에, 어느 파일을 엔트리로 잡아도 초기화 순서 문제가 생기지 않습니다.
-        <code>types.ts</code>와 <code>utils.ts</code>는 import가 하나도 없는 잎(leaf)입니다.
+        <code>types.ts</code>와 <code>utils.ts</code>는 import가 하나도 없는 잎(leaf)이고, 모듈을
+        불러오는 것만으로 무언가 실행되는 파일은 L4 두 개뿐입니다 — 나머지는 전부 함수만 내보냅니다.
       </p>
       <div class="legend">
         <span><i style="background: #90cdf4"></i>L0 잎 — 의존 없음</span>
         <span><i style="background: #68d391"></i>L1 도메인 헬퍼</span>
         <span><i style="background: #f6ad55"></i>L2 검사</span>
         <span><i style="background: #fc8181"></i>L3 조립</span>
-        <span><i style="background: #718096"></i>L4 엔트리 (미작성)</span>
+        <span><i style="background: #e879a6"></i>L4 CLI 엔트리</span>
       </div>
       <pre class="mermaid">
 graph TD
-  subgraph L4["L4 · 엔트리 (미작성)"]
+  subgraph L4["L4 · CLI 엔트리"]
     VALIDATE["validate.ts"]
     GENERATE["generate.ts"]
   end
@@ -273,9 +319,9 @@ graph TD
     UTILS["utils.ts"]
   end
 
-  VALIDATE -.-> LOAD
-  GENERATE -.-> LOAD
-  GENERATE -.-> TABLE
+  VALIDATE --> LOAD
+  GENERATE --> LOAD
+  GENERATE --> TABLE
   LOAD --> CHECK
   LOAD --> TYPES
   TABLE --> FLATTEN
@@ -293,12 +339,12 @@ graph TD
   classDef helper fill:#182a20,stroke:#68d391,color:#ccf3dd
   classDef check fill:#2a2318,stroke:#f6ad55,color:#fde8c8
   classDef assemble fill:#2b1d1d,stroke:#fc8181,color:#fcdcdc
-  classDef todo fill:#232527,stroke:#718096,color:#9aa5b1,stroke-dasharray:4 3
+  classDef entry fill:#2c1c26,stroke:#e879a6,color:#fbd8e8
   class TYPES,UTILS leaf
   class RESOLVE,FLATTEN helper
   class CHECK check
   class LOAD,TABLE assemble
-  class VALIDATE,GENERATE todo
+  class VALIDATE,GENERATE entry
       </pre>
       <p class="note">
         <b>왜 단방향이 중요한가</b> — 이전 구조에서는 <code>lib.ts</code>가
@@ -313,12 +359,14 @@ graph TD
       <h2><span class="num">3</span> 함수 호출 흐름 (함수 단위)</h2>
       <p class="desc">
         각 함수가 <b>어디서 호출되는지</b>를 그린 콜 그래프입니다. 실선은 실제 호출, 점선은 아직
-        호출부가 없는 것(예정)입니다. <code>flattenDefinitions</code>와
+        호출부가 없는 것(예정)입니다. 두 CLI 엔트리 모두 <code>loadSpecs()</code> 하나로 시작하고,
+        <code>generate.ts</code>만 표 생성까지 내려갑니다. <code>flattenDefinitions</code>와
         <code>tryResolveTokenRef</code>가 검사 경로와 표 생성 경로 <b>양쪽에서 공유</b>되는 점이 이
         구조의 핵심입니다 — <code>definitions</code>의 4중 중첩을 순회하는 코드가 한 곳에만
         존재합니다.
       </p>
       <div class="legend">
+        <span><i style="background: #e879a6"></i>CLI 엔트리 (top-level)</span>
         <span><i style="background: #fc8181"></i>진입 함수</span>
         <span><i style="background: #f6ad55"></i>검사</span>
         <span><i style="background: #68d391"></i>공유 순회 · 토큰 해석</span>
@@ -327,6 +375,15 @@ graph TD
       </div>
       <pre class="mermaid">
 graph TD
+  subgraph ValidateFile["validate.ts"]
+    VMAIN["top-level<br />--strict 판정 · Issue 출력 · process.exit"]
+  end
+  subgraph GenerateFile["generate.ts"]
+    GMAIN["top-level<br />error 있으면 중단하고 exit(1)"]
+    GDIRS["sourceDir 사전 검증<br />없는 경로면 아무것도 쓰지 않고 exit(1)"]
+    GWRITE["writeFile(path, content)<br />mkdir → write → prettier"]
+    GPASCAL["pascal(specId)<br />button → Button"]
+  end
   subgraph LoadFile["loadSpecs.ts"]
     LOADSPECS["loadSpecs(specDir?)<br />디렉터리 순회 · 형식 검사 · id 규칙"]
     SCHEMAPATH["schemaPathFor(specDir)"]
@@ -342,7 +399,6 @@ graph TD
   end
   subgraph ResolveFile["resolveToken.ts"]
     TRYRES["tryResolveTokenRef(ref)<br />실패를 값으로 반환"]
-    RES["resolveTokenRef(ref)<br />실패 시 throw"]
     COLORMAP["getColorKeyMap()<br />역색인 · lazy memo"]
   end
   subgraph TableFile["buildTables.ts"]
@@ -358,8 +414,22 @@ graph TD
   subgraph Ext["외부"]
     AJV["ajv · Ajv2020"]
     YAMLLIB["yaml · parse"]
-    FS["fs · readdirSync/readFileSync"]
+    FS["fs · readdirSync/readFileSync<br />existsSync/mkdirSync"]
+    PRETTIER["child_process<br />npx prettier --write"]
+    THEMESLIB["@illog/themes<br />tokens · styles"]
+    GENCOLORS["src/core/tokens/<br />generatedColors"]
   end
+
+  VMAIN --> LOADSPECS
+  GMAIN --> LOADSPECS
+  GMAIN --> GDIRS
+  GMAIN --> PROPS
+  GMAIN --> SPECT
+  GMAIN --> GPASCAL
+  GMAIN --> GWRITE
+  GDIRS --> FS
+  GWRITE --> FS
+  GWRITE --> PRETTIER
 
   LOADSPECS --> SCHEMAPATH
   LOADSPECS --> GETVAL
@@ -383,26 +453,30 @@ graph TD
   TRYRES --> COLORMAP
   TRYRES --> GETIN
   TRYRES --> KEBAB
-  RES -.->|"래핑"| TRYRES
+  TRYRES --> THEMESLIB
+  COLORMAP --> GENCOLORS
 
+  classDef cli fill:#2c1c26,stroke:#e879a6,color:#fbd8e8
   classDef entry fill:#2b1d1d,stroke:#fc8181,color:#fcdcdc
   classDef check fill:#2a2318,stroke:#f6ad55,color:#fde8c8
   classDef shared fill:#182a20,stroke:#68d391,color:#ccf3dd
   classDef util fill:#1b2430,stroke:#90cdf4,color:#d6ebfb
   classDef ext fill:#241f32,stroke:#b794f4,color:#ece4fe
-  classDef unused fill:#232527,stroke:#718096,color:#9aa5b1,stroke-dasharray:4 3
+  class VMAIN,GMAIN,GDIRS cli
   class LOADSPECS,PROPS,SPECT entry
   class CHECKSEM check
   class FLAT,PARSESEL,DESCRIBE,TRYRES,COLORMAP shared
   class KEBAB,GETIN,QUOTE,FMT,SCHEMAPATH,GETVAL util
-  class AJV,YAMLLIB,FS ext
-  class RES unused
+  class AJV,YAMLLIB,FS,PRETTIER,THEMESLIB,GENCOLORS ext
       </pre>
       <p class="note">
-        <b>점선으로 표시한 <code>resolveTokenRef</code></b> — 현재 어느 모듈도 호출하지 않습니다.
-        "이미 검증을 통과한 스펙"을 다루는 자리에서 쓰라고 남겨둔 API로, <code>generate.ts</code>가
-        작성되면 호출부가 생깁니다. <code>SCHEMA_PATH</code> 상수도 같은 이유로 아직 미사용
-        export입니다.
+        <b>미사용 API를 정리했습니다</b> — 이전 버전에는 실패 시 예외를 던지는
+        <code>resolveTokenRef</code>와 상수 <code>SCHEMA_PATH</code>가 호출부 없이 export만 되어
+        있었습니다. 둘 다 삭제했고, 지금은 이 그래프에 <b>호출부 없는 노드가 하나도 없습니다</b>.
+        <code>buildSpecTable</code>이 쓰는 것은 실패를 값으로 돌려주는
+        <code>tryResolveTokenRef</code> 하나뿐이고, 스키마 경로는 상수 대신
+        <code>schemaPathFor(specDir)</code>가 만들어냅니다 — 픽스처 디렉터리를 넘겨 테스트할 수
+        있도록 <code>loadSpecs(specDir?)</code>의 인자에서 유도되는 형태입니다.
       </p>
     </section>
 
@@ -421,6 +495,51 @@ graph TD
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td><code>validate.ts</code></td>
+            <td><code>top-level</code></td>
+            <td>
+              <code>loadSpecs()</code> 결과를 아이콘과 함께 출력하고 집계. error가 있거나
+              <code>--strict</code>에서 warn이 있으면 <code>exit(1)</code>
+            </td>
+            <td>종료 코드</td>
+          </tr>
+          <tr>
+            <td><code>generate.ts</code></td>
+            <td><code>top-level</code></td>
+            <td>
+              error가 하나라도 있으면 생성하지 않고 중단 → 모든 <code>sourceDir</code>이 실재하는지
+              확인 → 통과하면 <code>spec.json</code> 1개와 컴포넌트별 <code>spec.types.ts</code>를
+              쓴다. <code>sourceDir</code>이 없거나 variants가 없는 스펙은 건너뛰고 이유를 출력한다
+            </td>
+            <td><code>spec.json</code> + 타입 파일 N개</td>
+          </tr>
+          <tr>
+            <td><code>generate.ts</code></td>
+            <td><code>sourceDir 사전 검증</code></td>
+            <td>
+              <b>파일을 하나라도 쓰기 전에</b> 전 스펙의 <code>sourceDir</code>을
+              <code>existsSync</code>로 확인. <code>mkdir -p</code>가 오타 경로에 빈 폴더를 조용히
+              만드는 것을 막는다
+            </td>
+            <td>통과 또는 <code>exit(1)</code></td>
+          </tr>
+          <tr>
+            <td><code>generate.ts</code></td>
+            <td><code>writeFile(path, content)</code></td>
+            <td>디렉터리 생성 → 파일 쓰기 → prettier 포맷. 포맷 실패는 경고만 하고 넘어간다</td>
+            <td><code>void</code></td>
+          </tr>
+          <tr>
+            <td><code>generate.ts</code></td>
+            <td><code>pascal(specId)</code></td>
+            <td>
+              <code>-</code>/<code>_</code>로 끊어 PascalCase로. 타입 <b>이름</b>
+              <code>ButtonVariant</code>를 만드는 데만 쓰인다 — 출력 <b>경로</b>는
+              <code>sourceDir</code>에서 온다
+            </td>
+            <td><code>string</code></td>
+          </tr>
           <tr>
             <td><code>loadSpecs.ts</code></td>
             <td><code>loadSpecs(specDir?)</code></td>
@@ -486,12 +605,6 @@ graph TD
           </tr>
           <tr>
             <td><code>resolveToken.ts</code></td>
-            <td><code>resolveTokenRef(ref)</code></td>
-            <td>위를 감싸 실패 시 던지는 버전 — 검증을 통과한 스펙 전용 (현재 호출부 없음)</td>
-            <td><code>ResolvedToken</code></td>
-          </tr>
-          <tr>
-            <td><code>resolveToken.ts</code></td>
             <td><code>getColorKeyMap()</code></td>
             <td>
               <code>generatedColors</code>의 <code>var(--x)</code> → camelCase 키 역색인. 첫
@@ -524,7 +637,136 @@ graph TD
     </section>
 
     <section>
-      <h2><span class="num">5</span> 토큰 참조가 값이 되기까지</h2>
+      <h2><span class="num">5</span> 두 CLI 엔트리의 실행 분기</h2>
+      <p class="desc">
+        같은 <code>loadSpecs()</code>에서 출발하지만 <b>error를 다루는 방식이 다릅니다</b>.
+        <code>validate</code>는 전부 출력하고 종료 코드로 알리는 리포터이고, <code>generate</code>는
+        error가 하나라도 있으면 <b>생성물을 손대지 않고</b> 중단합니다 — 깨진 스펙이 커밋되는 파일로
+        새어나가지 않게 하는 장치입니다. warn은 양쪽 모두 통과시키되,
+        <code>validate --strict</code>에서만 실패로 취급합니다.
+      </p>
+      <div class="legend">
+        <span><i style="background: #e879a6"></i>CLI 진입</span>
+        <span><i style="background: #68d391"></i>처리 단계</span>
+        <span><i style="background: #4fd1c5"></i>생성 파일</span>
+        <span><i style="background: #fc8181"></i>실패 종료</span>
+      </div>
+      <pre class="mermaid">
+graph TD
+  V["pnpm spec:validate<br />tsx scripts/spec/validate.ts"] --> VL["loadSpecs()"]
+  VL --> VP["모든 Issue 출력<br />❌ error · ⚠️ warn"]
+  VP --> VSUM["총 N개 스펙 · E 에러 · W 경고"]
+  VSUM --> VC{"error 있음<br />또는 --strict 이면서 warn 있음?"}
+  VC -->|예| VX1["exit(1)"]
+  VC -->|아니오| VX0["exit(0)"]
+
+  G["pnpm spec:generate<br />tsx scripts/spec/generate.ts"] --> GL["loadSpecs()"]
+  GL --> GC{"error 있음?"}
+  GC -->|예| GX["error만 출력 후 exit(1)<br />생성물은 그대로 둔다"]
+  GC -->|아니오| GD{"모든 sourceDir 이<br />src 아래 실재하는가?"}
+  GD -->|아니오| GX2["없는 경로를 출력하고 exit(1)<br />폴더를 새로 만들지 않는다"]
+  GD -->|예| GB["buildPropsTable · buildSpecTable"]
+  GB --> GJ["spec/__generated__/spec.json<br />메타 + propsTable + specTable"]
+  GB --> GLOOP{"spec 마다:<br />sourceDir · variants 있음?"}
+  GLOOP -->|아니오| GSKIP["⏭️ 건너뜀 + 이유 출력"]
+  GLOOP -->|예| GT["src/(sourceDir)/__generated__/<br />spec.types.ts · variant union"]
+  GJ --> GP["writeFile → prettier --write"]
+  GT --> GP
+
+  classDef cli fill:#2c1c26,stroke:#e879a6,color:#fbd8e8
+  classDef step fill:#182a20,stroke:#68d391,color:#ccf3dd
+  classDef art fill:#152a2a,stroke:#4fd1c5,color:#c8f3ef
+  classDef bad fill:#2b1d1d,stroke:#fc8181,color:#fcdcdc
+  classDef ok fill:#241f32,stroke:#b794f4,color:#ece4fe
+  class V,G cli
+  class VL,VP,VSUM,GL,GB,GP,GSKIP step
+  class GJ,GT art
+  class VX1,GX,GX2 bad
+  class VX0 ok
+      </pre>
+      <p class="note">
+        <b>현재 실제 실행 결과</b> — <code>pnpm spec:validate</code>는 error 0 · warn 3으로
+        <code>exit 0</code>, <code>--strict</code>를 붙이면 <code>exit 1</code>입니다.
+        <code>pnpm spec:generate</code>는
+        <code>spec.json 1개, 타입 파일 1개 (컴포넌트 1개, 타입 3개)</code>를 생성하며, 다시 돌려도
+        결과가 바뀌지 않습니다(idempotent).
+      </p>
+      <p class="note">
+        <b>중단 지점이 두 개인 이유</b> — 첫 번째(<code>error</code>)는 <i>스펙 내용</i>이 깨진
+        경우고, 두 번째(<code>sourceDir</code>)는 <i>스펙과 실제 파일 구조</i>가 어긋난 경우입니다.
+        후자를 별도 단계로 앞세운 것은 <code>writeFile</code>이 <code>mkdirSync(recursive)</code>를
+        하기 때문입니다 — 경로에 오타가 있으면 검증 없이는 컴포넌트도 없는 빈
+        <code>__generated__</code> 폴더가 조용히 생겨납니다. 그래서 <b>첫 파일을 쓰기 전에</b> 전
+        스펙을 먼저 훑습니다.
+      </p>
+    </section>
+
+    <section>
+      <h2><span class="num">6</span> 생성물 2개와 그 소비처</h2>
+      <p class="desc">
+        <code>generate.ts</code>가 만드는 두 파일은 성격이 다릅니다 — 하나는
+        <b>기계용 통합 스펙</b>, 하나는 <b>타입 전용</b>입니다. 둘 다 git에 커밋해서, codegen을
+        돌리지 않은 상태에서도 에디터와 typecheck가 동작하게 합니다.
+        <b>두 경로 모두 소비처까지 연결됐습니다</b> — <code>spec.json</code>은
+        <code>package.json</code>의 <code>exports</code>에 서브패스로 올라가 문서 사이트가
+        import하고, <code>spec.types.ts</code>는 같은 폴더의 <code>types.ts</code>가 import합니다.
+        YAML을 고치고 <code>spec:generate</code>를 돌리면 문서 표와 컴포넌트 타입이 함께 따라옵니다.
+      </p>
+      <pre class="mermaid">
+graph LR
+  SPECS["ComponentSpec[]"] --> J
+  ROWS["PropRow[] · SpecRow[]"] --> J
+  SPECS --> T
+
+  subgraph J["spec.json — 기계용 통합 스펙"]
+    J1["id · name · description · status"]
+    J2["elements · variants · states · extends"]
+    J3["propsTable (9행)"]
+    J4["specTable (24행)"]
+  end
+  subgraph T["spec.types.ts — variant union"]
+    T1["ButtonVariant = 'primary' | 'secondary'"]
+    T2["ButtonSize = 'sm' | 'md' | 'lg'"]
+    T3["ButtonIsFullWidth = boolean"]
+  end
+
+  J -->|"exports: ./spec.json"| SPECLIB["services/web/lib/spec.ts<br />getComponentSpec(id)"]
+  SPECLIB --> PT["PropsTable"]
+  SPECLIB --> ST["SpecTable"]
+  PT --> MDX["button.mdx<br />PropsTable · SpecTable 태그"]
+  ST --> MDX
+
+  T --> BTYPES["Button/types.ts<br />variant?: ButtonVariant"]
+  BTYPES --> BTSX["Button.tsx<br />variant = 'primary'"]
+
+  classDef mid fill:#241f32,stroke:#b794f4,color:#ece4fe
+  classDef art fill:#152a2a,stroke:#4fd1c5,color:#c8f3ef
+  classDef consumer fill:#1b2430,stroke:#90cdf4,color:#d6ebfb
+  class SPECS,ROWS mid
+  class J1,J2,J3,J4,T1,T2,T3 art
+  class SPECLIB,PT,ST,MDX,BTYPES,BTSX consumer
+      </pre>
+      <p class="note">
+        <b>없는 id는 빌드를 실패시킨다</b> — <code>getComponentSpec(id)</code>는 못 찾은 id에 대해
+        <code>undefined</code>를 돌려주는 대신 던집니다. MDX의 <code>component="buton"</code> 같은
+        오타가 빈 표로 조용히 배포되지 않고, Next.js 빌드 단계에서 "<code>spec:generate</code>를
+        실행하세요"라는 메시지와 함께 멈춥니다. <code>PropsTable</code>만은 <code>data</code> prop을
+        통한 임시 경로를 남겨두고 있는데, 아직 스펙이 없는 컴포넌트를 문서화하기 위한 것입니다 —
+        <code>component</code>와 <code>data</code>는 타입 레벨에서 배타적입니다.
+      </p>
+      <p class="note">
+        <b>남아 있는 이음매 두 곳</b> — ① <code>services/web/lib/types.ts</code>는
+        <code>PropRow</code>/<code>SpecRow</code>/<code>ComponentSpec</code>을 손으로 다시 선언하고,
+        <code>spec.json</code>을 <code>as Record&lt;string, ComponentSpec&gt;</code>로 단언합니다.
+        <code>scripts/spec/types.ts</code>가 바뀌어도 컴파일러가 잡아주지 못하는 지점입니다. ②
+        <code>ButtonIsFullWidth</code>는 생성되지만 쓰이지 않습니다 — <code>types.ts</code>가
+        <code>isFullWidth?: boolean</code>이라고 직접 적기 때문입니다. boolean variant는 union을
+        만들어봐야 <code>boolean</code>과 같아서 실익이 없습니다.
+      </p>
+    </section>
+
+    <section>
+      <h2><span class="num">7</span> 토큰 참조가 값이 되기까지</h2>
       <p class="desc">
         <code>tryResolveTokenRef</code> 내부를 단계별로 편 그림입니다. 네임스페이스에 따라 경로가
         갈리며, 색상만 CSS 변수명 변환과 역색인을 한 번 더 거칩니다. 어느 단계에서 막히든
@@ -574,7 +816,7 @@ graph TD
     </section>
 
     <section>
-      <h2><span class="num">6</span> checkSemantics의 4단계 검사</h2>
+      <h2><span class="num">8</span> checkSemantics의 4단계 검사</h2>
       <p class="desc">
         의미 검사는 네 덩어리로 나뉘고, 각 단계가 어떤 Issue를 만드는지 보여줍니다. 3단계만
         <code>flattenDefinitions</code>를 순회하며, 같은 (selector, state, element)에 대한 중복
@@ -634,32 +876,43 @@ graph LR
     </section>
 
     <section>
-      <h2><span class="num">7</span> 스펙 문서와 실제 코드의 정렬</h2>
+      <h2><span class="num">9</span> 스펙 문서와 실제 코드의 정렬</h2>
       <p class="desc">
-        스펙을 쓰는 과정에서 실제 컴포넌트 코드와의 어긋남이 드러납니다. 이번 변경에 포함된
-        <code>Button/types.ts</code> 수정이 그 예입니다 — <code>Button.tsx</code>는
-        <code>variant = 'primary'</code>로 기본값을 주고 있는데 타입만 필수였습니다.
+        스펙을 쓰는 과정에서 실제 컴포넌트 코드와의 어긋남이 드러납니다. 드러난 drift는 성격에 따라
+        <b>두 갈래로 처리</b>됩니다 — 스펙 쪽이 옳으면 코드를 스펙에서 <b>생성</b>해 다시 어긋날 수
+        없게 만들고, 구현이 아직 못 따라온 것이면 고치는 대신 <b>warn으로 기록</b>해 둡니다.
       </p>
       <pre class="mermaid">
 graph LR
   YAML["button.yaml<br />variants.variant.default: primary"] --> CMP{"실제 코드와 일치?"}
   IMPL["Button.tsx<br />variant = 'primary' 기본값 있음"] --> CMP
-  TYPE["Button/types.ts<br />variant: 'primary' | 'secondary' (필수)"] --> CMP
-  CMP -->|불일치| FIX["variant?: 'primary' | 'secondary'<br />옵셔널로 수정"]
+  CMP -->|"과거: 타입만 필수였음"| FIX1["variant? 로 옵셔널화<br />(해결됨)"]
+  FIX1 --> FIX2["손으로 적던 union 을 삭제<br />→ ButtonVariant import"]
+  FIX2 --> LOOP["이제 타입은 생성물<br />어긋날 여지가 없음"]
 
   CSS["button.css.ts<br />sm: {} 빈 스타일"] --> DRIFT{"스펙에 어떻게 남길까?"}
-  DRIFT -->|숨기지 않고 기록| WARN["definitions에 size=sm 생략<br />→ warn으로 드러남"]
+  DRIFT -->|숨기지 않고 기록| WARN["definitions 에 size=sm 생략<br />→ warn 으로 드러남"]
+  SIZING["sizing 토큰 스케일 부재"] --> DRIFT
+  DRIFT -->|이유를 붙여 이스케이프| RAW["height: raw 2.5rem<br />+ reason → warn"]
 
   classDef src fill:#2a2318,stroke:#f6ad55,color:#fde8c8
   classDef q fill:#1b2430,stroke:#90cdf4,color:#d6ebfb
   classDef fix fill:#182a20,stroke:#68d391,color:#ccf3dd
-  class YAML,IMPL,TYPE,CSS src
+  class YAML,IMPL,CSS,SIZING src
   class CMP,DRIFT q
-  class FIX,WARN fix
+  class FIX1,FIX2,LOOP,WARN,RAW fix
       </pre>
+      <p class="note">
+        <b>루프가 닫혔다</b> — <code>Button/types.ts</code>는 이제
+        <code>import { ButtonSize, ButtonVariant } from './__generated__/spec.types'</code>로
+        시작합니다. <code>button.yaml</code>의 <code>values</code>에 값을 하나 추가하고
+        <code>spec:generate</code>를 돌리면 union·문서 props 표·spec 표가 한 번에 따라오고, 손으로
+        고칠 곳은 <code>button.css.ts</code>의 실제 스타일뿐입니다. 반대로 스타일만 추가하고 YAML을
+        빼먹으면 <code>spec:validate</code>가 warn으로 알려줍니다.
+      </p>
     </section>
 
-    <footer>실제 소스 코드를 읽고 작성한 다이어그램입니다 · packages/ui 기준</footer>
+    <footer>실제 소스 코드를 읽고 작성한 다이어그램입니다 · packages/ui + services/web 기준</footer>
 
     <script>
       mermaid.initialize({ startOnLoad: true, theme: 'dark' })
