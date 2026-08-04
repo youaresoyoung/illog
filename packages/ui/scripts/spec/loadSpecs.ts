@@ -15,8 +15,6 @@ export function schemaPathFor(specDir: string) {
   return path.join(specDir, '_schema/component.schema.json')
 }
 
-export const SCHEMA_PATH = schemaPathFor(SPEC_DIR)
-
 /**
  * 스키마 컴파일은 파일 I/O 를 동반한다. import 시점에 하면 이 모듈을 스쳐 지나가는
  * 모든 코드(테스트 포함)가 스키마 파일 존재에 묶이므로, 첫 로드 때 한 번만 한다.

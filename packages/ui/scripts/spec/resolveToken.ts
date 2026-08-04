@@ -67,10 +67,3 @@ export function tryResolveTokenRef(ref: string): TokenResolution {
 
   return fail(`알 수 없는 토큰 네임스페이스: $${namespace}`)
 }
-
-/** 해석에 실패할 리 없는 자리(= 이미 검증을 통과한 스펙)에서 쓰는 버전. 실패하면 던진다. */
-export function resolveTokenRef(ref: string): ResolvedToken {
-  const resolution = tryResolveTokenRef(ref)
-  if (!resolution.ok) throw new Error(resolution.error)
-  return resolution.token
-}
