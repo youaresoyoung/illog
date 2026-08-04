@@ -23,6 +23,7 @@ import { IconGallery } from '../IconGallery'
 import { PropsTable } from '../PropsTable/PropsTable'
 import { TokenReference } from '../TokenReference'
 import { CodeBlock } from './CodeBlock'
+import { SpecTable } from '../SpecTable'
 
 const tableCellStyle = {
   padding: '0.75rem 1rem',
@@ -171,6 +172,7 @@ export const mdxComponents: MDXComponents = {
   ),
   ComponentPreview,
   PropsTable,
+  SpecTable,
   TokenReference,
   IconGallery,
   Button,

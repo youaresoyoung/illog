@@ -1,0 +1,123 @@
+# yaml-language-server: $schema=./_schema/component.schema.json
+id: button
+name: Button
+description: 사용자 액션을 트리거하는 기본 인터랙션 컴포넌트
+sourceDir: components/Button
+
+status:
+  figma: done
+  react: done
+
+elements:
+  root:
+    tag: button
+    description: 버튼 컨테이너이자 인터랙션 타깃
+  label:
+    description: 버튼 텍스트 (children)
+
+variants:
+  variant:
+    type: enum
+    values: [primary, secondary]
+    default: primary
+    description: 시각적 위계. primary 는 한 섹션에 하나만 사용한다.
+  size:
+    type: enum
+    values: [sm, md, lg]
+    default: md
+    description: 버튼 크기
+  isFullWidth:
+    type: boolean
+    default: false
+    description: 부모 너비를 가득 채울지 여부
+
+states: [enabled, hover, disabled]
+
+definitions:
+  base:
+    enabled:
+      root:
+        borderRadius: $size.radius.200
+        borderWidth: $size.stroke.border
+        typography: $text.singleLine.bodyBase
+      label:
+        color: $color.text.default.default
+
+  variant=primary:
+    enabled:
+      root:
+        backgroundColor: $color.background.brand.default
+        borderColor: $color.border.brand.default
+      label:
+        color: $color.text.brand.onBrand
+    hover:
+      root:
+        backgroundColor: $color.background.brand.defaultHover
+      label:
+        color: $color.text.brand.onBrand
+    disabled:
+      root:
+        backgroundColor: $color.background.disabled.default
+        borderColor: $color.border.disabled.default
+      label:
+        color: $color.text.disabled.default
+
+  variant=secondary:
+    enabled:
+      root:
+        backgroundColor: $color.background.default.default
+        borderColor: $color.border.default.default
+      label:
+        color: $color.text.brand.default
+    hover:
+      root:
+        backgroundColor: $color.background.default.defaultHover
+      label:
+        color: $color.text.default.default
+    disabled:
+      root:
+        backgroundColor: $color.background.disabled.default
+        borderColor: $color.border.disabled.default
+      label:
+        color: $color.text.disabled.default
+
+  # TODO(drift): size=sm 은 button.css.ts 에서 `sm: {}` 로 스타일이 비어 있다.
+  # 문서는 3개 사이즈를 안내하지만 실제로는 2개만 구현되어 있다.
+  # 현재 동작을 그대로 기록하기 위해 여기서도 정의하지 않는다.
+
+  size=md:
+    enabled:
+      root:
+        padding: $size.space.300
+        # TODO(drift): sizing 토큰 스케일이 없어 하드코딩된 값이다.
+        height: { raw: 2.5rem, reason: sizing 토큰 스케일 부재 }
+
+  size=lg:
+    enabled:
+      root:
+        padding: $size.space.400
+        height: { raw: 3rem, reason: sizing 토큰 스케일 부재 }
+
+props:
+  isDisabled:
+    type: boolean
+    default: false
+    description: 비활성 여부
+  onClick:
+    type: () => void
+    description: 클릭 핸들러
+  children:
+    type: ReactNode
+    required: true
+    description: 버튼 내용
+  className:
+    type: string
+    description: 추가 CSS 클래스
+  ariaLabel:
+    type: string
+    description: 접근성 레이블
+  ref:
+    type: Ref<HTMLButtonElement>
+    description: button 엘리먼트 ref
+
+extends: ButtonHTMLAttributes<HTMLButtonElement>

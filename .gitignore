@@ -28,3 +28,5 @@ storybook-static
 .nx/workspace-data
 
 .next
+
+*.tsbuildinfo

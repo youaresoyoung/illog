@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://illog.dev/schema/component.schema.json",
+  "title": "illog component spec",
+  "description": "packages/ui 컴포넌트의 SSOT(Single Source Of Truth) -> 타입 union, props 표, spec 표가 생성됨",
+  "type": "object",
+  "required": ["id", "name", "status", "props"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "kebab-case 식별자(button) 문서 slug 및 <PropsTable component=\"...\" /> 와 일치해야 한다."
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Za-z0-9]*$",
+      "description": "PascalCase 컴포넌트명(Button) Figma component set 이름과 일치해야 한다(네이밍 계약)."
+    },
+    "description": { "type": "string" },
+    "sourceDir": {
+      "type": "string",
+      "pattern": "^components/[A-Za-z0-9]+(/[A-Za-z0-9]+)*$",
+      "description": "구현체가 있는 디렉터리(src 기준 상대 경로). variant union 이 이 폴더의 __generated__/types.ts 로 생성된다. id 로부터 추론하지 않고 명시하는 이유는 Selector/TagSelector 처럼 중첩된 경우가 있기 때문이다. 생략하면 타입을 생성하지 않는다 — 아직 구현되지 않은 컴포넌트(status.react=notReady/notPlanned)를 뜻한다."
+    },
+    "status": {
+      "type": "object",
+      "description": "Progress Board 용. 구현 상태를 숨기지 않고 드러낸다.",
+      "required": ["figma", "react"],
+      "additionalProperties": false,
+      "properties": {
+        "figma": { "$ref": "#/$defs/statusValue" },
+        "react": { "$ref": "#/$defs/statusValue" }
+      }
+    },
+    "elements": {
+      "type": "object",
+      "description": "컴포넌트 내부 영역(element). 각 영역에 적용되는 디자인 토큰과 속성이 어느 영역에 적용되는지 정의한다.",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "tag": { "type": "string", "description": "렌더되는 HTML 태그" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "variants": {
+      "type": "object",
+      "description": "스타일 축. 여기 선언된 것만 TS union으로 생성된다.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type"],
+        "additionalProperties": false,
+        "properties": {
+          "type": { "enum": ["enum", "boolean"] },
+          "values": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[a-zA-Z][a-zA-Z0-9]*$" },
+            "minItems": 1,
+            "description": "type=enum 일 때 필수"
+          },
+          "default": { "type": ["string", "boolean"] },
+          "required": { "type": "boolean" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "states": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true,
+      "description": "definitions에서 사용할 수 있는 상태 목록. enabled는 항상 포함할 것."
+    },
+    "definitions": {
+      "type": "object",
+      "description": "컴포넌트의 스타일 규칙을 정의한다. variant 조건(selector), 상태(state), 적용 영역(element)별로 스타일 속성과 값을 지정한다.",
+      "propertyNames": {
+        "pattern": "^(base|[a-zA-Z][a-zA-Z0-9]*=[a-zA-Z0-9]+( [a-zA-Z][a-zA-Z0-9]*=[a-zA-Z0-9]+)*)$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "description": "state -> element -> property -> value",
+        "additionalProperties": {
+          "type": "object",
+          "description": "element -> property -> value",
+          "additionalProperties": {
+            "type": "object",
+            "description": "property -> value",
+            "additionalProperties": { "$ref": "#/$defs/value" }
+          }
+        }
+      }
+    },
+    "props": {
+      "type": "object",
+      "description": "스타일 축이 아닌 공개 props. variants와 합쳐져 문서 props 표가 된다.",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type"],
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string" },
+          "default": { "type": ["string", "boolean", "number"] },
+          "required": { "type": "boolean" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "extends": {
+      "type": "string",
+      "description": "상속하는 HTML 속성 타입. 문서에 '이 외 표준 속성'으로 한 줄 표기된다."
+    }
+  },
+
+  "$defs": {
+    "statusValue": { "enum": ["done", "inProgress", "notReady", "notPlanned"] },
+    "value": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^\\$(color|size|text)\\.[a-zA-Z0-9]+(\\.[a-zA-Z0-9]+)*$",
+          "description": "토큰 참조. $color.* / $size.* / $text.*"
+        },
+        {
+          "type": "object",
+          "required": ["raw", "reason"],
+          "additionalProperties": false,
+          "description": "토큰 밖 값 이스케이프. 이유를 반드시 남기고, validate가 리포트한다.",
+          "properties": {
+            "raw": { "type": ["string", "number"] },
+            "reason": { "type": "string" }
+          }
+        }
+      ]
+    }
+  }
+}
