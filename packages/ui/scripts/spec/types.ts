@@ -41,6 +41,8 @@ export type ComponentSpec = {
   id: string
   name: string
   description?: string
+  /** 구현체 디렉터리 (src 기준). 없으면 아직 구현되지 않은 컴포넌트 — 타입을 생성하지 않는다. */
+  sourceDir?: string
   status: { figma: string; react: string }
   elements?: Record<string, ElementDef>
   variants?: Record<string, VariantDef>

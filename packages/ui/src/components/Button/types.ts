@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes, ReactNode, Ref } from 'react'
-import { ButtonSize, ButtonVariant } from '../../__generated__/spec.types'
+import { ButtonSize, ButtonVariant } from './__generated__/spec.types'
 
 export type ButtonProps = {
   variant?: ButtonVariant

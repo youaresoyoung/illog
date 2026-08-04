@@ -18,6 +18,11 @@
       "description": "PascalCase 컴포넌트명(Button) Figma component set 이름과 일치해야 한다(네이밍 계약)."
     },
     "description": { "type": "string" },
+    "sourceDir": {
+      "type": "string",
+      "pattern": "^components/[A-Za-z0-9]+(/[A-Za-z0-9]+)*$",
+      "description": "구현체가 있는 디렉터리(src 기준 상대 경로). variant union 이 이 폴더의 __generated__/types.ts 로 생성된다. id 로부터 추론하지 않고 명시하는 이유는 Selector/TagSelector 처럼 중첩된 경우가 있기 때문이다. 생략하면 타입을 생성하지 않는다 — 아직 구현되지 않은 컴포넌트(status.react=notReady/notPlanned)를 뜻한다."
+    },
     "status": {
       "type": "object",
       "description": "Progress Board 용. 구현 상태를 숨기지 않고 드러낸다.",
